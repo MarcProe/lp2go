@@ -1,0 +1,18 @@
+<xml>
+    <object name="AttitudeSimulated" category="State" settings="false" singleinstance="true">
+        <description>The simulated Attitude estimation from @ref Sensors.</description>
+        <field name="q1" elements="1" type="float" units="" />
+        <field name="q2" elements="1" type="float" units="" />
+        <field name="q3" elements="1" type="float" units="" />
+        <field name="q4" elements="1" type="float" units="" />
+        <field name="Roll" elements="1" type="float" units="degrees" />
+        <field name="Pitch" elements="1" type="float" units="degrees" />
+        <field name="Yaw" elements="1" type="float" units="degrees" />
+        <field name="Velocity" elementnames="North, East, Down" type="float" units="m/s" />
+        <field name="Position" elementnames="North, East, Down" type="float" units="m" />
+        <access flight="readwrite" gcs="readwrite" />
+        <telemetrygcs acked="false" period="0" updatemode="manual" />
+        <telemetryflight acked="false" period="100" updatemode="periodic" />
+        <logging period="0" updatemode="manual" />
+    </object>
+</xml>

@@ -1,0 +1,12 @@
+<xml>
+    <object name="GPSVelocitySensor" category="Sensors" settings="false" singleinstance="true">
+        <description>Raw GPS velocity in NED frame and m/s from @ref GPSModule.</description>
+        <field name="North" elements="1" type="float" units="m/s"/>
+        <field name="East" elements="1" type="float" units="m/s"/>
+        <field name="Down" elements="1" type="float" units="m/s"/>
+        <access flight="readwrite" gcs="readwrite"/>
+        <telemetrygcs acked="false" period="0" updatemode="manual"/>
+        <telemetryflight acked="false" period="1000" updatemode="periodic"/>
+        <logging period="0" updatemode="manual"/>
+    </object>
+</xml>

@@ -1,0 +1,75 @@
+<xml>
+
+    <object name="StabilizationSettings" category="Control" settings="true" singleinstance="true">
+        <description>PID settings used by the Stabilization module to combine the @ref
+            AttitudeActual and @ref AttitudeDesired to compute @ref ActuatorDesired
+        </description>
+
+        <!-- Note: The number of elements here must match the number of available flight mode switch positions -->
+        <field name="FlightModeMap" defaultvalue="Bank1,Bank1,Bank1,Bank1,Bank1,Bank1" elements="6"
+            options="Bank1,Bank2,Bank3" type="enum" units="" />
+
+        <field name="VbarSensitivity" defaultvalue="0.5,0.5,0.5" elementnames="Roll,Pitch,Yaw"
+            type="float" units="frac" />
+        <field name="VbarRollPI" defaultvalue="0.005,0.002" elementnames="Kp,Ki" type="float"
+            units="1/(deg/s)" />
+        <field name="VbarPitchPI" defaultvalue="0.005,0.002" elementnames="Kp,Ki" type="float"
+            units="1/(deg/s)" />
+        <field name="VbarYawPI" defaultvalue="0.005,0.002" elementnames="Kp,Ki" type="float"
+            units="1/(deg/s)" />
+        <field name="VbarTau" defaultvalue="0.5" elements="1" type="float" units="sec" />
+        <field name="VbarGyroSuppress" defaultvalue="30" elements="1" type="int8" units="%" />
+        <field name="VbarPiroComp" defaultvalue="FALSE" elements="1" options="FALSE,TRUE"
+            type="enum" units="" />
+        <field name="VbarMaxAngle" defaultvalue="10" elements="1" type="uint8" units="deg" />
+
+        <field name="GyroTau" defaultvalue="0.003" elements="1" type="float" units="" />
+        <field name="DerivativeCutoff" defaultvalue="20" elements="1" type="uint8" units="Hz" />
+        <field name="DerivativeGamma" defaultvalue="1" elements="1" type="float" units="" />
+
+        <field name="AxisLockKp" defaultvalue="2.5" elements="1" type="float" units="" />
+        <field name="MaxAxisLock" defaultvalue="30" elements="1" type="uint8" units="deg" />
+        <field name="MaxAxisLockRate" defaultvalue="2" elements="1" type="uint8" units="deg/s" />
+
+        <field name="WeakLevelingKp" defaultvalue="0.1" elements="1" type="float"
+            units="(deg/s)/deg" />
+        <field name="MaxWeakLevelingRate" defaultvalue="5" elements="1" type="uint8"
+            units="deg/s" />
+
+        <field name="RattitudeModeTransition" defaultvalue="80" elements="1" type="uint8"
+            units="%" />
+
+        <field name="CruiseControlMinThrust" defaultvalue="5" elements="1" type="int8" units="%" />
+        <field name="CruiseControlMaxThrust" defaultvalue="90" elements="1" type="uint8"
+            units="%" />
+        <field name="CruiseControlMaxAngle" defaultvalue="105" elements="1" type="uint8"
+            units="deg" />
+        <field name="CruiseControlMaxPowerFactor" defaultvalue="3.0" elements="1" type="float"
+            units="x" />
+        <field name="CruiseControlPowerTrim" defaultvalue="100.0" elements="1" type="float"
+            units="%" />
+        <field name="CruiseControlPowerDelayComp" defaultvalue="0.25" elements="1" type="float"
+            units="sec" />
+        <field name="CruiseControlFlightModeSwitchPosEnable" defaultvalue="FALSE" elements="6"
+            options="FALSE,TRUE" type="enum" units="" />
+
+        <field name="CruiseControlInvertedThrustReversing" defaultvalue="Unreversed" elements="1"
+            options="Unreversed,Reversed" type="enum" units="" />
+        <field name="CruiseControlInvertedPowerOutput" defaultvalue="Zero" elements="1"
+            options="Zero,Normal,Boosted" type="enum" units="" />
+
+        <field name="LowThrottleZeroIntegral" defaultvalue="TRUE" elements="1" options="FALSE,TRUE"
+            type="enum" units="" />
+
+        <field name="ScaleToAirspeed" defaultvalue="0" elements="1" type="float" units="m/s" />
+        <field name="ScaleToAirspeedLimits" defaultvalue="0.05,3" elementnames="Min,Max"
+            type="float" units="" />
+        <field name="FlightModeAssistMap" defaultvalue="None,None,None,None,None,None" elements="6"
+            options="None,GPSAssist" type="enum" units="" />
+
+        <access flight="readwrite" gcs="readwrite" />
+        <telemetrygcs acked="true" period="0" updatemode="onchange" />
+        <telemetryflight acked="true" period="0" updatemode="onchange" />
+        <logging period="0" updatemode="manual" />
+    </object>
+</xml>

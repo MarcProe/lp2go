@@ -1,0 +1,47 @@
+<xml>
+    <object name="ManualControlSettings" category="Control" settings="true" singleinstance="true">
+        <description>Settings to indicate how to decode receiver input by @ref
+            ManualControlModule.
+        </description>
+        <field name="ChannelGroups" defaultvalue="None"
+            elementnames="Throttle,Roll,Pitch,Yaw,FlightMode,Collective,Accessory0,Accessory1,Accessory2,Accessory3"
+            options="PWM,PPM,DSM (MainPort),DSM (FlexiPort),S.Bus,SRXL,GCS,OPLink,None" type="enum"
+            units="Channel Group" />
+        <field name="ChannelNumber" defaultvalue="0"
+            elementnames="Throttle,Roll,Pitch,Yaw,FlightMode,Collective,Accessory0,Accessory1,Accessory2,Accessory3"
+            type="uint8" units="channel" />
+        <field name="ChannelMin" defaultvalue="1000"
+            elementnames="Throttle,Roll,Pitch,Yaw,FlightMode,Collective,Accessory0,Accessory1,Accessory2,Accessory3"
+            type="int16" units="us" />
+        <field name="ChannelNeutral" defaultvalue="1500"
+            elementnames="Throttle,Roll,Pitch,Yaw,FlightMode,Collective,Accessory0,Accessory1,Accessory2,Accessory3"
+            type="int16" units="us" />
+        <field name="ChannelMax" defaultvalue="2000"
+            elementnames="Throttle,Roll,Pitch,Yaw,FlightMode,Collective,Accessory0,Accessory1,Accessory2,Accessory3"
+            type="int16" units="us" />
+        <field name="ResponseTime" defaultvalue="0"
+            elementnames="Roll,Pitch,Yaw,Collective,Accessory0,Accessory1,Accessory2,Accessory3"
+            type="uint16" units="ms" />
+
+        <field name="Deadband" defaultvalue="2" elements="1" type="uint8" units="%" />
+        <!-- Note the following deadband is used in AssistedControl.  Use of deadband with AssistedControl is not optional and will have a hardcoded minimum. -->
+        <field name="DeadbandAssistedControl" defaultvalue="8"
+            description="Stick deadband used for AssistedControl" elements="1" type="uint8"
+            units="%" />
+
+
+        <!-- Note these options values should be identical to those defined in FlightMode -->
+        <field name="FlightModeNumber" defaultvalue="3" elements="1" type="uint8" units="" />
+
+        <field name="FailsafeFlightModeSwitchPosition" defaultvalue="-1" elements="1" type="int8"
+            units="" />
+        <field name="FailsafeChannel" defaultvalue="-1,0,0,0,0,0,0,0,0"
+            elementnames="Throttle,Roll,Pitch,Yaw,Collective,Accessory0,Accessory1,Accessory2,Accessory3"
+            type="float" units="%" />
+
+        <access flight="readwrite" gcs="readwrite" />
+        <telemetrygcs acked="true" period="0" updatemode="onchange" />
+        <telemetryflight acked="true" period="0" updatemode="onchange" />
+        <logging period="0" updatemode="manual" />
+    </object>
+</xml>

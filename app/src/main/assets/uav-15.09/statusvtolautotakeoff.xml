@@ -1,0 +1,14 @@
+<xml>
+    <object name="StatusVtolAutoTakeoff" category="Navigation" settings="false" singleinstance="true">
+    <description>Status of a AutoTakeoff autopilot</description>
+	<field name="State" default="0" elements="1" options="Inactive,CheckState,SlowStart,ThrustUp,Takeoff,Hold,ThrustDown,ThrustOff,Disarmed" type="enum" units=""/>
+	<field name="AltitudeAtState" default="0" elements="10" type="float" units="m"/>
+	<field name="StateExitReason" default="0" elements="10" options="None,ArrivedAtAlt,ZeroThrust,PositionError,Timeout" type="enum" units=""/>
+	<field name="AltitudeState" default="0" elements="1" options="High,Low" type="enum" units=""/>
+	<field name="ControlState" default="0" elements="1" options="WaitForArmed,WaitForMidThrottle,RequireUnarmedFirst,Initiate,PositionHold,Abort" type="enum" units=""/>
+    <access flight="readwrite" gcs="readwrite"/>
+    <telemetrygcs acked="false" period="0" updatemode="manual"/>
+    <telemetryflight acked="false" period="500" updatemode="onchange"/>
+	<logging period="0" updatemode="manual"/>
+    </object>
+</xml>

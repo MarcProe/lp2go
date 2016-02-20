@@ -1,0 +1,15 @@
+<xml>
+    <object name="StabilizationDesired" category="Control" settings="false" singleinstance="true">
+        <description>The desired attitude that @ref StabilizationModule will try and achieve if FlightMode is Stabilized.  Comes from @ref ManaulControlModule.</description>
+        <field name="Roll" elements="1" type="float" units="degrees"/>
+        <field name="Pitch" elements="1" type="float" units="degrees"/>
+        <field name="Yaw" elements="1" type="float" units="degrees"/>
+        <field name="Thrust" elements="1" type="float" units="%"/>
+	<!-- These values should match those in FlightModeSettings.Stabilization{1,2,3}Settings -->
+        <field name="StabilizationMode" elementnames="Roll,Pitch,Yaw,Thrust" options="Manual,Rate,RateTrainer,Attitude,AxisLock,WeakLeveling,VirtualBar,Acro+,Rattitude,AltitudeHold,AltitudeVario,CruiseControl" type="enum" units=""/>
+        <access flight="readwrite" gcs="readwrite"/>
+        <telemetrygcs acked="false" period="0" updatemode="manual"/>
+        <telemetryflight acked="false" period="1000" updatemode="periodic"/>
+        <logging period="0" updatemode="manual"/>
+    </object>
+</xml>

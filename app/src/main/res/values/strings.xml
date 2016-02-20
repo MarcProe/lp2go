@@ -1,0 +1,33 @@
+<resources>
+    <string name="app_name">LP2Go</string>
+    <string name="STAB">STAB</string>
+    <string name="ATTI">ATTI</string>
+    <string name="PATH">PATH</string>
+    <string name="PLAN">PLAN</string>
+    <string name="GPS">GPS</string>
+    <string name="MAG">MAG</string>
+    <string name="INPUT">INPUT</string>
+    <string name="OUTPUT">OUTPUT</string>
+    <string name="I2C">I2C</string>
+    <string name="TELEMETRY">TELEMETRY</string>
+    <string name="BATT">BATT</string>
+    <string name="TIME">TIME</string>
+    <string name="CONFIG">CONFIG</string>
+    <string name="BOOT">BOOT</string>
+    <string name="MEM">MEM</string>
+    <string name="STACK">STACK</string>
+    <string name="EVENT">EVENT</string>
+    <string name="CPU">CPU</string>
+    <string name="pointpointpoint">...</string>
+    <string name="SENSOR">SENSOR</string>
+    <string name="AIRSPD">AIRSPD</string>
+    <string name="SystemHealth">System Health</string>
+    <string name="Armstatus">Arm Status</string>
+    <string name="Stop">Stop</string>
+    <string name="Start">Start</string>
+    <string name="CAPACITY_DIALOG_TITLE">Capacity (mAh)</string>
+    <string name="CELLS_DIALOG_TITLE">Cells</string>
+    <string name="OK_BUTTON">OK</string>
+    <string name="CANCEL_BUTTON">Cancel</string>
+    <string name="DEVICE_NAME_NONE"><![CDATA[<none>]]></string>
+</resources>

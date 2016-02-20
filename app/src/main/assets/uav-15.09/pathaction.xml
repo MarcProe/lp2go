@@ -1,0 +1,27 @@
+<xml>
+    <object name="PathAction" category="Navigation" settings="false" singleinstance="false">
+        <description>A waypoint command the pathplanner is to use at a certain waypoint
+        </description>
+
+        <!-- ensure the following Mode options are exactly the same as in pathdesired mode -->
+        <field name="Mode" default="GoToEndpoint" elements="1" options="GoToEndpoint,FollowVector,CircleRight,CircleLeft,
+            FixedAttitude,SetAccessory,DisarmAlarm,Land,Brake,Velocity,AutoTakeoff" type="enum"
+            units="" />
+
+        <field name="ModeParameters" default="0" elements="4" type="float" units="" />
+        <field name="EndCondition" default="None" elements="1" options="None,TimeOut,
+            DistanceToTarget,LegRemaining,BelowError,AboveAltitude,AboveSpeed,PointingTowardsNext,
+            PythonScript,Immediate" type="enum" units="" />
+        <field name="ConditionParameters" default="0" elements="4" type="float" units="" />
+        <field name="Command" default="OnConditionNextWaypoint" elements="1" options="OnConditionNextWaypoint,OnNotConditionNextWaypoint,
+            OnConditionJumpWaypoint,OnNotConditionJumpWaypoint,
+            IfConditionJumpWaypointElseNextWaypoint" type="enum" units="" />
+        <field name="JumpDestination" default="0" elements="1" type="int16" units="waypoint" />
+        <field name="ErrorDestination" default="0" elements="1" type="int16" units="waypoint" />
+
+        <access flight="readwrite" gcs="readwrite" />
+        <telemetrygcs acked="true" period="0" updatemode="manual" />
+        <telemetryflight acked="true" period="0" updatemode="manual" />
+        <logging period="0" updatemode="manual" />
+    </object>
+</xml>

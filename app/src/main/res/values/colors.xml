@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+
+    <color name="roundframe">#ffffff</color>
+
+    <color name="dark">#333333</color>
+    <color name="light">#eeeeee</color>
+
+    <color name="Critical">#D40000</color>
+    <color name="OK">#008000</color>
+    <color name="InProgress">#008000</color>
+    <color name="Warning">#ff6600</color>
+    <color name="Uninitialised">#28170b</color>
+    <color name="Completed">#cccccc</color>
+    <color name="Error">#333333</color>
+</resources>

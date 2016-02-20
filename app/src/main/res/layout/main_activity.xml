@@ -1,0 +1,680 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:id="@+id/txtDeviceName"
+            android:layout_weight="1" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:id="@+id/txtVehicleName"
+            android:layout_weight="1" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Start"
+            android:id="@+id/btnStart"
+            android:onClick="OnStartClick" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical|center_horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:text="@string/ATTI"
+                android:id="@+id/txtAtti"
+                android:layout_weight="1"
+                android:background="@drawable/rounded_corner_uninitialised"
+                android:textColor="@color/light"
+                android:textAlignment="center"
+                android:gravity="center_vertical|center_horizontal" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="@string/STAB"
+                android:id="@+id/txtStab"
+                android:layout_weight="1"
+                android:textColor="@color/light"
+                android:background="@drawable/rounded_corner_uninitialised"
+                android:textAlignment="center"
+                android:gravity="center_vertical|center_horizontal" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="@string/PATH"
+                android:id="@+id/txtPath"
+                android:layout_weight="1"
+                android:textColor="@color/light"
+                android:background="@drawable/rounded_corner_uninitialised"
+                android:textAlignment="center"
+                android:gravity="center_vertical|center_horizontal" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="@string/PLAN"
+                android:id="@+id/txtPlan"
+                android:layout_weight="1"
+                android:textColor="@color/light"
+                android:background="@drawable/rounded_corner_uninitialised"
+                android:textAlignment="center"
+                android:gravity="center_vertical|center_horizontal" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical|center_horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:text="@string/GPS"
+                android:id="@+id/txtGPS"
+                android:layout_weight="0.75"
+                android:background="@drawable/rounded_corner_uninitialised"
+                android:textColor="@color/light"
+                android:textAlignment="center"
+                android:gravity="center_vertical|center_horizontal" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:id="@+id/txtGPSSatsInView"
+                android:layout_weight="0.25"
+                android:background="@drawable/rounded_corner_right"
+                android:textColor="@color/dark"
+                android:textAlignment="center"
+                android:gravity="center_vertical|center_horizontal" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="@string/SENSOR"
+                android:id="@+id/txtSensor"
+                android:layout_weight="1"
+                android:textColor="@color/light"
+                android:background="@drawable/rounded_corner_uninitialised"
+                android:textAlignment="center"
+                android:gravity="center_vertical|center_horizontal" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="@string/AIRSPD"
+                android:id="@+id/txtAirspd"
+                android:layout_weight="1"
+                android:textColor="@color/light"
+                android:background="@drawable/rounded_corner_uninitialised"
+                android:textAlignment="center"
+                android:gravity="center_vertical|center_horizontal" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="@string/MAG"
+                android:id="@+id/txtMag"
+                android:layout_weight="1"
+                android:textColor="@color/light"
+                android:background="@drawable/rounded_corner_uninitialised"
+                android:textAlignment="center"
+                android:gravity="center_vertical|center_horizontal" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical|center_horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:text="@string/INPUT"
+                android:id="@+id/txtInput"
+                android:layout_weight="1"
+                android:background="@drawable/rounded_corner_uninitialised"
+                android:textColor="@color/light"
+                android:textAlignment="center"
+                android:gravity="center_vertical|center_horizontal" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="@string/OUTPUT"
+                android:id="@+id/txtOutput"
+                android:layout_weight="1"
+                android:textColor="@color/light"
+                android:background="@drawable/rounded_corner_uninitialised"
+                android:textAlignment="center"
+                android:gravity="center_vertical|center_horizontal" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="@string/I2C"
+                android:id="@+id/txtI2C"
+                android:layout_weight="0.5"
+                android:textColor="@color/light"
+                android:background="@drawable/rounded_corner_uninitialised"
+                android:textAlignment="center"
+                android:gravity="center_vertical|center_horizontal" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="@string/TELEMETRY"
+                android:id="@+id/txtTelemetry"
+                android:layout_weight="1.5"
+                android:textColor="@color/light"
+                android:background="@drawable/rounded_corner_uninitialised"
+                android:textAlignment="center"
+                android:gravity="center_vertical|center_horizontal" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical|center_horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:text="@string/BATT"
+                android:id="@+id/txtBatt"
+                android:layout_weight="1"
+                android:background="@drawable/rounded_corner_uninitialised"
+                android:textColor="@color/light"
+                android:textAlignment="center"
+                android:gravity="center_vertical|center_horizontal" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="@string/TIME"
+                android:id="@+id/txtTime"
+                android:layout_weight="1"
+                android:textColor="@color/light"
+                android:background="@drawable/rounded_corner_uninitialised"
+                android:textAlignment="center"
+                android:gravity="center_vertical|center_horizontal" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="@string/CONFIG"
+                android:id="@+id/txtConfig"
+                android:layout_weight="2"
+                android:textColor="@color/light"
+                android:background="@drawable/rounded_corner_uninitialised"
+                android:textAlignment="center"
+                android:gravity="center_vertical|center_horizontal" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical|center_horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:text="@string/BOOT"
+                android:id="@+id/txtBoot"
+                android:layout_weight="1"
+                android:background="@drawable/rounded_corner_uninitialised"
+                android:textColor="@color/light"
+                android:textAlignment="center"
+                android:gravity="center_vertical|center_horizontal" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="@string/MEM"
+                android:id="@+id/txtMem"
+                android:layout_weight="1"
+                android:textColor="@color/light"
+                android:background="@drawable/rounded_corner_uninitialised"
+                android:textAlignment="center"
+                android:gravity="center_vertical|center_horizontal" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="@string/STACK"
+                android:id="@+id/txtStack"
+                android:layout_weight="1"
+                android:textColor="@color/light"
+                android:background="@drawable/rounded_corner_uninitialised"
+                android:textAlignment="center"
+                android:gravity="center_vertical|center_horizontal" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="@string/EVENT"
+                android:id="@+id/txtEvent"
+                android:layout_weight="1"
+                android:textColor="@color/light"
+                android:background="@drawable/rounded_corner_uninitialised"
+                android:textAlignment="center"
+                android:gravity="center_vertical|center_horizontal" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="@string/CPU"
+                android:id="@+id/txtCPU"
+                android:layout_weight="1"
+                android:textColor="@color/light"
+                android:background="@drawable/rounded_corner_uninitialised"
+                android:textAlignment="center"
+                android:gravity="center_vertical|center_horizontal" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical|center_horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:text="ARMED"
+                android:id="@+id/txtArmed"
+                android:layout_weight="1"
+                android:background="@drawable/rounded_corner_uninitialised"
+                android:textColor="@color/light"
+                android:textAlignment="center"
+                android:gravity="center_vertical|center_horizontal" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="AUTO"
+                android:id="@+id/txtAuto"
+                android:layout_weight="1"
+                android:textColor="@color/light"
+                android:background="@drawable/rounded_corner_uninitialised"
+                android:textAlignment="center"
+                android:gravity="center_vertical|center_horizontal" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="MODE"
+                android:id="@+id/txtMode"
+                android:layout_weight="1"
+                android:textColor="@color/light"
+                android:background="@drawable/rounded_corner_uninitialised"
+                android:textAlignment="center"
+                android:gravity="center_vertical|center_horizontal" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="MANUAL"
+                android:id="@+id/txtManual"
+                android:layout_weight="1"
+                android:textColor="@color/light"
+                android:background="@drawable/rounded_corner_uninitialised"
+                android:textAlignment="center"
+                android:gravity="center_vertical|center_horizontal" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical|center_horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:id="@+id/txtVolt"
+                android:layout_weight="1"
+                android:background="@drawable/rounded_corner_left"
+                android:textColor="@color/dark"
+                android:textAlignment="center"
+                android:gravity="center_vertical|center_horizontal" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Volt"
+                android:id="@+id/txtVoltLabel"
+                android:layout_weight="1"
+                android:textColor="@color/dark"
+                android:background="@drawable/rounded_corner_right"
+                android:textAlignment="center"
+                android:gravity="center_vertical|center_horizontal" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:id="@+id/txtAmpere"
+                android:layout_weight="1"
+                android:textColor="@color/dark"
+                android:background="@drawable/rounded_corner_left"
+                android:textAlignment="center"
+                android:gravity="center_vertical|center_horizontal" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Ampere"
+                android:id="@+id/txtAmpereLabel"
+                android:layout_weight="1"
+                android:textColor="@color/dark"
+                android:background="@drawable/rounded_corner_right"
+                android:textAlignment="center"
+                android:gravity="center_vertical|center_horizontal" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical|center_horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:id="@+id/txtmAh"
+                android:layout_weight="1"
+                android:background="@drawable/rounded_corner_left"
+                android:textColor="@color/dark"
+                android:textAlignment="center"
+                android:gravity="center_vertical|center_horizontal" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="mAh"
+                android:id="@+id/txtmAhLabel"
+                android:layout_weight="1"
+                android:textColor="@color/dark"
+                android:background="@drawable/rounded_corner_right"
+                android:textAlignment="center"
+                android:gravity="center_vertical|center_horizontal" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:id="@+id/txtTimeLeft"
+                android:layout_weight="1"
+                android:textColor="@color/dark"
+                android:background="@drawable/rounded_corner_left"
+                android:textAlignment="center"
+                android:gravity="center_vertical|center_horizontal" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Time Left"
+                android:id="@+id/txtTimeLeftLabel"
+                android:layout_weight="1"
+                android:textColor="@color/dark"
+                android:background="@drawable/rounded_corner_right"
+                android:textAlignment="center"
+                android:gravity="center_vertical|center_horizontal" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical|center_horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:id="@+id/txtCapacity"
+                android:layout_weight="1"
+                android:background="@drawable/rounded_corner_left"
+                android:textColor="@color/dark"
+                android:textAlignment="center"
+                android:onClick="OnBatteryCapacityClick"
+                android:gravity="center_vertical|center_horizontal" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Capacity"
+                android:id="@+id/txtCapacityLabel"
+                android:layout_weight="1"
+                android:textColor="@color/dark"
+                android:background="@drawable/rounded_corner_right"
+                android:textAlignment="center"
+                android:onClick="OnBatteryCapacityClick"
+                android:gravity="center_vertical|center_horizontal" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:id="@+id/txtCells"
+                android:layout_weight="1"
+                android:textColor="@color/dark"
+                android:background="@drawable/rounded_corner_left"
+                android:textAlignment="center"
+                android:onClick="OnBatteryCellsClick"
+                android:gravity="center_vertical|center_horizontal" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Cells"
+                android:id="@+id/txtCellsLabel"
+                android:layout_weight="1"
+                android:textColor="@color/dark"
+                android:background="@drawable/rounded_corner_right"
+                android:textAlignment="center"
+                android:onClick="OnBatteryCellsClick"
+                android:gravity="center_vertical|center_horizontal" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical|center_horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="FlightTelemetry"
+                android:id="@+id/txtFlightTelemetry"
+                android:layout_weight="1"
+                android:textColor="@color/light"
+                android:background="@drawable/rounded_corner_uninitialised"
+                android:textAlignment="center"
+                android:gravity="center_vertical|center_horizontal" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="GCSTelemetry"
+                android:id="@+id/txtGCSTelemetry"
+                android:layout_weight="1"
+                android:textColor="@color/light"
+                android:background="@drawable/rounded_corner_uninitialised"
+                android:textAlignment="center"
+                android:gravity="center_vertical|center_horizontal" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical|center_horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:id="@+id/txtAltitude"
+                android:layout_weight="1"
+                android:background="@drawable/rounded_corner_left"
+                android:textColor="@color/dark"
+                android:textAlignment="center"
+                android:onClick="OnAltitudeClick"
+                android:gravity="center_vertical|center_horizontal" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Altitude"
+                android:id="@+id/txtAltitudeLabel"
+                android:layout_weight="1"
+                android:textColor="@color/dark"
+                android:background="@drawable/rounded_corner_right"
+                android:textAlignment="center"
+                android:onClick="OnAltitudeClick"
+                android:gravity="center_vertical|center_horizontal" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:id="@+id/txtAltitudeAccel"
+                android:layout_weight="1"
+                android:textColor="@color/dark"
+                android:background="@drawable/rounded_corner_left"
+                android:textAlignment="center"
+                android:onClick="OnAltitudeAccelClick"
+                android:gravity="center_vertical|center_horizontal" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="m/s"
+                android:id="@+id/txtAltitudeAccelLabel"
+                android:layout_weight="1"
+                android:textColor="@color/dark"
+                android:background="@drawable/rounded_corner_right"
+                android:textAlignment="center"
+                android:onClick="OnAltitudeAccelClick"
+                android:gravity="center_vertical|center_horizontal" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical|center_horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:id="@+id/txtModeNum"
+                android:layout_weight="0.2"
+                android:background="@drawable/rounded_corner_left"
+                android:textColor="@color/dark"
+                android:textAlignment="center"
+                android:onClick="OnAltitudeClick"
+                android:text="0"
+                android:gravity="center_vertical|center_horizontal" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:id="@+id/txtModeFlightMode"
+                android:layout_weight="0.8"
+                android:background="@drawable/rounded_corner_middle"
+                android:textColor="@color/dark"
+                android:textAlignment="center"
+                android:onClick="OnAltitudeClick"
+                android:gravity="center_vertical|center_horizontal" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:id="@+id/txtModeAssistedControl"
+                android:layout_weight="0.5"
+                android:textColor="@color/dark"
+                android:background="@drawable/rounded_corner_right"
+                android:textAlignment="center"
+                android:onClick="OnAltitudeAccelClick"
+                android:gravity="center_vertical|center_horizontal" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+</LinearLayout>
