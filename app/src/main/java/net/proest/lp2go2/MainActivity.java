@@ -57,6 +57,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import net.proest.lp2go2.UAVTalk.UAVTalkDevice;
+import net.proest.lp2go2.UAVTalk.UAVTalkMissingObjectException;
+import net.proest.lp2go2.UAVTalk.UAVTalkObjectTree;
+import net.proest.lp2go2.UAVTalk.UAVTalkUsbDevice;
+import net.proest.lp2go2.UAVTalk.UAVTalkXMLObject;
+
 import org.xml.sax.SAXException;
 
 import java.io.ByteArrayOutputStream;
