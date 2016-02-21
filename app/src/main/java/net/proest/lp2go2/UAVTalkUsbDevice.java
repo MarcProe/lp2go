@@ -45,21 +45,18 @@ import android.hardware.usb.UsbRequest;
 import java.util.Hashtable;
 import java.util.LinkedList;
 
-public class UAVTalkUsbDevice {
+public class UAVTalkUsbDevice implements UAVTalkDevice {
 
     final protected static char[] hexArray = "0123456789ABCDEF".toCharArray();
     private final MainActivity mActivity;
     private final UsbDeviceConnection mDeviceConnection;
     private final UsbEndpoint mEndpointOut;
     private final UsbEndpoint mEndpointIn;
-    private final int DISCONNECTED = 0;
-    private final int HANDSHAKEREQ = 1;
-    private final int HANDSHAKEACK = 2;
-    private final int CONNECTED = 3;
 
     private final LinkedList<UsbRequest> mOutRequestPool = new LinkedList<UsbRequest>();
 
     private final LinkedList<UsbRequest> mInRequestPool = new LinkedList<UsbRequest>();
+
     private final WaiterThread mWaiterThread = new WaiterThread();
     private UAVTalkObjectTree oTree;
     private String mSerial;
@@ -93,31 +90,32 @@ public class UAVTalkUsbDevice {
         mEndpointIn = epIn;
     }
 
-    public static String bytesToHex(byte[] bytes) {
-        if (bytes == null) {
-            return "null";
+    /*
+        public static String bytesToHex(byte[] bytes) {
+            if (bytes == null) {
+                return "null";
+            }
+            char[] hexChars = new char[bytes.length * 3];
+            for (int j = 0; j < bytes.length; j++) {
+                int v = bytes[j] & 0xFF;
+                hexChars[j * 3] = hexArray[v >>> 4];
+                hexChars[j * 3 + 1] = hexArray[v & 0x0F];
+                hexChars[j * 3 + 2] = ' ';
+            }
+            return new String(hexChars);
         }
-        char[] hexChars = new char[bytes.length * 3];
-        for (int j = 0; j < bytes.length; j++) {
-            int v = bytes[j] & 0xFF;
-            hexChars[j * 3] = hexArray[v >>> 4];
-            hexChars[j * 3 + 1] = hexArray[v & 0x0F];
-            hexChars[j * 3 + 2] = ' ';
+
+        public static byte[] toBytes(int i) {
+            byte[] result = new byte[4];
+
+            result[0] = (byte) (i >> 24);
+            result[1] = (byte) (i >> 16);
+            result[2] = (byte) (i >> 8);
+            result[3] = (byte) (i);
+
+            return result;
         }
-        return new String(hexChars);
-    }
-
-    public static byte[] toBytes(int i) {
-        byte[] result = new byte[4];
-
-        result[0] = (byte) (i >> 24);
-        result[1] = (byte) (i >> 16);
-        result[2] = (byte) (i >> 8);
-        result[3] = (byte) (i /*>> 0*/);
-
-        return result;
-    }
-
+    */
     public UAVTalkObjectTree getoTree() {
         return oTree;
     }
@@ -242,8 +240,8 @@ public class UAVTalkUsbDevice {
                     continue;
                 }
                 byte[] buffer = new byte[mEndpointIn.getMaxPacketSize()];
-                int result = 0;
-                result = mDeviceConnection.bulkTransfer(mEndpointIn, buffer, buffer.length, 1000);
+
+                int result = mDeviceConnection.bulkTransfer(mEndpointIn, buffer, buffer.length, 1000);
 
                 if (result > 0 && mActivity.isReady && buffer.length > 3 && buffer[2] == 0x3C) {
 

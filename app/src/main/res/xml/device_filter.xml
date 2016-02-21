@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+    <!-- OPLink Mini -->
+    <usb-device
+        product-id="16732"
+        vendor-id="8352" />
+    <!-- Revolution -->
+    <usb-device
+        product-id="16734"
+        vendor-id="8352" />
+
+</resources>

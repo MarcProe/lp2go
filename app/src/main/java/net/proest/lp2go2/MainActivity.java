@@ -124,11 +124,12 @@ public class MainActivity extends Activity {
     private UsbDeviceConnection mDeviceConnection;
     private PendingIntent mPermissionIntent;
     private UsbInterface mInterface;
-    private UAVTalkUsbDevice mUAVTalkUsbDevice;
+    private UAVTalkDevice mUAVTalkDevice;
     private Hashtable<String, UAVTalkXMLObject> xmlObjects;
     BroadcastReceiver mUsbReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
+            Log.d("USB", action);
 
             if (UsbManager.ACTION_USB_DEVICE_ATTACHED.equals(action)) {
                 UsbDevice device = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
@@ -147,8 +148,8 @@ public class MainActivity extends Activity {
                 UsbDevice device = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
                 if (device != null /*&& device.equals(deviceName)*/) {
                     setUsbInterface(null, null);
-                    if (mUAVTalkUsbDevice != null) {
-                        mUAVTalkUsbDevice.stop();
+                    if (mUAVTalkDevice != null) {
+                        mUAVTalkDevice.stop();
                     }
                 }
                 txtDeviceText.setText(R.string.DEVICE_NAME_NONE);
@@ -271,11 +272,7 @@ public class MainActivity extends Activity {
                 ius.close();
                 ius = null;
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (SAXException e) {
-            e.printStackTrace();
-        } catch (ParserConfigurationException e) {
+        } catch (IOException | SAXException | ParserConfigurationException e) {
             e.printStackTrace();
         }
 
@@ -307,7 +304,7 @@ public class MainActivity extends Activity {
             throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         byte[] buffer = new byte[1024];
-        int length = 0;
+        int length;
         while ((length = inputStream.read(buffer)) != -1) {
             baos.write(buffer, 0, length);
         }
@@ -328,7 +325,7 @@ public class MainActivity extends Activity {
 
     public void OnAltitudeClick(View V) {
         try {
-            offset.put(OFFSET_BAROSENSOR_ALTITUDE, mUAVTalkUsbDevice.getoTree().getData("BaroSensor", "Altitude"));
+            offset.put(OFFSET_BAROSENSOR_ALTITUDE, mUAVTalkDevice.getoTree().getData("BaroSensor", "Altitude"));
             txtAltitude.setText(EMPTY_STRING);
         } catch (UAVTalkMissingObjectException e) {
             e.printStackTrace();
@@ -337,7 +334,7 @@ public class MainActivity extends Activity {
 
     public void OnAltitudeAccelClick(View V) {
         try {
-            offset.put(OFFSET_VELOCITY_DOWN, mUAVTalkUsbDevice.getoTree().getData("VelocityState", "Down"));
+            offset.put(OFFSET_VELOCITY_DOWN, mUAVTalkDevice.getoTree().getData("VelocityState", "Down"));
             txtAltitudeAccel.setText(EMPTY_STRING);
         } catch (UAVTalkMissingObjectException e) {
             e.printStackTrace();
@@ -368,10 +365,10 @@ public class MainActivity extends Activity {
     public void startPollThread() {
         if (pThread == null) {
             pThread = new PollThread(this);
-            if (mUAVTalkUsbDevice == null) {
+            if (mUAVTalkDevice == null) {
                 return;
             }
-            pThread.setoTree(mUAVTalkUsbDevice.getoTree());
+            pThread.setoTree(mUAVTalkDevice.getoTree());
             pThread.start();
             btnStart.setText(R.string.Stop);
         }
@@ -395,10 +392,10 @@ public class MainActivity extends Activity {
                     mDevice = device;
                     mDeviceConnection = connection;
                     mInterface = intf;
-                    mUAVTalkUsbDevice = new UAVTalkUsbDevice(this, mDeviceConnection, intf, xmlObjects);
-                    mUAVTalkUsbDevice.getoTree().setXmlObjects(xmlObjects);
+                    mUAVTalkDevice = new UAVTalkUsbDevice(this, mDeviceConnection, intf, xmlObjects);
+                    mUAVTalkDevice.getoTree().setXmlObjects(xmlObjects);
 
-                    mUAVTalkUsbDevice.start();
+                    mUAVTalkDevice.start();
                     txtDeviceText.setText(device.getDeviceName());
                     return true;
                 } else {
@@ -407,9 +404,9 @@ public class MainActivity extends Activity {
             }
         }
 
-        if (mDeviceConnection == null && mUAVTalkUsbDevice != null) {
-            mUAVTalkUsbDevice.stop();
-            mUAVTalkUsbDevice = null;
+        if (mDeviceConnection == null && mUAVTalkDevice != null) {
+            mUAVTalkDevice.stop();
+            mUAVTalkDevice = null;
         }
         return false;
     }
@@ -431,7 +428,7 @@ public class MainActivity extends Activity {
                 byte[] bcdata = H.toBytes(Integer.parseInt(input.getText().toString()));
                 if (bcdata.length == 4) {
                     bcdata = H.reverse4bytes(bcdata);
-                    mUAVTalkUsbDevice.sendSettingsObject("FlightBatterySettings", 0, "Capacity", 0, bcdata);
+                    mUAVTalkDevice.sendSettingsObject("FlightBatterySettings", 0, "Capacity", 0, bcdata);
                 }
                 dialog.dismiss();
                 dialog.cancel();
@@ -464,7 +461,7 @@ public class MainActivity extends Activity {
                 byte[] bcdata = new byte[1];
                 bcdata[0] = H.toBytes(Integer.parseInt(input.getText().toString()))[3]; //want the lsb
                 if (bcdata.length == 1) {
-                    mUAVTalkUsbDevice.sendSettingsObject("FlightBatterySettings", 0, "NbCells", 0, bcdata);
+                    mUAVTalkDevice.sendSettingsObject("FlightBatterySettings", 0, "NbCells", 0, bcdata);
                 }
                 dialog.dismiss();
                 dialog.cancel();
@@ -622,7 +619,7 @@ public class MainActivity extends Activity {
         private Object getData(String objectname, String fieldname, boolean request) {
             try {
                 if (request) {
-                    mUAVTalkUsbDevice.requestObject(objectname);
+                    mUAVTalkDevice.requestObject(objectname);
                 }
                 return getData(objectname, fieldname);
             } catch (NullPointerException e) {
@@ -633,11 +630,16 @@ public class MainActivity extends Activity {
 
         private Object getData(String objectname, String fieldname) {
             try {
-                return oTree.getData(objectname, fieldname);
-            } catch (UAVTalkMissingObjectException e) {
-                mUAVTalkUsbDevice.requestObject(e.getObjectname(), e.getInstance());
-            } catch (NullPointerException e) {
-                e.printStackTrace();
+                Object o = oTree.getData(objectname, fieldname);
+                if (o != null) return o;
+            } catch (UAVTalkMissingObjectException e1) {
+                try {
+                    mUAVTalkDevice.requestObject(e1.getObjectname(), e1.getInstance());
+                } catch (NullPointerException e2) {
+                    e2.printStackTrace();
+                }
+            } catch (NullPointerException e3) {
+                e3.printStackTrace();
             }
             return EMPTY_STRING;
         }
@@ -645,10 +647,14 @@ public class MainActivity extends Activity {
         private Object getData(String objectname, String fieldname, String elementname) {
             try {
                 return oTree.getData(objectname, fieldname, elementname);
-            } catch (UAVTalkMissingObjectException e) {
-                mUAVTalkUsbDevice.requestObject(e.getObjectname(), e.getInstance());
-            } catch (NullPointerException e) {
-                e.printStackTrace();
+            } catch (UAVTalkMissingObjectException e1) {
+                try {
+                    mUAVTalkDevice.requestObject(e1.getObjectname(), e1.getInstance());
+                } catch (NullPointerException e2) {
+                    e2.printStackTrace();
+                }
+            } catch (NullPointerException e3) {
+                e3.printStackTrace();
             }
             return EMPTY_STRING;
         }
