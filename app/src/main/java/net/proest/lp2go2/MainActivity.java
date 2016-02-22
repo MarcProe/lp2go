@@ -37,6 +37,8 @@ package net.proest.lp2go2;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -44,17 +46,25 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.AssetManager;
+import android.content.res.Configuration;
+import android.content.res.TypedArray;
 import android.hardware.usb.UsbConstants;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbDeviceConnection;
 import android.hardware.usb.UsbInterface;
 import android.hardware.usb.UsbManager;
 import android.os.Bundle;
+import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.widget.DrawerLayout;
 import android.text.InputType;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import net.proest.lp2go2.UAVTalk.UAVTalkDevice;
@@ -62,6 +72,14 @@ import net.proest.lp2go2.UAVTalk.UAVTalkMissingObjectException;
 import net.proest.lp2go2.UAVTalk.UAVTalkObjectTree;
 import net.proest.lp2go2.UAVTalk.UAVTalkUsbDevice;
 import net.proest.lp2go2.UAVTalk.UAVTalkXMLObject;
+import net.proest.lp2go2.slider.AboutFragment;
+import net.proest.lp2go2.slider.LogsFragment;
+import net.proest.lp2go2.slider.MainFragment;
+import net.proest.lp2go2.slider.MapFragment;
+import net.proest.lp2go2.slider.ObjectsFragment;
+import net.proest.lp2go2.slider.SettingsFragment;
+import net.proest.lp2go2.slider.adapter.NavDrawerListAdapter;
+import net.proest.lp2go2.slider.model.NavDrawerItem;
 
 import org.xml.sax.SAXException;
 
@@ -69,12 +87,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Hashtable;
 
 import javax.xml.parsers.ParserConfigurationException;
 
 public class MainActivity extends Activity {
-
 
     private static final String ACTION_USB_PERMISSION = "net.proest.lp2go.USB_PERMISSION";
     private static final String OFFSET_VELOCITY_DOWN = "VelocityState-Down";
@@ -121,7 +139,22 @@ public class MainActivity extends Activity {
     protected TextView txtModePitch;
     protected TextView txtModeYaw;
     protected TextView txtModeThrust;
+    protected TextView txtLatitude;
+    protected TextView txtLongitude;
     protected Button btnStart;
+    int currentView = 0;
+    private DrawerLayout mDrawerLayout;
+    private ListView mDrawerList;
+    private ActionBarDrawerToggle mDrawerToggle;
+    // nav drawer title
+    private CharSequence mDrawerTitle;
+    // used to store app title
+    private CharSequence mTitle;
+    // slide menu items
+    private String[] navMenuTitles;
+    private TypedArray navMenuIcons;
+    private ArrayList<NavDrawerItem> navDrawerItems;
+    private NavDrawerListAdapter adapter;
     private Hashtable<String, Object> offset;
     private PollThread pThread;
     private TextView txtDeviceText;
@@ -181,6 +214,7 @@ public class MainActivity extends Activity {
     };
     private AlertDialog.Builder batteryCapacityDialogBuilder;
     private AlertDialog.Builder batteryCellsDialogBuilder;
+    private View view0, view1, view5;
 
     static private UsbInterface findAdbInterface(UsbDevice device) {
 
@@ -196,19 +230,138 @@ public class MainActivity extends Activity {
         return null;
     }
 
+    private void initSlider(Bundle savedInstanceState) {
+        mTitle = mDrawerTitle = getTitle();
+
+        // load slide menu items
+        navMenuTitles = getResources().getStringArray(R.array.nav_drawer_items);
+
+        // nav drawer icons from resources
+        navMenuIcons = getResources()
+                .obtainTypedArray(R.array.nav_drawer_icons);
+
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerList = (ListView) findViewById(R.id.list_slidermenu);
+
+        navDrawerItems = new ArrayList<NavDrawerItem>();
+
+        // adding nav drawer items to array
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[0], navMenuIcons.getResourceId(0, -1)));
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[1], navMenuIcons.getResourceId(1, -1)));
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[2], navMenuIcons.getResourceId(2, -1)));
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[3], navMenuIcons.getResourceId(3, -1)));
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[4], navMenuIcons.getResourceId(4, -1)));
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[5], navMenuIcons.getResourceId(5, -1)));
+
+
+        // Recycle the typed array
+        navMenuIcons.recycle();
+
+        // setting the nav drawer list adapter
+        adapter = new NavDrawerListAdapter(getApplicationContext(),
+                navDrawerItems);
+        mDrawerList.setAdapter(adapter);
+
+        // enabling action bar app icon and behaving it as toggle button
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+        getActionBar().setHomeButtonEnabled(true);
+
+        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
+                R.drawable.ic_drawer, //nav menu toggle icon
+                R.string.app_name, // nav drawer open - description for accessibility
+                R.string.app_name // nav drawer close - description for accessibility
+        ) {
+            public void onDrawerClosed(View view) {
+                getActionBar().setTitle(mTitle);
+                // calling onPrepareOptionsMenu() to show action bar icons
+                invalidateOptionsMenu();
+            }
+
+            public void onDrawerOpened(View drawerView) {
+                getActionBar().setTitle(mDrawerTitle);
+                // calling onPrepareOptionsMenu() to hide action bar icons
+                invalidateOptionsMenu();
+            }
+        };
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
+
+
+        mDrawerList.setOnItemClickListener(new SlideMenuClickListener());
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        //getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // toggle nav drawer on selecting action bar app icon/title
+        if (mDrawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+        // Handle action bar actions click
+        switch (item.getItemId()) {
+            //case R.id.action_settings:
+            //   return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    /***
+     * Called when invalidateOptionsMenu() is triggered
+     */
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        // if nav drawer is opened, hide the action items
+        boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
+        //menu.findItem(R.id.action_settings).setVisible(!drawerOpen);
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public void setTitle(CharSequence title) {
+        mTitle = title;
+        getActionBar().setTitle(mTitle);
+    }
+
+    /**
+     * When using the ActionBarDrawerToggle, you must call it during
+     * onPostCreate() and onConfigurationChanged()...
+     */
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        // Sync the toggle state after onRestoreInstanceState has occurred.
+        mDrawerToggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        // Pass any configuration change to the drawer toggls
+        mDrawerToggle.onConfigurationChanged(newConfig);
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main_activity);
-
+        view0 = getLayoutInflater().inflate(R.layout.activity_main, null);
+        view1 = getLayoutInflater().inflate(R.layout.activity_map, null);
+        view5 = getLayoutInflater().inflate(R.layout.activity_about, null);
+        setContentView(view0);
+        //setContentView(R.layout.activity_main);
         AssetManager assets = getAssets();
+
+        initSlider(savedInstanceState);
 
         offset = new Hashtable<String, Object>();
         offset.put(OFFSET_BAROSENSOR_ALTITUDE, .0f);
         offset.put(OFFSET_VELOCITY_DOWN, .0f);
 
-        // setContentView(R.layout.adb);
-        //mLog = (TextView) findViewById(R.id.txt_out);
         txtDeviceText = (TextView) findViewById(R.id.txtDeviceName);
 
         txtPlan = (TextView) findViewById(R.id.txtPlan);
@@ -257,7 +410,10 @@ public class MainActivity extends Activity {
         txtModeFlightMode = (TextView) findViewById(R.id.txtModeFlightMode);
 
         txtModeAssistedControl = (TextView) findViewById(R.id.txtModeAssistedControl);
-
+        setContentView(view1);
+        txtLatitude = (TextView) findViewById(R.id.txtLatitude);
+        txtLongitude = (TextView) findViewById(R.id.txtLongitude);
+        setContentView(view0);
 
         btnStart = (Button) findViewById(R.id.btnStart);
 
@@ -302,8 +458,72 @@ public class MainActivity extends Activity {
         // pThread = new PollThread(this);
         // pThread.start();
         isReady = true;
-        OnStartClick(null);
+        onStartClick(null);
         Log.d("MainActivity.onCreate", "onCreate done");
+    }
+
+    private void displayView(int position) {
+        // update the main content by replacing fragments
+        Fragment fragment = null;
+        Log.d("1", "" + position + " " + currentView);
+        switch (position) {
+            case 0:
+                fragment = new MainFragment();
+
+                if (currentView != position) {
+                    currentView = position;
+                    setContentView(view0);
+                    initSlider(null);
+                }
+
+                break;
+            case 1:
+                fragment = new MapFragment();
+                if (currentView != position) {
+                    currentView = position;
+                    setContentView(view1);
+                    initSlider(null);
+                }
+                break;
+            case 2:
+                fragment = new ObjectsFragment();
+                break;
+            case 3:
+                fragment = new SettingsFragment();
+                break;
+            case 4:
+                fragment = new LogsFragment();
+                break;
+            case 5:
+                fragment = new AboutFragment();
+
+                if (currentView != position) {
+                    currentView = position;
+                    setContentView(view5);
+                    initSlider(null);
+                }
+
+                break;
+
+            default:
+                break;
+        }
+        Log.d("2", "" + position + " " + currentView);
+
+
+        if (fragment != null) {
+            FragmentManager fragmentManager = getFragmentManager();
+            fragmentManager.beginTransaction().replace(R.id.frame_container, fragment).commit();
+
+            // update selected item and title, then close the drawer
+            mDrawerList.setItemChecked(position, true);
+            mDrawerList.setSelection(position);
+            setTitle(navMenuTitles[position]);
+            mDrawerLayout.closeDrawer(mDrawerList);
+        } else {
+            // error in creating fragment
+            Log.e("MainActivity", "Error in creating fragment");
+        }
     }
 
     private String readFully(InputStream inputStream)
@@ -324,12 +544,12 @@ public class MainActivity extends Activity {
         super.onDestroy();
     }
 
-    public void OnBatteryCapacityClick(View v) {
+    public void onBatteryCapacityClick(View v) {
         initBatteryCapacityDialog();
         batteryCapacityDialogBuilder.show();
     }
 
-    public void OnAltitudeClick(View V) {
+    public void onAltitudeClick(View V) {
         try {
             offset.put(OFFSET_BAROSENSOR_ALTITUDE, mUAVTalkDevice.getoTree().getData("BaroSensor", "Altitude"));
             txtAltitude.setText(EMPTY_STRING);
@@ -338,7 +558,7 @@ public class MainActivity extends Activity {
         }
     }
 
-    public void OnAltitudeAccelClick(View V) {
+    public void onAltitudeAccelClick(View V) {
         try {
             offset.put(OFFSET_VELOCITY_DOWN, mUAVTalkDevice.getoTree().getData("VelocityState", "Down"));
             txtAltitudeAccel.setText(EMPTY_STRING);
@@ -347,12 +567,12 @@ public class MainActivity extends Activity {
         }
     }
 
-    public void OnBatteryCellsClick(View v) {
+    public void onBatteryCellsClick(View v) {
         initBatteryCellsDialog();
         batteryCellsDialogBuilder.show();
     }
 
-    public void OnStartClick(View v) {
+    public void onStartClick(View v) {
         if (pThread == null) {
             startPollThread();
         } else {
@@ -431,10 +651,16 @@ public class MainActivity extends Activity {
         batteryCapacityDialogBuilder.setPositiveButton(R.string.OK_BUTTON, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                byte[] bcdata = H.toBytes(Integer.parseInt(input.getText().toString()));
-                if (bcdata.length == 4) {
+                byte[] bcdata;
+                try {
+                    bcdata = H.toBytes(Integer.parseInt(input.getText().toString()));
+                } catch (NumberFormatException e) {
+                    bcdata = H.toBytes(0);
+                }
+                if (mUAVTalkDevice != null && bcdata.length == 4) {
                     bcdata = H.reverse4bytes(bcdata);
                     mUAVTalkDevice.sendSettingsObject("FlightBatterySettings", 0, "Capacity", 0, bcdata);
+
                 }
                 dialog.dismiss();
                 dialog.cancel();
@@ -465,8 +691,12 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 byte[] bcdata = new byte[1];
-                bcdata[0] = H.toBytes(Integer.parseInt(input.getText().toString()))[3]; //want the lsb
-                if (bcdata.length == 1) {
+                try {
+                    bcdata[0] = H.toBytes(Integer.parseInt(input.getText().toString()))[3]; //want the lsb
+                } catch (NumberFormatException e) {
+                    bcdata[0] = 0x00;
+                }
+                if (mUAVTalkDevice != null && bcdata.length == 1) {
                     mUAVTalkDevice.sendSettingsObject("FlightBatterySettings", 0, "NbCells", 0, bcdata);
                 }
                 dialog.dismiss();
@@ -481,6 +711,15 @@ public class MainActivity extends Activity {
                 dialog.dismiss();
             }
         });
+    }
+
+    private class SlideMenuClickListener implements
+            ListView.OnItemClickListener {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            // display view for selected nav drawer item
+            displayView(position);
+        }
     }
 
     private class PollThread extends Thread {
@@ -603,11 +842,21 @@ public class MainActivity extends Activity {
                         setText(mActivity.txtModeFlightMode, getData("FlightStatus", "FlightMode", true).toString());
                         setText(mActivity.txtModeAssistedControl, getData("FlightStatus", "FlightModeAssist", true).toString());
 
-
+                        setText(mActivity.txtLatitude, getGPSString("GPSPositionSensor", "Latitude").toString());
+                        setText(mActivity.txtLongitude, getGPSString("GPSPositionSensor", "Longitude").toString());
                         //setText(mActivity.txtAltitudeAccel, getData("AccelState", "z").toString());
 
                     }
                 });
+            }
+        }
+
+        private Float getGPSString(String object, String field) {
+            try {
+                Long l = (Long) oTree.getData(object, field);
+                return ((float) l / 10000000);
+            } catch (UAVTalkMissingObjectException e1) {
+                return 0.0f;
             }
         }
 

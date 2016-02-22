@@ -16,4 +16,8 @@
     <color name="Uninitialised">#28170b</color>
     <color name="Completed">#cccccc</color>
     <color name="Error">#333333</color>
+    <color name="list_item_title">#000000</color>
+    <color name="counter_text_color">#00ff00</color>
+    <color name="counter_text_bg">#ffff00</color>
+    <color name="list_background_pressed">#aaaaaa</color>
 </resources>
