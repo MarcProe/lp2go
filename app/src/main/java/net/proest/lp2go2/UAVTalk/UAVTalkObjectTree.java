@@ -14,9 +14,11 @@
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-package net.proest.lp2go2;
+package net.proest.lp2go2.UAVTalk;
 
 import android.util.Log;
+
+import net.proest.lp2go2.H;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -150,7 +152,6 @@ public class UAVTalkObjectTree {
                 //byte[] fielddata = new byte[1];
                 byte b = 0;
                 b = data[pos + element];
-                //Log.d("ENUM", Arrays.toString(xmlfield.options)+ " "+pos+" "+element + " " + b + " "+H.bytesToHex(data));
                 retval = xmlfield.options[H.toInt(b)];
                 //retval = b;
             } else if (xmlfield.type == UAVTalkXMLObject.FIELDTYPE_UINT32) {
@@ -159,6 +160,12 @@ public class UAVTalkObjectTree {
                 int i = ByteBuffer.wrap(fielddata).order(ByteOrder.LITTLE_ENDIAN).getInt();
                 Long l = (long) i;
                 //retval = String.valueOf(l);
+                retval = l;
+            } else if (xmlfield.type == UAVTalkXMLObject.FIELDTYPE_INT32) {
+                byte[] fielddata = new byte[4];
+                System.arraycopy(data, pos, fielddata, 0, 4);
+                int i = ByteBuffer.wrap(fielddata).order(ByteOrder.LITTLE_ENDIAN).getInt();
+                Long l = (long) i & 0xFFFFFFFFL;
                 retval = l;
             } else if (xmlfield.type == UAVTalkXMLObject.FIELDTYPE_UINT8) {
                 byte[] fielddata = new byte[1];

@@ -14,34 +14,27 @@
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-package net.proest.lp2go2;
+package net.proest.lp2go2.UAVTalk;
 
-public class UAVTalkMissingObjectException extends Exception {
-    private String objectname;
-    private int instance;
-    private boolean isSettings;
+public class UAVTalkObjectInstance {
 
-    public boolean isSettings() {
-        return isSettings;
+    private int id;
+    private byte[] data;
+
+    public UAVTalkObjectInstance(int id, byte[] data) {
+        this.id = id;
+        this.data = data;
     }
 
-    public void setIsSettings(boolean isSettings) {
-        this.isSettings = isSettings;
+    public int getId() {
+        return id;
     }
 
-    public int getInstance() {
-        return instance;
+    public byte[] getData() {
+        return data;
     }
 
-    public void setInstance(int instance) {
-        this.instance = instance;
-    }
-
-    public String getObjectname() {
-        return objectname;
-    }
-
-    public void setObjectname(String objectname) {
-        this.objectname = objectname;
+    public void setData(byte[] data) {
+        this.data = data;
     }
 }

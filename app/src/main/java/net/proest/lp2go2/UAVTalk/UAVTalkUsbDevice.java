@@ -34,13 +34,16 @@
  * limitations under the License.
  */
 
-package net.proest.lp2go2;
+package net.proest.lp2go2.UAVTalk;
 
 import android.hardware.usb.UsbConstants;
 import android.hardware.usb.UsbDeviceConnection;
 import android.hardware.usb.UsbEndpoint;
 import android.hardware.usb.UsbInterface;
 import android.hardware.usb.UsbRequest;
+
+import net.proest.lp2go2.H;
+import net.proest.lp2go2.MainActivity;
 
 import java.util.Hashtable;
 import java.util.LinkedList;

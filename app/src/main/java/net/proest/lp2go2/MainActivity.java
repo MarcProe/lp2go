@@ -35,7 +35,6 @@
  */
 package net.proest.lp2go2;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -56,6 +55,7 @@ import android.hardware.usb.UsbManager;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
 import android.util.Log;
 import android.view.Menu;
@@ -66,6 +66,17 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import net.proest.lp2go2.UAVTalk.UAVTalkDevice;
 import net.proest.lp2go2.UAVTalk.UAVTalkMissingObjectException;
@@ -92,12 +103,18 @@ import java.util.Hashtable;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-public class MainActivity extends Activity {
+public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private static final String ACTION_USB_PERMISSION = "net.proest.lp2go.USB_PERMISSION";
     private static final String OFFSET_VELOCITY_DOWN = "VelocityState-Down";
     private static final String OFFSET_BAROSENSOR_ALTITUDE = "BaroSensor-Altitude";
-    private final String EMPTY_STRING = "";
+    private static final int VIEW_MAIN = 0;
+    private static final int VIEW_MAP = 1;
+    private static final int VIEW_OBJECTS = 2;
+    private static final int VIEW_SETTINGS = 3;
+    private static final int VIEW_LOGS = 4;
+    private static final int VIEW_ABOUT = 5;
+    private static final String EMPTY_STRING = "";
     public boolean isReady = false;
     protected TextView txtAtti;
     protected TextView txtPlan;
@@ -165,6 +182,7 @@ public class MainActivity extends Activity {
     private UsbInterface mInterface;
     private UAVTalkDevice mUAVTalkDevice;
     private Hashtable<String, UAVTalkXMLObject> xmlObjects;
+
     BroadcastReceiver mUsbReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
@@ -214,7 +232,9 @@ public class MainActivity extends Activity {
     };
     private AlertDialog.Builder batteryCapacityDialogBuilder;
     private AlertDialog.Builder batteryCellsDialogBuilder;
-    private View view0, view1, view5;
+    private View view0, view1, view2, view3, view4, view5;
+    private GoogleMap map;
+    private MapView mapView;
 
     static private UsbInterface findAdbInterface(UsbDevice device) {
 
@@ -263,8 +283,8 @@ public class MainActivity extends Activity {
         mDrawerList.setAdapter(adapter);
 
         // enabling action bar app icon and behaving it as toggle button
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-        getActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
 
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
                 R.drawable.ic_drawer, //nav menu toggle icon
@@ -272,13 +292,13 @@ public class MainActivity extends Activity {
                 R.string.app_name // nav drawer close - description for accessibility
         ) {
             public void onDrawerClosed(View view) {
-                getActionBar().setTitle(mTitle);
+                getSupportActionBar().setTitle(mTitle);
                 // calling onPrepareOptionsMenu() to show action bar icons
                 invalidateOptionsMenu();
             }
 
             public void onDrawerOpened(View drawerView) {
-                getActionBar().setTitle(mDrawerTitle);
+                getSupportActionBar().setTitle(mDrawerTitle);
                 // calling onPrepareOptionsMenu() to hide action bar icons
                 invalidateOptionsMenu();
             }
@@ -310,9 +330,6 @@ public class MainActivity extends Activity {
         }
     }
 
-    /***
-     * Called when invalidateOptionsMenu() is triggered
-     */
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         // if nav drawer is opened, hide the action items
@@ -324,13 +341,8 @@ public class MainActivity extends Activity {
     @Override
     public void setTitle(CharSequence title) {
         mTitle = title;
-        getActionBar().setTitle(mTitle);
+        getSupportActionBar().setTitle(mTitle);
     }
-
-    /**
-     * When using the ActionBarDrawerToggle, you must call it during
-     * onPostCreate() and onConfigurationChanged()...
-     */
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
@@ -349,9 +361,38 @@ public class MainActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         view0 = getLayoutInflater().inflate(R.layout.activity_main, null);
         view1 = getLayoutInflater().inflate(R.layout.activity_map, null);
+
         view5 = getLayoutInflater().inflate(R.layout.activity_about, null);
+
+        setContentView(view1);
+        mapView = (MapView) findViewById(R.id.map);
+        mapView.onCreate(savedInstanceState);
+
+        // Gets to GoogleMap from the MapView and does initialization stuff
+        map = mapView.getMap();
+        map.getUiSettings().setMyLocationButtonEnabled(false);
+        map.setMyLocationEnabled(true);
+
+        // Needs to call MapsInitializer before doing any CameraUpdateFactory calls
+        MapsInitializer.initialize(this);
+
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(32.154599, -110.827369), 18);
+        map.animateCamera(cameraUpdate);
+        map.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+        Marker center = map.addMarker(new MarkerOptions()
+                .position(new LatLng(32.154599, -110.827369))
+                .title("Librepilot")
+                .snippet("LP rules")
+                .icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_launcher)));
+
+        Log.d("MAP", "Complete");
+
+        Log.d("View", view0.toString());
+        Log.d("View", view1.toString());
+
         setContentView(view0);
         //setContentView(R.layout.activity_main);
         AssetManager assets = getAssets();
@@ -462,66 +503,60 @@ public class MainActivity extends Activity {
         Log.d("MainActivity.onCreate", "onCreate done");
     }
 
+    public void setContentView(View v, int p) {
+        if (currentView != p) {
+            currentView = p;
+            super.setContentView(v);
+            initSlider(null);
+        }
+    }
+
     private void displayView(int position) {
-        // update the main content by replacing fragments
         Fragment fragment = null;
-        Log.d("1", "" + position + " " + currentView);
+        mapView.onPause();
         switch (position) {
-            case 0:
+            case VIEW_MAIN:
                 fragment = new MainFragment();
-
-                if (currentView != position) {
-                    currentView = position;
-                    setContentView(view0);
-                    initSlider(null);
-                }
+                setContentView(view0, position);
 
                 break;
-            case 1:
+            case VIEW_MAP:
                 fragment = new MapFragment();
-                if (currentView != position) {
-                    currentView = position;
-                    setContentView(view1);
-                    initSlider(null);
-                }
-                break;
-            case 2:
-                fragment = new ObjectsFragment();
-                break;
-            case 3:
-                fragment = new SettingsFragment();
-                break;
-            case 4:
-                fragment = new LogsFragment();
-                break;
-            case 5:
-                fragment = new AboutFragment();
+                setContentView(view1, position);
+                mapView.onResume();  //(re)activate the map
 
-                if (currentView != position) {
-                    currentView = position;
-                    setContentView(view5);
-                    initSlider(null);
-                }
+                break;
+            case VIEW_OBJECTS:
+                fragment = new ObjectsFragment();
+
+                break;
+            case VIEW_SETTINGS:
+                fragment = new SettingsFragment();
+
+                break;
+            case VIEW_LOGS:
+                fragment = new LogsFragment();
+
+                break;
+            case VIEW_ABOUT:
+                fragment = new AboutFragment();
+                setContentView(view5, position);
 
                 break;
 
             default:
                 break;
         }
-        Log.d("2", "" + position + " " + currentView);
-
 
         if (fragment != null) {
             FragmentManager fragmentManager = getFragmentManager();
             fragmentManager.beginTransaction().replace(R.id.frame_container, fragment).commit();
 
-            // update selected item and title, then close the drawer
             mDrawerList.setItemChecked(position, true);
             mDrawerList.setSelection(position);
             setTitle(navMenuTitles[position]);
             mDrawerLayout.closeDrawer(mDrawerList);
         } else {
-            // error in creating fragment
             Log.e("MainActivity", "Error in creating fragment");
         }
     }
@@ -713,6 +748,17 @@ public class MainActivity extends Activity {
         });
     }
 
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                new LatLng(47.17, 27.5699), 16));
+        googleMap.addMarker(new MarkerOptions()
+                .icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_launcher)).anchor(0.0f, 1.0f)
+                        // Anchors the marker on the bottom left
+                .position(new LatLng(47.17, 27.5699))); //Iasi, Romania
+        googleMap.setMyLocationEnabled(true);
+    }
+
     private class SlideMenuClickListener implements
             ListView.OnItemClickListener {
         @Override
@@ -842,20 +888,25 @@ public class MainActivity extends Activity {
                         setText(mActivity.txtModeFlightMode, getData("FlightStatus", "FlightMode", true).toString());
                         setText(mActivity.txtModeAssistedControl, getData("FlightStatus", "FlightModeAssist", true).toString());
 
-                        setText(mActivity.txtLatitude, getGPSString("GPSPositionSensor", "Latitude").toString());
-                        setText(mActivity.txtLongitude, getGPSString("GPSPositionSensor", "Longitude").toString());
-                        //setText(mActivity.txtAltitudeAccel, getData("AccelState", "z").toString());
+                        setText(mActivity.txtLatitude, getGPSCoordinates("GPSPositionSensor", "Latitude").toString());
+                        setText(mActivity.txtLongitude, getGPSCoordinates("GPSPositionSensor", "Longitude").toString());
 
+                        try {
+                            float deg = (Float) getData("GPSPositionSensor", "Heading");
+                        } catch (Exception e) {
+                        }
                     }
                 });
             }
         }
 
-        private Float getGPSString(String object, String field) {
+        private Float getGPSCoordinates(String object, String field) {
             try {
                 Long l = (Long) oTree.getData(object, field);
                 return ((float) l / 10000000);
             } catch (UAVTalkMissingObjectException e1) {
+                return 0.0f;
+            } catch (NullPointerException e1) {
                 return 0.0f;
             }
         }
