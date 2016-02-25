@@ -23,6 +23,7 @@ import net.proest.lp2go2.H;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.Hashtable;
 
 public class UAVTalkObjectTree {
@@ -32,6 +33,16 @@ public class UAVTalkObjectTree {
 
     public UAVTalkObjectTree() {
         objects = new Hashtable<String, UAVTalkObject>();
+    }
+
+    public String toString() {
+        String ret = "";
+        Enumeration<String> e = xmlObjects.keys();
+        while (e.hasMoreElements()) {
+            String key = e.nextElement();
+            ret += xmlObjects.get(key).getId() + " " + key + "\r\n";
+        }
+        return ret;
     }
 
     public Hashtable<String, UAVTalkXMLObject> getXmlObjects() {
@@ -169,7 +180,7 @@ public class UAVTalkObjectTree {
                 retval = l;
             } else if (xmlfield.type == UAVTalkXMLObject.FIELDTYPE_UINT8) {
                 byte[] fielddata = new byte[1];
-                System.arraycopy(data, pos, fielddata, 0, 1);
+                System.arraycopy(data, pos + element, fielddata, 0, 1);
                 int i = fielddata[0] & 0xff;
                 //retval = String.valueOf(i);
                 retval = i;

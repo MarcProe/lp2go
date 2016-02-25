@@ -72,7 +72,6 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
-import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -103,7 +102,7 @@ import java.util.Hashtable;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class MainActivity extends AppCompatActivity {
 
     private static final String ACTION_USB_PERMISSION = "net.proest.lp2go.USB_PERMISSION";
     private static final String OFFSET_VELOCITY_DOWN = "VelocityState-Down";
@@ -158,8 +157,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected TextView txtModeThrust;
     protected TextView txtLatitude;
     protected TextView txtLongitude;
+    protected TextView txtMapGPS;
+    protected TextView txtMapGPSSatsInView;
+    protected TextView txtVehicleName;
+    protected TextView etxObjects;
     protected Button btnStart;
     int currentView = 0;
+    int HISTORY_MARKER_NUM = 5;
+    int currentPosMarker = 0;
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -182,7 +187,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private UsbInterface mInterface;
     private UAVTalkDevice mUAVTalkDevice;
     private Hashtable<String, UAVTalkXMLObject> xmlObjects;
-
     BroadcastReceiver mUsbReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
@@ -230,6 +234,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         }
     };
+    private Marker[] posHistory = new Marker[HISTORY_MARKER_NUM];
     private AlertDialog.Builder batteryCapacityDialogBuilder;
     private AlertDialog.Builder batteryCellsDialogBuilder;
     private View view0, view1, view2, view3, view4, view5;
@@ -252,20 +257,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private void initSlider(Bundle savedInstanceState) {
         mTitle = mDrawerTitle = getTitle();
-
-        // load slide menu items
         navMenuTitles = getResources().getStringArray(R.array.nav_drawer_items);
-
-        // nav drawer icons from resources
         navMenuIcons = getResources()
                 .obtainTypedArray(R.array.nav_drawer_icons);
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.list_slidermenu);
-
         navDrawerItems = new ArrayList<NavDrawerItem>();
 
-        // adding nav drawer items to array
         navDrawerItems.add(new NavDrawerItem(navMenuTitles[0], navMenuIcons.getResourceId(0, -1)));
         navDrawerItems.add(new NavDrawerItem(navMenuTitles[1], navMenuIcons.getResourceId(1, -1)));
         navDrawerItems.add(new NavDrawerItem(navMenuTitles[2], navMenuIcons.getResourceId(2, -1)));
@@ -273,38 +272,31 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         navDrawerItems.add(new NavDrawerItem(navMenuTitles[4], navMenuIcons.getResourceId(4, -1)));
         navDrawerItems.add(new NavDrawerItem(navMenuTitles[5], navMenuIcons.getResourceId(5, -1)));
 
-
-        // Recycle the typed array
         navMenuIcons.recycle();
-
-        // setting the nav drawer list adapter
         adapter = new NavDrawerListAdapter(getApplicationContext(),
                 navDrawerItems);
         mDrawerList.setAdapter(adapter);
 
-        // enabling action bar app icon and behaving it as toggle button
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setIcon(R.mipmap.ic_launcher);
+
 
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
-                R.drawable.ic_drawer, //nav menu toggle icon
-                R.string.app_name, // nav drawer open - description for accessibility
-                R.string.app_name // nav drawer close - description for accessibility
-        ) {
+                R.drawable.ic_drawer, R.string.app_name, R.string.app_name) {
+
             public void onDrawerClosed(View view) {
                 getSupportActionBar().setTitle(mTitle);
-                // calling onPrepareOptionsMenu() to show action bar icons
                 invalidateOptionsMenu();
             }
 
             public void onDrawerOpened(View drawerView) {
                 getSupportActionBar().setTitle(mDrawerTitle);
-                // calling onPrepareOptionsMenu() to hide action bar icons
                 invalidateOptionsMenu();
             }
         };
         mDrawerLayout.setDrawerListener(mDrawerToggle);
-
 
         mDrawerList.setOnItemClickListener(new SlideMenuClickListener());
     }
@@ -364,19 +356,19 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         view0 = getLayoutInflater().inflate(R.layout.activity_main, null);
         view1 = getLayoutInflater().inflate(R.layout.activity_map, null);
-
+        view2 = getLayoutInflater().inflate(R.layout.activity_objects, null);
+        view3 = getLayoutInflater().inflate(R.layout.activity_settings, null);
+        view4 = getLayoutInflater().inflate(R.layout.activity_logs, null);
         view5 = getLayoutInflater().inflate(R.layout.activity_about, null);
 
         setContentView(view1);
         mapView = (MapView) findViewById(R.id.map);
         mapView.onCreate(savedInstanceState);
 
-        // Gets to GoogleMap from the MapView and does initialization stuff
         map = mapView.getMap();
         map.getUiSettings().setMyLocationButtonEnabled(false);
         map.setMyLocationEnabled(true);
 
-        // Needs to call MapsInitializer before doing any CameraUpdateFactory calls
         MapsInitializer.initialize(this);
 
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(32.154599, -110.827369), 18);
@@ -388,13 +380,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .snippet("LP rules")
                 .icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_launcher)));
 
-        Log.d("MAP", "Complete");
-
-        Log.d("View", view0.toString());
-        Log.d("View", view1.toString());
-
         setContentView(view0);
-        //setContentView(R.layout.activity_main);
+
         AssetManager assets = getAssets();
 
         initSlider(savedInstanceState);
@@ -451,9 +438,17 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         txtModeFlightMode = (TextView) findViewById(R.id.txtModeFlightMode);
 
         txtModeAssistedControl = (TextView) findViewById(R.id.txtModeAssistedControl);
+        txtVehicleName = (TextView) findViewById(R.id.txtVehicleName);
+
         setContentView(view1);
         txtLatitude = (TextView) findViewById(R.id.txtLatitude);
         txtLongitude = (TextView) findViewById(R.id.txtLongitude);
+        txtMapGPS = (TextView) findViewById(R.id.txtMapGPS);
+        txtMapGPSSatsInView = (TextView) findViewById(R.id.txtMapGPSSatsInView);
+
+        setContentView(view2);
+        etxObjects = (EditText) findViewById(R.id.etxObjects);
+
         setContentView(view0);
 
         btnStart = (Button) findViewById(R.id.btnStart);
@@ -469,9 +464,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             for (String file : files) {
                 InputStream ius = assets.open(path + File.separator + file);
                 UAVTalkXMLObject obj = new UAVTalkXMLObject(readFully(ius));
-                //Integer id = Integer.valueOf(obj.getId());
                 xmlObjects.put(obj.getName(), obj);
-                //Log.d("DGB", readFully(ius));
                 ius.close();
                 ius = null;
             }
@@ -496,11 +489,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         filter.addAction(ACTION_USB_PERMISSION);
 
         registerReceiver(mUsbReceiver, filter);
-        // pThread = new PollThread(this);
-        // pThread.start();
         isReady = true;
         onStartClick(null);
-        Log.d("MainActivity.onCreate", "onCreate done");
     }
 
     public void setContentView(View v, int p) {
@@ -528,14 +518,17 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 break;
             case VIEW_OBJECTS:
                 fragment = new ObjectsFragment();
+                setContentView(view2, position);
 
                 break;
             case VIEW_SETTINGS:
                 fragment = new SettingsFragment();
+                setContentView(view3, position);
 
                 break;
             case VIEW_LOGS:
                 fragment = new LogsFragment();
+                setContentView(view4, position);
 
                 break;
             case VIEW_ABOUT:
@@ -557,7 +550,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             setTitle(navMenuTitles[position]);
             mDrawerLayout.closeDrawer(mDrawerList);
         } else {
-            Log.e("MainActivity", "Error in creating fragment");
         }
     }
 
@@ -676,13 +668,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         batteryCapacityDialogBuilder = new AlertDialog.Builder(this);
         batteryCapacityDialogBuilder.setTitle(R.string.CAPACITY_DIALOG_TITLE);
 
-        // Set up the input
         final EditText input = new EditText(this);
         input.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
         batteryCapacityDialogBuilder.setView(input);
         input.setText(txtCapacity.getText());
 
-        // Set up the buttons
         batteryCapacityDialogBuilder.setPositiveButton(R.string.OK_BUTTON, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -695,7 +685,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 if (mUAVTalkDevice != null && bcdata.length == 4) {
                     bcdata = H.reverse4bytes(bcdata);
                     mUAVTalkDevice.sendSettingsObject("FlightBatterySettings", 0, "Capacity", 0, bcdata);
-
                 }
                 dialog.dismiss();
                 dialog.cancel();
@@ -715,13 +704,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         batteryCellsDialogBuilder = new AlertDialog.Builder(this);
         batteryCellsDialogBuilder.setTitle(R.string.CELLS_DIALOG_TITLE);
 
-        // Set up the input
         final EditText input = new EditText(this);
         input.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
         batteryCellsDialogBuilder.setView(input);
         input.setText(txtCells.getText());
 
-        // Set up the buttons
         batteryCellsDialogBuilder.setPositiveButton(R.string.OK_BUTTON, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -748,22 +735,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
     }
 
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                new LatLng(47.17, 27.5699), 16));
-        googleMap.addMarker(new MarkerOptions()
-                .icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_launcher)).anchor(0.0f, 1.0f)
-                        // Anchors the marker on the bottom left
-                .position(new LatLng(47.17, 27.5699))); //Iasi, Romania
-        googleMap.setMyLocationEnabled(true);
-    }
-
     private class SlideMenuClickListener implements
             ListView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            // display view for selected nav drawer item
             displayView(position);
         }
     }
@@ -838,68 +813,136 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 mActivity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        setTextBGColor(mActivity.txtAtti, getData("SystemAlarms", "Alarm", "Attitude").toString());
-                        setTextBGColor(mActivity.txtStab, getData("SystemAlarms", "Alarm", "Stabilization").toString());
-                        setTextBGColor(mActivity.txtPath, getData("PathStatus", "Status").toString());
-                        setTextBGColor(mActivity.txtPlan, getData("SystemAlarms", "Alarm", "PathPlan").toString());
+                        switch (currentView) {
+                            case VIEW_MAIN:
 
-                        setText(mActivity.txtGPSSatsInView, getData("GPSSatellites", "SatsInView").toString());
-                        setTextBGColor(mActivity.txtGPS, getData("SystemAlarms", "Alarm", "GPS").toString());
-                        setTextBGColor(mActivity.txtSensor, getData("SystemAlarms", "Alarm", "Sensors").toString());
-                        setTextBGColor(mActivity.txtAirspd, getData("SystemAlarms", "Alarm", "Airspeed").toString());
-                        setTextBGColor(mActivity.txtMag, getData("SystemAlarms", "Alarm", "Magnetometer").toString());
+                                setText(mActivity.txtVehicleName, getVehicleNameData());
 
-                        setTextBGColor(mActivity.txtInput, getData("SystemAlarms", "Alarm", "Receiver").toString());
-                        setTextBGColor(mActivity.txtOutput, getData("SystemAlarms", "Alarm", "Actuator").toString());
-                        setTextBGColor(mActivity.txtI2C, getData("SystemAlarms", "Alarm", "I2C").toString());
-                        setTextBGColor(mActivity.txtTelemetry, getData("SystemAlarms", "Alarm", "Telemetry").toString());
+                                setTextBGColor(mActivity.txtAtti, getData("SystemAlarms", "Alarm", "Attitude").toString());
+                                setTextBGColor(mActivity.txtStab, getData("SystemAlarms", "Alarm", "Stabilization").toString());
+                                setTextBGColor(mActivity.txtPath, getData("PathStatus", "Status").toString());
+                                setTextBGColor(mActivity.txtPlan, getData("SystemAlarms", "Alarm", "PathPlan").toString());
 
-                        setText(mActivity.txtFlightTelemetry, getData("FlightTelemetryStats", "Status").toString());
-                        setText(mActivity.txtGCSTelemetry, getData("GCSTelemetryStats", "Status").toString());
+                                setText(mActivity.txtGPSSatsInView, getData("GPSSatellites", "SatsInView").toString());
+                                setTextBGColor(mActivity.txtGPS, getData("SystemAlarms", "Alarm", "GPS").toString());
+                                setTextBGColor(mActivity.txtSensor, getData("SystemAlarms", "Alarm", "Sensors").toString());
+                                setTextBGColor(mActivity.txtAirspd, getData("SystemAlarms", "Alarm", "Airspeed").toString());
+                                setTextBGColor(mActivity.txtMag, getData("SystemAlarms", "Alarm", "Magnetometer").toString());
 
-                        setTextBGColor(mActivity.txtBatt, getData("SystemAlarms", "Alarm", "Battery").toString());
-                        setTextBGColor(mActivity.txtTime, getData("SystemAlarms", "Alarm", "FlightTime").toString());
-                        setTextBGColor(mActivity.txtConfig, getData("SystemAlarms", "ExtendedAlarmStatus", "SystemConfiguration").toString());
+                                setTextBGColor(mActivity.txtInput, getData("SystemAlarms", "Alarm", "Receiver").toString());
+                                setTextBGColor(mActivity.txtOutput, getData("SystemAlarms", "Alarm", "Actuator").toString());
+                                setTextBGColor(mActivity.txtI2C, getData("SystemAlarms", "Alarm", "I2C").toString());
+                                setTextBGColor(mActivity.txtTelemetry, getData("SystemAlarms", "Alarm", "Telemetry").toString());
 
-                        setTextBGColor(mActivity.txtBoot, getData("SystemAlarms", "Alarm", "BootFault").toString());
-                        setTextBGColor(mActivity.txtMem, getData("SystemAlarms", "Alarm", "OutOfMemory").toString());
-                        setTextBGColor(mActivity.txtStack, getData("SystemAlarms", "Alarm", "StackOverflow").toString());
-                        setTextBGColor(mActivity.txtEvent, getData("SystemAlarms", "Alarm", "EventSystem").toString());
-                        setTextBGColor(mActivity.txtCPU, getData("SystemAlarms", "Alarm", "CPUOverload").toString());
+                                setText(mActivity.txtFlightTelemetry, getData("FlightTelemetryStats", "Status").toString());
+                                setText(mActivity.txtGCSTelemetry, getData("GCSTelemetryStats", "Status").toString());
 
-                        setText(mActivity.txtArmed, getData("FlightStatus", "Armed").toString());
+                                setTextBGColor(mActivity.txtBatt, getData("SystemAlarms", "Alarm", "Battery").toString());
+                                setTextBGColor(mActivity.txtTime, getData("SystemAlarms", "Alarm", "FlightTime").toString());
+                                setTextBGColor(mActivity.txtConfig, getData("SystemAlarms", "ExtendedAlarmStatus", "SystemConfiguration").toString());
 
-                        setText(mActivity.txtVolt, getData("FlightBatteryState", "Voltage").toString());
-                        setText(mActivity.txtAmpere, getData("FlightBatteryState", "Current").toString());
-                        setText(mActivity.txtmAh, getData("FlightBatteryState", "ConsumedEnergy").toString());
-                        setText(mActivity.txtTimeLeft, H.getDateFromSeconds(getData("FlightBatteryState", "EstimatedFlightTime").toString()));
+                                setTextBGColor(mActivity.txtBoot, getData("SystemAlarms", "Alarm", "BootFault").toString());
+                                setTextBGColor(mActivity.txtMem, getData("SystemAlarms", "Alarm", "OutOfMemory").toString());
+                                setTextBGColor(mActivity.txtStack, getData("SystemAlarms", "Alarm", "StackOverflow").toString());
+                                setTextBGColor(mActivity.txtEvent, getData("SystemAlarms", "Alarm", "EventSystem").toString());
+                                setTextBGColor(mActivity.txtCPU, getData("SystemAlarms", "Alarm", "CPUOverload").toString());
 
-                        setText(mActivity.txtCapacity, getData("FlightBatterySettings", "Capacity").toString());
-                        setText(mActivity.txtCells, getData("FlightBatterySettings", "NbCells").toString());
+                                setText(mActivity.txtArmed, getData("FlightStatus", "Armed").toString());
 
-                        setText(mActivity.txtAltitude, getFloatOffsetData("BaroSensor", "Altitude", OFFSET_BAROSENSOR_ALTITUDE));
-                        setText(mActivity.txtAltitudeAccel, getFloatOffsetData("VelocityState", "Down", OFFSET_VELOCITY_DOWN));
+                                setText(mActivity.txtVolt, getData("FlightBatteryState", "Voltage").toString());
+                                setText(mActivity.txtAmpere, getData("FlightBatteryState", "Current").toString());
+                                setText(mActivity.txtmAh, getData("FlightBatteryState", "ConsumedEnergy").toString());
+                                setText(mActivity.txtTimeLeft, H.getDateFromSeconds(getData("FlightBatteryState", "EstimatedFlightTime").toString()));
 
+                                setText(mActivity.txtCapacity, getData("FlightBatterySettings", "Capacity").toString());
+                                setText(mActivity.txtCells, getData("FlightBatterySettings", "NbCells").toString());
 
-                        String flightModeSwitchPosition = getData("ManualControlCommand", "FlightModeSwitchPosition", true).toString();
-                        //Log.d("FMSP", flightModeSwitchPosition);
+                                setText(mActivity.txtAltitude, getFloatOffsetData("BaroSensor", "Altitude", OFFSET_BAROSENSOR_ALTITUDE));
+                                setText(mActivity.txtAltitudeAccel, getFloatOffsetData("VelocityState", "Down", OFFSET_VELOCITY_DOWN));
 
-                        setText(mActivity.txtModeNum, flightModeSwitchPosition);
-                        setText(mActivity.txtModeFlightMode, getData("FlightStatus", "FlightMode", true).toString());
-                        setText(mActivity.txtModeAssistedControl, getData("FlightStatus", "FlightModeAssist", true).toString());
+                                String flightModeSwitchPosition = getData("ManualControlCommand", "FlightModeSwitchPosition", true).toString();
 
-                        setText(mActivity.txtLatitude, getGPSCoordinates("GPSPositionSensor", "Latitude").toString());
-                        setText(mActivity.txtLongitude, getGPSCoordinates("GPSPositionSensor", "Longitude").toString());
+                                setText(mActivity.txtModeNum, flightModeSwitchPosition);
+                                setText(mActivity.txtModeFlightMode, getData("FlightStatus", "FlightMode", true).toString());
+                                setText(mActivity.txtModeAssistedControl, getData("FlightStatus", "FlightModeAssist", true).toString());
+                                break;
+                            case VIEW_MAP:
 
-                        try {
-                            float deg = (Float) getData("GPSPositionSensor", "Heading");
-                        } catch (Exception e) {
+                                setText(mActivity.txtMapGPSSatsInView, getData("GPSSatellites", "SatsInView").toString());
+                                setTextBGColor(mActivity.txtMapGPS, getData("SystemAlarms", "Alarm", "GPS").toString());
+                                float deg = 0;
+                                try {
+                                    deg = (Float) getData("GPSPositionSensor", "Heading");
+                                } catch (Exception e) {
+
+                                }
+
+                                Float lat = getGPSCoordinates("GPSPositionSensor", "Latitude");
+                                Float lng = getGPSCoordinates("GPSPositionSensor", "Longitude");
+
+                                setText(mActivity.txtLatitude, lat.toString());
+                                setText(mActivity.txtLongitude, lng.toString());
+
+                                LatLng src = map.getCameraPosition().target;
+                                LatLng dst = new LatLng(lat, lng);
+
+                                double distance = H.calculationByDistance(src, dst);
+                                if (distance > 0.001) {
+                                    CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lng), 19);
+                                    MapsInitializer.initialize(mActivity);
+                                    if (distance < 200) {
+                                        map.animateCamera(cameraUpdate);
+                                    } else {
+                                        map.moveCamera(cameraUpdate);
+                                    }
+
+                                    posHistory[currentPosMarker] = map.addMarker(new MarkerOptions()
+                                                    .position(new LatLng(lat, lng))
+                                                    .title("Librepilot")
+                                                    .snippet("LP rules")
+                                                    .flat(true)
+                                                    .anchor(0.5f, 0.5f)
+                                                    .rotation(deg)
+                                            //.icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_launcher))
+                                    );
+
+                                    currentPosMarker++;
+                                    if (currentPosMarker >= HISTORY_MARKER_NUM) {
+                                        currentPosMarker = 0;
+                                    }
+                                    if (posHistory[currentPosMarker] != null) {
+                                        posHistory[currentPosMarker].remove();
+                                    }
+                                } else {
+                                }
+                                break;
+                            case VIEW_OBJECTS:
+                                try {
+                                    etxObjects.setText(mUAVTalkDevice.getoTree().toString());
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                                break;
                         }
                     }
                 });
             }
         }
 
+        private String getVehicleNameData() {
+            char[] b = new char[20];
+            try {
+                for (int i = 0; i < 20; i++) {
+                    String str = oTree.getData("SystemSettings", 0, "VehicleName", i).toString();
+                    b[i] = (char) Byte.parseByte(str);
+
+                }
+            } catch (UAVTalkMissingObjectException e) {
+                mUAVTalkDevice.requestObject("SystemSettings");
+            }
+
+            return new String(b);
+        }
         private Float getGPSCoordinates(String object, String field) {
             try {
                 Long l = (Long) oTree.getData(object, field);

@@ -59,6 +59,10 @@ public class UAVTalkObject {
         return retval;
     }
 
+    public String toString() {
+        return id;
+    }
+
     public String getId() {
         return id;
     }

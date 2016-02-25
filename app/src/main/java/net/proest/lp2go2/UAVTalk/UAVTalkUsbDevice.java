@@ -93,32 +93,6 @@ public class UAVTalkUsbDevice implements UAVTalkDevice {
         mEndpointIn = epIn;
     }
 
-    /*
-        public static String bytesToHex(byte[] bytes) {
-            if (bytes == null) {
-                return "null";
-            }
-            char[] hexChars = new char[bytes.length * 3];
-            for (int j = 0; j < bytes.length; j++) {
-                int v = bytes[j] & 0xFF;
-                hexChars[j * 3] = hexArray[v >>> 4];
-                hexChars[j * 3 + 1] = hexArray[v & 0x0F];
-                hexChars[j * 3 + 2] = ' ';
-            }
-            return new String(hexChars);
-        }
-
-        public static byte[] toBytes(int i) {
-            byte[] result = new byte[4];
-
-            result[0] = (byte) (i >> 24);
-            result[1] = (byte) (i >> 16);
-            result[2] = (byte) (i >> 8);
-            result[3] = (byte) (i);
-
-            return result;
-        }
-    */
     public UAVTalkObjectTree getoTree() {
         return oTree;
     }
@@ -289,23 +263,6 @@ public class UAVTalkUsbDevice implements UAVTalkDevice {
                         myObj.setInstance(myIns);
                     }
                     oTree.updateObject(myObj);
-                    //
-                    try {
-                        if (H.intToHex(cM.getoID()).equals("C243686C")) {
-                            // Log.d("RAW ", H.bytesToHex(bytes));
-                            //Log.d("HANDSHAKE IN<--", H.bytesToHex(bytes));
-                            //processHandshake();
-                        }
-                    } catch (Exception e) {
-                    }
-                    try {
-                        if (H.intToHex(cM.getoID()).equals(oTree.getObjectNoCreate("GPSSatellites").getId())) {
-                            //Log.d("GPSsats "+oTree.getObjectNoCreate("GPSSatellites").getId(), H.bytesToHex(bytes));
-                            //Log.d("HANDSHAKE IN<--", H.bytesToHex(bytes));
-                            //processHandshake();
-                        }
-                    } catch (Exception e) {
-                    }
 
                     try {
                         if (H.intToHex(cM.getoID()).equals(oTree.getObjectNoCreate("FlightTelemetryStats").getId())) {
@@ -318,99 +275,6 @@ public class UAVTalkUsbDevice implements UAVTalkDevice {
                 }
             }
         }
-
-       /* private void processHandshake() { // no way this is going to work
-            byte[] bytes = new byte[mEndpointOut.getMaxPacketSize()];
-            Arrays.fill( bytes, (byte) 0 );
-
-            switch(oTree.getData("FlightTelemetryStats", "Status")) {
-                case "Disconnected":
-                    Log.d("HANDSHAKE", "Disconnected");
-                    //send gcs handshakereq
-                    bytes[0] = 0x02;    //stuff I don't
-                    bytes[1] = 0x30;    //                know what it means
-                    bytes[2] = 0x3c;    //Sync
-                    bytes[3] = 0x20;    //Type
-                    bytes[4] = 0x2f;    //Len
-                    bytes[5] = 0x00;    //   gth
-
-                    byte[] objId = H.hexStringToByteArray(oTree.getObjectFromName("GCSTelemetryStats").getId());
-                    bytes[6] = objId[3];
-                    bytes[7] = objId[2];
-                    bytes[8] = objId[1];
-                    bytes[9] = objId[0];
-
-                    bytes[10] = 0x00; //Instance
-                    bytes[11] = 0x00;     //ID
-
-                    //0000   02 30 3c 20 2f 00 0a dc d1 ca 00 00 00 00 c0 41
-                    bytes[12] = 0x01;  //Status
-                    bytes[13] = 0x00;
-                    bytes[14] = (byte)0xc0;
-                    bytes[15] = 0x41;
-                    //0010   63 39 00 00 -- 00 00 00 00 -- 00 00 00 00 -- 00 00 c0 41
-                    bytes[16] = 0x63;
-                    bytes[17] = 0x39;
-                    bytes[18] = 0x00;
-                    bytes[19] = 0x0;
-
-                    bytes[20] = 0x00;
-                    bytes[21] = 0x00;
-                    bytes[22] = 0x00;
-                    bytes[23] = 0x00;
-
-                    bytes[24] = 0x00;
-                    bytes[25] = 0x00;
-                    bytes[26] = 0x00;
-                    bytes[27] = 0x00;
-
-                    bytes[28] = 0x00;
-                    bytes[29] = 0x00;
-                    bytes[30] = (byte)0xc0;
-                    bytes[31] = 0x41;
-
-                    //0020   67 b9 0a 00 -- 00 00 00 00 -- 00 00 00 00 -- 00 00 00 00
-                    bytes[32] = 0x67;
-                    bytes[33] = (byte)0xb9;
-                    bytes[34] = 0x0a;
-                    bytes[35] = 0x0;
-
-                    bytes[36] = 0x00;
-                    bytes[37] = 0x00;
-                    bytes[38] = 0x00;
-                    bytes[39] = 0x00;
-
-                    bytes[40] = 0x00;
-                    bytes[41] = 0x00;
-                    bytes[42] = 0x00;
-                    bytes[43] = 0x00;
-
-                    bytes[44] = 0x00;
-                    bytes[45] = 0x00;
-                    bytes[46] = 0x00;
-                    bytes[47] = 0x00;
-
-                    //0030   03 8f 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-
-                    bytes[48] = 0x03;
-
-
-                    byte[] b = new byte[47];
-                    System.arraycopy(bytes, 2, b, 0, 47);
-
-                    bytes[49] = (byte)H.crc8(b);
-                    Log.d("HANDSHAKE OUT->", H.bytesToHex(bytes));
-                    Log.d("CHECKSUMSRC->", H.bytesToHex(b) + " " +(byte)H.crc8(b));
-
-                    mDeviceConnection.bulkTransfer(mEndpointOut, bytes, bytes.length, 1000);
-                    // set local state to handshakereq
-                    break;
-                case "HandshakeAck":
-                    //send gcs connected packet
-                    //set local state connected
-                    break;
-            }
-        }*/
     }
 }
 

@@ -16,6 +16,8 @@
 
 package net.proest.lp2go2;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import java.math.BigDecimal;
 import java.util.concurrent.TimeUnit;
 
@@ -42,6 +44,7 @@ public class H {
             0xae, 0xa9, 0xa0, 0xa7, 0xb2, 0xb5, 0xbc, 0xbb, 0x96, 0x91, 0x98, 0x9f, 0x8a, 0x8d, 0x84, 0x83,
             0xde, 0xd9, 0xd0, 0xd7, 0xc2, 0xc5, 0xcc, 0xcb, 0xe6, 0xe1, 0xe8, 0xef, 0xfa, 0xfd, 0xf4, 0xf3
     };
+    private static final int RADIUS = 6371;
 
     public static String intToHex(int i) {
         return bytesToHex(toBytes(i));
@@ -62,18 +65,6 @@ public class H {
         return new String(hexChars);
     }
 
-    public static byte[] reverse4bytes(byte[] b) {
-        if (b.length != 4) {
-            return null;
-        }
-        byte[] ret = new byte[4];
-        ret[0] = b[3];
-        ret[1] = b[2];
-        ret[2] = b[1];
-        ret[3] = b[0];
-        return ret;
-    }
-
     /*public static String bytesToPrintHex(byte[] bytes) {
         if (bytes == null) {
             return "null";
@@ -88,6 +79,18 @@ public class H {
         return new String(hexChars);
     }*/
 
+    public static byte[] reverse4bytes(byte[] b) {
+        if (b.length != 4) {
+            return null;
+        }
+        byte[] ret = new byte[4];
+        ret[0] = b[3];
+        ret[1] = b[2];
+        ret[2] = b[1];
+        ret[3] = b[0];
+        return ret;
+    }
+
     public static byte[] toBytes(int i) {
         byte[] result = new byte[4];
 
@@ -98,6 +101,12 @@ public class H {
 
         return result;
     }
+
+    /*public static String toHex(byte b) {
+        byte[] ba = new byte[1];
+        ba[0] = b;
+        return bytesToPrintHex(ba);
+    }*/
 
     public static String getDateFromSeconds(String seconds) {
         if (seconds == null || seconds.equals("")) {
@@ -111,12 +120,6 @@ public class H {
                 TimeUnit.MILLISECONDS.toSeconds(millis) -
                         TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis)));
     }
-
-    /*public static String toHex(byte b) {
-        byte[] ba = new byte[1];
-        ba[0] = b;
-        return bytesToPrintHex(ba);
-    }*/
 
     public static byte[] hexStringToByteArray(String s) {
         int len = s.length();
@@ -142,5 +145,32 @@ public class H {
         BigDecimal bd = new BigDecimal(Float.toString(d));
         bd = bd.setScale(decimalPlace, BigDecimal.ROUND_HALF_UP);
         return bd.floatValue();
+    }
+
+    public static double calculationByDistance(LatLng StartP, LatLng EndP) {
+        double lat1 = StartP.latitude;
+        double lat2 = EndP.latitude;
+        double lon1 = StartP.longitude;
+        double lon2 = EndP.longitude;
+
+        if (lat1 == lat2 && lon1 == lon2) return .0;
+
+        double dLat = Math.toRadians(lat2 - lat1);
+        double dLon = Math.toRadians(lon2 - lon1);
+        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2)
+                + Math.cos(Math.toRadians(lat1))
+                * Math.cos(Math.toRadians(lat2)) * Math.sin(dLon / 2)
+                * Math.sin(dLon / 2);
+        double c = 2 * Math.asin(Math.sqrt(a));
+        /*double valueResult = Radius * c;
+        double km = valueResult / 1;
+        DecimalFormat newFormat = new DecimalFormat("####");
+        int kmInDec = Integer.valueOf(newFormat.format(km));
+        double meter = valueResult % 1000;
+        int meterInDec = Integer.valueOf(newFormat.format(meter));
+        Log.i("Radius Value", "" + valueResult + "   KM  " + kmInDec
+                + " Meter   " + meterInDec);
+        */
+        return RADIUS * c;
     }
 }

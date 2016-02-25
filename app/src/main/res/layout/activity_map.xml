@@ -18,37 +18,83 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/txtLatitude"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="32.154599"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
+                android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/txtLongitude"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text=" -110.827369"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
+                <TextView
+                    android:id="@+id/txtMapGPS"
+                    android:layout_width="0dp"
+                    android:layout_height="fill_parent"
+                    android:layout_margin="1dp"
+                    android:layout_weight="0.75"
+                    android:background="@drawable/rounded_corner_uninitialised"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:text="@string/GPS"
+                    android:textAlignment="center"
+                    android:textColor="@color/light" />
+
+                <TextView
+                    android:id="@+id/txtMapGPSSatsInView"
+                    android:layout_width="0dp"
+                    android:layout_height="fill_parent"
+                    android:layout_margin="1dp"
+                    android:layout_weight="0.25"
+                    android:background="@drawable/rounded_corner_right"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:text="0"
+                    android:textAlignment="center"
+                    android:textColor="@color/dark" />
+
+                <TextView
+                    android:id="@+id/txtLatitude"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="1dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/rounded_corner_left"
+                    android:padding="1dp"
+                    android:text="32.154599"
+                    android:textAlignment="center"
+                    android:textAppearance="?android:attr/textAppearanceLarge" />
+
+                <TextView
+                    android:id="@+id/txtLongitude"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="1dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/rounded_corner_right"
+                    android:padding="1dp"
+                    android:text="-110.827369"
+                    android:textAlignment="center"
+                    android:textAppearance="?android:attr/textAppearanceLarge" />
+
+            </LinearLayout>
         </LinearLayout>
 
-        <FrameLayout
-            android:id="@+id/map_container"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-            <com.google.android.gms.maps.MapView
-                android:id="@+id/map"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:apiKey="AIzaSyCE91uHoVzA_-mxPer8g5sU7WL2jTdQDzo" />
+            <FrameLayout
+                android:id="@+id/map_container"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-        </FrameLayout>
+                <com.google.android.gms.maps.MapView
+                    android:id="@+id/map"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:apiKey="AIzaSyCE91uHoVzA_-mxPer8g5sU7WL2jTdQDzo" />
+
+            </FrameLayout>
+        </LinearLayout>
+
     </LinearLayout>
 
     <ListView
