@@ -51,12 +51,12 @@
     <!-- Nav Drawer List Item Icons -->
     <!-- Keep them in order as the titles are in -->
     <array name="nav_drawer_icons">
-        <item>@drawable/ic_main</item>
-        <item>@drawable/ic_map</item>
-        <item>@drawable/ic_objects</item>
-        <item>@drawable/ic_settings</item>
-        <item>@drawable/ic_logs</item>
-        <item>@drawable/ic_about</item>
+        <item>@drawable/ic_notifications_on_24dp</item>
+        <item>@drawable/ic_public_24dp</item>
+        <item>@drawable/ic_now_widgets_24dp</item>
+        <item>@drawable/ic_settings_24dp</item>
+        <item>@drawable/ic_rate_review_24dp</item>
+        <item>@drawable/ic_info_outline_24dp</item>
     </array>
 
     <!-- Content Description -->
@@ -70,5 +70,6 @@
     <drawable name="ic_about">@drawable/rounded_corner_ok</drawable>
     <string name="title_activity_about">AboutActivity</string>
     <string name="title_activity_maps">Map</string>
+    <string name="GOOGLE_ICONS_CC_BY"><![CDATA[<br />Menu-Icons by Google<br />(https://design.google.com/icons/)<br />under the<br />CC-BY license<br />(https://creativecommons.org/licenses/by/4.0/)<br />]]></string>
 </resources>
 
