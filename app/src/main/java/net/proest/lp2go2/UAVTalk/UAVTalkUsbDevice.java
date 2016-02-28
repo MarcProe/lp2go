@@ -162,40 +162,8 @@ public class UAVTalkUsbDevice implements UAVTalkDevice {
     }
 
     public boolean sendSettingsObject(String objectName, int instance, String fieldName, int element, byte[] newFieldData) {
-
-        UAVTalkObject obj = oTree.getObjectNoCreate(objectName);
-        if (obj == null) {
-            return false;
-        }
-        UAVTalkObjectInstance ins = obj.getInstance(instance);
-        if (ins == null) {
-            return false;
-        }
-
-        UAVTalkXMLObject xmlObj = oTree.getXmlObjects().get(objectName);
-        if (xmlObj == null) {
-            return false;
-        }
-        UAVTalkXMLObject.UAVTalkXMLObjectField xmlField = xmlObj.getFields().get(fieldName);
-        if (xmlField == null) {
-            return false;
-        }
-
-        byte[] data = ins.getData();
-        int fpos = xmlField.pos;
-        int elen = xmlField.typelength;
-
-        int savepos = fpos + elen * element;
-
-        //if(newFieldData.length != elen) { return false; }  //ACTIVATE ME!
-
-        System.arraycopy(newFieldData, 0, data, savepos, newFieldData.length);
-
-        ins.setData(data);
-        obj.setInstance(ins);
-        oTree.updateObject(obj);
-
-        byte[] send = obj.toMsg((byte) 0x20, ins.getId());
+        byte[] send = UAVTalkDeviceHelper.createSettingsObjectByte(oTree, objectName, instance, fieldName, element, newFieldData);
+        if (send == null) return false;
 
         mDeviceConnection.bulkTransfer(mEndpointOut, send, send.length, 1000);
 

@@ -163,7 +163,11 @@ public class UAVTalkObjectTree {
                 //byte[] fielddata = new byte[1];
                 byte b = 0;
                 b = data[pos + element];
-                retval = xmlfield.options[H.toInt(b)];
+                try {
+                    retval = xmlfield.options[H.toInt(b)];
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    Log.d("AIOOBE", "" + H.toInt(b));
+                }
                 //retval = b;
             } else if (xmlfield.type == UAVTalkXMLObject.FIELDTYPE_UINT32) {
                 byte[] fielddata = new byte[4];

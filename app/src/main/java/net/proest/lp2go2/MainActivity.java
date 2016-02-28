@@ -44,6 +44,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
@@ -52,7 +55,9 @@ import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbDeviceConnection;
 import android.hardware.usb.UsbInterface;
 import android.hardware.usb.UsbManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Looper;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -62,9 +67,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -77,6 +85,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import net.proest.lp2go2.UAVTalk.UAVTalkBluetoothDevice;
 import net.proest.lp2go2.UAVTalk.UAVTalkDevice;
 import net.proest.lp2go2.UAVTalk.UAVTalkMissingObjectException;
 import net.proest.lp2go2.UAVTalk.UAVTalkObjectTree;
@@ -102,8 +111,13 @@ import java.util.Hashtable;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+    private static final int ICON_OPAQUE = 255;
+    private static final int ICON_TRANSPARENT = 64;
 
+    private final static int SERIAL_NONE = 0;
+    private final static int SERIAL_USB = 1;
+    private final static int SERIAL_BLUETOOTH = 2;
     private static final String ACTION_USB_PERMISSION = "net.proest.lp2go.USB_PERMISSION";
     private static final String OFFSET_VELOCITY_DOWN = "VelocityState-Down";
     private static final String OFFSET_BAROSENSOR_ALTITUDE = "BaroSensor-Altitude";
@@ -160,11 +174,15 @@ public class MainActivity extends AppCompatActivity {
     protected TextView txtMapGPS;
     protected TextView txtMapGPSSatsInView;
     protected TextView txtVehicleName;
+    protected ImageView imgBluetooth;
+    protected ImageView imgUSB;
     protected TextView etxObjects;
+    protected Spinner spnConnectionTypeSpinner;
     protected Button btnStart;
     int currentView = 0;
     int HISTORY_MARKER_NUM = 5;
     int currentPosMarker = 0;
+    private int serialModeUsed;
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -192,7 +210,7 @@ public class MainActivity extends AppCompatActivity {
             String action = intent.getAction();
             Log.d("USB", action);
 
-            if (UsbManager.ACTION_USB_DEVICE_ATTACHED.equals(action)) {
+            if (serialModeUsed == SERIAL_USB && UsbManager.ACTION_USB_DEVICE_ATTACHED.equals(action)) {
                 UsbDevice device = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
 
                 Log.d("USB", device.getVendorId() + "-" + device.getProductId() + "-" + device.getDeviceClass()
@@ -205,7 +223,7 @@ public class MainActivity extends AppCompatActivity {
                 txtDeviceText.setText(device.getDeviceName());
 
 
-            } else if (UsbManager.ACTION_USB_DEVICE_DETACHED.equals(action)) {
+            } else if (serialModeUsed == SERIAL_USB && UsbManager.ACTION_USB_DEVICE_DETACHED.equals(action)) {
                 UsbDevice device = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
                 if (device != null /*&& device.equals(deviceName)*/) {
                     setUsbInterface(null, null);
@@ -215,7 +233,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 txtDeviceText.setText(R.string.DEVICE_NAME_NONE);
                 stopPollThread();
-            } else if (ACTION_USB_PERMISSION.equals(action)) {
+            } else if (serialModeUsed == SERIAL_USB && ACTION_USB_PERMISSION.equals(action)) {
                 synchronized (this) {
                     UsbDevice device = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
                     if (intent.getBooleanExtra(UsbManager.EXTRA_PERMISSION_GRANTED, false)) {
@@ -366,26 +384,29 @@ public class MainActivity extends AppCompatActivity {
         mapView.onCreate(savedInstanceState);
 
         map = mapView.getMap();
-        map.getUiSettings().setMyLocationButtonEnabled(false);
-        map.setMyLocationEnabled(true);
+        if (map != null) {  //Map can be null if services are not available, e.g. on an amazon fire tab
+            map.getUiSettings().setMyLocationButtonEnabled(false);
+            map.setMyLocationEnabled(true);
+            MapsInitializer.initialize(this);
 
-        MapsInitializer.initialize(this);
-
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(32.154599, -110.827369), 18);
-        map.animateCamera(cameraUpdate);
-        map.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
-        Marker center = map.addMarker(new MarkerOptions()
-                .position(new LatLng(32.154599, -110.827369))
-                .title("Librepilot")
-                .snippet("LP rules")
-                .icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_launcher)));
-
+            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(32.154599, -110.827369), 18);
+            map.animateCamera(cameraUpdate);
+            map.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+            Marker center = map.addMarker(new MarkerOptions()
+                    .position(new LatLng(32.154599, -110.827369))
+                    .title("Librepilot")
+                    .snippet("LP rules")
+                    .icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_launcher)));
+        }
         setContentView(view0);
 
         AssetManager assets = getAssets();
 
         initSlider(savedInstanceState);
 
+        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+
+        Log.d("SMU", "" + serialModeUsed);
         offset = new Hashtable<String, Object>();
         offset.put(OFFSET_BAROSENSOR_ALTITUDE, .0f);
         offset.put(OFFSET_VELOCITY_DOWN, .0f);
@@ -440,6 +461,19 @@ public class MainActivity extends AppCompatActivity {
         txtModeAssistedControl = (TextView) findViewById(R.id.txtModeAssistedControl);
         txtVehicleName = (TextView) findViewById(R.id.txtVehicleName);
 
+        serialModeUsed = sharedPref.getInt(getString(R.string.SETTINGS_SERIAL_MODE), 0);
+
+        imgBluetooth = (ImageView) findViewById(R.id.imgBluetooth);
+        if (serialModeUsed != SERIAL_BLUETOOTH || serialModeUsed == SERIAL_NONE) {
+            //imgBluetooth.setVisibility(View.INVISIBLE);
+            imgBluetooth.setAlpha(ICON_TRANSPARENT);
+        }
+
+        imgUSB = (ImageView) findViewById(R.id.imgUSB);
+        if (serialModeUsed != SERIAL_USB || serialModeUsed == SERIAL_NONE) {
+            imgUSB.setAlpha(ICON_TRANSPARENT);
+        }
+
         setContentView(view1);
         txtLatitude = (TextView) findViewById(R.id.txtLatitude);
         txtLongitude = (TextView) findViewById(R.id.txtLongitude);
@@ -449,6 +483,34 @@ public class MainActivity extends AppCompatActivity {
         setContentView(view2);
         etxObjects = (EditText) findViewById(R.id.etxObjects);
 
+        setContentView(view3);
+        spnConnectionTypeSpinner = (Spinner) findViewById(R.id.spnConnectionTypeSpinner);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.connections_settings, android.R.layout.simple_spinner_item);
+
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        spnConnectionTypeSpinner.setAdapter(adapter);
+        spnConnectionTypeSpinner.setOnItemSelectedListener(this);
+        spnConnectionTypeSpinner.setSelection(serialModeUsed);
+
+        setContentView(view4);
+        //
+        setContentView(view5);
+        PackageInfo pInfo = null;
+        try {
+            pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        {
+
+            ((TextView) findViewById(R.id.txtAndroidVersionRelease))
+                    .setText(getString(R.string.RUNNING_ON_ANDROID_VERSION) + Build.VERSION.RELEASE);
+            ((TextView) findViewById(R.id.txtLP2GoVersionRelease))
+                    .setText(getString(R.string.LP2GO_RELEASE) + pInfo.versionName + getString(R.string.OPEN_ROUND_BRACKET_WITH_SPACE) + pInfo.versionName + getString(R.string.CLOSE_ROUND_BRACKET));
+            ((TextView) findViewById(R.id.txtLP2GoPackage)).setText(pInfo.packageName);
+        }
         setContentView(view0);
 
         btnStart = (Button) findViewById(R.id.btnStart);
@@ -475,10 +537,12 @@ public class MainActivity extends AppCompatActivity {
         Log.d("MainActivity.onCreate", "XML Loading Complete");
 
         // check for existing devices
-        for (UsbDevice device : mManager.getDeviceList().values()) {
-            UsbInterface intf = findAdbInterface(device);
-            if (setUsbInterface(device, intf)) {
-                break;
+        if (serialModeUsed == SERIAL_USB) {
+            for (UsbDevice device : mManager.getDeviceList().values()) {
+                UsbInterface intf = findAdbInterface(device);
+                if (setUsbInterface(device, intf)) {
+                    break;
+                }
             }
         }
 
@@ -489,6 +553,11 @@ public class MainActivity extends AppCompatActivity {
         filter.addAction(ACTION_USB_PERMISSION);
 
         registerReceiver(mUsbReceiver, filter);
+
+        if (Looper.myLooper() == null) Looper.prepare();
+
+        startPollThread();
+
         isReady = true;
         onStartClick(null);
     }
@@ -599,6 +668,14 @@ public class MainActivity extends AppCompatActivity {
         batteryCellsDialogBuilder.show();
     }
 
+    public void onConnectClick(View v) {
+        Log.d("SMU1", "" + serialModeUsed);
+        if (serialModeUsed == SERIAL_BLUETOOTH) {
+            setBluetoothInterface();
+            startPollThread();
+        }
+    }
+
     public void onStartClick(View v) {
         if (pThread == null) {
             startPollThread();
@@ -625,6 +702,18 @@ public class MainActivity extends AppCompatActivity {
             pThread.start();
             btnStart.setText(R.string.Stop);
         }
+    }
+
+    private boolean setBluetoothInterface() {
+        try {
+            mUAVTalkDevice.stop();
+        } catch (Exception e) {
+            Log.d("DBG", "Could'nt stop device");
+        }
+        mUAVTalkDevice = null;
+        mUAVTalkDevice = new UAVTalkBluetoothDevice(this, xmlObjects);
+        mUAVTalkDevice.start();
+        return mUAVTalkDevice != null;
     }
 
     private boolean setUsbInterface(UsbDevice device, UsbInterface intf) {
@@ -735,6 +824,48 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+        switch (parent.getId()) {
+            case R.id.spnConnectionTypeSpinner: {
+                serialModeUsed = pos;
+                switch (serialModeUsed) {
+                    case SERIAL_NONE:
+                        //imgBluetooth.setVisibility(View.INVISIBLE);
+                        //imgUSB.setVisibility(View.INVISIBLE);
+                        imgBluetooth.setAlpha(ICON_TRANSPARENT);
+                        imgUSB.setAlpha(ICON_TRANSPARENT);
+                        break;
+                    case SERIAL_USB:
+                        //imgBluetooth.setVisibility(View.INVISIBLE);
+                        //imgUSB.setVisibility(View.VISIBLE);
+                        imgBluetooth.setAlpha(ICON_TRANSPARENT);
+                        imgUSB.setAlpha(ICON_OPAQUE);
+                        break;
+                    case SERIAL_BLUETOOTH:
+                        //imgBluetooth.setVisibility(View.VISIBLE);
+                        //imgUSB.setVisibility(View.INVISIBLE);
+                        imgBluetooth.setAlpha(ICON_OPAQUE);
+                        imgUSB.setAlpha(ICON_TRANSPARENT);
+                        break;
+                }
+                SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putInt(getString(R.string.SETTINGS_SERIAL_MODE), serialModeUsed);
+                editor.commit();
+                //Log.d("SET",parent.getItemAtPosition(pos).toString());
+                break;
+            }
+        }
+        //Log.d("SET", "" + (parent.getId() == R.id.spnConnectionTypeSpinner) + " " + pos + " " + id);
+
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
+    }
+
     private class SlideMenuClickListener implements
             ListView.OnItemClickListener {
         @Override
@@ -769,7 +900,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         private void setTextBGColor(TextView t, String color) {
-            if (color == null) {
+            if (color == null || color == EMPTY_STRING) {
                 return;
             }
             switch (color) {
@@ -802,13 +933,18 @@ public class MainActivity extends AppCompatActivity {
         public void run() {
 
             while (isValid) {
+                //Log.d("PING","PONG");
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {
                 }
 
                 if (this.oTree == null) {
-                    continue;
+                    try {
+                        Thread.sleep(1000);//sleep a bit extra
+                    } catch (InterruptedException e) {
+                    }
+                    continue;  //nothing yet to show...
                 }
                 mActivity.runOnUiThread(new Runnable() {
                     @Override
@@ -938,11 +1074,16 @@ public class MainActivity extends AppCompatActivity {
 
                 }
             } catch (UAVTalkMissingObjectException e) {
-                mUAVTalkDevice.requestObject("SystemSettings");
+                try {
+                    mUAVTalkDevice.requestObject("SystemSettings");
+                } catch (NullPointerException e2) {
+                    e2.printStackTrace();
+                }
             }
 
             return new String(b);
         }
+
         private Float getGPSCoordinates(String object, String field) {
             try {
                 Long l = (Long) oTree.getData(object, field);
@@ -994,8 +1135,9 @@ public class MainActivity extends AppCompatActivity {
         }
 
         private Object getData(String objectname, String fieldname, String elementname) {
+            Object o = null;
             try {
-                return oTree.getData(objectname, fieldname, elementname);
+                o = oTree.getData(objectname, fieldname, elementname);
             } catch (UAVTalkMissingObjectException e1) {
                 try {
                     mUAVTalkDevice.requestObject(e1.getObjectname(), e1.getInstance());
@@ -1005,7 +1147,11 @@ public class MainActivity extends AppCompatActivity {
             } catch (NullPointerException e3) {
                 e3.printStackTrace();
             }
-            return EMPTY_STRING;
+            if (o != null) {
+                return o;
+            } else {
+                return EMPTY_STRING;
+            }
         }
     }
 }

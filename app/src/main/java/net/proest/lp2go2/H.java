@@ -65,7 +65,7 @@ public class H {
         return new String(hexChars);
     }
 
-    /*public static String bytesToPrintHex(byte[] bytes) {
+    public static String bytesToPrintHex(byte[] bytes) {
         if (bytes == null) {
             return "null";
         }
@@ -77,7 +77,7 @@ public class H {
             hexChars[j * 3 + 2] = ' ';
         }
         return new String(hexChars);
-    }*/
+    }
 
     public static byte[] reverse4bytes(byte[] b) {
         if (b.length != 4) {
@@ -162,15 +162,15 @@ public class H {
                 * Math.cos(Math.toRadians(lat2)) * Math.sin(dLon / 2)
                 * Math.sin(dLon / 2);
         double c = 2 * Math.asin(Math.sqrt(a));
-        /*double valueResult = Radius * c;
-        double km = valueResult / 1;
-        DecimalFormat newFormat = new DecimalFormat("####");
-        int kmInDec = Integer.valueOf(newFormat.format(km));
-        double meter = valueResult % 1000;
-        int meterInDec = Integer.valueOf(newFormat.format(meter));
-        Log.i("Radius Value", "" + valueResult + "   KM  " + kmInDec
-                + " Meter   " + meterInDec);
-        */
         return RADIUS * c;
+    }
+
+    public static byte[] concatArray(byte[] a, byte[] b) {
+        int aLen = a.length;
+        int bLen = b.length;
+        byte[] c = new byte[aLen + bLen];
+        System.arraycopy(a, 0, c, 0, aLen);
+        System.arraycopy(b, 0, c, aLen, bLen);
+        return c;
     }
 }
