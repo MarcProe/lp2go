@@ -40,6 +40,32 @@
                     android:layout_margin="5dp"
                     android:text="LibrePilot 2 Go"
                     android:textAlignment="center"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textStyle="bold|italic"
+                    android:typeface="monospace" />
+
+                <TextView
+                    android:id="@+id/txtAndroidVersionRelease"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:textAlignment="center"
+                    android:textAppearance="?android:attr/textAppearanceLarge" />
+
+                <TextView
+                    android:id="@+id/txtLP2GoVersionRelease"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:textAlignment="center"
+                    android:textAppearance="?android:attr/textAppearanceLarge" />
+
+                <TextView
+                    android:id="@+id/txtLP2GoPackage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:textAlignment="center"
                     android:textAppearance="?android:attr/textAppearanceLarge" />
 
                 <TextView

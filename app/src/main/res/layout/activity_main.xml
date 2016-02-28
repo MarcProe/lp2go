@@ -37,6 +37,7 @@
                 android:id="@+id/btnConnect"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:onClick="onConnectClick"
                 android:text="Connect" />
 
             <Button
@@ -263,13 +264,28 @@
                     android:id="@+id/txtConfig"
                     android:layout_width="0dp"
                     android:layout_height="fill_parent"
-                    android:layout_weight="2"
+                    android:layout_weight="1"
                     android:background="@drawable/rounded_corner_uninitialised"
                     android:gravity="center_vertical|center_horizontal"
                     android:text="@string/CONFIG"
                     android:textAlignment="center"
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:textColor="@color/light" />
+
+                <ImageView
+                    android:id="@+id/imgBluetooth"
+                    android:layout_width="0dp"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="0.5"
+                    android:src="@drawable/ic_bluetooth_24dp" />
+
+                <ImageView
+                    android:id="@+id/imgUSB"
+                    android:layout_width="0dp"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="0.5"
+                    android:contentDescription="USB"
+                    android:src="@drawable/ic_usb_24dp" />
 
             </LinearLayout>
 
