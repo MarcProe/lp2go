@@ -5,8 +5,8 @@ android {
     buildToolsVersion '23.0.2'
     defaultConfig {
         applicationId 'net.proest.lp2go2'
-        minSdkVersion 19
-        targetSdkVersion 19
+        minSdkVersion 16
+        targetSdkVersion 16
         versionName '0.2.2'
         versionCode 5
     }
