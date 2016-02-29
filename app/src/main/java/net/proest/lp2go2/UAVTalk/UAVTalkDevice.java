@@ -59,8 +59,8 @@ public class UAVTalkDevice implements UAVTalkDeviceInterface {
             long time = System.currentTimeMillis() - logStartTimeStamp;
             long len = b.length;
 
-            byte[] btime = Arrays.copyOfRange(H.reverse8bytes(H.toBytes(time)), 0, 3);
-            byte[] blen = H.reverse8bytes(H.toBytes(time));
+            byte[] btime = Arrays.copyOfRange(H.reverse8bytes(H.toBytes(time)), 0, 4);
+            byte[] blen = H.reverse8bytes(H.toBytes(len));
 
             byte msg[] = H.concatArray(btime, blen);
             msg = H.concatArray(msg, b);

@@ -56,10 +56,12 @@ import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbDeviceConnection;
 import android.hardware.usb.UsbInterface;
 import android.hardware.usb.UsbManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
 import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.content.FileProvider;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
@@ -87,7 +89,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import net.proest.lp2go2.UAVTalk.UAVTalkBluetoothDevice;
-import net.proest.lp2go2.UAVTalk.UAVTalkDeviceInterface;
+import net.proest.lp2go2.UAVTalk.UAVTalkDevice;
 import net.proest.lp2go2.UAVTalk.UAVTalkMissingObjectException;
 import net.proest.lp2go2.UAVTalk.UAVTalkObjectTree;
 import net.proest.lp2go2.UAVTalk.UAVTalkUsbDevice;
@@ -209,7 +211,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private UsbDeviceConnection mDeviceConnection;
     private PendingIntent mPermissionIntent;
     private UsbInterface mInterface;
-    private UAVTalkDeviceInterface mUAVTalkDeviceInterface;
+    private UAVTalkDevice mUAVTalkDevice;
     private Hashtable<String, UAVTalkXMLObject> xmlObjects;
     BroadcastReceiver mUsbReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
@@ -233,9 +235,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 UsbDevice device = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
                 if (device != null /*&& device.equals(deviceName)*/) {
                     setUsbInterface(null, null);
-                    if (mUAVTalkDeviceInterface != null) {
-                        mUAVTalkDeviceInterface.setConnected(false);
-                        mUAVTalkDeviceInterface.stop();
+                    if (mUAVTalkDevice != null) {
+                        mUAVTalkDevice.setConnected(false);
+                        mUAVTalkDevice.stop();
                     }
                 }
                 txtDeviceText.setText(R.string.DEVICE_NAME_NONE);
@@ -249,7 +251,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                             UsbInterface intf = findAdbInterface(device);
                             if (intf != null) {
                                 boolean ok = setUsbInterface(device, intf);
-                                mUAVTalkDeviceInterface.setConnected(ok);
+                                mUAVTalkDevice.setConnected(ok);
                             }
                         }
                         startPollThread();
@@ -698,7 +700,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     public void onAltitudeClick(View V) {
         try {
-            offset.put(OFFSET_BAROSENSOR_ALTITUDE, mUAVTalkDeviceInterface.getoTree().getData("BaroSensor", "Altitude"));
+            offset.put(OFFSET_BAROSENSOR_ALTITUDE, mUAVTalkDevice.getoTree().getData("BaroSensor", "Altitude"));
             txtAltitude.setText(EMPTY_STRING);
         } catch (UAVTalkMissingObjectException e) {
             e.printStackTrace();
@@ -707,7 +709,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     public void onAltitudeAccelClick(View V) {
         try {
-            offset.put(OFFSET_VELOCITY_DOWN, mUAVTalkDeviceInterface.getoTree().getData("VelocityState", "Down"));
+            offset.put(OFFSET_VELOCITY_DOWN, mUAVTalkDevice.getoTree().getData("VelocityState", "Down"));
             txtAltitudeAccel.setText(EMPTY_STRING);
         } catch (UAVTalkMissingObjectException e) {
             e.printStackTrace();
@@ -735,6 +737,29 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
     }
 
+    public void onLogStartClick(View v) {
+        mUAVTalkDevice.setLogging(true);
+    }
+
+    public void onLogStopClick(View v) {
+        mUAVTalkDevice.setLogging(false);
+    }
+
+    public void onLogShare(View v) {
+        mUAVTalkDevice.setLogging(false);
+        Intent share = new Intent(Intent.ACTION_SEND);
+        share.setType("txt/plain");
+
+        File logPath = new File(this.getFilesDir(), "");
+        File logFile = new File(logPath, "oplog");
+        Uri contentUri = FileProvider.getUriForFile(this, "net.proest.lp2go.logfileprovider", logFile);
+
+        share.putExtra(Intent.EXTRA_STREAM, contentUri);
+        Log.d("contentur", contentUri.toString());
+
+        startActivity(Intent.createChooser(share, "Share Log"));
+    }
+
     public void stopPollThread() {
         if (pThread != null) {
             pThread.setInvalid();
@@ -746,10 +771,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public void startPollThread() {
         if (pThread == null) {
             pThread = new PollThread(this);
-            if (mUAVTalkDeviceInterface == null) {
+            if (mUAVTalkDevice == null) {
                 return;
             }
-            pThread.setoTree(mUAVTalkDeviceInterface.getoTree());
+            pThread.setoTree(mUAVTalkDevice.getoTree());
             pThread.start();
             btnStart.setText(R.string.Stop);
         }
@@ -757,14 +782,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     private boolean setBluetoothInterface() {
         try {
-            mUAVTalkDeviceInterface.stop();
+            mUAVTalkDevice.stop();
         } catch (Exception e) {
             Log.d("DBG", "Could'nt stop device");
         }
-        mUAVTalkDeviceInterface = null;
-        mUAVTalkDeviceInterface = new UAVTalkBluetoothDevice(this, xmlObjects);
-        mUAVTalkDeviceInterface.start();
-        return mUAVTalkDeviceInterface != null;
+        mUAVTalkDevice = null;
+        mUAVTalkDevice = new UAVTalkBluetoothDevice(this, xmlObjects);
+        mUAVTalkDevice.start();
+        return mUAVTalkDevice != null;
     }
 
     private boolean setUsbInterface(UsbDevice device, UsbInterface intf) {
@@ -785,10 +810,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     mDevice = device;
                     mDeviceConnection = connection;
                     mInterface = intf;
-                    mUAVTalkDeviceInterface = new UAVTalkUsbDevice(this, mDeviceConnection, intf, xmlObjects);
-                    mUAVTalkDeviceInterface.getoTree().setXmlObjects(xmlObjects);
+                    mUAVTalkDevice = new UAVTalkUsbDevice(this, mDeviceConnection, intf, xmlObjects);
+                    mUAVTalkDevice.getoTree().setXmlObjects(xmlObjects);
 
-                    mUAVTalkDeviceInterface.start();
+                    mUAVTalkDevice.start();
                     txtDeviceText.setText(device.getDeviceName());
                     return true;
                 } else {
@@ -797,9 +822,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         }
 
-        if (mDeviceConnection == null && mUAVTalkDeviceInterface != null) {
-            mUAVTalkDeviceInterface.stop();
-            mUAVTalkDeviceInterface = null;
+        if (mDeviceConnection == null && mUAVTalkDevice != null) {
+            mUAVTalkDevice.stop();
+            mUAVTalkDevice = null;
         }
         return false;
     }
@@ -822,9 +847,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 } catch (NumberFormatException e) {
                     bcdata = H.toBytes(0);
                 }
-                if (mUAVTalkDeviceInterface != null && bcdata.length == 4) {
+                if (mUAVTalkDevice != null && bcdata.length == 4) {
                     bcdata = H.reverse4bytes(bcdata);
-                    mUAVTalkDeviceInterface.sendSettingsObject("FlightBatterySettings", 0, "Capacity", 0, bcdata);
+                    mUAVTalkDevice.sendSettingsObject("FlightBatterySettings", 0, "Capacity", 0, bcdata);
                 }
                 dialog.dismiss();
                 dialog.cancel();
@@ -858,8 +883,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 } catch (NumberFormatException e) {
                     bcdata[0] = 0x00;
                 }
-                if (mUAVTalkDeviceInterface != null && bcdata.length == 1) {
-                    mUAVTalkDeviceInterface.sendSettingsObject("FlightBatterySettings", 0, "NbCells", 0, bcdata);
+                if (mUAVTalkDevice != null && bcdata.length == 1) {
+                    mUAVTalkDevice.sendSettingsObject("FlightBatterySettings", 0, "NbCells", 0, bcdata);
                 }
                 dialog.dismiss();
                 dialog.cancel();
@@ -1008,7 +1033,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         } else if (serialModeUsed == SERIAL_USB) {
                             currentImgView = imgUSB;
                         }
-                        if (mUAVTalkDeviceInterface.isConnected()) {
+                        if (mUAVTalkDevice.isConnected()) {
                             serialConnectionState = SERIAL_CONNECTED;
                             if (currentImgView != null)
                                 currentImgView.setColorFilter(Color.argb(255, 0, 255, 0));
@@ -1123,7 +1148,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                                 break;
                             case VIEW_OBJECTS:
                                 try {
-                                    etxObjects.setText(mUAVTalkDeviceInterface.getoTree().toString());
+                                    etxObjects.setText(mUAVTalkDevice.getoTree().toString());
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
@@ -1144,7 +1169,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 }
             } catch (UAVTalkMissingObjectException e) {
                 try {
-                    mUAVTalkDeviceInterface.requestObject("SystemSettings");
+                    mUAVTalkDevice.requestObject("SystemSettings");
                 } catch (NullPointerException e2) {
                     e2.printStackTrace();
                 }
@@ -1178,7 +1203,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         private Object getData(String objectname, String fieldname, boolean request) {
             try {
                 if (request) {
-                    mUAVTalkDeviceInterface.requestObject(objectname);
+                    mUAVTalkDevice.requestObject(objectname);
                 }
                 return getData(objectname, fieldname);
             } catch (NullPointerException e) {
@@ -1193,7 +1218,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 if (o != null) return o;
             } catch (UAVTalkMissingObjectException e1) {
                 try {
-                    mUAVTalkDeviceInterface.requestObject(e1.getObjectname(), e1.getInstance());
+                    mUAVTalkDevice.requestObject(e1.getObjectname(), e1.getInstance());
                 } catch (NullPointerException e2) {
                     e2.printStackTrace();
                 }
@@ -1209,7 +1234,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 o = oTree.getData(objectname, fieldname, elementname);
             } catch (UAVTalkMissingObjectException e1) {
                 try {
-                    mUAVTalkDeviceInterface.requestObject(e1.getObjectname(), e1.getInstance());
+                    mUAVTalkDevice.requestObject(e1.getObjectname(), e1.getInstance());
                 } catch (NullPointerException e2) {
                     e2.printStackTrace();
                 }

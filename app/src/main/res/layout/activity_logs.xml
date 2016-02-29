@@ -30,6 +30,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
+                    android:onClick="onLogStartClick"
                     android:scaleType="fitCenter"
                     android:src="@drawable/ic_archive_24dp" />
 
@@ -38,6 +39,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
+                    android:onClick="onLogStopClick"
                     android:scaleType="fitCenter"
                     android:src="@drawable/ic_stop_24dp" />
 
@@ -46,6 +48,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
+                    android:onClick="onLogShare"
                     android:scaleType="fitCenter"
                     android:src="@drawable/ic_share_24dp" />
             </LinearLayout>

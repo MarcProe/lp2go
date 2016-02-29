@@ -34,7 +34,7 @@ import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.UUID;
 
-public class UAVTalkBluetoothDevice extends UAVTalkDevice implements UAVTalkDeviceInterface {
+public class UAVTalkBluetoothDevice extends UAVTalkDevice {
     public static final int STATE_NONE = 0;
     public static final int STATE_CONNECTING = 1;
     public static final int STATE_CONNECTED = 2;

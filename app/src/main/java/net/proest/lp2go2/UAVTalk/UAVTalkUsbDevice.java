@@ -45,10 +45,11 @@ import android.hardware.usb.UsbRequest;
 import net.proest.lp2go2.H;
 import net.proest.lp2go2.MainActivity;
 
+import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.LinkedList;
 
-public class UAVTalkUsbDevice extends UAVTalkDevice implements UAVTalkDeviceInterface {
+public class UAVTalkUsbDevice extends UAVTalkDevice {
 
     final protected static char[] hexArray = "0123456789ABCDEF".toCharArray();
     private final MainActivity mActivity;
@@ -249,7 +250,7 @@ public class UAVTalkUsbDevice extends UAVTalkDevice implements UAVTalkDeviceInte
                     oTree.updateObject(myObj);
 
                     if (isLogging()) {
-                        log(bytes);
+                        log(Arrays.copyOfRange(bytes, 2, bytes.length)); //TODO: This removes the first two byte, added only for USB compatibility
                     }
 
                     try {
