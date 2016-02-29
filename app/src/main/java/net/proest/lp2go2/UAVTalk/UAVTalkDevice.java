@@ -1,32 +1,113 @@
-/*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation; either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful, but
-* WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
-* or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
-* for more details.
-*
-* You should have received a copy of the GNU General Public License along
-* with this program; if not, write to the Free Software Foundation, Inc.,
-* 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-*/
-
 package net.proest.lp2go2.UAVTalk;
 
-public interface UAVTalkDevice {
-    void start();
+import android.app.Activity;
+import android.content.Context;
 
-    void stop();
+import net.proest.lp2go2.H;
 
-    UAVTalkObjectTree getoTree();
+import java.io.FileOutputStream;
+import java.util.Arrays;
 
-    boolean sendSettingsObject(String objectName, int instance, String fieldName, int element, byte[] newFieldData);
+/**
+ * Created by Marcus on 29.02.2016.
+ */
+public class UAVTalkDevice implements UAVTalkDeviceInterface {
+    Activity mActivity;
+    private FileOutputStream logOutputStream;
+    private long logStartTimeStamp;
+    private boolean isLogging = false;
 
-    boolean requestObject(String objectName);
+    public UAVTalkDevice(Activity mActivity) {
+        this.mActivity = mActivity;
+    }
 
-    boolean requestObject(String objectName, int instance);
+    public boolean isLogging() {
+        return isLogging;
+    }
 
+    public void setLogging(boolean logNow) {
+        if (isLogging == logNow) {   //if we are already logging, and we should start, just return
+            return;                 //if we are not logging and should stop, nothing to do as well
+        }
+
+        isLogging = logNow;
+
+        String filename = "oplog";
+        String string = "Hello world!";
+
+        try {       //anyway, close the current stream
+            logOutputStream.close();
+        } catch (Exception e) {
+            // e.printStackTrace();
+        }
+
+        if (isLogging) {  //if logging should start, create new stream
+            try {
+                logOutputStream = mActivity.openFileOutput(filename, Context.MODE_PRIVATE);
+                //outputStream.write(string.getBytes());
+                //outputStream.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            logStartTimeStamp = System.currentTimeMillis();  //and set the time offset
+        }
+    }
+
+    public void log(byte[] b) {
+        if (b == null) return;
+        try {
+            long time = System.currentTimeMillis() - logStartTimeStamp;
+            long len = b.length;
+
+            byte[] btime = Arrays.copyOfRange(H.reverse8bytes(H.toBytes(time)), 0, 3);
+            byte[] blen = H.reverse8bytes(H.toBytes(time));
+
+            byte msg[] = H.concatArray(btime, blen);
+            msg = H.concatArray(msg, b);
+
+            logOutputStream.write(msg);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void start() {
+
+    }
+
+    @Override
+    public void stop() {
+
+    }
+
+    @Override
+    public UAVTalkObjectTree getoTree() {
+        return null;
+    }
+
+    @Override
+    public boolean sendSettingsObject(String objectName, int instance, String fieldName, int element, byte[] newFieldData) {
+        return false;
+    }
+
+    @Override
+    public boolean requestObject(String objectName) {
+        return false;
+    }
+
+    @Override
+    public boolean requestObject(String objectName, int instance) {
+        return false;
+    }
+
+    @Override
+    public boolean isConnected() {
+        return false;
+    }
+
+    @Override
+    public boolean setConnected(boolean connected) {
+        return false;
+    }
 }

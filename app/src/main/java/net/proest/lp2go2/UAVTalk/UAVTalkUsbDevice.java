@@ -48,7 +48,7 @@ import net.proest.lp2go2.MainActivity;
 import java.util.Hashtable;
 import java.util.LinkedList;
 
-public class UAVTalkUsbDevice implements UAVTalkDevice {
+public class UAVTalkUsbDevice extends UAVTalkDevice implements UAVTalkDeviceInterface {
 
     final protected static char[] hexArray = "0123456789ABCDEF".toCharArray();
     private final MainActivity mActivity;
@@ -64,8 +64,12 @@ public class UAVTalkUsbDevice implements UAVTalkDevice {
     private UAVTalkObjectTree oTree;
     private String mSerial;
 
+    private boolean connected = false;
+
     public UAVTalkUsbDevice(MainActivity activity, UsbDeviceConnection connection,
                             UsbInterface intf, Hashtable<String, UAVTalkXMLObject> xmlObjects) {
+        super(activity);
+
         mActivity = activity;
         mDeviceConnection = connection;
         mSerial = connection.getSerial();
@@ -161,6 +165,18 @@ public class UAVTalkUsbDevice implements UAVTalkDevice {
         return true;
     }
 
+    @Override
+    public boolean isConnected() {
+        return this.connected;
+    }
+
+    @Override
+    public boolean setConnected(boolean connected) {
+        this.connected = connected;
+        return this.connected == connected;
+    }
+
+
     public boolean sendSettingsObject(String objectName, int instance, String fieldName, int element, byte[] newFieldData) {
         byte[] send = UAVTalkDeviceHelper.createSettingsObjectByte(oTree, objectName, instance, fieldName, element, newFieldData);
         if (send == null) return false;
@@ -231,6 +247,10 @@ public class UAVTalkUsbDevice implements UAVTalkDevice {
                         myObj.setInstance(myIns);
                     }
                     oTree.updateObject(myObj);
+
+                    if (isLogging()) {
+                        log(bytes);
+                    }
 
                     try {
                         if (H.intToHex(cM.getoID()).equals(oTree.getObjectNoCreate("FlightTelemetryStats").getId())) {

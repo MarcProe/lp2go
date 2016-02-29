@@ -91,6 +91,22 @@ public class H {
         return ret;
     }
 
+    public static byte[] reverse8bytes(byte[] b) {
+        if (b.length != 8) {
+            return null;
+        }
+        byte[] ret = new byte[8];
+        ret[0] = b[7];
+        ret[1] = b[6];
+        ret[2] = b[5];
+        ret[3] = b[4];
+        ret[4] = b[3];
+        ret[5] = b[2];
+        ret[6] = b[1];
+        ret[7] = b[0];
+        return ret;
+    }
+
     public static byte[] toBytes(int i) {
         byte[] result = new byte[4];
 
@@ -98,6 +114,21 @@ public class H {
         result[1] = (byte) (i >> 16);
         result[2] = (byte) (i >> 8);
         result[3] = (byte) (i /*>> 0*/);
+
+        return result;
+    }
+
+    public static byte[] toBytes(long i) {
+        byte[] result = new byte[8];
+
+        result[0] = (byte) (i >> 56);
+        result[1] = (byte) (i >> 48);
+        result[2] = (byte) (i >> 40);
+        result[3] = (byte) (i >> 32);
+        result[4] = (byte) (i >> 24);
+        result[5] = (byte) (i >> 16);
+        result[6] = (byte) (i >> 8);
+        result[7] = (byte) (i /*>> 0*/);
 
         return result;
     }

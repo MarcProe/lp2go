@@ -19,10 +19,13 @@ package net.proest.lp2go2.UAVTalk;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import net.proest.lp2go2.H;
 import net.proest.lp2go2.MainActivity;
+import net.proest.lp2go2.R;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,7 +34,7 @@ import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.UUID;
 
-public class UAVTalkBluetoothDevice implements UAVTalkDevice {
+public class UAVTalkBluetoothDevice extends UAVTalkDevice implements UAVTalkDeviceInterface {
     public static final int STATE_NONE = 0;
     public static final int STATE_CONNECTING = 1;
     public static final int STATE_CONNECTED = 2;
@@ -43,8 +46,9 @@ public class UAVTalkBluetoothDevice implements UAVTalkDevice {
     private BluetoothDevice mDevice;
     private int mState;
 
-    public UAVTalkBluetoothDevice(MainActivity mActivity, Hashtable<String, UAVTalkXMLObject> xmlObjects) {
-        this.mActivity = mActivity;
+    public UAVTalkBluetoothDevice(MainActivity activity, Hashtable<String, UAVTalkXMLObject> xmlObjects) {
+        super(activity);
+        this.mActivity = activity;
         this.oTree = new UAVTalkObjectTree();
         oTree.setXmlObjects(xmlObjects);
 
@@ -55,7 +59,10 @@ public class UAVTalkBluetoothDevice implements UAVTalkDevice {
             //finish();
             return;
         }
-        String mDeviceAddress = "98:D3:31:FC:18:FC";
+        SharedPreferences sharedPref = mActivity.getPreferences(Context.MODE_PRIVATE);
+
+        //String mDeviceAddress = "98:D3:31:FC:18:FC"; //TODO:got to come from settings.
+        String mDeviceAddress = sharedPref.getString(mActivity.getString(R.string.SETTINGS_BT_MAC), "");
         mDevice = mBluetoothAdapter.getRemoteDevice(mDeviceAddress);
         //mNXTTalker.connect(mDevice);
 
@@ -136,6 +143,16 @@ public class UAVTalkBluetoothDevice implements UAVTalkDevice {
         write(Arrays.copyOfRange(send, 2, send.length));
 
         return true;
+    }
+
+    @Override
+    public boolean isConnected() {
+        return mState == STATE_CONNECTED;
+    }
+
+    @Override
+    public boolean setConnected(boolean connected) {
+        return false;  //bluetooth maintains connection state by itself
     }
 
 
@@ -225,7 +242,6 @@ public class UAVTalkBluetoothDevice implements UAVTalkDevice {
             }
         }
     }
-
 
     private class WaiterThread extends Thread {
         private final BluetoothSocket mmSocket;
@@ -382,6 +398,10 @@ public class UAVTalkBluetoothDevice implements UAVTalkDevice {
 
                         }
                         oTree.updateObject(myObj);
+
+                        if (isLogging()) {
+                            log(bmsg);
+                        }
                     } catch (Exception e) {
                         //e.printStackTrace();
                     }
@@ -414,7 +434,7 @@ public class UAVTalkBluetoothDevice implements UAVTalkDevice {
             try {
                 mmOutStream.write(buffer);
             } catch (IOException e) {
-                e.printStackTrace();
+                //e.printStackTrace();
                 // XXX
             }
         }
