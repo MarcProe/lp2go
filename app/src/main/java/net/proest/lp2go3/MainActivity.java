@@ -33,7 +33,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.proest.lp2go2;
+package net.proest.lp2go3;
 
 import android.app.AlertDialog;
 import android.app.Fragment;
@@ -88,20 +88,20 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import net.proest.lp2go2.UAVTalk.UAVTalkBluetoothDevice;
-import net.proest.lp2go2.UAVTalk.UAVTalkDevice;
-import net.proest.lp2go2.UAVTalk.UAVTalkMissingObjectException;
-import net.proest.lp2go2.UAVTalk.UAVTalkObjectTree;
-import net.proest.lp2go2.UAVTalk.UAVTalkUsbDevice;
-import net.proest.lp2go2.UAVTalk.UAVTalkXMLObject;
-import net.proest.lp2go2.slider.AboutFragment;
-import net.proest.lp2go2.slider.LogsFragment;
-import net.proest.lp2go2.slider.MainFragment;
-import net.proest.lp2go2.slider.MapFragment;
-import net.proest.lp2go2.slider.ObjectsFragment;
-import net.proest.lp2go2.slider.SettingsFragment;
-import net.proest.lp2go2.slider.adapter.NavDrawerListAdapter;
-import net.proest.lp2go2.slider.model.NavDrawerItem;
+import net.proest.lp2go3.UAVTalk.UAVTalkBluetoothDevice;
+import net.proest.lp2go3.UAVTalk.UAVTalkDevice;
+import net.proest.lp2go3.UAVTalk.UAVTalkMissingObjectException;
+import net.proest.lp2go3.UAVTalk.UAVTalkObjectTree;
+import net.proest.lp2go3.UAVTalk.UAVTalkUsbDevice;
+import net.proest.lp2go3.UAVTalk.UAVTalkXMLObject;
+import net.proest.lp2go3.slider.AboutFragment;
+import net.proest.lp2go3.slider.LogsFragment;
+import net.proest.lp2go3.slider.MainFragment;
+import net.proest.lp2go3.slider.MapFragment;
+import net.proest.lp2go3.slider.ObjectsFragment;
+import net.proest.lp2go3.slider.SettingsFragment;
+import net.proest.lp2go3.slider.adapter.NavDrawerListAdapter;
+import net.proest.lp2go3.slider.model.NavDrawerItem;
 
 import org.xml.sax.SAXException;
 
@@ -702,8 +702,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         try {
             offset.put(OFFSET_BAROSENSOR_ALTITUDE, mUAVTalkDevice.getoTree().getData("BaroSensor", "Altitude"));
             txtAltitude.setText(EMPTY_STRING);
-        } catch (UAVTalkMissingObjectException e) {
-            e.printStackTrace();
+        } catch (UAVTalkMissingObjectException | NullPointerException e) {
+            //e.printStackTrace();
         }
     }
 
