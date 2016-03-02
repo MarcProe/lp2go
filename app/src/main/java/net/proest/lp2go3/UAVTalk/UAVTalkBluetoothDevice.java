@@ -61,7 +61,6 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
         }
         SharedPreferences sharedPref = mActivity.getPreferences(Context.MODE_PRIVATE);
 
-        //String mDeviceAddress = "98:D3:31:FC:18:FC"; //TODO:got to come from settings.
         String mDeviceAddress = sharedPref.getString(mActivity.getString(R.string.SETTINGS_BT_MAC), "");
         mDevice = mBluetoothAdapter.getRemoteDevice(mDeviceAddress);
         //mNXTTalker.connect(mDevice);
@@ -328,7 +327,7 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
                     int crc = H.crc8(bmsg, 0, bmsg.length);
                     bmsg = H.concatArray(bmsg, crcbuffer);
 
-                    Log.d("BMSG " + len, H.bytesToPrintHex(bmsg));
+                    Log.d("BMSG " + len + " " + (((int) crcbuffer[0] & 0xff) == (crc & 0xff)), H.bytesToPrintHex(bmsg));
 
 
                     try {

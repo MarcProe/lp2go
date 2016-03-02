@@ -636,6 +636,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private void displayView(int position) {
         Fragment fragment = null;
 
+        startPollThread();
+
         //clean up current view
         switch (currentView) {
             case VIEW_MAIN:
@@ -824,9 +826,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
     }
 
-    public void startPollThread() {
+    public void restartPollThread() {
         stopPollThread();
-        if (pThread == null) {
+        startPollThread();
+    }
+
+    public void startPollThread() {
+
+        if (pThread == null || !pThread.isValid()) {
             pThread = new PollThread(this);
             if (mUAVTalkDevice == null) {
                 return;
@@ -1065,7 +1072,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         public void run() {
 
-            while (isValid) {
+            //while (isValid) {
+            while (true) {
                 //Log.d("PING","PONG");
                 try {
                     Thread.sleep(1000);
@@ -1264,7 +1272,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     e2.printStackTrace();
                 }
             }
-
             return new String(b);
         }
 
@@ -1287,7 +1294,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             } catch (NumberFormatException e) {
                 return "";
             }
-
         }
 
         private Object getData(String objectname, String fieldname, boolean request) {
@@ -1336,6 +1342,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             } else {
                 return EMPTY_STRING;
             }
+        }
+
+        public boolean isValid() {
+            return this.isValid;
         }
     }
 }
