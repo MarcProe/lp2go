@@ -329,6 +329,11 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
 
                     Log.d("BMSG " + len + " " + (((int) crcbuffer[0] & 0xff) == (crc & 0xff)), H.bytesToPrintHex(bmsg));
 
+                    if ((((int) crcbuffer[0] & 0xff) == (crc & 0xff))) {
+                        //TODO:!!!!!!!!!!
+                    } else {
+                        continue;
+                    }
 
                     try {
                         UAVTalkMessage msg = new UAVTalkMessage(bmsg);
