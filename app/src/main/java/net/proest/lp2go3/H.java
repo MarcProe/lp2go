@@ -209,7 +209,7 @@ public class H {
 
     public static String getLogFilename() {
         //OP-2016-03-02_21-04-56
-        SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");//dd/MM/yyyy
+        SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");//dd/MM/yyyy
         Date now = new Date();
         String strDate = sdfDate.format(now);
         return "OP-" + strDate + ".opl";
