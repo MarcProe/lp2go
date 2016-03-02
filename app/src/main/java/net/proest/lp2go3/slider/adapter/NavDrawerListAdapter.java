@@ -1,4 +1,4 @@
-package net.proest.lp2go2.slider.adapter;
+package net.proest.lp2go3.slider.adapter;
 
 import android.app.Activity;
 import android.content.Context;
@@ -9,8 +9,8 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import net.proest.lp2go2.R;
-import net.proest.lp2go2.slider.model.NavDrawerItem;
+import net.proest.lp2go3.R;
+import net.proest.lp2go3.slider.model.NavDrawerItem;
 
 import java.util.ArrayList;
 

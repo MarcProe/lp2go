@@ -1,4 +1,4 @@
-package net.proest.lp2go2;
+package net.proest.lp2go3;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

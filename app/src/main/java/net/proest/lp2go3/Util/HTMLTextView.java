@@ -1,4 +1,4 @@
-package net.proest.lp2go2.Util;
+package net.proest.lp2go3.Util;
 
 import android.content.Context;
 import android.text.Html;

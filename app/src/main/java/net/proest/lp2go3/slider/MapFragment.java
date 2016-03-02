@@ -1,4 +1,4 @@
-package net.proest.lp2go2.slider;
+package net.proest.lp2go3.slider;
 
 import android.app.Fragment;
 import android.os.Bundle;
@@ -6,20 +6,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import net.proest.lp2go2.R;
+import net.proest.lp2go3.R;
 
-public class AboutFragment extends Fragment {
+public class MapFragment extends Fragment {
 
-    public AboutFragment() {
+    public MapFragment() {
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View rootView = inflater.inflate(R.layout.fragment_about, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_map, container, false);
 
         return rootView;
     }
-
 }

@@ -1,4 +1,4 @@
-package net.proest.lp2go2.slider;
+package net.proest.lp2go3.slider;
 
 import android.app.Fragment;
 import android.os.Bundle;
@@ -6,18 +6,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import net.proest.lp2go2.R;
+import net.proest.lp2go3.R;
 
-public class SettingsFragment extends Fragment {
+public class LogsFragment extends Fragment {
 
-    public SettingsFragment() {
+    public LogsFragment() {
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View rootView = inflater.inflate(R.layout.fragment_settings, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_logs, container, false);
 
         return rootView;
     }

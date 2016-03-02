@@ -34,7 +34,7 @@
  * limitations under the License.
  */
 
-package net.proest.lp2go2.UAVTalk;
+package net.proest.lp2go3.UAVTalk;
 
 import android.hardware.usb.UsbConstants;
 import android.hardware.usb.UsbDeviceConnection;
@@ -42,8 +42,8 @@ import android.hardware.usb.UsbEndpoint;
 import android.hardware.usb.UsbInterface;
 import android.hardware.usb.UsbRequest;
 
-import net.proest.lp2go2.H;
-import net.proest.lp2go2.MainActivity;
+import net.proest.lp2go3.H;
+import net.proest.lp2go3.MainActivity;
 
 import java.util.Arrays;
 import java.util.Hashtable;
@@ -250,6 +250,7 @@ public class UAVTalkUsbDevice extends UAVTalkDevice {
                     oTree.updateObject(myObj);
 
                     if (isLogging()) {
+                        //TODO: CHECK IF CRC IS IN bytes!
                         log(Arrays.copyOfRange(bytes, 2, bytes.length)); //TODO: This removes the first two byte, added only for USB compatibility
                     }
 

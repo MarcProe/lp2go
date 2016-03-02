@@ -14,7 +14,7 @@
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-package net.proest.lp2go2.UAVTalk;
+package net.proest.lp2go3.UAVTalk;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -23,9 +23,9 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
-import net.proest.lp2go2.H;
-import net.proest.lp2go2.MainActivity;
-import net.proest.lp2go2.R;
+import net.proest.lp2go3.H;
+import net.proest.lp2go3.MainActivity;
+import net.proest.lp2go3.R;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -199,10 +199,11 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
             setName("ConnectThread");
 
             mBluetoothAdapter.cancelDiscovery();
+            int tryagain = 0;
 
             try {
-                //mmSocket = mmDevice.createRfcommSocketToServiceRecord(UUID.fromString("00001101-0000-1000-8000-00805F9B34FB"));
-                mmSocket = mmDevice.createRfcommSocketToServiceRecord(UUID.fromString("00000000-0000-1000-8000-00805F9B34FB"));
+                mmSocket = mmDevice.createRfcommSocketToServiceRecord(UUID.fromString("00001101-0000-1000-8000-00805F9B34FB"));
+                //mmSocket = mmDevice.createRfcommSocketToServiceRecord(UUID.fromString("00000000-0000-1000-8000-00805F9B34FB"));
                 mmSocket.connect();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -225,9 +226,11 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
                 }
             }
 
+
             synchronized (this) {
                 mConnectThread = null;
             }
+
 
             connected(mmSocket, mmDevice);
         }
@@ -273,105 +276,60 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
             return r;
         }
 
-        private byte[] findUAVTalkMessage(byte[] b) {
-            byte[] retval = new byte[0];
-            int len = 0;
-            int startMsg = 0;
-
-            for (int i = 0; i < b.length - 8; i++) {
-                if (b[i] == 0x3c && b[i + 1] == 0x20) {
-
-                    int lb1 = b[i + 3] & 0x000000ff;
-                    int lb2 = b[i + 2] & 0x000000ff;
-                    len = lb1 << 8 | lb2;
-
-                    if (len > 64) return new byte[0];
-
-                    byte[] bmsg = Arrays.copyOfRange(b, i, i + len + 1); //+1 cause we want crc as well
-                    int crc = H.crc8(bmsg, 2, bmsg.length - 3);
-
-                    //Log.d("INPUT" + len, H.bytesToPrintHex(b));
-                    //Log.d("FOUND" + len, H.bytesToPrintHex(bmsg));
-                    //Log.d("CRC", "" + crc + " " + (bmsg[bmsg.length-1] & 0xff));
-
-                    bmsg = addTwoBytes(bmsg);
-
-                    //Log.d("FOUND" + len, H.bytesToPrintHex(bmsg));
-
-                    try {
-                        retval = Arrays.copyOfRange(b, i + bmsg.length - 1, b.length);
-                    } catch (IllegalArgumentException e) {
-                    }
-                    if (retval.length == 0) return retval;
-                    //if retval is 0, then we exactly stopped at the end of the bluetooth buffer
-                    //in this case, we should not create a new objhect, because there may be more data for the current object.
-                    //we could check this with length or crc (better length)
-                    //for now, just return to be save.
-
-                    try {
-                        UAVTalkMessage msg = new UAVTalkMessage(bmsg);
-                        //Log.d("MSG", ""+H.intToHex(msg.getoID()));
-                        UAVTalkObject myObj = oTree.getObjectFromID(H.intToHex(msg.getoID()));
-                        UAVTalkObjectInstance myIns;
-
-                        try {
-                            myIns = myObj.getInstance(msg.getiID());
-                            myIns.setData(msg.getData());
-                            myObj.setInstance(myIns);
-                        } catch (Exception e) {
-                            myIns = new UAVTalkObjectInstance(msg.getiID(), msg.getData());
-                            myObj.setInstance(myIns);
-                        }
-                        if (myObj.getId().equals("6B7639EC")) {
-                            Log.d("6B7639EC", myObj.getId());
-
-                            Log.d("INPUT" + len, H.bytesToPrintHex(b));
-                            Log.d("FOUND" + len, H.bytesToPrintHex(bmsg));
-                            Log.d("CRC", "" + crc + " " + (bmsg[bmsg.length - 1] & 0xff));
-                        }
-                        oTree.updateObject(myObj);
-                    } catch (Exception e) {
-                        //e.printStackTrace();
-                    }
-                    break;
-                }
-            }
-
-            return retval;
-        }
-
         public void run() {
 
-            byte[] syncbuffer = new byte[3];
-            byte[] buffer = new byte[64];
             byte[] seekbuffer = new byte[1];
-            byte[] headerbuffer = new byte[9];
+            byte[] syncbuffer = new byte[3];
+            byte[] msgtypebuffer = new byte[1];
+            byte[] lenbuffer = new byte[2];
+            byte[] oidbuffer = new byte[4];
+            byte[] iidbuffer = new byte[2];
+            byte[] databuffer = new byte[0];
             byte[] crcbuffer = new byte[1];
             int read;
             ////int lbytes;
             ////lbytes = 0;
 
             while (true) {
-                //Util.sleep(50);
                 try {
                     ////lbytes = mmInStream.read(buffer);
                     while (seekbuffer[0] != 0x3c) {
                         read = mmInStream.read(seekbuffer);
                     }
                     syncbuffer[2] = 0x3c;
-                    read = mmInStream.read(headerbuffer);
-                    int lb1 = headerbuffer[2] & 0x000000ff;
-                    int lb2 = headerbuffer[1] & 0x000000ff;
+
+                    mmInStream.read(msgtypebuffer);
+                    if (msgtypebuffer[0] != 0x20) continue;
+
+
+                    read = mmInStream.read(lenbuffer);
+                    int lb1 = lenbuffer[1] & 0x000000ff;
+                    int lb2 = lenbuffer[0] & 0x000000ff;
                     int len = lb1 << 8 | lb2;
 
-                    buffer = new byte[len];
-                    read = mmInStream.read(buffer);
+                    if (len > 268 || len < 13) {
+                        Log.d("BL", "Bad length " + H.bytesToPrintHex(syncbuffer) + " " + H.bytesToPrintHex(lenbuffer));
+                        continue; // maximum possible packet size
+                    }
+
+                    read = mmInStream.read(oidbuffer);
+                    read = mmInStream.read(iidbuffer);
+
+
+                    databuffer = new byte[len - 10];
+                    read = mmInStream.read(databuffer);
                     read = mmInStream.read(crcbuffer);
 
-                    byte[] bmsg = H.concatArray(syncbuffer, headerbuffer);
-                    bmsg = H.concatArray(bmsg, buffer);
+                    byte[] bmsg = H.concatArray(syncbuffer, msgtypebuffer);
+                    bmsg = H.concatArray(bmsg, lenbuffer);
+                    bmsg = H.concatArray(bmsg, oidbuffer);
+                    bmsg = H.concatArray(bmsg, iidbuffer);
+                    bmsg = H.concatArray(bmsg, databuffer);
                     int crc = H.crc8(bmsg, 0, bmsg.length);
                     bmsg = H.concatArray(bmsg, crcbuffer);
+
+                    Log.d("BMSG " + len, H.bytesToPrintHex(bmsg));
+
 
                     try {
                         UAVTalkMessage msg = new UAVTalkMessage(bmsg);
@@ -391,12 +349,12 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
                         //Log.d("6B7639EC", myObj.getId());
 
                         //Log.d("HBUFF" + bmsg.length, H.bytesToPrintHex(headerbuffer));
-                        if (myObj.getId().equals("6B7639EC")) {
+                        //if (myObj.getId().equals("6B7639EC")) {
 
-                            Log.d("BMSG" + len, H.bytesToPrintHex(bmsg));
-                            Log.d("CRC (MSG/CALC)", "" + crcbuffer[0] + " " + (byte) (crc & 0xff));
+                        //    Log.d("BMSG" + len, H.bytesToPrintHex(bmsg));
+                        //    Log.d("CRC (MSG/CALC)", "" + crcbuffer[0] + " " + (byte) (crc & 0xff));
 
-                        }
+                        //}
                         oTree.updateObject(myObj);
 
                         if (isLogging()) {

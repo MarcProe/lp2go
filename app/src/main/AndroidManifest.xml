@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="net.proest.lp2go2">
+    package="net.proest.lp2go3">
 
     <uses-feature android:name="android.hardware.usb.host" />
 
@@ -27,7 +27,7 @@
         android:theme="@style/AppTheme">
         <uses-library android:name="com.google.android.maps" />
         <activity
-            android:name=".MainActivity"
+            android:name="net.proest.lp2go3.MainActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait">
             <intent-filter>

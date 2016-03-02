@@ -1048,6 +1048,19 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
                                 setText(mActivity.txtVehicleName, getVehicleNameData());
 
+                                if (serialModeUsed == SERIAL_BLUETOOTH) {
+                                    mUAVTalkDevice.requestObject("SystemAlarms");
+                                    mUAVTalkDevice.requestObject("PathStatus");
+                                    mUAVTalkDevice.requestObject("GPSSatellites");
+                                    mUAVTalkDevice.requestObject("FlightTelemetryStats");
+                                    mUAVTalkDevice.requestObject("GCSTelemetryStats");
+                                    mUAVTalkDevice.requestObject("FlightStatus");
+                                    mUAVTalkDevice.requestObject("FlightBatteryState");
+                                    mUAVTalkDevice.requestObject("FlightBatterySettings");
+                                    mUAVTalkDevice.requestObject("BaroSensor");
+                                    mUAVTalkDevice.requestObject("VelocityState");
+                                    mUAVTalkDevice.requestObject("ManualControlCommand");
+                                }
                                 setTextBGColor(mActivity.txtAtti, getData("SystemAlarms", "Alarm", "Attitude").toString());
                                 setTextBGColor(mActivity.txtStab, getData("SystemAlarms", "Alarm", "Stabilization").toString());
                                 setTextBGColor(mActivity.txtPath, getData("PathStatus", "Status").toString());
@@ -1097,6 +1110,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                                 setText(mActivity.txtModeAssistedControl, getData("FlightStatus", "FlightModeAssist", true).toString());
                                 break;
                             case VIEW_MAP:
+
+                                if (serialModeUsed == SERIAL_BLUETOOTH) {
+                                    mUAVTalkDevice.requestObject("GPSSatellites");
+                                    mUAVTalkDevice.requestObject("SystemAlarms");
+                                    mUAVTalkDevice.requestObject("GPSPositionSensor");
+                                }
 
                                 setText(mActivity.txtMapGPSSatsInView, getData("GPSSatellites", "SatsInView").toString());
                                 setTextBGColor(mActivity.txtMapGPS, getData("SystemAlarms", "Alarm", "GPS").toString());

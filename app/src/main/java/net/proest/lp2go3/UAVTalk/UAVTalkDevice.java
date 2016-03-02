@@ -1,9 +1,9 @@
-package net.proest.lp2go2.UAVTalk;
+package net.proest.lp2go3.UAVTalk;
 
 import android.app.Activity;
 import android.content.Context;
 
-import net.proest.lp2go2.H;
+import net.proest.lp2go3.H;
 
 import java.io.FileOutputStream;
 import java.util.Arrays;

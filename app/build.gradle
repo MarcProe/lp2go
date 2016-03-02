@@ -4,11 +4,11 @@ android {
     compileSdkVersion 23
     buildToolsVersion '23.0.2'
     defaultConfig {
-        applicationId 'net.proest.lp2go2'
-        minSdkVersion 19
-        targetSdkVersion 19
-        versionName '0.2.3'
-        versionCode 6
+        applicationId 'net.proest.lp2go3'
+        minSdkVersion 16
+        targetSdkVersion 16
+        versionName '0.2.4.2'
+        versionCode 20402
     }
     buildTypes {
         release {
