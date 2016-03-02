@@ -19,6 +19,8 @@ package net.proest.lp2go3;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 public class H {
@@ -203,5 +205,13 @@ public class H {
         System.arraycopy(a, 0, c, 0, aLen);
         System.arraycopy(b, 0, c, aLen, bLen);
         return c;
+    }
+
+    public static String getLogFilename() {
+        //OP-2016-03-02_21-04-56
+        SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");//dd/MM/yyyy
+        Date now = new Date();
+        String strDate = sdfDate.format(now);
+        return "OP-" + strDate + ".opl";
     }
 }

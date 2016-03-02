@@ -56,7 +56,9 @@
                     android:layout_margin="1dp"
                     android:layout_weight="1"
                     android:background="@drawable/rounded_corner_left"
+                    android:ellipsize="end"
                     android:padding="1dp"
+                    android:singleLine="true"
                     android:text="32.154599"
                     android:textAlignment="center"
                     android:textAppearance="?android:attr/textAppearanceLarge" />
@@ -68,7 +70,9 @@
                     android:layout_margin="1dp"
                     android:layout_weight="1"
                     android:background="@drawable/rounded_corner_right"
+                    android:ellipsize="end"
                     android:padding="1dp"
+                    android:singleLine="true"
                     android:text="-110.827369"
                     android:textAlignment="center"
                     android:textAppearance="?android:attr/textAppearanceLarge" />

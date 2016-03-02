@@ -183,6 +183,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     protected ImageView imgBluetooth;
     protected ImageView imgUSB;
     protected TextView etxObjects;
+    protected TextView txtLogFilenameLabel;
+    protected TextView txtLogFilename;
+    protected TextView txtLogSize;
+    protected TextView txtLogSizeLabel;
+    protected TextView txtLogObjects;
+    protected TextView txtLogObjectsLabel;
+    protected TextView txtLogDuration;
+    protected TextView txtLogDurationLabel;
     protected EditText etxSettingsBTMac;
     protected Spinner spnConnectionTypeSpinner;
     protected Button btnStart;
@@ -410,7 +418,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     .snippet("LP rules")
                     .icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_launcher)));
         }
-        setContentView(view0);
+        setContentView(view0);  //Main
 
         AssetManager assets = getAssets();
 
@@ -491,16 +499,16 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             imgUSB.setColorFilter(Color.argb(255, 255, 0, 0));
         }
 
-        setContentView(view1);
+        setContentView(view1); //Map
         txtLatitude = (TextView) findViewById(R.id.txtLatitude);
         txtLongitude = (TextView) findViewById(R.id.txtLongitude);
         txtMapGPS = (TextView) findViewById(R.id.txtMapGPS);
         txtMapGPSSatsInView = (TextView) findViewById(R.id.txtMapGPSSatsInView);
 
-        setContentView(view2);
+        setContentView(view2); //Objects
         etxObjects = (EditText) findViewById(R.id.etxObjects);
 
-        setContentView(view3);
+        setContentView(view3); //Settings
         spnConnectionTypeSpinner = (Spinner) findViewById(R.id.spnConnectionTypeSpinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.connections_settings, android.R.layout.simple_spinner_item);
@@ -514,9 +522,17 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         etxSettingsBTMac = (EditText) findViewById(R.id.etxSettingsBTMac);
         etxSettingsBTMac.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
-        setContentView(view4);
 
-        setContentView(view5);
+
+        setContentView(view4); //Logs
+
+        txtLogFilename = (TextView) findViewById(R.id.txtLogFilename);
+        txtLogSize = (TextView) findViewById(R.id.txtLogSize);
+        txtLogObjects = (TextView) findViewById(R.id.txtLogObjects);
+        txtLogDuration = (TextView) findViewById(R.id.txtLogDuration);
+
+
+        setContentView(view5);  //About
         PackageInfo pInfo = null;
         try {
             pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
@@ -557,14 +573,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         Log.d("MainActivity.onCreate", "XML Loading Complete");
 
         // check for existing devices
-        if (serialModeUsed == SERIAL_USB) {
-            for (UsbDevice device : mManager.getDeviceList().values()) {
-                UsbInterface intf = findAdbInterface(device);
-                if (setUsbInterface(device, intf)) {
-                    break;
-                }
-            }
-        }
+
 
         // listen for new devices
         IntentFilter filter = new IntentFilter();
@@ -578,8 +587,42 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         startPollThread();
 
+        connectSerial();
+
         isReady = true;
         onStartClick(null);
+    }
+
+    private void connectSerial() {
+        Log.d("CS", "" + (mUAVTalkDevice == null));
+        if (mUAVTalkDevice == null || !mUAVTalkDevice.isConnected()) {
+            connectUSB();
+            connectBluettooth();
+        }
+        startPollThread();
+    }
+
+    private void connectUSB() {
+        if (serialModeUsed == SERIAL_USB) {
+
+            for (UsbDevice device : mManager.getDeviceList().values()) {
+                UsbInterface intf = findAdbInterface(device);
+                if (device.getDeviceClass() == UsbConstants.USB_CLASS_MISC) {
+                    mManager.requestPermission(device, mPermissionIntent);
+                }
+                //if (setUsbInterface(device, intf)) {
+                txtDeviceText.setText(device.getDeviceName());
+                //    break;
+                //}
+            }
+
+        }
+    }
+
+    private void connectBluettooth() {
+        if (serialModeUsed == SERIAL_BLUETOOTH) {
+            setBluetoothInterface();
+        }
     }
 
     public void setContentView(View v, int p) {
@@ -592,7 +635,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     private void displayView(int position) {
         Fragment fragment = null;
-
 
         //clean up current view
         switch (currentView) {
@@ -611,6 +653,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 SharedPreferences.Editor editor = sharedPref.edit();
                 editor.putString(getString(R.string.SETTINGS_BT_MAC), etxSettingsBTMac.getText().toString());
                 editor.commit();
+                connectSerial(); //connect to chosen serial
 
                 break;
             case VIEW_LOGS:
@@ -738,20 +781,33 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     public void onLogStartClick(View v) {
-        mUAVTalkDevice.setLogging(true);
+        try {
+            mUAVTalkDevice.setLogging(true);
+        } catch (NullPointerException e) {
+
+        }
     }
 
     public void onLogStopClick(View v) {
-        mUAVTalkDevice.setLogging(false);
+        try {
+            mUAVTalkDevice.setLogging(false);
+        } catch (NullPointerException e) {
+
+        }
     }
 
     public void onLogShare(View v) {
-        mUAVTalkDevice.setLogging(false);
+        try {
+            mUAVTalkDevice.setLogging(false);
+        } catch (NullPointerException e) {
+            return;
+        }
         Intent share = new Intent(Intent.ACTION_SEND);
-        share.setType("txt/plain");
+        //share.setType("txt/plain");
+        share.setType("application/octet-stream");
 
         File logPath = new File(this.getFilesDir(), "");
-        File logFile = new File(logPath, "oplog");
+        File logFile = new File(logPath, mUAVTalkDevice.getLogFileName());
         Uri contentUri = FileProvider.getUriForFile(this, "net.proest.lp2go.logfileprovider", logFile);
 
         share.putExtra(Intent.EXTRA_STREAM, contentUri);
@@ -769,6 +825,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     public void startPollThread() {
+        stopPollThread();
         if (pThread == null) {
             pThread = new PollThread(this);
             if (mUAVTalkDevice == null) {
@@ -1170,6 +1227,20 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                                     etxObjects.setText(mUAVTalkDevice.getoTree().toString());
                                 } catch (Exception e) {
                                     e.printStackTrace();
+                                }
+                                break;
+                            case VIEW_LOGS:
+                                if (mUAVTalkDevice.isLogging()) {
+                                    try {
+                                        txtLogFilename.setText(mUAVTalkDevice.getLogFileName());
+                                        double lUAV = Math.round(mUAVTalkDevice.getLogBytesLoggedUAV() / 102.4) / 10.;
+                                        double lOPL = Math.round(mUAVTalkDevice.getLogBytesLoggedOPL() / 102.4) / 10.;
+                                        txtLogSize.setText(String.valueOf(lUAV) + getString(R.string.tab) + "(" + String.valueOf(lOPL) + ") KB");
+                                        txtLogObjects.setText(String.valueOf(mUAVTalkDevice.getLogObjectsLogged()));
+                                        txtLogDuration.setText(String.valueOf((System.currentTimeMillis() - mUAVTalkDevice.getLogStartTimeStamp()) / 1000) + " s");
+                                    } catch (Exception e) {
+
+                                    }
                                 }
                                 break;
                         }

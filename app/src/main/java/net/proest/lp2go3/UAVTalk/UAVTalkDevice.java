@@ -10,15 +10,36 @@ import java.util.Arrays;
 
 /**
  * Created by Marcus on 29.02.2016.
+
  */
 public class UAVTalkDevice implements UAVTalkDeviceInterface {
     Activity mActivity;
     private FileOutputStream logOutputStream;
+    private String logFileName = "OP-YYYY-MM-DD_HH-MM-SS";
     private long logStartTimeStamp;
     private boolean isLogging = false;
+    private long logBytesLoggedUAV = 0;
+    private long logBytesLoggedOPL = 0;
+    private long logObjectsLogged = 0;
 
     public UAVTalkDevice(Activity mActivity) {
         this.mActivity = mActivity;
+    }
+
+    public long getLogBytesLoggedUAV() {
+        return logBytesLoggedUAV;
+    }
+
+    public long getLogBytesLoggedOPL() {
+        return logBytesLoggedOPL;
+    }
+
+    public long getLogObjectsLogged() {
+        return logObjectsLogged;
+    }
+
+    public long getLogStartTimeStamp() {
+        return logStartTimeStamp;
     }
 
     public boolean isLogging() {
@@ -32,9 +53,6 @@ public class UAVTalkDevice implements UAVTalkDeviceInterface {
 
         isLogging = logNow;
 
-        String filename = "oplog";
-        String string = "Hello world!";
-
         try {       //anyway, close the current stream
             logOutputStream.close();
         } catch (Exception e) {
@@ -42,14 +60,20 @@ public class UAVTalkDevice implements UAVTalkDeviceInterface {
         }
 
         if (isLogging) {  //if logging should start, create new stream
+            mActivity.deleteFile(logFileName); //delete old log
+            logFileName = H.getLogFilename();
+
             try {
-                logOutputStream = mActivity.openFileOutput(filename, Context.MODE_PRIVATE);
+                logOutputStream = mActivity.openFileOutput(logFileName, Context.MODE_PRIVATE);
                 //outputStream.write(string.getBytes());
                 //outputStream.close();
             } catch (Exception e) {
                 e.printStackTrace();
             }
             logStartTimeStamp = System.currentTimeMillis();  //and set the time offset
+            logBytesLoggedOPL = 0;
+            logBytesLoggedUAV = 0;
+            logObjectsLogged = 0;
         }
     }
 
@@ -66,6 +90,9 @@ public class UAVTalkDevice implements UAVTalkDeviceInterface {
             msg = H.concatArray(msg, b);
 
             logOutputStream.write(msg);
+            logBytesLoggedUAV += b.length;
+            logBytesLoggedOPL += msg.length;
+            logObjectsLogged++;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -109,5 +136,9 @@ public class UAVTalkDevice implements UAVTalkDeviceInterface {
     @Override
     public boolean setConnected(boolean connected) {
         return false;
+    }
+
+    public String getLogFileName() {
+        return logFileName;
     }
 }
