@@ -134,7 +134,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private static final int VIEW_LOGS = 4;
     private static final int VIEW_ABOUT = 5;
     private static final String EMPTY_STRING = "";
+    static boolean hasPThread = false;
     public boolean isReady = false;
+    protected TextView txtObjectLog;
     protected TextView txtAtti;
     protected TextView txtPlan;
     protected TextView txtStab;
@@ -197,6 +199,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     int currentView = 0;
     int HISTORY_MARKER_NUM = 5;
     int currentPosMarker = 0;
+    private long objectsOK;
+    private long objectsNOK;
     private int serialConnectionState;
     private int serialModeUsed;
     private DrawerLayout mDrawerLayout;
@@ -213,6 +217,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private NavDrawerListAdapter adapter;
     private Hashtable<String, Object> offset;
     private PollThread pThread;
+    private ConnectionThread cThread;
     private TextView txtDeviceText;
     private UsbManager mManager;
     private UsbDevice mDevice;
@@ -249,7 +254,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     }
                 }
                 txtDeviceText.setText(R.string.DEVICE_NAME_NONE);
-                stopPollThread();
             } else if (serialModeUsed == SERIAL_USB && ACTION_USB_PERMISSION.equals(action)) {
                 synchronized (this) {
                     UsbDevice device = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
@@ -262,7 +266,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                                 mUAVTalkDevice.setConnected(ok);
                             }
                         }
-                        startPollThread();
                     } else {
                         Log.d("DBG", "permission denied for device " + mDevice);
                     }
@@ -276,6 +279,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private View view0, view1, view2, view3, view4, view5;
     private GoogleMap map;
     private MapView mapView;
+    private boolean doReconnect = false;
 
     static private UsbInterface findAdbInterface(UsbDevice device) {
 
@@ -289,6 +293,30 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         }
         return null;
+    }
+
+    public long getObjectsOK() {
+        return objectsOK;
+    }
+
+    public void setObjectsOK(long objectsOK) {
+        this.objectsOK = objectsOK;
+    }
+
+    public void incObjectsNOK() {
+        objectsNOK++;
+    }
+
+    public void incObjectsOK() {
+        objectsOK++;
+    }
+
+    public long getObjectsNOK() {
+        return objectsNOK;
+    }
+
+    public void setObjectsNOK(long objectsNOK) {
+        this.objectsNOK = objectsNOK;
     }
 
     private void initSlider(Bundle savedInstanceState) {
@@ -386,6 +414,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         mDrawerToggle.onConfigurationChanged(newConfig);
     }
 
+    public void setObjectLog(String o) {
+        txtObjectLog.setText(o);
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -430,6 +462,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         offset = new Hashtable<String, Object>();
         offset.put(OFFSET_BAROSENSOR_ALTITUDE, .0f);
         offset.put(OFFSET_VELOCITY_DOWN, .0f);
+
+        txtObjectLog = (TextView) findViewById(R.id.txtObjectLog);
 
         txtDeviceText = (TextView) findViewById(R.id.txtDeviceName);
 
@@ -549,7 +583,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
         setContentView(view0);
 
-        btnStart = (Button) findViewById(R.id.btnStart);
 
         mPermissionIntent = PendingIntent.getBroadcast(this, 0, new Intent(ACTION_USB_PERMISSION), 0);
         mManager = (UsbManager) getSystemService(Context.USB_SERVICE);
@@ -585,37 +618,22 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         if (Looper.myLooper() == null) Looper.prepare();
 
-        startPollThread();
-
-        connectSerial();
+        pThread = new PollThread(this);
+        cThread = new ConnectionThread(this);
+        pThread.start();
+        cThread.start();
 
         isReady = true;
-        onStartClick(null);
-    }
-
-    private void connectSerial() {
-        Log.d("CS", "" + (mUAVTalkDevice == null));
-        if (mUAVTalkDevice == null || !mUAVTalkDevice.isConnected()) {
-            connectUSB();
-            connectBluettooth();
-        }
-        startPollThread();
     }
 
     private void connectUSB() {
         if (serialModeUsed == SERIAL_USB) {
-
             for (UsbDevice device : mManager.getDeviceList().values()) {
                 UsbInterface intf = findAdbInterface(device);
                 if (device.getDeviceClass() == UsbConstants.USB_CLASS_MISC) {
                     mManager.requestPermission(device, mPermissionIntent);
                 }
-                //if (setUsbInterface(device, intf)) {
-                txtDeviceText.setText(device.getDeviceName());
-                //    break;
-                //}
             }
-
         }
     }
 
@@ -636,7 +654,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private void displayView(int position) {
         Fragment fragment = null;
 
-        startPollThread();
+
 
         //clean up current view
         switch (currentView) {
@@ -653,9 +671,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             case VIEW_SETTINGS:
                 SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPref.edit();
-                editor.putString(getString(R.string.SETTINGS_BT_MAC), etxSettingsBTMac.getText().toString());
+                String btmac = etxSettingsBTMac.getText().toString().toUpperCase().replace('-', ':');
+                etxSettingsBTMac.setText(btmac);
+                editor.putString(getString(R.string.SETTINGS_BT_MAC), btmac);
                 editor.commit();
-                connectSerial(); //connect to chosen serial
+                doReconnect = true;
 
                 break;
             case VIEW_LOGS:
@@ -766,22 +786,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         batteryCellsDialogBuilder.show();
     }
 
-    public void onConnectClick(View v) {
-        Log.d("SMU1", "" + serialModeUsed);
-        if (serialModeUsed == SERIAL_BLUETOOTH) {
-            setBluetoothInterface();
-            startPollThread();
-        }
-    }
-
-    public void onStartClick(View v) {
-        if (pThread == null) {
-            startPollThread();
-        } else {
-            stopPollThread();
-        }
-    }
-
     public void onLogStartClick(View v) {
         try {
             mUAVTalkDevice.setLogging(true);
@@ -818,41 +822,23 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         startActivity(Intent.createChooser(share, "Share Log"));
     }
 
-    public void stopPollThread() {
-        if (pThread != null) {
-            pThread.setInvalid();
-            pThread = null;
-            btnStart.setText(R.string.Start);
-        }
-    }
-
-    public void restartPollThread() {
-        stopPollThread();
-        startPollThread();
-    }
-
-    public void startPollThread() {
-
-        if (pThread == null || !pThread.isValid()) {
-            pThread = new PollThread(this);
-            if (mUAVTalkDevice == null) {
-                return;
-            }
-            pThread.setoTree(mUAVTalkDevice.getoTree());
-            pThread.start();
-            btnStart.setText(R.string.Stop);
-        }
+    public void setPThreadOTree(UAVTalkObjectTree oTree) {
+        pThread.setoTree(oTree);
     }
 
     private boolean setBluetoothInterface() {
-        try {
+        /*try {
             mUAVTalkDevice.stop();
         } catch (Exception e) {
             Log.d("DBG", "Could'nt stop device");
         }
-        mUAVTalkDevice = null;
+        mUAVTalkDevice = null;*/
+        if (mUAVTalkDevice != null) {
+            mUAVTalkDevice.stop();
+        }
         mUAVTalkDevice = new UAVTalkBluetoothDevice(this, xmlObjects);
         mUAVTalkDevice.start();
+        //}
         return mUAVTalkDevice != null;
     }
 
@@ -1006,6 +992,56 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     }
 
+    private void resetMainView() {
+
+        txtDeviceText.setText("");
+        txtAtti.setBackground(getResources().getDrawable(R.drawable.rounded_corner_uninitialised));
+        txtStab.setBackground(getResources().getDrawable(R.drawable.rounded_corner_uninitialised));
+        txtPath.setBackground(getResources().getDrawable(R.drawable.rounded_corner_uninitialised));
+        txtPlan.setBackground(getResources().getDrawable(R.drawable.rounded_corner_uninitialised));
+
+        txtGPSSatsInView.setText("");
+        txtGPS.setBackground(getResources().getDrawable(R.drawable.rounded_corner_uninitialised));
+        txtSensor.setBackground(getResources().getDrawable(R.drawable.rounded_corner_uninitialised));
+        txtAirspd.setBackground(getResources().getDrawable(R.drawable.rounded_corner_uninitialised));
+        txtMag.setBackground(getResources().getDrawable(R.drawable.rounded_corner_uninitialised));
+
+        txtInput.setBackground(getResources().getDrawable(R.drawable.rounded_corner_uninitialised));
+        txtOutput.setBackground(getResources().getDrawable(R.drawable.rounded_corner_uninitialised));
+        txtI2C.setBackground(getResources().getDrawable(R.drawable.rounded_corner_uninitialised));
+        txtTelemetry.setBackground(getResources().getDrawable(R.drawable.rounded_corner_uninitialised));
+
+        txtFlightTelemetry.setText("");
+        txtGCSTelemetry.setText("");
+
+        txtBatt.setBackground(getResources().getDrawable(R.drawable.rounded_corner_uninitialised));
+        txtTime.setBackground(getResources().getDrawable(R.drawable.rounded_corner_uninitialised));
+        txtConfig.setBackground(getResources().getDrawable(R.drawable.rounded_corner_uninitialised));
+
+        txtBoot.setBackground(getResources().getDrawable(R.drawable.rounded_corner_uninitialised));
+        txtMem.setBackground(getResources().getDrawable(R.drawable.rounded_corner_uninitialised));
+        txtStack.setBackground(getResources().getDrawable(R.drawable.rounded_corner_uninitialised));
+        txtEvent.setBackground(getResources().getDrawable(R.drawable.rounded_corner_uninitialised));
+        txtCPU.setBackground(getResources().getDrawable(R.drawable.rounded_corner_uninitialised));
+
+        txtArmed.setText("");
+
+        txtVolt.setText("");
+        txtAmpere.setText("");
+        txtmAh.setText("");
+        txtTimeLeft.setText("");
+
+        txtCapacity.setText("");
+        txtCells.setText("");
+
+        txtAltitude.setText("");
+        txtAltitudeAccel.setText("");
+
+        txtModeNum.setText("");
+        txtModeFlightMode.setText("");
+        txtModeAssistedControl.setText("");
+    }
+
     private class SlideMenuClickListener implements
             ListView.OnItemClickListener {
         @Override
@@ -1018,26 +1054,24 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         MainActivity mActivity;
         UAVTalkObjectTree oTree;
-        private boolean isValid = false;
 
         public PollThread(MainActivity mActivity) {
+            if (hasPThread) throw new IllegalStateException("double pThread");
+            hasPThread = true;
             this.mActivity = mActivity;
-            this.isValid = true;
         }
 
         public void setoTree(UAVTalkObjectTree oTree) {
             this.oTree = oTree;
         }
 
-        public void setInvalid() {
-            this.isValid = false;
-        }
 
         private void setText(TextView t, String text) {
             if (text != null) {
                 t.setText(text);
             }
         }
+
 
         private void setTextBGColor(TextView t, String color) {
             if (color == null || color == EMPTY_STRING) {
@@ -1080,12 +1114,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 } catch (InterruptedException e) {
                 }
 
-                if (this.oTree == null) {
-                    try {
-                        Thread.sleep(1000);//sleep a bit extra
-                    } catch (InterruptedException e) {
-                    }
-                    continue;  //nothing yet to show...
+                if (this.oTree == null || mUAVTalkDevice == null || !mUAVTalkDevice.isConnected()) {
+                    //try {
+                    //Thread.sleep(1000);//sleep a bit extra
+                    //} catch (InterruptedException e) {
+                    //}
+                    continue;  //nothing yet to show, or not connected
                 }
 
                 mActivity.runOnUiThread(new Runnable() {
@@ -1093,164 +1127,177 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     public void run() {
 
                         ImageView currentImgView = null;
+                        ImageView previousImgView = null;
+
                         if (serialModeUsed == SERIAL_BLUETOOTH) {
                             currentImgView = imgBluetooth;
+                            previousImgView = imgUSB;
                         } else if (serialModeUsed == SERIAL_USB) {
                             currentImgView = imgUSB;
+                            previousImgView = imgBluetooth;
                         }
-                        if (mUAVTalkDevice.isConnected()) {
+                        previousImgView.setColorFilter(Color.argb(255, 255, 0, 0));
+                        if (mUAVTalkDevice != null && mUAVTalkDevice.isConnected()) {
                             serialConnectionState = SERIAL_CONNECTED;
-                            if (currentImgView != null)
+                            if (currentImgView != null) {
                                 currentImgView.setColorFilter(Color.argb(255, 0, 255, 0));
+                            }
                         } else {
                             serialConnectionState = SERIAL_DISCONNECTED;
-                            if (currentImgView != null)
+                            if (currentImgView != null) {
                                 currentImgView.setColorFilter(Color.argb(255, 255, 0, 0));
+                            }
                         }
+                        try {
+                            switch (currentView) {
+                                case VIEW_MAIN:
 
-                        switch (currentView) {
-                            case VIEW_MAIN:
 
-                                setText(mActivity.txtVehicleName, getVehicleNameData());
+                                    txtObjectLog.setText(("" + objectsOK + " - " + objectsNOK));
+                                    setText(mActivity.txtVehicleName, getVehicleNameData());
 
-                                if (serialModeUsed == SERIAL_BLUETOOTH) {
-                                    mUAVTalkDevice.requestObject("SystemAlarms");
-                                    mUAVTalkDevice.requestObject("PathStatus");
-                                    mUAVTalkDevice.requestObject("GPSSatellites");
-                                    mUAVTalkDevice.requestObject("FlightTelemetryStats");
-                                    mUAVTalkDevice.requestObject("GCSTelemetryStats");
-                                    mUAVTalkDevice.requestObject("FlightStatus");
-                                    mUAVTalkDevice.requestObject("FlightBatteryState");
-                                    mUAVTalkDevice.requestObject("FlightBatterySettings");
-                                    mUAVTalkDevice.requestObject("BaroSensor");
-                                    mUAVTalkDevice.requestObject("VelocityState");
-                                    mUAVTalkDevice.requestObject("ManualControlCommand");
-                                }
-                                setTextBGColor(mActivity.txtAtti, getData("SystemAlarms", "Alarm", "Attitude").toString());
-                                setTextBGColor(mActivity.txtStab, getData("SystemAlarms", "Alarm", "Stabilization").toString());
-                                setTextBGColor(mActivity.txtPath, getData("PathStatus", "Status").toString());
-                                setTextBGColor(mActivity.txtPlan, getData("SystemAlarms", "Alarm", "PathPlan").toString());
+                                    if (serialModeUsed == SERIAL_BLUETOOTH) {
+                                        mUAVTalkDevice.requestObject("SystemAlarms");
+                                        mUAVTalkDevice.requestObject("PathStatus");
+                                        mUAVTalkDevice.requestObject("GPSSatellites");
+                                        mUAVTalkDevice.requestObject("FlightTelemetryStats");
+                                        mUAVTalkDevice.requestObject("GCSTelemetryStats");
+                                        mUAVTalkDevice.requestObject("FlightStatus");
+                                        mUAVTalkDevice.requestObject("FlightBatteryState");
+                                        mUAVTalkDevice.requestObject("FlightBatterySettings");
+                                        mUAVTalkDevice.requestObject("BaroSensor");
+                                        mUAVTalkDevice.requestObject("VelocityState");
+                                        mUAVTalkDevice.requestObject("ManualControlCommand");
+                                    }
+                                    setTextBGColor(mActivity.txtAtti, getData("SystemAlarms", "Alarm", "Attitude").toString());
+                                    setTextBGColor(mActivity.txtStab, getData("SystemAlarms", "Alarm", "Stabilization").toString());
+                                    setTextBGColor(mActivity.txtPath, getData("PathStatus", "Status").toString());
+                                    setTextBGColor(mActivity.txtPlan, getData("SystemAlarms", "Alarm", "PathPlan").toString());
 
-                                setText(mActivity.txtGPSSatsInView, getData("GPSSatellites", "SatsInView").toString());
-                                setTextBGColor(mActivity.txtGPS, getData("SystemAlarms", "Alarm", "GPS").toString());
-                                setTextBGColor(mActivity.txtSensor, getData("SystemAlarms", "Alarm", "Sensors").toString());
-                                setTextBGColor(mActivity.txtAirspd, getData("SystemAlarms", "Alarm", "Airspeed").toString());
-                                setTextBGColor(mActivity.txtMag, getData("SystemAlarms", "Alarm", "Magnetometer").toString());
+                                    setText(mActivity.txtGPSSatsInView, getData("GPSSatellites", "SatsInView").toString());
+                                    setTextBGColor(mActivity.txtGPS, getData("SystemAlarms", "Alarm", "GPS").toString());
+                                    setTextBGColor(mActivity.txtSensor, getData("SystemAlarms", "Alarm", "Sensors").toString());
+                                    setTextBGColor(mActivity.txtAirspd, getData("SystemAlarms", "Alarm", "Airspeed").toString());
+                                    setTextBGColor(mActivity.txtMag, getData("SystemAlarms", "Alarm", "Magnetometer").toString());
 
-                                setTextBGColor(mActivity.txtInput, getData("SystemAlarms", "Alarm", "Receiver").toString());
-                                setTextBGColor(mActivity.txtOutput, getData("SystemAlarms", "Alarm", "Actuator").toString());
-                                setTextBGColor(mActivity.txtI2C, getData("SystemAlarms", "Alarm", "I2C").toString());
-                                setTextBGColor(mActivity.txtTelemetry, getData("SystemAlarms", "Alarm", "Telemetry").toString());
+                                    setTextBGColor(mActivity.txtInput, getData("SystemAlarms", "Alarm", "Receiver").toString());
+                                    setTextBGColor(mActivity.txtOutput, getData("SystemAlarms", "Alarm", "Actuator").toString());
+                                    setTextBGColor(mActivity.txtI2C, getData("SystemAlarms", "Alarm", "I2C").toString());
+                                    setTextBGColor(mActivity.txtTelemetry, getData("SystemAlarms", "Alarm", "Telemetry").toString());
 
-                                setText(mActivity.txtFlightTelemetry, getData("FlightTelemetryStats", "Status").toString());
-                                setText(mActivity.txtGCSTelemetry, getData("GCSTelemetryStats", "Status").toString());
+                                    setText(mActivity.txtFlightTelemetry, getData("FlightTelemetryStats", "Status").toString());
+                                    setText(mActivity.txtGCSTelemetry, getData("GCSTelemetryStats", "Status").toString());
 
-                                setTextBGColor(mActivity.txtBatt, getData("SystemAlarms", "Alarm", "Battery").toString());
-                                setTextBGColor(mActivity.txtTime, getData("SystemAlarms", "Alarm", "FlightTime").toString());
-                                setTextBGColor(mActivity.txtConfig, getData("SystemAlarms", "ExtendedAlarmStatus", "SystemConfiguration").toString());
+                                    setTextBGColor(mActivity.txtBatt, getData("SystemAlarms", "Alarm", "Battery").toString());
+                                    setTextBGColor(mActivity.txtTime, getData("SystemAlarms", "Alarm", "FlightTime").toString());
+                                    setTextBGColor(mActivity.txtConfig, getData("SystemAlarms", "ExtendedAlarmStatus", "SystemConfiguration").toString());
 
-                                setTextBGColor(mActivity.txtBoot, getData("SystemAlarms", "Alarm", "BootFault").toString());
-                                setTextBGColor(mActivity.txtMem, getData("SystemAlarms", "Alarm", "OutOfMemory").toString());
-                                setTextBGColor(mActivity.txtStack, getData("SystemAlarms", "Alarm", "StackOverflow").toString());
-                                setTextBGColor(mActivity.txtEvent, getData("SystemAlarms", "Alarm", "EventSystem").toString());
-                                setTextBGColor(mActivity.txtCPU, getData("SystemAlarms", "Alarm", "CPUOverload").toString());
+                                    setTextBGColor(mActivity.txtBoot, getData("SystemAlarms", "Alarm", "BootFault").toString());
+                                    setTextBGColor(mActivity.txtMem, getData("SystemAlarms", "Alarm", "OutOfMemory").toString());
+                                    setTextBGColor(mActivity.txtStack, getData("SystemAlarms", "Alarm", "StackOverflow").toString());
+                                    setTextBGColor(mActivity.txtEvent, getData("SystemAlarms", "Alarm", "EventSystem").toString());
+                                    setTextBGColor(mActivity.txtCPU, getData("SystemAlarms", "Alarm", "CPUOverload").toString());
 
-                                setText(mActivity.txtArmed, getData("FlightStatus", "Armed").toString());
+                                    setText(mActivity.txtArmed, getData("FlightStatus", "Armed").toString());
 
-                                setText(mActivity.txtVolt, getData("FlightBatteryState", "Voltage").toString());
-                                setText(mActivity.txtAmpere, getData("FlightBatteryState", "Current").toString());
-                                setText(mActivity.txtmAh, getData("FlightBatteryState", "ConsumedEnergy").toString());
-                                setText(mActivity.txtTimeLeft, H.getDateFromSeconds(getData("FlightBatteryState", "EstimatedFlightTime").toString()));
+                                    setText(mActivity.txtVolt, getData("FlightBatteryState", "Voltage").toString());
+                                    setText(mActivity.txtAmpere, getData("FlightBatteryState", "Current").toString());
+                                    setText(mActivity.txtmAh, getData("FlightBatteryState", "ConsumedEnergy").toString());
+                                    setText(mActivity.txtTimeLeft, H.getDateFromSeconds(getData("FlightBatteryState", "EstimatedFlightTime").toString()));
 
-                                setText(mActivity.txtCapacity, getData("FlightBatterySettings", "Capacity").toString());
-                                setText(mActivity.txtCells, getData("FlightBatterySettings", "NbCells").toString());
+                                    setText(mActivity.txtCapacity, getData("FlightBatterySettings", "Capacity").toString());
+                                    setText(mActivity.txtCells, getData("FlightBatterySettings", "NbCells").toString());
 
-                                setText(mActivity.txtAltitude, getFloatOffsetData("BaroSensor", "Altitude", OFFSET_BAROSENSOR_ALTITUDE));
-                                setText(mActivity.txtAltitudeAccel, getFloatOffsetData("VelocityState", "Down", OFFSET_VELOCITY_DOWN));
+                                    setText(mActivity.txtAltitude, getFloatOffsetData("BaroSensor", "Altitude", OFFSET_BAROSENSOR_ALTITUDE));
+                                    setText(mActivity.txtAltitudeAccel, getFloatOffsetData("VelocityState", "Down", OFFSET_VELOCITY_DOWN));
 
-                                String flightModeSwitchPosition = getData("ManualControlCommand", "FlightModeSwitchPosition", true).toString();
+                                    String flightModeSwitchPosition = getData("ManualControlCommand", "FlightModeSwitchPosition", true).toString();
 
-                                setText(mActivity.txtModeNum, flightModeSwitchPosition);
-                                setText(mActivity.txtModeFlightMode, getData("FlightStatus", "FlightMode", true).toString());
-                                setText(mActivity.txtModeAssistedControl, getData("FlightStatus", "FlightModeAssist", true).toString());
-                                break;
-                            case VIEW_MAP:
+                                    setText(mActivity.txtModeNum, flightModeSwitchPosition);
+                                    setText(mActivity.txtModeFlightMode, getData("FlightStatus", "FlightMode", true).toString());
+                                    setText(mActivity.txtModeAssistedControl, getData("FlightStatus", "FlightModeAssist", true).toString());
+                                    break;
+                                case VIEW_MAP:
 
-                                if (serialModeUsed == SERIAL_BLUETOOTH) {
-                                    mUAVTalkDevice.requestObject("GPSSatellites");
-                                    mUAVTalkDevice.requestObject("SystemAlarms");
-                                    mUAVTalkDevice.requestObject("GPSPositionSensor");
-                                }
-
-                                setText(mActivity.txtMapGPSSatsInView, getData("GPSSatellites", "SatsInView").toString());
-                                setTextBGColor(mActivity.txtMapGPS, getData("SystemAlarms", "Alarm", "GPS").toString());
-                                float deg = 0;
-                                try {
-                                    deg = (Float) getData("GPSPositionSensor", "Heading");
-                                } catch (Exception e) {
-
-                                }
-
-                                Float lat = getGPSCoordinates("GPSPositionSensor", "Latitude");
-                                Float lng = getGPSCoordinates("GPSPositionSensor", "Longitude");
-
-                                setText(mActivity.txtLatitude, lat.toString());
-                                setText(mActivity.txtLongitude, lng.toString());
-
-                                LatLng src = map.getCameraPosition().target;
-                                LatLng dst = new LatLng(lat, lng);
-
-                                double distance = H.calculationByDistance(src, dst);
-                                if (distance > 0.001) {
-                                    CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lng), 19);
-                                    MapsInitializer.initialize(mActivity);
-                                    if (distance < 200) {
-                                        map.animateCamera(cameraUpdate);
-                                    } else {
-                                        map.moveCamera(cameraUpdate);
+                                    if (serialModeUsed == SERIAL_BLUETOOTH) {
+                                        mUAVTalkDevice.requestObject("GPSSatellites");
+                                        mUAVTalkDevice.requestObject("SystemAlarms");
+                                        mUAVTalkDevice.requestObject("GPSPositionSensor");
                                     }
 
-                                    posHistory[currentPosMarker] = map.addMarker(new MarkerOptions()
-                                                    .position(new LatLng(lat, lng))
-                                                    .title("Librepilot")
-                                                    .snippet("LP rules")
-                                                    .flat(true)
-                                                    .anchor(0.5f, 0.5f)
-                                                    .rotation(deg)
-                                            //.icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_launcher))
-                                    );
-
-                                    currentPosMarker++;
-                                    if (currentPosMarker >= HISTORY_MARKER_NUM) {
-                                        currentPosMarker = 0;
-                                    }
-                                    if (posHistory[currentPosMarker] != null) {
-                                        posHistory[currentPosMarker].remove();
-                                    }
-                                } else {
-                                }
-                                break;
-                            case VIEW_OBJECTS:
-                                try {
-                                    etxObjects.setText(mUAVTalkDevice.getoTree().toString());
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                                break;
-                            case VIEW_LOGS:
-                                if (mUAVTalkDevice.isLogging()) {
+                                    setText(mActivity.txtMapGPSSatsInView, getData("GPSSatellites", "SatsInView").toString());
+                                    setTextBGColor(mActivity.txtMapGPS, getData("SystemAlarms", "Alarm", "GPS").toString());
+                                    float deg = 0;
                                     try {
-                                        txtLogFilename.setText(mUAVTalkDevice.getLogFileName());
-                                        double lUAV = Math.round(mUAVTalkDevice.getLogBytesLoggedUAV() / 102.4) / 10.;
-                                        double lOPL = Math.round(mUAVTalkDevice.getLogBytesLoggedOPL() / 102.4) / 10.;
-                                        txtLogSize.setText(String.valueOf(lUAV) + getString(R.string.tab) + "(" + String.valueOf(lOPL) + ") KB");
-                                        txtLogObjects.setText(String.valueOf(mUAVTalkDevice.getLogObjectsLogged()));
-                                        txtLogDuration.setText(String.valueOf((System.currentTimeMillis() - mUAVTalkDevice.getLogStartTimeStamp()) / 1000) + " s");
+                                        deg = (Float) getData("GPSPositionSensor", "Heading");
                                     } catch (Exception e) {
 
                                     }
-                                }
-                                break;
+
+                                    Float lat = getGPSCoordinates("GPSPositionSensor", "Latitude");
+                                    Float lng = getGPSCoordinates("GPSPositionSensor", "Longitude");
+
+                                    setText(mActivity.txtLatitude, lat.toString());
+                                    setText(mActivity.txtLongitude, lng.toString());
+
+                                    LatLng src = map.getCameraPosition().target;
+                                    LatLng dst = new LatLng(lat, lng);
+
+                                    double distance = H.calculationByDistance(src, dst);
+                                    if (distance > 0.001) {
+                                        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lng), 19);
+                                        MapsInitializer.initialize(mActivity);
+                                        if (distance < 200) {
+                                            map.animateCamera(cameraUpdate);
+                                        } else {
+                                            map.moveCamera(cameraUpdate);
+                                        }
+
+                                        posHistory[currentPosMarker] = map.addMarker(new MarkerOptions()
+                                                        .position(new LatLng(lat, lng))
+                                                        .title("Librepilot")
+                                                        .snippet("LP rules")
+                                                        .flat(true)
+                                                        .anchor(0.5f, 0.5f)
+                                                        .rotation(deg)
+                                                //.icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_launcher))
+                                        );
+
+                                        currentPosMarker++;
+                                        if (currentPosMarker >= HISTORY_MARKER_NUM) {
+                                            currentPosMarker = 0;
+                                        }
+                                        if (posHistory[currentPosMarker] != null) {
+                                            posHistory[currentPosMarker].remove();
+                                        }
+                                    } else {
+                                    }
+                                    break;
+                                case VIEW_OBJECTS:
+                                    try {
+                                        etxObjects.setText(mUAVTalkDevice.getoTree().toString());
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                    break;
+                                case VIEW_LOGS:
+                                    if (mUAVTalkDevice.isLogging()) {
+                                        try {
+                                            txtLogFilename.setText(mUAVTalkDevice.getLogFileName());
+                                            double lUAV = Math.round(mUAVTalkDevice.getLogBytesLoggedUAV() / 102.4) / 10.;
+                                            double lOPL = Math.round(mUAVTalkDevice.getLogBytesLoggedOPL() / 102.4) / 10.;
+                                            txtLogSize.setText(String.valueOf(lUAV) + getString(R.string.tab) + "(" + String.valueOf(lOPL) + ") KB");
+                                            txtLogObjects.setText(String.valueOf(mUAVTalkDevice.getLogObjectsLogged()));
+                                            txtLogDuration.setText(String.valueOf((System.currentTimeMillis() - mUAVTalkDevice.getLogStartTimeStamp()) / 1000) + " s");
+                                        } catch (Exception e) {
+
+                                        }
+                                    }
+                                    break;
+                            }
+                        } catch (NullPointerException e) {
+                            Log.d("NPE", "Nullpointer Excpetzion in Pollthread, most likely switched Connections");
+
                         }
                     }
                 });
@@ -1316,10 +1363,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 try {
                     mUAVTalkDevice.requestObject(e1.getObjectname(), e1.getInstance());
                 } catch (NullPointerException e2) {
-                    e2.printStackTrace();
+                    //e2.printStackTrace();
                 }
             } catch (NullPointerException e3) {
-                e3.printStackTrace();
+                //e3.printStackTrace();
             }
             return EMPTY_STRING;
         }
@@ -1343,9 +1390,54 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 return EMPTY_STRING;
             }
         }
+    }
 
-        public boolean isValid() {
-            return this.isValid;
+    private class ConnectionThread extends Thread {
+        MainActivity mActivity;
+
+        public ConnectionThread(MainActivity mActivity) {
+            this.mActivity = mActivity;
+        }
+
+
+        public void run() {
+            while (true) {
+                try {
+                    //Log.d("CT", "Alive " + doReconnect);
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+
+                }
+                //if(mUAVTalkDevice != null) Log.d("CT", "MUAVTD " + mUAVTalkDevice.isConnected());
+
+                if (doReconnect) {
+                    mUAVTalkDevice.stop();
+                    mUAVTalkDevice = null;
+                    doReconnect = false;
+                    mActivity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mActivity.resetMainView();
+                        }
+                    });
+                }
+
+
+                if (mUAVTalkDevice == null || !mUAVTalkDevice.isConnected()) {
+                    switch (serialModeUsed) {
+                        case SERIAL_BLUETOOTH:
+                            connectBluettooth();
+                            break;
+                        case SERIAL_USB:
+                            connectUSB();
+                            break;
+                    }
+                } else {
+                    //mUAVTalkDevice.stop();
+                    //mUAVTalkDevice = null;
+                }
+
+            }
         }
     }
 }

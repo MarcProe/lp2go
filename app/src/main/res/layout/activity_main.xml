@@ -33,19 +33,13 @@
                 android:layout_weight="1"
                 android:textAppearance="?android:attr/textAppearanceSmall" />
 
-            <Button
-                android:id="@+id/btnConnect"
+            <TextView
+                android:id="@+id/txtObjectLog"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:onClick="onConnectClick"
-                android:text="Connect" />
+                android:text="0/0"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
 
-            <Button
-                android:id="@+id/btnStart"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:onClick="onStartClick"
-                android:text="Start" />
         </LinearLayout>
 
         <LinearLayout

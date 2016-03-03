@@ -7,8 +7,8 @@ android {
         applicationId 'net.proest.lp2go3'
         minSdkVersion 16
         targetSdkVersion 16
-        versionName '0.2.4.4'
-        versionCode 20404
+        versionName '0.2.4.5'
+        versionCode 20405
     }
     buildTypes {
         release {

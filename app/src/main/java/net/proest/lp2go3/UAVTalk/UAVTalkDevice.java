@@ -1,9 +1,9 @@
 package net.proest.lp2go3.UAVTalk;
 
-import android.app.Activity;
 import android.content.Context;
 
 import net.proest.lp2go3.H;
+import net.proest.lp2go3.MainActivity;
 
 import java.io.FileOutputStream;
 import java.util.Arrays;
@@ -13,7 +13,8 @@ import java.util.Arrays;
 
  */
 public class UAVTalkDevice implements UAVTalkDeviceInterface {
-    Activity mActivity;
+    private static boolean isInstanciated;
+    MainActivity mActivity;
     private FileOutputStream logOutputStream;
     private String logFileName = "OP-YYYY-MM-DD_HH-MM-SS";
     private long logStartTimeStamp;
@@ -22,7 +23,7 @@ public class UAVTalkDevice implements UAVTalkDeviceInterface {
     private long logBytesLoggedOPL = 0;
     private long logObjectsLogged = 0;
 
-    public UAVTalkDevice(Activity mActivity) {
+    public UAVTalkDevice(MainActivity mActivity) throws IllegalStateException {
         this.mActivity = mActivity;
     }
 

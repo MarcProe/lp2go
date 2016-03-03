@@ -52,7 +52,7 @@ import java.util.LinkedList;
 public class UAVTalkUsbDevice extends UAVTalkDevice {
 
     final protected static char[] hexArray = "0123456789ABCDEF".toCharArray();
-    private final MainActivity mActivity;
+    //private final MainActivity mActivity;
     private final UsbDeviceConnection mDeviceConnection;
     private final UsbEndpoint mEndpointOut;
     private final UsbEndpoint mEndpointIn;
@@ -71,12 +71,12 @@ public class UAVTalkUsbDevice extends UAVTalkDevice {
                             UsbInterface intf, Hashtable<String, UAVTalkXMLObject> xmlObjects) {
         super(activity);
 
-        mActivity = activity;
+        //mActivity = activity;
         mDeviceConnection = connection;
         mSerial = connection.getSerial();
         this.oTree = new UAVTalkObjectTree();
         oTree.setXmlObjects(xmlObjects);
-
+        mActivity.setPThreadOTree(oTree);
 
         UsbEndpoint epOut = null;
         UsbEndpoint epIn = null;

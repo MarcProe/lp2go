@@ -30,6 +30,7 @@ import net.proest.lp2go3.R;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.UUID;
@@ -38,7 +39,7 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
     public static final int STATE_NONE = 0;
     public static final int STATE_CONNECTING = 1;
     public static final int STATE_CONNECTED = 2;
-    private final MainActivity mActivity;
+    //private final MainActivity mActivity;
     private WaiterThread mWaiterThread;
     private UAVTalkObjectTree oTree;
     private BluetoothAdapter mBluetoothAdapter;
@@ -48,9 +49,12 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
 
     public UAVTalkBluetoothDevice(MainActivity activity, Hashtable<String, UAVTalkXMLObject> xmlObjects) {
         super(activity);
-        this.mActivity = activity;
+
+        //this.mActivity = activity;
         this.oTree = new UAVTalkObjectTree();
         oTree.setXmlObjects(xmlObjects);
+
+        mActivity.setPThreadOTree(oTree);
 
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
@@ -61,28 +65,41 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
         }
         SharedPreferences sharedPref = mActivity.getPreferences(Context.MODE_PRIVATE);
 
-        String mDeviceAddress = sharedPref.getString(mActivity.getString(R.string.SETTINGS_BT_MAC), "");
-        mDevice = mBluetoothAdapter.getRemoteDevice(mDeviceAddress);
-        //mNXTTalker.connect(mDevice);
 
+        String mDeviceAddress = sharedPref.getString(mActivity.getString(R.string.SETTINGS_BT_MAC), "").toUpperCase().replace('-', ':');
+        String reg1 = "^([0-9A-F]{2}[:]){5}([0-9A-F]{2})$";
+
+
+        if (mDeviceAddress.matches("^([0-9A-F]{2}[:-]){5}([0-9A-F]{2})$")) {
+            Log.d("BT", "Match");
+            mDevice = mBluetoothAdapter.getRemoteDevice(mDeviceAddress);
+        } else {
+            Log.d("BT", " No Match");
+        }
+
+        connect(mDevice);
     }
 
     private synchronized void connect(BluetoothDevice device) {
-        if (mState == STATE_CONNECTING) {
-            if (mConnectThread != null) {
-                mConnectThread.cancel();
-                mConnectThread = null;
+        if (mState == STATE_NONE) {
+            //if (mState == STATE_CONNECTING) {  //if we call connect, while connecting or still connected, it should be ignored.
+            // if (mConnectThread != null) {
+            //      mConnectThread.cancel();
+            //     mConnectThread = null;
+            //}
+            //}
+
+
+            if (mWaiterThread != null) {
+                mWaiterThread.cancel();
+                mWaiterThread = null;
             }
-        }
 
-        if (mWaiterThread != null) {
-            mWaiterThread.cancel();
-            mWaiterThread = null;
-        }
 
-        mConnectThread = new ConnectThread(device);
-        mConnectThread.start();
-        setState(STATE_CONNECTING);
+            mConnectThread = new ConnectThread(device);
+            mConnectThread.start();
+            setState(STATE_CONNECTING);
+        }
     }
 
     private synchronized void setState(int state) {
@@ -146,7 +163,7 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
 
     @Override
     public boolean isConnected() {
-        return mState == STATE_CONNECTED;
+        return mState != STATE_NONE;
     }
 
     @Override
@@ -155,7 +172,7 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
     }
 
 
-    public synchronized void connected(BluetoothSocket socket, BluetoothDevice device) {
+    public synchronized void connected(BluetoothSocket socket, BluetoothDevice device) {  //this is only called when we weren't connected before
         if (mConnectThread != null) {
             mConnectThread.cancel();
             mConnectThread = null;
@@ -186,6 +203,10 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
         r.write(out);
     }
 
+    private void connectionLost() {
+        setState(STATE_NONE);
+    }
+
     private class ConnectThread extends Thread {
         private final BluetoothDevice mmDevice;
         private BluetoothSocket mmSocket;
@@ -198,7 +219,6 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
             setName("ConnectThread");
 
             mBluetoothAdapter.cancelDiscovery();
-            int tryagain = 0;
 
             try {
                 mmSocket = mmDevice.createRfcommSocketToServiceRecord(UUID.fromString("00001101-0000-1000-8000-00805F9B34FB"));
@@ -213,16 +233,24 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
                     mmSocket = (BluetoothSocket) mmDevice.getClass().getMethod("createRfcommSocket", new Class[]{int.class}).invoke(mmDevice, 1);
                     //mmSocket = (BluetoothSocket) method.invoke(mmDevice, Integer.valueOf(1));
                     mmSocket.connect();
-                } catch (Exception e1) {
+                } catch (IOException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e1) {
                     e1.printStackTrace();
                     connectionFailed();
                     try {
                         mmSocket.close();
                     } catch (IOException e2) {
                         e2.printStackTrace();
+                    } catch (NullPointerException e3) {
+                        return;
                     }
                     return;
+                } catch (NullPointerException e4) {
+                    connectionFailed();
+                    return;
                 }
+            } catch (NullPointerException e5) {
+                connectionFailed();
+                return;
             }
 
 
@@ -286,8 +314,9 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
             byte[] databuffer = new byte[0];
             byte[] crcbuffer = new byte[1];
             int read;
-            ////int lbytes;
-            ////lbytes = 0;
+
+            mActivity.setObjectsNOK(0);
+            mActivity.setObjectsOK(0);
 
             while (true) {
                 try {
@@ -331,9 +360,12 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
 
                     if ((((int) crcbuffer[0] & 0xff) == (crc & 0xff))) {
                         //TODO:!!!!!!!!!!
+                        mActivity.incObjectsOK();
                     } else {
+                        mActivity.incObjectsNOK();
                         continue;
                     }
+                    //mActivity.setObjectLog(""+objOk+"/" + objNOK);
 
                     try {
                         UAVTalkMessage msg = new UAVTalkMessage(bmsg);
@@ -349,16 +381,7 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
                             myIns = new UAVTalkObjectInstance(msg.getiID(), msg.getData());
                             myObj.setInstance(myIns);
                         }
-                        //if(myObj.getId().equals("6B7639EC")) {
-                        //Log.d("6B7639EC", myObj.getId());
 
-                        //Log.d("HBUFF" + bmsg.length, H.bytesToPrintHex(headerbuffer));
-                        //if (myObj.getId().equals("6B7639EC")) {
-
-                        //    Log.d("BMSG" + len, H.bytesToPrintHex(bmsg));
-                        //    Log.d("CRC (MSG/CALC)", "" + crcbuffer[0] + " " + (byte) (crc & 0xff));
-
-                        //}
                         oTree.updateObject(myObj);
 
                         if (isLogging()) {
@@ -368,25 +391,9 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
                         //e.printStackTrace();
                     }
 
-                    ////toast(Integer.toString(bytes) + " bytes read from device");
-                    ////mReadBuffer.addLast(buffer);
-                    //sendRead(buffer);
-                    //Log.d("BLUETOOTH", H.bytesToPrintHex(buffer));
-                   /* byte[] retbuffer = buffer;
-                    do {            //get all packets from the byte (does not take into account possible fragmentation;
-                                    // I don't know if this could happen
-                        retbuffer = findUAVTalkMessage(retbuffer);
-                        //Log.d("retbuffer",""+retbuffer.length);
-                        //buffer = retbuffer;
-                    } while (retbuffer.length > 0);
-                    */
-                    //Log.d("EXT","exited do while");
-
-                    //mLastMessage = buffer;
-
                 } catch (IOException e) {
                     e.printStackTrace();
-                    //connectionLost();
+                    connectionLost();
                     break;
                 }
             }
