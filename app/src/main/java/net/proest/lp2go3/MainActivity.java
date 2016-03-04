@@ -667,7 +667,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         Fragment fragment = null;
 
 
-
         //clean up current view
         switch (currentView) {
             case VIEW_MAIN:
@@ -1131,7 +1130,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     public void run() {
 
 
-
                         if (serialModeUsed == SERIAL_BLUETOOTH) {
                             imgUSB.setColorFilter(Color.argb(0xff, 0x00, 0x00, 0x00));
                             if (mUAVTalkDevice != null && mUAVTalkDevice.isConnected()) {
@@ -1339,7 +1337,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                                     break;
                             }
                         } catch (NullPointerException e) {
-                            Log.d("NPE", "Nullpointer Excpetzion in Pollthread, most likely switched Connections");
+                            Log.d("NPE", "Nullpointer Exception in Pollthread, most likely switched Connections");
 
                         }
                     }

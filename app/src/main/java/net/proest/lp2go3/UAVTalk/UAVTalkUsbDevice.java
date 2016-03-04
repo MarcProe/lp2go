@@ -172,6 +172,7 @@ public class UAVTalkUsbDevice extends UAVTalkDevice {
     public boolean isConnected() {
         return this.connected;
     }
+
     @Override
     public boolean isConnecting() {
         return this.connected;
