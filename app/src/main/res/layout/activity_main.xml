@@ -23,21 +23,59 @@
                 android:id="@+id/txtDeviceName"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_weight="3"
                 android:textAppearance="?android:attr/textAppearanceSmall" />
 
             <TextView
                 android:id="@+id/txtVehicleName"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_weight="3"
                 android:textAppearance="?android:attr/textAppearanceSmall" />
 
+            <ImageView
+                android:id="@+id/imageView2"
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:src="@drawable/ic_unarchive_black_24px" />
+
             <TextView
-                android:id="@+id/txtObjectLog"
+                android:id="@+id/txtObjectLogTx"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="0/0"
+                android:layout_weight="1"
+                android:text="0"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+
+            <ImageView
+                android:id="@+id/imageView3"
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:src="@drawable/ic_archive_black_24px" />
+
+            <TextView
+                android:id="@+id/txtObjectLogRxGood"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="0"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+
+            <ImageView
+                android:id="@+id/imageView4"
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:src="@drawable/ic_delete_forever_black_24px" />
+
+            <TextView
+                android:id="@+id/txtObjectLogRxBad"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="0"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
 
         </LinearLayout>
@@ -271,7 +309,7 @@
                     android:layout_width="0dp"
                     android:layout_height="fill_parent"
                     android:layout_weight="0.5"
-                    android:src="@drawable/ic_bluetooth_24dp" />
+                    android:src="@drawable/ic_bluetooth_disabled_24dp" />
 
                 <ImageView
                     android:id="@+id/imgUSB"

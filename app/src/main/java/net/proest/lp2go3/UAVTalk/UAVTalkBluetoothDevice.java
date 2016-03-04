@@ -172,11 +172,6 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
         return mState != STATE_NONE;
     }
 
-    @Override
-    public boolean setConnected(boolean connected) {
-        return false;  //bluetooth maintains connection state by itself
-    }
-
 
     public synchronized void connected(BluetoothSocket socket, BluetoothDevice device) {  //this is only called when we weren't connected before
         if (mConnectThread != null) {
@@ -321,8 +316,10 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
             byte[] crcbuffer = new byte[1];
             int read;
 
-            mActivity.setObjectsNOK(0);
-            mActivity.setObjectsOK(0);
+            mActivity.setRxObjectsGood(0);
+            mActivity.setRxObjectsBad(0);
+            mActivity.setTxObjects(0);
+
 
             while (true) {
                 try {
@@ -366,9 +363,9 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
 
                     if ((((int) crcbuffer[0] & 0xff) == (crc & 0xff))) {
                         //TODO:!!!!!!!!!!
-                        mActivity.incObjectsOK();
+                        mActivity.incRxObjectsGood();
                     } else {
-                        mActivity.incObjectsNOK();
+                        mActivity.incRxObjectsBad();
                         continue;
                     }
                     //mActivity.setObjectLog(""+objOk+"/" + objNOK);
@@ -407,6 +404,7 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
 
         public void write(byte[] buffer) {
             try {
+                mActivity.incTxObjects();
                 mmOutStream.write(buffer);
             } catch (IOException e) {
                 //e.printStackTrace();

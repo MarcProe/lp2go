@@ -162,7 +162,7 @@ public class UAVTalkUsbDevice extends UAVTalkDevice {
         }
 
         byte[] send = UAVTalkObject.getReqMsg((byte) 0x21, xmlObj.getId(), instance);
-        //Log.d("REQ", objectName);
+        mActivity.incTxObjects();
         mDeviceConnection.bulkTransfer(mEndpointOut, send, send.length, 1000);
 
         return true;
@@ -187,7 +187,7 @@ public class UAVTalkUsbDevice extends UAVTalkDevice {
     public boolean sendSettingsObject(String objectName, int instance, String fieldName, int element, byte[] newFieldData) {
         byte[] send = UAVTalkDeviceHelper.createSettingsObjectByte(oTree, objectName, instance, fieldName, element, newFieldData);
         if (send == null) return false;
-
+        mActivity.incTxObjects();
         mDeviceConnection.bulkTransfer(mEndpointOut, send, send.length, 1000);
 
         requestObject(objectName, instance);
@@ -242,6 +242,9 @@ public class UAVTalkUsbDevice extends UAVTalkDevice {
                         cM = new UAVTalkMessage(bytes);
                     }
 
+                    mActivity.incRxObjectsGood();
+
+
                     UAVTalkObject myObj = oTree.getObjectFromID(H.intToHex(cM.getoID()));
                     UAVTalkObjectInstance myIns;
 
@@ -254,7 +257,6 @@ public class UAVTalkUsbDevice extends UAVTalkDevice {
                         myObj.setInstance(myIns);
                     }
                     oTree.updateObject(myObj);
-
                     if (isLogging()) {
                         //TODO: CHECK IF CRC IS IN bytes!
                         log(Arrays.copyOfRange(bytes, 2, bytes.length)); //TODO: This removes the first two byte, added only for USB compatibility

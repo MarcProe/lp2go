@@ -62,6 +62,6 @@
     <string name="LP2GO_RELEASE">"LP2Go Release "</string>
     <string name="OPEN_ROUND_BRACKET_WITH_SPACE"><![CDATA[ (]]></string>
     <string name="CLOSE_ROUND_BRACKET">)</string>
-    <string name="tab">\u0009</string>
+    <string name="TAB">\u0009</string>
 </resources>
 

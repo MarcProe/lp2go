@@ -28,7 +28,6 @@ public class UAVTalkMessage {
     private byte[] data;
     private byte crc;
 
-
     public UAVTalkMessage(byte[] bytes) {
         if (bytes.length >= 12) {
             //head = bytes[0] + bytes[1]*8;
@@ -60,6 +59,10 @@ public class UAVTalkMessage {
             this.data = new byte[this.length - 10];
             System.arraycopy(bytes, 12, this.data, 0, this.length - 10);
         }
+    }
+
+    public byte getCrc() {
+        return crc;
     }
 
     public byte getType() {

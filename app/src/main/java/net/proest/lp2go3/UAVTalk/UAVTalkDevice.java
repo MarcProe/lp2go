@@ -134,14 +134,11 @@ public class UAVTalkDevice implements UAVTalkDeviceInterface {
         return false;
     }
 
+    @Override
     public boolean isConnecting() {
         return false;
     }
 
-    @Override
-    public boolean setConnected(boolean connected) {
-        return false;
-    }
 
     public String getLogFileName() {
         return logFileName;

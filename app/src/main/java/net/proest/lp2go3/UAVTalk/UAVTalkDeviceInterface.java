@@ -31,6 +31,7 @@ public interface UAVTalkDeviceInterface {
 
     boolean isConnected();
 
-    boolean setConnected(boolean connected);
+    boolean isConnecting();
+
 
 }
