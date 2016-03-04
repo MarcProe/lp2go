@@ -139,6 +139,7 @@ public class UAVTalkUsbDevice extends UAVTalkDevice {
     }
 
     public void start() {
+        this.connected = true;
         mWaiterThread.start();
     }
 
@@ -146,6 +147,7 @@ public class UAVTalkUsbDevice extends UAVTalkDevice {
         synchronized (mWaiterThread) {
             mWaiterThread.mStop = true;
         }
+        this.connected = false;
     }
 
     public boolean requestObject(String objectName) {
@@ -170,12 +172,16 @@ public class UAVTalkUsbDevice extends UAVTalkDevice {
     public boolean isConnected() {
         return this.connected;
     }
-
     @Override
+    public boolean isConnecting() {
+        return this.connected;
+    }
+
+    /*@Override
     public boolean setConnected(boolean connected) {
         this.connected = connected;
         return this.connected == connected;
-    }
+    }*/
 
 
     public boolean sendSettingsObject(String objectName, int instance, String fieldName, int element, byte[] newFieldData) {

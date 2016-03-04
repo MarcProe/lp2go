@@ -163,6 +163,12 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
 
     @Override
     public boolean isConnected() {
+        return mState == STATE_CONNECTED;
+    }
+
+
+    @Override
+    public boolean isConnecting() {
         return mState != STATE_NONE;
     }
 

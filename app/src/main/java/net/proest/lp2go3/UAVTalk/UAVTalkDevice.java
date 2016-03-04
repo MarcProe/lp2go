@@ -134,6 +134,10 @@ public class UAVTalkDevice implements UAVTalkDeviceInterface {
         return false;
     }
 
+    public boolean isConnecting() {
+        return false;
+    }
+
     @Override
     public boolean setConnected(boolean connected) {
         return false;

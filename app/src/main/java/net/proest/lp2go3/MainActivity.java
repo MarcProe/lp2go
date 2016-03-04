@@ -249,7 +249,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 if (device != null /*&& device.equals(deviceName)*/) {
                     setUsbInterface(null, null);
                     if (mUAVTalkDevice != null) {
-                        mUAVTalkDevice.setConnected(false);
                         mUAVTalkDevice.stop();
                     }
                 }
@@ -263,7 +262,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                             UsbInterface intf = findAdbInterface(device);
                             if (intf != null) {
                                 boolean ok = setUsbInterface(device, intf);
-                                mUAVTalkDevice.setConnected(ok);
                             }
                         }
                     } else {
@@ -1422,8 +1420,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     });
                 }
 
-
-                if (mUAVTalkDevice == null || !mUAVTalkDevice.isConnected()) {
+                if (mUAVTalkDevice == null || !mUAVTalkDevice.isConnecting()) {
                     switch (serialModeUsed) {
                         case SERIAL_BLUETOOTH:
                             connectBluettooth();

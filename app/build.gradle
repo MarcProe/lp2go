@@ -7,12 +7,13 @@ android {
         applicationId 'net.proest.lp2go3'
         minSdkVersion 16
         targetSdkVersion 16
-        versionName '0.2.4.5'
-        versionCode 20405
+        versionName '0.2.4.6'
+        versionCode 20406
     }
     buildTypes {
         release {
             minifyEnabled false
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             zipAlignEnabled true
         }
