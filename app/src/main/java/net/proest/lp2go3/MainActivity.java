@@ -1129,7 +1129,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     @Override
                     public void run() {
 
-
                         if (serialModeUsed == SERIAL_BLUETOOTH) {
                             imgUSB.setColorFilter(Color.argb(0xff, 0x00, 0x00, 0x00));
                             if (mUAVTalkDevice != null && mUAVTalkDevice.isConnected()) {
@@ -1144,7 +1143,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                                     imgBluetooth.setColorFilter(Color.argb(0xff, 0xff, 0x66, 0x00));
                                     imgBluetooth.setImageDrawable(getResources().getDrawable(R.drawable.ic_bluetooth_24dp));
                                 } else {
-                                    imgBluetooth.setColorFilter(Color.argb(0xff, 0xff, 0x88, 0x00));
+                                    imgBluetooth.setColorFilter(Color.argb(0xff, 0xff, 0x66, 0x00));
                                     imgBluetooth.setImageDrawable(getResources().getDrawable(R.drawable.ic_bluetooth_connected_24dp));
                                 }
                             } else {
@@ -1182,6 +1181,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     continue;  //nothing yet to show, or not connected
                 }
 
+                requestObjects();  //BT is flightmode, so the flow is not flowing..missing handshake?
+
                 mActivity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -1190,26 +1191,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                             switch (currentView) {
                                 case VIEW_MAIN:
 
-
                                     txtObjectLogTx.setText("" + txObjects);
                                     txtObjectLogRxGood.setText("" + rxObjectsGood);
                                     txtObjectLogRxBad.setText("" + rxObjectsBad);
 
                                     setText(mActivity.txtVehicleName, getVehicleNameData());
 
-                                    if (serialModeUsed == SERIAL_BLUETOOTH) {
-                                        mUAVTalkDevice.requestObject("SystemAlarms");
-                                        mUAVTalkDevice.requestObject("PathStatus");
-                                        mUAVTalkDevice.requestObject("GPSSatellites");
-                                        mUAVTalkDevice.requestObject("FlightTelemetryStats");
-                                        mUAVTalkDevice.requestObject("GCSTelemetryStats");
-                                        mUAVTalkDevice.requestObject("FlightStatus");
-                                        mUAVTalkDevice.requestObject("FlightBatteryState");
-                                        mUAVTalkDevice.requestObject("FlightBatterySettings");
-                                        mUAVTalkDevice.requestObject("BaroSensor");
-                                        mUAVTalkDevice.requestObject("VelocityState");
-                                        mUAVTalkDevice.requestObject("ManualControlCommand");
-                                    }
                                     setTextBGColor(mActivity.txtAtti, getData("SystemAlarms", "Alarm", "Attitude").toString());
                                     setTextBGColor(mActivity.txtStab, getData("SystemAlarms", "Alarm", "Stabilization").toString());
                                     setTextBGColor(mActivity.txtPath, getData("PathStatus", "Status").toString());
@@ -1342,6 +1329,22 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         }
                     }
                 });
+            }
+        }
+
+        private void requestObjects() {
+            if (serialModeUsed == SERIAL_BLUETOOTH) {
+                mUAVTalkDevice.requestObject("SystemAlarms");
+                mUAVTalkDevice.requestObject("PathStatus");
+                mUAVTalkDevice.requestObject("GPSSatellites");
+                mUAVTalkDevice.requestObject("FlightTelemetryStats");
+                mUAVTalkDevice.requestObject("GCSTelemetryStats");
+                mUAVTalkDevice.requestObject("FlightStatus");
+                mUAVTalkDevice.requestObject("FlightBatteryState");
+                mUAVTalkDevice.requestObject("FlightBatterySettings");
+                mUAVTalkDevice.requestObject("BaroSensor");
+                mUAVTalkDevice.requestObject("VelocityState");
+                mUAVTalkDevice.requestObject("ManualControlCommand");
             }
         }
 

@@ -386,12 +386,11 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
                         }
 
                         oTree.updateObject(myObj);
-
                         if (isLogging()) {
                             log(bmsg);
                         }
                     } catch (Exception e) {
-                        //e.printStackTrace();
+                        e.printStackTrace();
                     }
 
                 } catch (IOException e) {

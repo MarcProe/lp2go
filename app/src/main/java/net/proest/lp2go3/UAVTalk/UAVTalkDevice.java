@@ -17,6 +17,7 @@
 package net.proest.lp2go3.UAVTalk;
 
 import android.content.Context;
+import android.util.Log;
 
 import net.proest.lp2go3.H;
 import net.proest.lp2go3.MainActivity;
@@ -48,15 +49,15 @@ public class UAVTalkDevice implements UAVTalkDeviceInterface {
     }
 
     public long getLogObjectsLogged() {
-        return logObjectsLogged;
+        return this.logObjectsLogged;
     }
 
     public long getLogStartTimeStamp() {
-        return logStartTimeStamp;
+        return this.logStartTimeStamp;
     }
 
     public boolean isLogging() {
-        return isLogging;
+        return this.isLogging;
     }
 
     public void setLogging(boolean logNow) {
@@ -88,6 +89,7 @@ public class UAVTalkDevice implements UAVTalkDeviceInterface {
             logBytesLoggedUAV = 0;
             logObjectsLogged = 0;
         }
+        Log.d("setLogging", "" + isLogging());
     }
 
     public void log(byte[] b) {
