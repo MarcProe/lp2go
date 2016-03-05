@@ -1170,7 +1170,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                                 }
                             } else {
                                 serialConnectionState = SERIAL_DISCONNECTED;
-                                imgBluetooth.setColorFilter(Color.argb(0xff, 0xd4, 0x00, 0x00));
+                                imgUSB.setColorFilter(Color.argb(0xff, 0xd4, 0x00, 0x00));
                                 //imgBluetooth.setImageDrawable(getResources().getDrawable(R.drawable.ic_usb_24dp));
                             }
                         }
