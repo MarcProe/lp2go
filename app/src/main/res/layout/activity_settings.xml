@@ -59,12 +59,13 @@
                         android:text="Bluetooth MAC"
                         android:textAppearance="?android:attr/textAppearanceLarge" />
 
-                    <EditText
-                        android:id="@+id/etxSettingsBTMac"
+                    <Spinner
+                        android:id="@+id/spnBluetoothPairedDevice"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:text="98:D3:31:FC:18:FC" />
+                        android:spinnerMode="dropdown" />
+
                 </LinearLayout>
             </LinearLayout>
 

@@ -214,4 +214,13 @@ public class H {
         String strDate = sdfDate.format(now);
         return "OP-" + strDate + ".opl";
     }
+
+    public static String k(String s) {
+        /*if(s.length() >3) {
+            return s.substring(0,s.length()-3) + "k";
+        } else {
+            return s;
+        }*/
+        return s;
+    }
 }

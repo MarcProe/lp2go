@@ -28,6 +28,40 @@ public class UAVTalkMessage {
     private byte[] data;
     private byte crc;
 
+    public UAVTalkMessage(byte[] bytes, int offset) {
+        if (bytes.length >= 10 + offset) {
+            //head = bytes[0] + bytes[1]*8;
+            this.sync = bytes[0 + offset];
+            this.type = bytes[1 + offset];
+
+            int lb1 = bytes[3 + offset] & 0x000000ff;
+            int lb2 = bytes[2 + offset] & 0x000000ff;
+
+            this.length = lb1 << 8 | lb2;
+
+            int ob1 = bytes[7 + offset] & 0x000000ff;
+            int ob2 = bytes[6 + offset] & 0x000000ff;
+            int ob3 = bytes[5 + offset] & 0x000000ff;
+            int ob4 = bytes[4 + offset] & 0x000000ff;
+
+            this.oID = ob1 << 24 | ob2 << 16 | ob3 << 8 | ob4;
+
+            int ib1 = bytes[9 + offset] & 0x000000ff;
+            int ib2 = bytes[8 + offset] & 0x000000ff;
+
+            this.iID = ib1 << 8 | ib2;
+
+        } else {
+            throw new UnsupportedOperationException("Bad Message, < 12 bytes");
+        }
+
+        if (this.length > 10 + offset && bytes.length - offset >= this.length) {
+            this.data = new byte[this.length - 10];
+            System.arraycopy(bytes, 10 + offset, this.data, 0, this.length - 10);
+        }
+    }
+
+    @Deprecated
     public UAVTalkMessage(byte[] bytes) {
         if (bytes.length >= 12) {
             //head = bytes[0] + bytes[1]*8;

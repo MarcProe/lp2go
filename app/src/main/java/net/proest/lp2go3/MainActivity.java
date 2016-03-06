@@ -39,6 +39,8 @@ import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.PendingIntent;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -111,6 +113,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.Set;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -121,6 +124,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private final static int SERIAL_NONE = 0;
     private final static int SERIAL_USB = 1;
     private final static int SERIAL_BLUETOOTH = 2;
+
+    private final static int REQUEST_ENABLE_BT = 1000;
 
     private final static int SERIAL_CONNECTED = 2;
     private final static int SERIAL_CONNECTING = 1;
@@ -196,18 +201,21 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     protected TextView txtLogObjectsLabel;
     protected TextView txtLogDuration;
     protected TextView txtLogDurationLabel;
-    protected EditText etxSettingsBTMac;
+    //protected EditText etxSettingsBTMac;
     protected Spinner spnConnectionTypeSpinner;
+    protected Spinner spnBluetoothPairedDevice;
     protected Button btnStart;
     int currentView = 0;
     int HISTORY_MARKER_NUM = 5;
     int currentPosMarker = 0;
+    private BluetoothAdapter mBluetoothAdapter;
     private long txObjects;
     private long rxObjectsGood;
     private long rxObjectsBad;
 
     private int serialConnectionState;
     private int serialModeUsed;
+    private String bluetoothDeviceUsed;
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -528,6 +536,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         txtVehicleName = (TextView) findViewById(R.id.txtVehicleName);
 
         serialModeUsed = sharedPref.getInt(getString(R.string.SETTINGS_SERIAL_MODE), 0);
+        bluetoothDeviceUsed = sharedPref.getString(getString(R.string.SETTINGS_BT_NAME), "");
 
         imgBluetooth = (ImageView) findViewById(R.id.imgBluetooth);
         if (serialModeUsed != SERIAL_BLUETOOTH || serialModeUsed == SERIAL_NONE) {
@@ -556,19 +565,53 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         setContentView(view3); //Settings
         spnConnectionTypeSpinner = (Spinner) findViewById(R.id.spnConnectionTypeSpinner);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+        ArrayAdapter<CharSequence> serialConnectionTypeAdapter = ArrayAdapter.createFromResource(this,
                 R.array.connections_settings, android.R.layout.simple_spinner_item);
 
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        serialConnectionTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-        spnConnectionTypeSpinner.setAdapter(adapter);
+        spnConnectionTypeSpinner.setAdapter(serialConnectionTypeAdapter);
         spnConnectionTypeSpinner.setOnItemSelectedListener(this);
         spnConnectionTypeSpinner.setSelection(serialModeUsed);
 
 
-        etxSettingsBTMac = (EditText) findViewById(R.id.etxSettingsBTMac);
-        etxSettingsBTMac.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
+        spnBluetoothPairedDevice = (Spinner) findViewById(R.id.spnBluetoothPairedDevice);
+        //ArrayAdapter<CharSequence> bntPairedDeviceAdapter = ArrayAdapter.createFromResource(this,
+        //        R.array.connections_settings, android.R.layout.simple_spinner_item);
 
+        ArrayAdapter<CharSequence> bntPairedDeviceAdapter = new ArrayAdapter<CharSequence>(this, android.R.layout.simple_spinner_item);
+
+        bntPairedDeviceAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        spnBluetoothPairedDevice.setAdapter(bntPairedDeviceAdapter);
+        spnBluetoothPairedDevice.setOnItemSelectedListener(this);
+        //spnBluetoothPairedDevice.setSelection(bluetoothDeviceUsed);
+
+        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        if (mBluetoothAdapter == null) {
+            // Device does not support Bluetooth
+        }
+
+        if (!mBluetoothAdapter.isEnabled()) {
+            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+        }
+
+        Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
+        // If there are paired devices
+        if (pairedDevices.size() > 0) {
+            // Loop through paired devices
+            int btpd = 0;
+            for (BluetoothDevice device : pairedDevices) {
+                // Add the name and address to an array adapter to show in a ListView
+                bntPairedDeviceAdapter.add(device.getName());
+                if (device.getName().equals(bluetoothDeviceUsed)) {
+                    spnBluetoothPairedDevice.setSelection(btpd);
+                }
+                btpd++;
+                Log.d("BTE", device.getName() + " " + device.getAddress());
+            }
+        }
 
         setContentView(view4); //Logs
 
@@ -635,6 +678,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         pThread.start();
         cThread.start();
 
+
         isReady = true;
     }
 
@@ -682,9 +726,28 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             case VIEW_SETTINGS:
                 SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPref.edit();
-                String btmac = etxSettingsBTMac.getText().toString().toUpperCase().replace('-', ':');
-                etxSettingsBTMac.setText(btmac);
+
+                String btname = spnBluetoothPairedDevice.getSelectedItem().toString();
+                String btmac = "";
+
+                Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
+                // If there are paired devices
+                if (pairedDevices.size() > 0) {
+                    // Loop through paired devices
+                    int btpd = 0;
+                    for (BluetoothDevice device : pairedDevices) {
+                        // Add the name and address to an array adapter to show in a ListView
+                        if (device.getName().equals(btname)) {
+                            btmac = device.getAddress();
+                        }
+                        btpd++;
+                        //Log.d("BTE",device.getName() + " " + device.getAddress());
+                    }
+                }
+
+                //etxSettingsBTMac.setText(btmac);
                 editor.putString(getString(R.string.SETTINGS_BT_MAC), btmac);
+                editor.putString(getString(R.string.SETTINGS_BT_NAME), btname);
                 editor.commit();
                 doReconnect = true;
 
@@ -1191,9 +1254,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                             switch (currentView) {
                                 case VIEW_MAIN:
 
-                                    txtObjectLogTx.setText("" + txObjects);
-                                    txtObjectLogRxGood.setText("" + rxObjectsGood);
-                                    txtObjectLogRxBad.setText("" + rxObjectsBad);
+                                    txtObjectLogTx.setText(H.k(String.valueOf(txObjects)));
+                                    txtObjectLogRxGood.setText(H.k(String.valueOf(rxObjectsGood)));
+                                    txtObjectLogRxBad.setText(H.k(String.valueOf(rxObjectsBad)));
 
                                     setText(mActivity.txtVehicleName, getVehicleNameData());
 
