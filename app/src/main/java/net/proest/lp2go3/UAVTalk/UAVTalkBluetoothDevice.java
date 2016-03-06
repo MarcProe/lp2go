@@ -21,7 +21,6 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 
 import net.proest.lp2go3.H;
 import net.proest.lp2go3.MainActivity;
@@ -322,7 +321,7 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
                     ////lbytes = mmInStream.read(buffer);
                     while (seekbuffer[0] != 0x3c) {
                         read = mmInStream.read(seekbuffer);
-                        Log.d("SEEKB", H.bytesToHex(seekbuffer));
+                        //Log.d("SEEKB", H.bytesToHex(seekbuffer));
                     }
                     seekbuffer[0] = 0x00;
                     syncbuffer[2] = 0x3c;
@@ -337,7 +336,7 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
                     int len = lb1 << 8 | lb2;
 
                     if (len > 268 || len < 13) {
-                        Log.d("BL", "Bad length " + H.bytesToPrintHex(syncbuffer) + " " + H.bytesToPrintHex(lenbuffer));
+                        //Log.d("BL", "Bad length " + H.bytesToPrintHex(syncbuffer) + " " + H.bytesToPrintHex(lenbuffer));
                         continue; // maximum possible packet size
                     }
 
@@ -349,7 +348,7 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
 
                     read = mmInStream.read(databuffer);
                     if (read < len - 10) { //Buffer underrun... we need to wait for more data /// THIS IS NOT DONE
-
+//TODO: this will result in some buffer underun, should be a loop!
                         try {
                             Thread.sleep(100);
                         } catch (InterruptedException e) {
@@ -363,7 +362,7 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
                         System.arraycopy(readmore, 0, databuffer, pos, readmore.length);
                     }
 
-                    Log.d("READDATAB", "" + read + " # " + len + " # " + (len - 10));
+                    //Log.d("READDATAB", "" + read + " # " + len + " # " + (len - 10));
 
                     read = mmInStream.read(crcbuffer);
 
@@ -380,10 +379,10 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
                     if ((((int) crcbuffer[0] & 0xff) == (crc & 0xff))) {
                         //TODO:!!!!!!!!!!
                         mActivity.incRxObjectsGood();
-                        Log.d("GOOD", H.bytesToHex(bmsg));
+                        //Log.d("GOOD", H.bytesToHex(bmsg));
                     } else {
                         mActivity.incRxObjectsBad();
-                        Log.d("BAAD", H.bytesToHex(bmsg));
+                        //Log.d("BAAD", H.bytesToHex(bmsg));
                         continue;
                     }
                     //mActivity.setObjectLog(""+objOk+"/" + objNOK);
