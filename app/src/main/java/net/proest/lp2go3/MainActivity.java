@@ -1029,24 +1029,21 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         switch (parent.getId()) {
             case R.id.spnConnectionTypeSpinner: {
                 serialModeUsed = pos;
+                imgBluetooth.setColorFilter(Color.argb(0xff, 0xd4, 0x00, 0x00));
+                imgUSB.setColorFilter(Color.argb(0xff, 0xd4, 0x00, 0x00));
                 switch (serialModeUsed) {
                     case SERIAL_NONE:
-                        //imgBluetooth.setVisibility(View.INVISIBLE);
-                        //imgUSB.setVisibility(View.INVISIBLE);
-                        imgBluetooth.setAlpha(ICON_TRANSPARENT);  //FIXME: reset color as well
-                        imgUSB.setAlpha(ICON_TRANSPARENT);//FIXME: preset color as well
+
+                        imgBluetooth.setAlpha(ICON_TRANSPARENT);
+                        imgUSB.setAlpha(ICON_TRANSPARENT);
                         break;
                     case SERIAL_USB:
-                        //imgBluetooth.setVisibility(View.INVISIBLE);
-                        //imgUSB.setVisibility(View.VISIBLE);
-                        imgBluetooth.setAlpha(ICON_TRANSPARENT);//FIXME: reset color as well
-                        imgUSB.setAlpha(ICON_OPAQUE);//FIXME: preset color as well
+                        imgBluetooth.setAlpha(ICON_TRANSPARENT);
+                        imgUSB.setAlpha(ICON_OPAQUE);
                         break;
                     case SERIAL_BLUETOOTH:
-                        //imgBluetooth.setVisibility(View.VISIBLE);
-                        //imgUSB.setVisibility(View.INVISIBLE);
-                        imgBluetooth.setAlpha(ICON_OPAQUE);//FIXME: preset color as well
-                        imgUSB.setAlpha(ICON_TRANSPARENT);//FIXME: reset color as well
+                        imgBluetooth.setAlpha(ICON_OPAQUE);
+                        imgUSB.setAlpha(ICON_TRANSPARENT);
                         break;
                 }
                 SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
@@ -1396,7 +1393,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
 
         private void requestObjects() {
-            if (serialModeUsed == SERIAL_BLUETOOTH) {
+            if (mUAVTalkDevice != null && serialModeUsed == SERIAL_BLUETOOTH) {
                 mUAVTalkDevice.requestObject("SystemAlarms");
                 mUAVTalkDevice.requestObject("PathStatus");
                 mUAVTalkDevice.requestObject("GPSSatellites");
