@@ -21,6 +21,7 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import net.proest.lp2go3.H;
 import net.proest.lp2go3.MainActivity;
@@ -318,51 +319,29 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
 
             while (true) {
                 try {
-                    ////lbytes = mmInStream.read(buffer);
                     while (seekbuffer[0] != 0x3c) {
                         read = mmInStream.read(seekbuffer);
-                        //Log.d("SEEKB", H.bytesToHex(seekbuffer));
                     }
                     seekbuffer[0] = 0x00;
                     syncbuffer[2] = 0x3c;
 
-                    mmInStream.read(msgtypebuffer);
+                    read = mmInStream.read(msgtypebuffer);
+                    if (read != 1) Log.d("TYP", "UNDERRUN " + read);
                     if (msgtypebuffer[0] != 0x20) continue;
 
+                    lenbuffer = bufferRead(lenbuffer.length);
 
-                    read = mmInStream.read(lenbuffer);
                     int lb1 = lenbuffer[1] & 0x000000ff;
                     int lb2 = lenbuffer[0] & 0x000000ff;
                     int len = lb1 << 8 | lb2;
 
                     if (len > 268 || len < 13) {
-                        //Log.d("BL", "Bad length " + H.bytesToPrintHex(syncbuffer) + " " + H.bytesToPrintHex(lenbuffer));
                         continue; // maximum possible packet size
                     }
 
-                    read = mmInStream.read(oidbuffer);
-                    read = mmInStream.read(iidbuffer);
-
-
-                    databuffer = new byte[len - 10];
-
-                    read = mmInStream.read(databuffer);
-                    if (read < len - 10) { //Buffer underrun... we need to wait for more data /// THIS IS NOT DONE
-//TODO: this will result in some buffer underun, should be a loop!
-                        try {
-                            Thread.sleep(100);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-
-                        int pos = read;
-                        byte[] readmore = new byte[(len - 10) - read];
-                        read = mmInStream.read(readmore);
-
-                        System.arraycopy(readmore, 0, databuffer, pos, readmore.length);
-                    }
-
-                    //Log.d("READDATAB", "" + read + " # " + len + " # " + (len - 10));
+                    oidbuffer = bufferRead(oidbuffer.length);
+                    iidbuffer = bufferRead(iidbuffer.length);
+                    databuffer = bufferRead(len - 10);
 
                     read = mmInStream.read(crcbuffer);
 
@@ -374,22 +353,16 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
                     int crc = H.crc8(bmsg, 0, bmsg.length);
                     bmsg = H.concatArray(bmsg, crcbuffer);
 
-                    //Log.d("BMSG " + len + " " + (((int) crcbuffer[0] & 0xff) == (crc & 0xff)), H.bytesToPrintHex(bmsg));
 
                     if ((((int) crcbuffer[0] & 0xff) == (crc & 0xff))) {
-                        //TODO:!!!!!!!!!!
                         mActivity.incRxObjectsGood();
-                        //Log.d("GOOD", H.bytesToHex(bmsg));
                     } else {
                         mActivity.incRxObjectsBad();
-                        //Log.d("BAAD", H.bytesToHex(bmsg));
                         continue;
                     }
-                    //mActivity.setObjectLog(""+objOk+"/" + objNOK);
 
                     try {
                         UAVTalkMessage msg = new UAVTalkMessage(bmsg);
-                        //Log.d("MSG", ""+H.intToHex(msg.getmObjectId()));
                         UAVTalkObject myObj = oTree.getObjectFromID(H.intToHex(msg.getObjectId()));
                         UAVTalkObjectInstance myIns;
 
@@ -416,6 +389,27 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
                     break;
                 }
             }
+        }
+
+        private byte[] bufferRead(int dlen) throws IOException {
+            int read = 0;
+            byte[] buffer = new byte[dlen];
+            read = mmInStream.read(buffer);
+            int pos = read;
+            while (read < dlen) {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                byte[] readmore = new byte[dlen - read];
+                pos = mmInStream.read(readmore);
+                read += pos;
+
+                System.arraycopy(readmore, 0, buffer, dlen - pos, readmore.length);
+            }
+            return buffer;
         }
 
         public void write(byte[] buffer) {
