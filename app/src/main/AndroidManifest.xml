@@ -38,7 +38,7 @@
         </activity>
         <provider
             android:name="android.support.v4.content.FileProvider"
-            android:authorities="net.proest.lp2go.logfileprovider"
+            android:authorities="net.proest.lp2go3.logfileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data

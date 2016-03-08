@@ -53,7 +53,7 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
         this.oTree = new UAVTalkObjectTree();
         oTree.setXmlObjects(xmlObjects);
 
-        mActivity.setPThreadOTree(oTree);
+        mActivity.setPollThreadObjectTree(oTree);
 
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
@@ -389,16 +389,16 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
 
                     try {
                         UAVTalkMessage msg = new UAVTalkMessage(bmsg);
-                        //Log.d("MSG", ""+H.intToHex(msg.getoID()));
-                        UAVTalkObject myObj = oTree.getObjectFromID(H.intToHex(msg.getoID()));
+                        //Log.d("MSG", ""+H.intToHex(msg.getmObjectId()));
+                        UAVTalkObject myObj = oTree.getObjectFromID(H.intToHex(msg.getObjectId()));
                         UAVTalkObjectInstance myIns;
 
                         try {
-                            myIns = myObj.getInstance(msg.getiID());
+                            myIns = myObj.getInstance(msg.getInstanceId());
                             myIns.setData(msg.getData());
                             myObj.setInstance(myIns);
                         } catch (Exception e) {
-                            myIns = new UAVTalkObjectInstance(msg.getiID(), msg.getData());
+                            myIns = new UAVTalkObjectInstance(msg.getInstanceId(), msg.getData());
                             myObj.setInstance(myIns);
                         }
 

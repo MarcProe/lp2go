@@ -73,7 +73,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -121,26 +120,29 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private static final int ICON_OPAQUE = 255;
     private static final int ICON_TRANSPARENT = 64;
 
-    private final static int SERIAL_NONE = 0;
-    private final static int SERIAL_USB = 1;
-    private final static int SERIAL_BLUETOOTH = 2;
+    private static final int SERIAL_NONE = 0;
+    private static final int SERIAL_USB = 1;
+    private static final int SERIAL_BLUETOOTH = 2;
 
-    private final static int REQUEST_ENABLE_BT = 1000;
+    private static final int SERIAL_CONNECTED = 2;
+    private static final int SERIAL_CONNECTING = 1;
+    private static final int SERIAL_DISCONNECTED = 0;
 
-    private final static int SERIAL_CONNECTED = 2;
-    private final static int SERIAL_CONNECTING = 1;
-    private final static int SERIAL_DISCONNECTED = 0;
-    private static final String ACTION_USB_PERMISSION = "net.proest.lp2go.USB_PERMISSION";
-    private static final String OFFSET_VELOCITY_DOWN = "VelocityState-Down";
-    private static final String OFFSET_BAROSENSOR_ALTITUDE = "BaroSensor-Altitude";
+    private static final int REQUEST_ENABLE_BT = 1000;
+
+    private static final String ACTION_USB_PERMISSION = "net.proest.lp2go3.USB_PERMISSION";
+    private static final String OFFSET_VELOCITY_DOWN = "net.proest.lp2go3.VelocityState-Down";
+    private static final String OFFSET_BAROSENSOR_ALTITUDE = "net.proest.lp2go3.BaroSensor-Altitude";
+
     private static final int VIEW_MAIN = 0;
     private static final int VIEW_MAP = 1;
     private static final int VIEW_OBJECTS = 2;
     private static final int VIEW_SETTINGS = 3;
     private static final int VIEW_LOGS = 4;
     private static final int VIEW_ABOUT = 5;
-    private static final String EMPTY_STRING = "";
-    static boolean hasPThread = false;
+    private static final boolean LOCAL_LOGD = true;
+    private final static int HISTORY_MARKER_NUM = 5;
+    static boolean sHasPThread = false;
     public boolean isReady = false;
     protected TextView txtObjectLogTx;
     protected TextView txtObjectLogRxGood;
@@ -192,7 +194,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     protected TextView txtVehicleName;
     protected ImageView imgBluetooth;
     protected ImageView imgUSB;
-    protected TextView etxObjects;
+    protected TextView txtObjects;
     protected TextView txtLogFilenameLabel;
     protected TextView txtLogFilename;
     protected TextView txtLogSize;
@@ -201,63 +203,56 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     protected TextView txtLogObjectsLabel;
     protected TextView txtLogDuration;
     protected TextView txtLogDurationLabel;
-    //protected EditText etxSettingsBTMac;
     protected Spinner spnConnectionTypeSpinner;
     protected Spinner spnBluetoothPairedDevice;
-    protected Button btnStart;
-    int currentView = 0;
-    int HISTORY_MARKER_NUM = 5;
-    int currentPosMarker = 0;
+    protected TextView txtDeviceText;
+    int mCurrentView = 0;
+    int mCurrentPosMarker = 0;
     private BluetoothAdapter mBluetoothAdapter;
-    private long txObjects;
-    private long rxObjectsGood;
-    private long rxObjectsBad;
-
+    private long mTxObjects;
+    private long mRxObjectsGood;
+    private long mRxObjectsBad;
     private int serialConnectionState;
-    private int serialModeUsed;
-    private String bluetoothDeviceUsed;
+    private int mSerialModeUsed;
+    private String mBluetoothDeviceUsed;
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
-    // nav drawer title
     private CharSequence mDrawerTitle;
-    // used to store app title
     private CharSequence mTitle;
-    // slide menu items
-    private String[] navMenuTitles;
-    private TypedArray navMenuIcons;
-    private ArrayList<NavDrawerItem> navDrawerItems;
-    private NavDrawerListAdapter adapter;
-    private Hashtable<String, Object> offset;
-    private PollThread pThread;
-    private ConnectionThread cThread;
-    private TextView txtDeviceText;
-    private UsbManager mManager;
+    private String[] mNavMenuTitles;
+    private TypedArray mNavMenuIcons;
+    private ArrayList<NavDrawerItem> mNavDrawerItems;
+    private NavDrawerListAdapter mDrawListAdapter;
+    private Hashtable<String, Object> mOffset;
+    private PollThread mPollThread;
+    private ConnectionThread mConnectionThread;
+    private UsbManager mUsbManager;
     private UsbDevice mDevice;
     private UsbDeviceConnection mDeviceConnection;
     private PendingIntent mPermissionIntent;
     private UsbInterface mInterface;
     private UAVTalkDevice mUAVTalkDevice;
-    private Hashtable<String, UAVTalkXMLObject> xmlObjects;
+    private Hashtable<String, UAVTalkXMLObject> mXmlObjects;
     BroadcastReceiver mUsbReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             Log.d("USB", action);
 
-            if (serialModeUsed == SERIAL_USB && UsbManager.ACTION_USB_DEVICE_ATTACHED.equals(action)) {
+            if (mSerialModeUsed == SERIAL_USB && UsbManager.ACTION_USB_DEVICE_ATTACHED.equals(action)) {
                 UsbDevice device = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
 
                 Log.d("USB", device.getVendorId() + "-" + device.getProductId() + "-" + device.getDeviceClass()
                         + " " + device.getDeviceSubclass() + " " + device.getDeviceProtocol());
 
                 if (device.getDeviceClass() == UsbConstants.USB_CLASS_MISC) {
-                    mManager.requestPermission(device, mPermissionIntent);
+                    mUsbManager.requestPermission(device, mPermissionIntent);
                 }
 
                 txtDeviceText.setText(device.getDeviceName());
 
 
-            } else if (serialModeUsed == SERIAL_USB && UsbManager.ACTION_USB_DEVICE_DETACHED.equals(action)) {
+            } else if (mSerialModeUsed == SERIAL_USB && UsbManager.ACTION_USB_DEVICE_DETACHED.equals(action)) {
                 UsbDevice device = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
                 if (device != null /*&& device.equals(deviceName)*/) {
                     setUsbInterface(null, null);
@@ -266,7 +261,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     }
                 }
                 txtDeviceText.setText(R.string.DEVICE_NAME_NONE);
-            } else if (serialModeUsed == SERIAL_USB && ACTION_USB_PERMISSION.equals(action)) {
+            } else if (mSerialModeUsed == SERIAL_USB && ACTION_USB_PERMISSION.equals(action)) {
                 synchronized (this) {
                     UsbDevice device = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
                     if (intent.getBooleanExtra(UsbManager.EXTRA_PERMISSION_GRANTED, false)) {
@@ -284,13 +279,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         }
     };
-    private Marker[] posHistory = new Marker[HISTORY_MARKER_NUM];
-    private AlertDialog.Builder batteryCapacityDialogBuilder;
-    private AlertDialog.Builder batteryCellsDialogBuilder;
-    private View view0, view1, view2, view3, view4, view5;
-    private GoogleMap map;
-    private MapView mapView;
-    private boolean doReconnect = false;
+    private Marker[] mPosHistory = new Marker[HISTORY_MARKER_NUM];
+    private AlertDialog.Builder mBatteryCapacityDialogBuilder;
+    private AlertDialog.Builder mBatteryCellsDialogBuilder;
+    private View mView0, mView1, mView2, mView3, mView4, mView5;
+    private GoogleMap mMap;
+    private MapView mMapView;
+    private boolean mDoReconnect = false;
 
     static private UsbInterface findAdbInterface(UsbDevice device) {
 
@@ -307,50 +302,50 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     public void setRxObjectsGood(long o) {
-        this.rxObjectsGood = o;
+        this.mRxObjectsGood = o;
     }
 
     public void incRxObjectsGood() {
-        this.rxObjectsGood++;
+        this.mRxObjectsGood++;
     }
 
     public void setRxObjectsBad(long o) {
-        this.rxObjectsBad = o;
+        this.mRxObjectsBad = o;
     }
 
     public void incRxObjectsBad() {
-        this.rxObjectsBad++;
+        this.mRxObjectsBad++;
     }
 
     public void setTxObjects(long o) {
-        this.txObjects = o;
+        this.mTxObjects = o;
     }
 
     public void incTxObjects() {
-        this.txObjects++;
+        this.mTxObjects++;
     }
 
     private void initSlider(Bundle savedInstanceState) {
         mTitle = mDrawerTitle = getTitle();
-        navMenuTitles = getResources().getStringArray(R.array.nav_drawer_items);
-        navMenuIcons = getResources()
+        mNavMenuTitles = getResources().getStringArray(R.array.nav_drawer_items);
+        mNavMenuIcons = getResources()
                 .obtainTypedArray(R.array.nav_drawer_icons);
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.list_slidermenu);
-        navDrawerItems = new ArrayList<NavDrawerItem>();
+        mNavDrawerItems = new ArrayList<NavDrawerItem>();
 
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[0], navMenuIcons.getResourceId(0, -1)));
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[1], navMenuIcons.getResourceId(1, -1)));
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[2], navMenuIcons.getResourceId(2, -1)));
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[3], navMenuIcons.getResourceId(3, -1)));
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[4], navMenuIcons.getResourceId(4, -1)));
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[5], navMenuIcons.getResourceId(5, -1)));
+        mNavDrawerItems.add(new NavDrawerItem(mNavMenuTitles[0], mNavMenuIcons.getResourceId(0, -1)));
+        mNavDrawerItems.add(new NavDrawerItem(mNavMenuTitles[1], mNavMenuIcons.getResourceId(1, -1)));
+        mNavDrawerItems.add(new NavDrawerItem(mNavMenuTitles[2], mNavMenuIcons.getResourceId(2, -1)));
+        mNavDrawerItems.add(new NavDrawerItem(mNavMenuTitles[3], mNavMenuIcons.getResourceId(3, -1)));
+        mNavDrawerItems.add(new NavDrawerItem(mNavMenuTitles[4], mNavMenuIcons.getResourceId(4, -1)));
+        mNavDrawerItems.add(new NavDrawerItem(mNavMenuTitles[5], mNavMenuIcons.getResourceId(5, -1)));
 
-        navMenuIcons.recycle();
-        adapter = new NavDrawerListAdapter(getApplicationContext(),
-                navDrawerItems);
-        mDrawerList.setAdapter(adapter);
+        mNavMenuIcons.recycle();
+        mDrawListAdapter = new NavDrawerListAdapter(getApplicationContext(),
+                mNavDrawerItems);
+        mDrawerList.setAdapter(mDrawListAdapter);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
@@ -425,210 +420,200 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         mDrawerToggle.onConfigurationChanged(newConfig);
     }
 
-    /*
-        public void setObjectLogTx(String o) {
-            txtObjectLogTx.setText(o);
-        }
-        public void setObjectLogRxGood(String o) {
-            txtObjectLogRxGood.setText(o);
-        }
-        public void setObjectLogRxBad(String o) {
-            txtObjectLogRxBad.setText(o);
-        }
-    */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        serialConnectionState = SERIAL_DISCONNECTED;
-
-        view0 = getLayoutInflater().inflate(R.layout.activity_main, null);
-        view1 = getLayoutInflater().inflate(R.layout.activity_map, null);
-        view2 = getLayoutInflater().inflate(R.layout.activity_objects, null);
-        view3 = getLayoutInflater().inflate(R.layout.activity_settings, null);
-        view4 = getLayoutInflater().inflate(R.layout.activity_logs, null);
-        view5 = getLayoutInflater().inflate(R.layout.activity_about, null);
-
-        setContentView(view1);
-        mapView = (MapView) findViewById(R.id.map);
-        mapView.onCreate(savedInstanceState);
-
-        map = mapView.getMap();
-        if (map != null) {  //Map can be null if services are not available, e.g. on an amazon fire tab
-            map.getUiSettings().setMyLocationButtonEnabled(false);
-            map.setMyLocationEnabled(true);
-            MapsInitializer.initialize(this);
-
-            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(32.154599, -110.827369), 18);
-            map.animateCamera(cameraUpdate);
-            map.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
-            Marker center = map.addMarker(new MarkerOptions()
-                    .position(new LatLng(32.154599, -110.827369))
-                    .title("Librepilot")
-                    .snippet("LP rules")
-                    .icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_launcher)));
-        }
-        setContentView(view0);  //Main
-
         AssetManager assets = getAssets();
 
-        initSlider(savedInstanceState);
+        serialConnectionState = SERIAL_DISCONNECTED;
 
-        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+        mView0 = getLayoutInflater().inflate(R.layout.activity_main, null);
+        mView1 = getLayoutInflater().inflate(R.layout.activity_map, null);
+        mView2 = getLayoutInflater().inflate(R.layout.activity_objects, null);
+        mView3 = getLayoutInflater().inflate(R.layout.activity_settings, null);
+        mView4 = getLayoutInflater().inflate(R.layout.activity_logs, null);
+        mView5 = getLayoutInflater().inflate(R.layout.activity_about, null);
 
-        Log.d("SMU", "" + serialModeUsed);
-        offset = new Hashtable<String, Object>();
-        offset.put(OFFSET_BAROSENSOR_ALTITUDE, .0f);
-        offset.put(OFFSET_VELOCITY_DOWN, .0f);
+        setContentView(mView0);  //Main
+        {
+            initSlider(savedInstanceState);
 
-        txtObjectLogTx = (TextView) findViewById(R.id.txtObjectLogTx);
-        txtObjectLogRxGood = (TextView) findViewById(R.id.txtObjectLogRxGood);
-        txtObjectLogRxBad = (TextView) findViewById(R.id.txtObjectLogRxBad);
+            SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
 
-        txtDeviceText = (TextView) findViewById(R.id.txtDeviceName);
+            mOffset = new Hashtable<String, Object>();
+            mOffset.put(OFFSET_BAROSENSOR_ALTITUDE, .0f);
+            mOffset.put(OFFSET_VELOCITY_DOWN, .0f);
 
-        txtPlan = (TextView) findViewById(R.id.txtPlan);
-        txtAtti = (TextView) findViewById(R.id.txtAtti);
-        txtStab = (TextView) findViewById(R.id.txtStab);
-        txtPath = (TextView) findViewById(R.id.txtPath);
+            txtObjectLogTx = (TextView) findViewById(R.id.txtObjectLogTx);
+            txtObjectLogRxGood = (TextView) findViewById(R.id.txtObjectLogRxGood);
+            txtObjectLogRxBad = (TextView) findViewById(R.id.txtObjectLogRxBad);
 
-        txtGPS = (TextView) findViewById(R.id.txtGPS);
-        txtGPSSatsInView = (TextView) findViewById(R.id.txtGPSSatsInView);
+            txtDeviceText = (TextView) findViewById(R.id.txtDeviceName);
 
-        txtAirspd = (TextView) findViewById(R.id.txtAirspd);
-        txtSensor = (TextView) findViewById(R.id.txtSensor);
-        txtMag = (TextView) findViewById(R.id.txtMag);
+            txtPlan = (TextView) findViewById(R.id.txtPlan);
+            txtAtti = (TextView) findViewById(R.id.txtAtti);
+            txtStab = (TextView) findViewById(R.id.txtStab);
+            txtPath = (TextView) findViewById(R.id.txtPath);
 
-        txtInput = (TextView) findViewById(R.id.txtInput);
-        txtOutput = (TextView) findViewById(R.id.txtOutput);
-        txtI2C = (TextView) findViewById(R.id.txtI2C);
-        txtTelemetry = (TextView) findViewById(R.id.txtTelemetry);
-        txtFlightTelemetry = (TextView) findViewById(R.id.txtFlightTelemetry);
-        txtGCSTelemetry = (TextView) findViewById(R.id.txtGCSTelemetry);
+            txtGPS = (TextView) findViewById(R.id.txtGPS);
+            txtGPSSatsInView = (TextView) findViewById(R.id.txtGPSSatsInView);
 
-        txtBatt = (TextView) findViewById(R.id.txtBatt);
-        txtTime = (TextView) findViewById(R.id.txtTime);
-        txtConfig = (TextView) findViewById(R.id.txtConfig);
+            txtAirspd = (TextView) findViewById(R.id.txtAirspd);
+            txtSensor = (TextView) findViewById(R.id.txtSensor);
+            txtMag = (TextView) findViewById(R.id.txtMag);
 
-        txtBoot = (TextView) findViewById(R.id.txtBoot);
-        txtStack = (TextView) findViewById(R.id.txtStack);
-        txtMem = (TextView) findViewById(R.id.txtMem);
-        txtEvent = (TextView) findViewById(R.id.txtEvent);
-        txtCPU = (TextView) findViewById(R.id.txtCPU);
+            txtInput = (TextView) findViewById(R.id.txtInput);
+            txtOutput = (TextView) findViewById(R.id.txtOutput);
+            txtI2C = (TextView) findViewById(R.id.txtI2C);
+            txtTelemetry = (TextView) findViewById(R.id.txtTelemetry);
+            txtFlightTelemetry = (TextView) findViewById(R.id.txtFlightTelemetry);
+            txtGCSTelemetry = (TextView) findViewById(R.id.txtGCSTelemetry);
 
-        txtArmed = (TextView) findViewById(R.id.txtArmed);
+            txtBatt = (TextView) findViewById(R.id.txtBatt);
+            txtTime = (TextView) findViewById(R.id.txtTime);
+            txtConfig = (TextView) findViewById(R.id.txtConfig);
 
-        txtVolt = (TextView) findViewById(R.id.txtVolt);
-        txtAmpere = (TextView) findViewById(R.id.txtAmpere);
-        txtmAh = (TextView) findViewById(R.id.txtmAh);
-        txtTimeLeft = (TextView) findViewById(R.id.txtTimeLeft);
+            txtBoot = (TextView) findViewById(R.id.txtBoot);
+            txtStack = (TextView) findViewById(R.id.txtStack);
+            txtMem = (TextView) findViewById(R.id.txtMem);
+            txtEvent = (TextView) findViewById(R.id.txtEvent);
+            txtCPU = (TextView) findViewById(R.id.txtCPU);
 
-        txtCapacity = (TextView) findViewById(R.id.txtCapacity);
-        txtCells = (TextView) findViewById(R.id.txtCells);
+            txtArmed = (TextView) findViewById(R.id.txtArmed);
 
-        txtAltitude = (TextView) findViewById(R.id.txtAltitude);
-        txtAltitudeAccel = (TextView) findViewById(R.id.txtAltitudeAccel);
+            txtVolt = (TextView) findViewById(R.id.txtVolt);
+            txtAmpere = (TextView) findViewById(R.id.txtAmpere);
+            txtmAh = (TextView) findViewById(R.id.txtmAh);
+            txtTimeLeft = (TextView) findViewById(R.id.txtTimeLeft);
 
-        txtModeNum = (TextView) findViewById(R.id.txtModeNum);
-        txtModeFlightMode = (TextView) findViewById(R.id.txtModeFlightMode);
+            txtCapacity = (TextView) findViewById(R.id.txtCapacity);
+            txtCells = (TextView) findViewById(R.id.txtCells);
 
-        txtModeAssistedControl = (TextView) findViewById(R.id.txtModeAssistedControl);
-        txtVehicleName = (TextView) findViewById(R.id.txtVehicleName);
+            txtAltitude = (TextView) findViewById(R.id.txtAltitude);
+            txtAltitudeAccel = (TextView) findViewById(R.id.txtAltitudeAccel);
 
-        serialModeUsed = sharedPref.getInt(getString(R.string.SETTINGS_SERIAL_MODE), 0);
-        bluetoothDeviceUsed = sharedPref.getString(getString(R.string.SETTINGS_BT_NAME), "");
+            txtModeNum = (TextView) findViewById(R.id.txtModeNum);
+            txtModeFlightMode = (TextView) findViewById(R.id.txtModeFlightMode);
 
-        imgBluetooth = (ImageView) findViewById(R.id.imgBluetooth);
-        if (serialModeUsed != SERIAL_BLUETOOTH || serialModeUsed == SERIAL_NONE) {
-            //imgBluetooth.setVisibility(View.INVISIBLE);
-            imgBluetooth.setAlpha(ICON_TRANSPARENT);
-        } else {
+            txtModeAssistedControl = (TextView) findViewById(R.id.txtModeAssistedControl);
+            txtVehicleName = (TextView) findViewById(R.id.txtVehicleName);
 
-            imgBluetooth.setColorFilter(Color.argb(255, 255, 0, 0));
-        }
+            mSerialModeUsed = sharedPref.getInt(getString(R.string.SETTINGS_SERIAL_MODE), 0);
+            mBluetoothDeviceUsed = sharedPref.getString(getString(R.string.SETTINGS_BT_NAME), "");
 
-        imgUSB = (ImageView) findViewById(R.id.imgUSB);
-        if (serialModeUsed != SERIAL_USB || serialModeUsed == SERIAL_NONE) {
-            imgUSB.setAlpha(ICON_TRANSPARENT);
-        } else {
-            imgUSB.setColorFilter(Color.argb(255, 255, 0, 0));
-        }
+            imgBluetooth = (ImageView) findViewById(R.id.imgBluetooth);
+            if (mSerialModeUsed != SERIAL_BLUETOOTH || mSerialModeUsed == SERIAL_NONE) {
+                //imgBluetooth.setVisibility(View.INVISIBLE);
+                imgBluetooth.setAlpha(ICON_TRANSPARENT);
+            } else {
 
-        setContentView(view1); //Map
-        txtLatitude = (TextView) findViewById(R.id.txtLatitude);
-        txtLongitude = (TextView) findViewById(R.id.txtLongitude);
-        txtMapGPS = (TextView) findViewById(R.id.txtMapGPS);
-        txtMapGPSSatsInView = (TextView) findViewById(R.id.txtMapGPSSatsInView);
+                imgBluetooth.setColorFilter(Color.argb(255, 255, 0, 0));
+            }
 
-        setContentView(view2); //Objects
-        etxObjects = (EditText) findViewById(R.id.etxObjects);
-
-        setContentView(view3); //Settings
-        spnConnectionTypeSpinner = (Spinner) findViewById(R.id.spnConnectionTypeSpinner);
-        ArrayAdapter<CharSequence> serialConnectionTypeAdapter = ArrayAdapter.createFromResource(this,
-                R.array.connections_settings, android.R.layout.simple_spinner_item);
-
-        serialConnectionTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        spnConnectionTypeSpinner.setAdapter(serialConnectionTypeAdapter);
-        spnConnectionTypeSpinner.setOnItemSelectedListener(this);
-        spnConnectionTypeSpinner.setSelection(serialModeUsed);
-
-
-        spnBluetoothPairedDevice = (Spinner) findViewById(R.id.spnBluetoothPairedDevice);
-        //ArrayAdapter<CharSequence> bntPairedDeviceAdapter = ArrayAdapter.createFromResource(this,
-        //        R.array.connections_settings, android.R.layout.simple_spinner_item);
-
-        ArrayAdapter<CharSequence> bntPairedDeviceAdapter = new ArrayAdapter<CharSequence>(this, android.R.layout.simple_spinner_item);
-
-        bntPairedDeviceAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        spnBluetoothPairedDevice.setAdapter(bntPairedDeviceAdapter);
-        spnBluetoothPairedDevice.setOnItemSelectedListener(this);
-        //spnBluetoothPairedDevice.setSelection(bluetoothDeviceUsed);
-
-        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        if (mBluetoothAdapter == null) {
-            // Device does not support Bluetooth
-        }
-
-        if (!mBluetoothAdapter.isEnabled()) {
-            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-        }
-
-        Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
-        // If there are paired devices
-        if (pairedDevices.size() > 0) {
-            // Loop through paired devices
-            int btpd = 0;
-            for (BluetoothDevice device : pairedDevices) {
-                // Add the name and address to an array adapter to show in a ListView
-                bntPairedDeviceAdapter.add(device.getName());
-                if (device.getName().equals(bluetoothDeviceUsed)) {
-                    spnBluetoothPairedDevice.setSelection(btpd);
-                }
-                btpd++;
-                Log.d("BTE", device.getName() + " " + device.getAddress());
+            imgUSB = (ImageView) findViewById(R.id.imgUSB);
+            if (mSerialModeUsed != SERIAL_USB || mSerialModeUsed == SERIAL_NONE) {
+                imgUSB.setAlpha(ICON_TRANSPARENT);
+            } else {
+                imgUSB.setColorFilter(Color.argb(255, 255, 0, 0));
             }
         }
-
-        setContentView(view4); //Logs
-
-        txtLogFilename = (TextView) findViewById(R.id.txtLogFilename);
-        txtLogSize = (TextView) findViewById(R.id.txtLogSize);
-        txtLogObjects = (TextView) findViewById(R.id.txtLogObjects);
-        txtLogDuration = (TextView) findViewById(R.id.txtLogDuration);
-
-
-        setContentView(view5);  //About
-        PackageInfo pInfo = null;
-        try {
-            pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
+        setContentView(mView1); //Map
         {
+            mMapView = (MapView) findViewById(R.id.map);
+            mMapView.onCreate(savedInstanceState);
+
+            mMap = mMapView.getMap();
+            if (mMap != null) {  //Map can be null if services are not available, e.g. on an amazon fire tab
+                mMap.getUiSettings().setMyLocationButtonEnabled(false);
+                mMap.setMyLocationEnabled(true);
+                MapsInitializer.initialize(this);
+
+                CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(32.154599, -110.827369), 18);
+                mMap.animateCamera(cameraUpdate);
+                mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+                Marker center = mMap.addMarker(new MarkerOptions()
+                        .position(new LatLng(32.154599, -110.827369))
+                        .title("Librepilot")
+                        .snippet("LP rules")
+                        .icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_launcher)));
+            }
+            txtLatitude = (TextView) findViewById(R.id.txtLatitude);
+            txtLongitude = (TextView) findViewById(R.id.txtLongitude);
+            txtMapGPS = (TextView) findViewById(R.id.txtMapGPS);
+            txtMapGPSSatsInView = (TextView) findViewById(R.id.txtMapGPSSatsInView);
+        }
+        setContentView(mView2); //Objects
+        {
+            txtObjects = (EditText) findViewById(R.id.etxObjects);
+        }
+        setContentView(mView3); //Settings
+        {
+            spnConnectionTypeSpinner = (Spinner) findViewById(R.id.spnConnectionTypeSpinner);
+            ArrayAdapter<CharSequence> serialConnectionTypeAdapter = ArrayAdapter.createFromResource(this,
+                    R.array.connections_settings, android.R.layout.simple_spinner_item);
+
+            serialConnectionTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+            spnConnectionTypeSpinner.setAdapter(serialConnectionTypeAdapter);
+            spnConnectionTypeSpinner.setOnItemSelectedListener(this);
+            spnConnectionTypeSpinner.setSelection(mSerialModeUsed);
+
+
+            spnBluetoothPairedDevice = (Spinner) findViewById(R.id.spnBluetoothPairedDevice);
+            //ArrayAdapter<CharSequence> bntPairedDeviceAdapter = ArrayAdapter.createFromResource(this,
+            //        R.array.connections_settings, android.R.layout.simple_spinner_item);
+
+            ArrayAdapter<CharSequence> bntPairedDeviceAdapter = new ArrayAdapter<CharSequence>(this, android.R.layout.simple_spinner_item);
+
+            bntPairedDeviceAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+            spnBluetoothPairedDevice.setAdapter(bntPairedDeviceAdapter);
+            spnBluetoothPairedDevice.setOnItemSelectedListener(this);
+            //spnBluetoothPairedDevice.setSelection(mBluetoothDeviceUsed);
+
+            mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+            if (mBluetoothAdapter == null) {
+                // Device does not support Bluetooth
+            }
+
+            if (!mBluetoothAdapter.isEnabled()) {
+                Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+            }
+
+            Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
+            // If there are paired devices
+            if (pairedDevices.size() > 0) {
+                // Loop through paired devices
+                int btpd = 0;
+                for (BluetoothDevice device : pairedDevices) {
+                    // Add the name and address to an array adapter to show in a ListView
+                    bntPairedDeviceAdapter.add(device.getName());
+                    if (device.getName().equals(mBluetoothDeviceUsed)) {
+                        spnBluetoothPairedDevice.setSelection(btpd);
+                    }
+                    btpd++;
+                    if (LOCAL_LOGD) Log.d("BTE", device.getName() + " " + device.getAddress());
+                }
+            }
+        }
+        setContentView(mView4); //Logs
+        {
+            txtLogFilename = (TextView) findViewById(R.id.txtLogFilename);
+            txtLogSize = (TextView) findViewById(R.id.txtLogSize);
+            txtLogObjects = (TextView) findViewById(R.id.txtLogObjects);
+            txtLogDuration = (TextView) findViewById(R.id.txtLogDuration);
+        }
+
+        setContentView(mView5);  //About
+        {
+            PackageInfo pInfo = null;
+            try {
+                pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+            } catch (PackageManager.NameNotFoundException e) {
+                e.printStackTrace();
+            }
 
             ((TextView) findViewById(R.id.txtAndroidVersionRelease))
                     .setText(getString(R.string.RUNNING_ON_ANDROID_VERSION) + Build.VERSION.RELEASE);
@@ -636,13 +621,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     .setText(getString(R.string.LP2GO_RELEASE) + pInfo.versionName + getString(R.string.OPEN_ROUND_BRACKET_WITH_SPACE) + pInfo.versionName + getString(R.string.CLOSE_ROUND_BRACKET));
             ((TextView) findViewById(R.id.txtLP2GoPackage)).setText(pInfo.packageName);
         }
-        setContentView(view0);
 
+        setContentView(mView0);  //reset to start view
 
         mPermissionIntent = PendingIntent.getBroadcast(this, 0, new Intent(ACTION_USB_PERMISSION), 0);
-        mManager = (UsbManager) getSystemService(Context.USB_SERVICE);
+        mUsbManager = (UsbManager) getSystemService(Context.USB_SERVICE);
 
-        xmlObjects = new Hashtable<String, UAVTalkXMLObject>();
+        mXmlObjects = new Hashtable<String, UAVTalkXMLObject>();
 
         try {
             String path = "uav-15.09";
@@ -650,7 +635,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             for (String file : files) {
                 InputStream ius = assets.open(path + File.separator + file);
                 UAVTalkXMLObject obj = new UAVTalkXMLObject(readFully(ius));
-                xmlObjects.put(obj.getName(), obj);
+                mXmlObjects.put(obj.getName(), obj);
                 ius.close();
                 ius = null;
             }
@@ -658,12 +643,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             e.printStackTrace();
         }
 
-        Log.d("MainActivity.onCreate", "XML Loading Complete");
+        if (LOCAL_LOGD) Log.d("MainActivity.onCreate", "XML Loading Complete");
 
-        // check for existing devices
-
-
-        // listen for new devices
+        // listen for new usb devices
         IntentFilter filter = new IntentFilter();
         filter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
         filter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
@@ -673,35 +655,34 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         if (Looper.myLooper() == null) Looper.prepare();
 
-        pThread = new PollThread(this);
-        cThread = new ConnectionThread(this);
-        pThread.start();
-        cThread.start();
-
+        mPollThread = new PollThread(this);
+        mConnectionThread = new ConnectionThread(this);
+        mPollThread.start();
+        mConnectionThread.start();
 
         isReady = true;
     }
 
     private void connectUSB() {
-        if (serialModeUsed == SERIAL_USB) {
-            for (UsbDevice device : mManager.getDeviceList().values()) {
+        if (mSerialModeUsed == SERIAL_USB) {
+            for (UsbDevice device : mUsbManager.getDeviceList().values()) {
                 UsbInterface intf = findAdbInterface(device);
                 if (device.getDeviceClass() == UsbConstants.USB_CLASS_MISC) {
-                    mManager.requestPermission(device, mPermissionIntent);
+                    mUsbManager.requestPermission(device, mPermissionIntent);
                 }
             }
         }
     }
 
-    private void connectBluettooth() {
-        if (serialModeUsed == SERIAL_BLUETOOTH) {
+    private void connectBluetooth() {
+        if (mSerialModeUsed == SERIAL_BLUETOOTH) {
             setBluetoothInterface();
         }
     }
 
     public void setContentView(View v, int p) {
-        if (currentView != p) {
-            currentView = p;
+        if (mCurrentView != p) {
+            mCurrentView = p;
             super.setContentView(v);
             initSlider(null);
         }
@@ -710,14 +691,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private void displayView(int position) {
         Fragment fragment = null;
 
-
         //clean up current view
-        switch (currentView) {
+        switch (mCurrentView) {
             case VIEW_MAIN:
 
                 break;
             case VIEW_MAP:
-                mapView.onPause();
+                mMapView.onPause();
 
                 break;
             case VIEW_OBJECTS:
@@ -749,7 +729,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 editor.putString(getString(R.string.SETTINGS_BT_MAC), btmac);
                 editor.putString(getString(R.string.SETTINGS_BT_NAME), btname);
                 editor.commit();
-                doReconnect = true;
+                mDoReconnect = true;
 
                 break;
             case VIEW_LOGS:
@@ -768,33 +748,33 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         switch (position) {
             case VIEW_MAIN:
                 fragment = new MainFragment();
-                setContentView(view0, position);
+                setContentView(mView0, position);
 
                 break;
             case VIEW_MAP:
                 fragment = new MapFragment();
-                setContentView(view1, position);
-                mapView.onResume();  //(re)activate the map
+                setContentView(mView1, position);
+                mMapView.onResume();  //(re)activate the mMap
 
                 break;
             case VIEW_OBJECTS:
                 fragment = new ObjectsFragment();
-                setContentView(view2, position);
+                setContentView(mView2, position);
 
                 break;
             case VIEW_SETTINGS:
                 fragment = new SettingsFragment();
-                setContentView(view3, position);
+                setContentView(mView3, position);
 
                 break;
             case VIEW_LOGS:
                 fragment = new LogsFragment();
-                setContentView(view4, position);
+                setContentView(mView4, position);
 
                 break;
             case VIEW_ABOUT:
                 fragment = new AboutFragment();
-                setContentView(view5, position);
+                setContentView(mView5, position);
 
                 break;
 
@@ -808,14 +788,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
             mDrawerList.setItemChecked(position, true);
             mDrawerList.setSelection(position);
-            setTitle(navMenuTitles[position]);
+            setTitle(mNavMenuTitles[position]);
             mDrawerLayout.closeDrawer(mDrawerList);
-        } else {
         }
     }
 
-    private String readFully(InputStream inputStream)
-            throws IOException {
+    private String readFully(InputStream inputStream) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         byte[] buffer = new byte[1024];
         int length;
@@ -829,18 +807,28 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public void onDestroy() {
         unregisterReceiver(mUsbReceiver);
         setUsbInterface(null, null);
+        if (mPollThread != null) {
+            mPollThread.setInvalid();
+            mPollThread = null;
+        }
+
+        if (mConnectionThread != null) {
+            mConnectionThread.setInvalid();
+            mConnectionThread = null;
+        }
+
         super.onDestroy();
     }
 
     public void onBatteryCapacityClick(View v) {
         initBatteryCapacityDialog();
-        batteryCapacityDialogBuilder.show();
+        mBatteryCapacityDialogBuilder.show();
     }
 
     public void onAltitudeClick(View V) {
         try {
-            offset.put(OFFSET_BAROSENSOR_ALTITUDE, mUAVTalkDevice.getoTree().getData("BaroSensor", "Altitude"));
-            txtAltitude.setText(EMPTY_STRING);
+            mOffset.put(OFFSET_BAROSENSOR_ALTITUDE, mUAVTalkDevice.getoTree().getData("BaroSensor", "Altitude"));
+            txtAltitude.setText(R.string.EMPTY_STRING);
         } catch (UAVTalkMissingObjectException | NullPointerException e) {
             //e.printStackTrace();
         }
@@ -848,16 +836,16 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     public void onAltitudeAccelClick(View V) {
         try {
-            offset.put(OFFSET_VELOCITY_DOWN, mUAVTalkDevice.getoTree().getData("VelocityState", "Down"));
-            txtAltitudeAccel.setText(EMPTY_STRING);
+            mOffset.put(OFFSET_VELOCITY_DOWN, mUAVTalkDevice.getoTree().getData("VelocityState", "Down"));
+            txtAltitudeAccel.setText(R.string.EMPTY_STRING);
         } catch (UAVTalkMissingObjectException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
     }
 
     public void onBatteryCellsClick(View v) {
         initBatteryCellsDialog();
-        batteryCellsDialogBuilder.show();
+        mBatteryCellsDialogBuilder.show();
     }
 
     public void onLogStartClick(View v) {
@@ -883,36 +871,28 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             return;
         }
         Intent share = new Intent(Intent.ACTION_SEND);
-        //share.setType("txt/plain");
-        share.setType("application/octet-stream");
+
+        share.setType(getString(R.string.MIME_APPLICATION_OCTETSTREAM));
 
         File logPath = new File(this.getFilesDir(), "");
         File logFile = new File(logPath, mUAVTalkDevice.getLogFileName());
-        Uri contentUri = FileProvider.getUriForFile(this, "net.proest.lp2go.logfileprovider", logFile);
+        Uri contentUri = FileProvider.getUriForFile(this, "net.proest.lp2go3.logfileprovider", logFile);
 
         share.putExtra(Intent.EXTRA_STREAM, contentUri);
-        Log.d("contentur", contentUri.toString());
-
-        startActivity(Intent.createChooser(share, "Share Log"));
+        startActivity(Intent.createChooser(share, getString(R.string.SHARE_LOG_TITLE)));
     }
 
-    public void setPThreadOTree(UAVTalkObjectTree oTree) {
-        pThread.setoTree(oTree);
+    public void setPollThreadObjectTree(UAVTalkObjectTree oTree) {
+        mPollThread.setObjectTree(oTree);
     }
 
     private boolean setBluetoothInterface() {
-        /*try {
-            mUAVTalkDevice.stop();
-        } catch (Exception e) {
-            Log.d("DBG", "Could'nt stop device");
-        }
-        mUAVTalkDevice = null;*/
         if (mUAVTalkDevice != null) {
             mUAVTalkDevice.stop();
         }
-        mUAVTalkDevice = new UAVTalkBluetoothDevice(this, xmlObjects);
+        mUAVTalkDevice = new UAVTalkBluetoothDevice(this, mXmlObjects);
         mUAVTalkDevice.start();
-        //}
+
         return mUAVTalkDevice != null;
     }
 
@@ -928,14 +908,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
 
         if (device != null && intf != null) {
-            UsbDeviceConnection connection = mManager.openDevice(device);
+            UsbDeviceConnection connection = mUsbManager.openDevice(device);
             if (connection != null) {
                 if (connection.claimInterface(intf, true)) {
                     mDevice = device;
                     mDeviceConnection = connection;
                     mInterface = intf;
-                    mUAVTalkDevice = new UAVTalkUsbDevice(this, mDeviceConnection, intf, xmlObjects);
-                    mUAVTalkDevice.getoTree().setXmlObjects(xmlObjects);
+                    mUAVTalkDevice = new UAVTalkUsbDevice(this, mDeviceConnection, intf, mXmlObjects);
+                    mUAVTalkDevice.getoTree().setXmlObjects(mXmlObjects);
 
                     mUAVTalkDevice.start();
                     txtDeviceText.setText(device.getDeviceName());
@@ -954,15 +934,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     private void initBatteryCapacityDialog() {
-        batteryCapacityDialogBuilder = new AlertDialog.Builder(this);
-        batteryCapacityDialogBuilder.setTitle(R.string.CAPACITY_DIALOG_TITLE);
+        mBatteryCapacityDialogBuilder = new AlertDialog.Builder(this);
+        mBatteryCapacityDialogBuilder.setTitle(R.string.CAPACITY_DIALOG_TITLE);
 
         final EditText input = new EditText(this);
         input.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
-        batteryCapacityDialogBuilder.setView(input);
+        mBatteryCapacityDialogBuilder.setView(input);
         input.setText(txtCapacity.getText());
 
-        batteryCapacityDialogBuilder.setPositiveButton(R.string.OK_BUTTON, new DialogInterface.OnClickListener() {
+        mBatteryCapacityDialogBuilder.setPositiveButton(R.string.OK_BUTTON, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 byte[] bcdata;
@@ -980,7 +960,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         });
 
-        batteryCapacityDialogBuilder.setNegativeButton(R.string.CANCEL_BUTTON, new DialogInterface.OnClickListener() {
+        mBatteryCapacityDialogBuilder.setNegativeButton(R.string.CANCEL_BUTTON, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
@@ -990,15 +970,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     private void initBatteryCellsDialog() {
-        batteryCellsDialogBuilder = new AlertDialog.Builder(this);
-        batteryCellsDialogBuilder.setTitle(R.string.CELLS_DIALOG_TITLE);
+        mBatteryCellsDialogBuilder = new AlertDialog.Builder(this);
+        mBatteryCellsDialogBuilder.setTitle(R.string.CELLS_DIALOG_TITLE);
 
         final EditText input = new EditText(this);
         input.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
-        batteryCellsDialogBuilder.setView(input);
+        mBatteryCellsDialogBuilder.setView(input);
         input.setText(txtCells.getText());
 
-        batteryCellsDialogBuilder.setPositiveButton(R.string.OK_BUTTON, new DialogInterface.OnClickListener() {
+        mBatteryCellsDialogBuilder.setPositiveButton(R.string.OK_BUTTON, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 byte[] bcdata = new byte[1];
@@ -1015,7 +995,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         });
 
-        batteryCellsDialogBuilder.setNegativeButton(R.string.CANCEL_BUTTON, new DialogInterface.OnClickListener() {
+        mBatteryCellsDialogBuilder.setNegativeButton(R.string.CANCEL_BUTTON, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
@@ -1028,10 +1008,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
         switch (parent.getId()) {
             case R.id.spnConnectionTypeSpinner: {
-                serialModeUsed = pos;
+                mSerialModeUsed = pos;
                 imgBluetooth.setColorFilter(Color.argb(0xff, 0xd4, 0x00, 0x00));
                 imgUSB.setColorFilter(Color.argb(0xff, 0xd4, 0x00, 0x00));
-                switch (serialModeUsed) {
+                switch (mSerialModeUsed) {
                     case SERIAL_NONE:
 
                         imgBluetooth.setAlpha(ICON_TRANSPARENT);
@@ -1048,14 +1028,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 }
                 SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPref.edit();
-                editor.putInt(getString(R.string.SETTINGS_SERIAL_MODE), serialModeUsed);
+                editor.putInt(getString(R.string.SETTINGS_SERIAL_MODE), mSerialModeUsed);
                 editor.commit();
-                //Log.d("SET",parent.getItemAtPosition(pos).toString());
                 break;
             }
         }
-        //Log.d("SET", "" + (parent.getId() == R.id.spnConnectionTypeSpinner) + " " + pos + " " + id);
-
     }
 
     @Override
@@ -1064,14 +1041,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     private void resetMainView() {
-
-        txtDeviceText.setText("");
+        txtDeviceText.setText(R.string.EMPTY_STRING);
         txtAtti.setBackground(getResources().getDrawable(R.drawable.rounded_corner_uninitialised));
         txtStab.setBackground(getResources().getDrawable(R.drawable.rounded_corner_uninitialised));
         txtPath.setBackground(getResources().getDrawable(R.drawable.rounded_corner_uninitialised));
         txtPlan.setBackground(getResources().getDrawable(R.drawable.rounded_corner_uninitialised));
 
-        txtGPSSatsInView.setText("");
+        txtGPSSatsInView.setText(R.string.EMPTY_STRING);
         txtGPS.setBackground(getResources().getDrawable(R.drawable.rounded_corner_uninitialised));
         txtSensor.setBackground(getResources().getDrawable(R.drawable.rounded_corner_uninitialised));
         txtAirspd.setBackground(getResources().getDrawable(R.drawable.rounded_corner_uninitialised));
@@ -1082,8 +1058,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         txtI2C.setBackground(getResources().getDrawable(R.drawable.rounded_corner_uninitialised));
         txtTelemetry.setBackground(getResources().getDrawable(R.drawable.rounded_corner_uninitialised));
 
-        txtFlightTelemetry.setText("");
-        txtGCSTelemetry.setText("");
+        txtFlightTelemetry.setText(R.string.EMPTY_STRING);
+        txtGCSTelemetry.setText(R.string.EMPTY_STRING);
 
         txtBatt.setBackground(getResources().getDrawable(R.drawable.rounded_corner_uninitialised));
         txtTime.setBackground(getResources().getDrawable(R.drawable.rounded_corner_uninitialised));
@@ -1095,26 +1071,25 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         txtEvent.setBackground(getResources().getDrawable(R.drawable.rounded_corner_uninitialised));
         txtCPU.setBackground(getResources().getDrawable(R.drawable.rounded_corner_uninitialised));
 
-        txtArmed.setText("");
+        txtArmed.setText(R.string.EMPTY_STRING);
 
-        txtVolt.setText("");
-        txtAmpere.setText("");
-        txtmAh.setText("");
-        txtTimeLeft.setText("");
+        txtVolt.setText(R.string.EMPTY_STRING);
+        txtAmpere.setText(R.string.EMPTY_STRING);
+        txtmAh.setText(R.string.EMPTY_STRING);
+        txtTimeLeft.setText(R.string.EMPTY_STRING);
 
-        txtCapacity.setText("");
-        txtCells.setText("");
+        txtCapacity.setText(R.string.EMPTY_STRING);
+        txtCells.setText(R.string.EMPTY_STRING);
 
-        txtAltitude.setText("");
-        txtAltitudeAccel.setText("");
+        txtAltitude.setText(R.string.EMPTY_STRING);
+        txtAltitudeAccel.setText(R.string.EMPTY_STRING);
 
-        txtModeNum.setText("");
-        txtModeFlightMode.setText("");
-        txtModeAssistedControl.setText("");
+        txtModeNum.setText(R.string.EMPTY_STRING);
+        txtModeFlightMode.setText(R.string.EMPTY_STRING);
+        txtModeAssistedControl.setText(R.string.EMPTY_STRING);
     }
 
-    private class SlideMenuClickListener implements
-            ListView.OnItemClickListener {
+    private class SlideMenuClickListener implements ListView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             displayView(position);
@@ -1123,18 +1098,19 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     private class PollThread extends Thread {
 
-        MainActivity mActivity;
-        UAVTalkObjectTree oTree;
         boolean blink = true;
+        private MainActivity mActivity;
+        private UAVTalkObjectTree mObjectTree;
+        private boolean mIsValid = true;
 
         public PollThread(MainActivity mActivity) {
-            if (hasPThread) throw new IllegalStateException("double pThread");
-            hasPThread = true;
+            if (sHasPThread) throw new IllegalStateException("double mPollThread");
+            sHasPThread = true;
             this.mActivity = mActivity;
         }
 
-        public void setoTree(UAVTalkObjectTree oTree) {
-            this.oTree = oTree;
+        public void setObjectTree(UAVTalkObjectTree mObjectTree) {
+            this.mObjectTree = mObjectTree;
         }
 
         private void setText(TextView t, String text) {
@@ -1144,7 +1120,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
 
         private void setTextBGColor(TextView t, String color) {
-            if (color == null || color == EMPTY_STRING) {
+            if (color == null || color == "") {
                 return;
             }
             switch (color) {
@@ -1174,10 +1150,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         }
 
+        public void setInvalid() {
+            mIsValid = false;
+        }
+
         public void run() {
 
             //while (isValid) {
-            while (true) {
+            while (mIsValid) {
                 blink = !blink;
                 //Log.d("PING","PONG");
                 try {
@@ -1189,7 +1169,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     @Override
                     public void run() {
 
-                        if (serialModeUsed == SERIAL_BLUETOOTH) {
+                        if (mSerialModeUsed == SERIAL_BLUETOOTH) {
                             imgUSB.setColorFilter(Color.argb(0xff, 0x00, 0x00, 0x00));
                             if (mUAVTalkDevice != null && mUAVTalkDevice.isConnected()) {
                                 imgBluetooth.setColorFilter(Color.argb(0xff, 0x00, 0x80, 0x00));
@@ -1211,7 +1191,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                                 imgBluetooth.setColorFilter(Color.argb(0xff, 0xd4, 0x00, 0x00));
                                 imgBluetooth.setImageDrawable(getResources().getDrawable(R.drawable.ic_bluetooth_disabled_24dp));
                             }
-                        } else if (serialModeUsed == SERIAL_USB) {
+                        } else if (mSerialModeUsed == SERIAL_USB) {
                             imgBluetooth.setColorFilter(Color.argb(0xff, 0x00, 0x00, 0x00));
                             if (mUAVTalkDevice != null && mUAVTalkDevice.isConnected()) {
                                 imgUSB.setColorFilter(Color.argb(0xff, 0x00, 0x80, 0x00));
@@ -1223,21 +1203,18 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                                 int alpha;
                                 if (blink) {
                                     imgUSB.setColorFilter(Color.argb(0xff, 0xff, 0x66, 0x00));
-                                    //imgUSB.setImageDrawable(getResources().getDrawable(R.drawable.ic_usb_24dp));
                                 } else {
                                     imgUSB.setColorFilter(Color.argb(0xff, 0xff, 0x88, 0x00));
-                                    //imgUSB.setImageDrawable(getResources().getDrawable(R.drawable.ic_usb_24dp));
                                 }
                             } else {
                                 serialConnectionState = SERIAL_DISCONNECTED;
                                 imgUSB.setColorFilter(Color.argb(0xff, 0xd4, 0x00, 0x00));
-                                //imgBluetooth.setImageDrawable(getResources().getDrawable(R.drawable.ic_usb_24dp));
                             }
                         }
                     }
                 });
 
-                if (this.oTree == null || mUAVTalkDevice == null || !mUAVTalkDevice.isConnected()) {
+                if (this.mObjectTree == null || mUAVTalkDevice == null || !mUAVTalkDevice.isConnected()) {
                     continue;  //nothing yet to show, or not connected
                 }
 
@@ -1248,12 +1225,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     public void run() {
 
                         try {
-                            switch (currentView) {
+                            switch (mCurrentView) {
                                 case VIEW_MAIN:
 
-                                    txtObjectLogTx.setText(H.k(String.valueOf(txObjects)));
-                                    txtObjectLogRxGood.setText(H.k(String.valueOf(rxObjectsGood)));
-                                    txtObjectLogRxBad.setText(H.k(String.valueOf(rxObjectsBad)));
+                                    txtObjectLogTx.setText(H.k(String.valueOf(mTxObjects)));
+                                    txtObjectLogRxGood.setText(H.k(String.valueOf(mRxObjectsGood)));
+                                    txtObjectLogRxBad.setText(H.k(String.valueOf(mRxObjectsBad)));
 
                                     setText(mActivity.txtVehicleName, getVehicleNameData());
 
@@ -1307,7 +1284,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                                     break;
                                 case VIEW_MAP:
 
-                                    if (serialModeUsed == SERIAL_BLUETOOTH) {
+                                    if (mSerialModeUsed == SERIAL_BLUETOOTH) {
                                         mUAVTalkDevice.requestObject("GPSSatellites");
                                         mUAVTalkDevice.requestObject("SystemAlarms");
                                         mUAVTalkDevice.requestObject("GPSPositionSensor");
@@ -1328,7 +1305,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                                     setText(mActivity.txtLatitude, lat.toString());
                                     setText(mActivity.txtLongitude, lng.toString());
 
-                                    LatLng src = map.getCameraPosition().target;
+                                    LatLng src = mMap.getCameraPosition().target;
                                     LatLng dst = new LatLng(lat, lng);
 
                                     double distance = H.calculationByDistance(src, dst);
@@ -1336,12 +1313,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                                         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lng), 19);
                                         MapsInitializer.initialize(mActivity);
                                         if (distance < 200) {
-                                            map.animateCamera(cameraUpdate);
+                                            mMap.animateCamera(cameraUpdate);
                                         } else {
-                                            map.moveCamera(cameraUpdate);
+                                            mMap.moveCamera(cameraUpdate);
                                         }
 
-                                        posHistory[currentPosMarker] = map.addMarker(new MarkerOptions()
+                                        mPosHistory[mCurrentPosMarker] = mMap.addMarker(new MarkerOptions()
                                                         .position(new LatLng(lat, lng))
                                                         .title("Librepilot")
                                                         .snippet("LP rules")
@@ -1351,19 +1328,19 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                                                 //.icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_launcher))
                                         );
 
-                                        currentPosMarker++;
-                                        if (currentPosMarker >= HISTORY_MARKER_NUM) {
-                                            currentPosMarker = 0;
+                                        mCurrentPosMarker++;
+                                        if (mCurrentPosMarker >= HISTORY_MARKER_NUM) {
+                                            mCurrentPosMarker = 0;
                                         }
-                                        if (posHistory[currentPosMarker] != null) {
-                                            posHistory[currentPosMarker].remove();
+                                        if (mPosHistory[mCurrentPosMarker] != null) {
+                                            mPosHistory[mCurrentPosMarker].remove();
                                         }
                                     } else {
                                     }
                                     break;
                                 case VIEW_OBJECTS:
                                     try {
-                                        etxObjects.setText(mUAVTalkDevice.getoTree().toString());
+                                        txtObjects.setText(mUAVTalkDevice.getoTree().toString());
                                     } catch (Exception e) {
                                         e.printStackTrace();
                                     }
@@ -1393,7 +1370,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
 
         private void requestObjects() {
-            if (mUAVTalkDevice != null && serialModeUsed == SERIAL_BLUETOOTH) {
+            if (mUAVTalkDevice != null && mSerialModeUsed == SERIAL_BLUETOOTH) {
                 mUAVTalkDevice.requestObject("SystemAlarms");
                 mUAVTalkDevice.requestObject("PathStatus");
                 mUAVTalkDevice.requestObject("GPSSatellites");
@@ -1412,7 +1389,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             char[] b = new char[20];
             try {
                 for (int i = 0; i < 20; i++) {
-                    String str = oTree.getData("SystemSettings", 0, "VehicleName", i).toString();
+                    String str = mObjectTree.getData("SystemSettings", 0, "VehicleName", i).toString();
                     b[i] = (char) Byte.parseByte(str);
 
                 }
@@ -1428,7 +1405,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         private Float getGPSCoordinates(String object, String field) {
             try {
-                Long l = (Long) oTree.getData(object, field);
+                Long l = (Long) mObjectTree.getData(object, field);
                 return ((float) l / 10000000);
             } catch (UAVTalkMissingObjectException e1) {
                 return 0.0f;
@@ -1440,7 +1417,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         private String getFloatOffsetData(String obj, String field, String soffset) {
             try {
                 Float f1 = Float.parseFloat(getData(obj, field).toString());
-                Float f2 = (Float) offset.get(soffset);
+                Float f2 = (Float) mOffset.get(soffset);
                 return String.valueOf(H.round(f1 - f2, 2));
             } catch (NumberFormatException e) {
                 return "";
@@ -1456,12 +1433,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             } catch (NullPointerException e) {
                 e.printStackTrace();
             }
-            return EMPTY_STRING;
+            return "";
         }
 
         private Object getData(String objectname, String fieldname) {
             try {
-                Object o = oTree.getData(objectname, fieldname);
+                Object o = mObjectTree.getData(objectname, fieldname);
                 if (o != null) return o;
             } catch (UAVTalkMissingObjectException e1) {
                 try {
@@ -1472,13 +1449,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             } catch (NullPointerException e3) {
                 //e3.printStackTrace();
             }
-            return EMPTY_STRING;
+            return "";
         }
 
         private Object getData(String objectname, String fieldname, String elementname) {
             Object o = null;
             try {
-                o = oTree.getData(objectname, fieldname, elementname);
+                o = mObjectTree.getData(objectname, fieldname, elementname);
             } catch (UAVTalkMissingObjectException e1) {
                 try {
                     mUAVTalkDevice.requestObject(e1.getObjectname(), e1.getInstance());
@@ -1491,23 +1468,28 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             if (o != null) {
                 return o;
             } else {
-                return EMPTY_STRING;
+                return "";
             }
         }
     }
 
     private class ConnectionThread extends Thread {
-        MainActivity mActivity;
+        private MainActivity mActivity;
+        private boolean mIsValid = true;
 
         public ConnectionThread(MainActivity mActivity) {
             this.mActivity = mActivity;
         }
 
+        public void setInvalid() {
+            mIsValid = false;
+        }
 
+        @Override
         public void run() {
-            while (true) {
+            while (mIsValid) {
                 try {
-                    //Log.d("CT", "Alive " + doReconnect);
+                    //Log.d("CT", "Alive " + mDoReconnect);
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {
 
@@ -1518,10 +1500,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     //Log.d("CT", "MUAVTD NULL");
                 }
 
-                if (doReconnect) {
+                if (mDoReconnect) {
                     if (mUAVTalkDevice != null) mUAVTalkDevice.stop();
                     mUAVTalkDevice = null;
-                    doReconnect = false;
+                    mDoReconnect = false;
                     mActivity.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -1531,19 +1513,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 }
 
                 if (mUAVTalkDevice == null || (!mUAVTalkDevice.isConnected() && !mUAVTalkDevice.isConnecting())) {
-                    switch (serialModeUsed) {
+                    switch (mSerialModeUsed) {
                         case SERIAL_BLUETOOTH:
-                            connectBluettooth();
+                            connectBluetooth();
                             break;
                         case SERIAL_USB:
                             connectUSB();
                             break;
                     }
-                } else {
-                    //mUAVTalkDevice.stop();
-                    //mUAVTalkDevice = null;
                 }
-
             }
         }
     }

@@ -77,7 +77,7 @@ public class UAVTalkUsbDevice extends UAVTalkDevice {
         mSerial = connection.getSerial();
         this.oTree = new UAVTalkObjectTree();
         oTree.setXmlObjects(xmlObjects);
-        mActivity.setPThreadOTree(oTree);
+        mActivity.setPollThreadObjectTree(oTree);
 
         UsbEndpoint epOut = null;
         UsbEndpoint epIn = null;
@@ -258,30 +258,21 @@ public class UAVTalkUsbDevice extends UAVTalkDevice {
                     mActivity.incRxObjectsGood();
 
 
-                    UAVTalkObject myObj = oTree.getObjectFromID(H.intToHex(cM.getoID()));
+                    UAVTalkObject myObj = oTree.getObjectFromID(H.intToHex(cM.getObjectId()));
                     UAVTalkObjectInstance myIns;
 
                     try {
-                        myIns = myObj.getInstance(cM.getiID());
+                        myIns = myObj.getInstance(cM.getInstanceId());
                         myIns.setData(cM.getData());
                         myObj.setInstance(myIns);
                     } catch (Exception e) {
-                        myIns = new UAVTalkObjectInstance(cM.getiID(), cM.getData());
+                        myIns = new UAVTalkObjectInstance(cM.getInstanceId(), cM.getData());
                         myObj.setInstance(myIns);
                     }
                     oTree.updateObject(myObj);
                     if (isLogging()) {
                         //TODO: CHECK IF CRC IS IN bytes!
                         log(Arrays.copyOfRange(bytes, 2, bytes.length)); //TODO: This removes the first two byte, added only for USB compatibility
-                    }
-
-                    try {
-                        if (H.intToHex(cM.getoID()).equals(oTree.getObjectNoCreate("FlightTelemetryStats").getId())) {
-                            //Log.d("HANDSHAKE", "Got a FlightTelemetryStats Packet");
-                            //Log.d("HANDSHAKE IN<--", H.bytesToHex(bytes));
-                            //processHandshake();
-                        }
-                    } catch (Exception e) {
                     }
                 }
             }

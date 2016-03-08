@@ -63,5 +63,8 @@
     <string name="OPEN_ROUND_BRACKET_WITH_SPACE"><![CDATA[ (]]></string>
     <string name="CLOSE_ROUND_BRACKET">)</string>
     <string name="TAB">\u0009</string>
+    <string name="EMPTY_STRING" />
+    <string name="MIME_APPLICATION_OCTETSTREAM">application/octet-stream</string>
+    <string name="SHARE_LOG_TITLE">Share Log</string>
 </resources>
 

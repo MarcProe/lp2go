@@ -25,10 +25,10 @@ import java.util.concurrent.TimeUnit;
 
 public class H {
 
-    final private static char[] HEXARRAY = "0123456789ABCDEF".toCharArray();
+    private final static char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
 
     //from Utils.Crc
-    private final static int crc_table[] = {
+    private final static int CRC_TABLE[] = {
             0x00, 0x07, 0x0e, 0x09, 0x1c, 0x1b, 0x12, 0x15, 0x38, 0x3f, 0x36, 0x31, 0x24, 0x23, 0x2a, 0x2d,
             0x70, 0x77, 0x7e, 0x79, 0x6c, 0x6b, 0x62, 0x65, 0x48, 0x4f, 0x46, 0x41, 0x54, 0x53, 0x5a, 0x5d,
             0xe0, 0xe7, 0xee, 0xe9, 0xfc, 0xfb, 0xf2, 0xf5, 0xd8, 0xdf, 0xd6, 0xd1, 0xc4, 0xc3, 0xca, 0xcd,
@@ -46,7 +46,7 @@ public class H {
             0xae, 0xa9, 0xa0, 0xa7, 0xb2, 0xb5, 0xbc, 0xbb, 0x96, 0x91, 0x98, 0x9f, 0x8a, 0x8d, 0x84, 0x83,
             0xde, 0xd9, 0xd0, 0xd7, 0xc2, 0xc5, 0xcc, 0xcb, 0xe6, 0xe1, 0xe8, 0xef, 0xfa, 0xfd, 0xf4, 0xf3
     };
-    private static final int RADIUS = 6371;
+    private final static int RADIUS = 6371; //the radius of the world.
 
     public static String intToHex(int i) {
         return bytesToHex(toBytes(i));
@@ -61,8 +61,8 @@ public class H {
         char[] hexChars = new char[bytes.length * 2];
         for (int j = 0; j < bytes.length; j++) {
             int v = bytes[j] & 0xFF;
-            hexChars[j * 2] = HEXARRAY[v >>> 4];
-            hexChars[j * 2 + 1] = HEXARRAY[v & 0x0F];
+            hexChars[j * 2] = HEX_ARRAY[v >>> 4];
+            hexChars[j * 2 + 1] = HEX_ARRAY[v & 0x0F];
         }
         return new String(hexChars);
     }
@@ -74,8 +74,8 @@ public class H {
         char[] hexChars = new char[bytes.length * 3];
         for (int j = 0; j < bytes.length; j++) {
             int v = bytes[j] & 0xFF;
-            hexChars[j * 3] = HEXARRAY[v >>> 4];
-            hexChars[j * 3 + 1] = HEXARRAY[v & 0x0F];
+            hexChars[j * 3] = HEX_ARRAY[v >>> 4];
+            hexChars[j * 3 + 1] = HEX_ARRAY[v & 0x0F];
             hexChars[j * 3 + 2] = ' ';
         }
         return new String(hexChars);
@@ -169,7 +169,7 @@ public class H {
     public static int crc8(byte[] b, int start, int len) {
         int crc = 0;
         for (int i = start; i < start + len; i++) {
-            crc = (byte) H.crc_table[((byte) (crc) ^ b[i]) & 0xFF];
+            crc = (byte) H.CRC_TABLE[((byte) (crc) ^ b[i]) & 0xFF];
         }
         return (crc & 0xFF);
     }

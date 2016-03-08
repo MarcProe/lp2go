@@ -18,108 +18,108 @@ package net.proest.lp2go3.UAVTalk;
 
 public class UAVTalkMessage {
 
-    private int head;
-    private byte sync;
-    private byte type;
-    private int length;
-    private int oID;
-    private int iID;
-    private int timestamp;
-    private byte[] data;
-    private byte crc;
+    private int mHead;
+    private byte mSync;
+    private byte mType;
+    private int mLength;
+    private int mObjectId;
+    private int mInstanceId;
+    private int mTimestamp;
+    private byte[] mData;
+    private byte mCrc;
 
     public UAVTalkMessage(byte[] bytes, int offset) {
         if (bytes.length >= 10 + offset) {
-            //head = bytes[0] + bytes[1]*8;
-            this.sync = bytes[0 + offset];
-            this.type = bytes[1 + offset];
+            //mHead = bytes[0] + bytes[1]*8;
+            this.mSync = bytes[0 + offset];
+            this.mType = bytes[1 + offset];
 
             int lb1 = bytes[3 + offset] & 0x000000ff;
             int lb2 = bytes[2 + offset] & 0x000000ff;
 
-            this.length = lb1 << 8 | lb2;
+            this.mLength = lb1 << 8 | lb2;
 
             int ob1 = bytes[7 + offset] & 0x000000ff;
             int ob2 = bytes[6 + offset] & 0x000000ff;
             int ob3 = bytes[5 + offset] & 0x000000ff;
             int ob4 = bytes[4 + offset] & 0x000000ff;
 
-            this.oID = ob1 << 24 | ob2 << 16 | ob3 << 8 | ob4;
+            this.mObjectId = ob1 << 24 | ob2 << 16 | ob3 << 8 | ob4;
 
             int ib1 = bytes[9 + offset] & 0x000000ff;
             int ib2 = bytes[8 + offset] & 0x000000ff;
 
-            this.iID = ib1 << 8 | ib2;
+            this.mInstanceId = ib1 << 8 | ib2;
 
         } else {
             throw new UnsupportedOperationException("Bad Message, < 12 bytes");
         }
 
-        if (this.length > 10 + offset && bytes.length - offset >= this.length) {
-            this.data = new byte[this.length - 10];
-            System.arraycopy(bytes, 10 + offset, this.data, 0, this.length - 10);
+        if (this.mLength > 10 + offset && bytes.length - offset >= this.mLength) {
+            this.mData = new byte[this.mLength - 10];
+            System.arraycopy(bytes, 10 + offset, this.mData, 0, this.mLength - 10);
         }
     }
 
     @Deprecated
     public UAVTalkMessage(byte[] bytes) {
         if (bytes.length >= 12) {
-            //head = bytes[0] + bytes[1]*8;
-            this.sync = bytes[2];
-            this.type = bytes[3];
+            //mHead = bytes[0] + bytes[1]*8;
+            this.mSync = bytes[2];
+            this.mType = bytes[3];
 
             int lb1 = bytes[5] & 0x000000ff;
             int lb2 = bytes[4] & 0x000000ff;
 
-            this.length = lb1 << 8 | lb2;
+            this.mLength = lb1 << 8 | lb2;
 
             int ob1 = bytes[9] & 0x000000ff;
             int ob2 = bytes[8] & 0x000000ff;
             int ob3 = bytes[7] & 0x000000ff;
             int ob4 = bytes[6] & 0x000000ff;
 
-            this.oID = ob1 << 24 | ob2 << 16 | ob3 << 8 | ob4;
+            this.mObjectId = ob1 << 24 | ob2 << 16 | ob3 << 8 | ob4;
 
             int ib1 = bytes[11] & 0x000000ff;
             int ib2 = bytes[10] & 0x000000ff;
 
-            this.iID = ib1 << 8 | ib2;
+            this.mInstanceId = ib1 << 8 | ib2;
 
         } else {
             throw new UnsupportedOperationException("Bad Message, < 12 bytes");
         }
 
-        if (this.length > 12 && bytes.length >= this.length) {
-            this.data = new byte[this.length - 10];
-            System.arraycopy(bytes, 12, this.data, 0, this.length - 10);
+        if (this.mLength > 12 && bytes.length >= this.mLength) {
+            this.mData = new byte[this.mLength - 10];
+            System.arraycopy(bytes, 12, this.mData, 0, this.mLength - 10);
         }
     }
 
     public byte getCrc() {
-        return crc;
+        return mCrc;
     }
 
     public byte getType() {
-        return type;
+        return mType;
     }
 
     public int getLength() {
-        return length;
+        return mLength;
     }
 
-    public int getoID() {
-        return oID;
+    public int getObjectId() {
+        return mObjectId;
     }
 
-    public int getiID() {
-        return iID;
+    public int getInstanceId() {
+        return mInstanceId;
     }
 
     public int getTimestamp() {
-        return timestamp;
+        return mTimestamp;
     }
 
     public byte[] getData() {
-        return data;
+        return mData;
     }
 }
