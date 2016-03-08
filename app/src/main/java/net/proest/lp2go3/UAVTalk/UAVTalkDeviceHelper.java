@@ -39,12 +39,13 @@ public class UAVTalkDeviceHelper {
         }
 
         byte[] data = ins.getData();
+        if (data == null) {
+            return null;
+        }
         int fpos = xmlField.pos;
         int elen = xmlField.typelength;
 
         int savepos = fpos + elen * element;
-
-        //if(newFieldData.length != elen) { return false; }  //ACTIVATE ME!
 
         System.arraycopy(newFieldData, 0, data, savepos, newFieldData.length);
 
