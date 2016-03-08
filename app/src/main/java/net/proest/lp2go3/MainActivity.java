@@ -78,6 +78,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -279,6 +280,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         }
     };
+    private boolean mSettingsOK = false;
     private Marker[] mPosHistory = new Marker[HISTORY_MARKER_NUM];
     private AlertDialog.Builder mBatteryCapacityDialogBuilder;
     private AlertDialog.Builder mBatteryCellsDialogBuilder;
@@ -500,7 +502,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             txtVehicleName = (TextView) findViewById(R.id.txtVehicleName);
 
             mSerialModeUsed = sharedPref.getInt(getString(R.string.SETTINGS_SERIAL_MODE), 0);
-            mBluetoothDeviceUsed = sharedPref.getString(getString(R.string.SETTINGS_BT_NAME), "");
+            mBluetoothDeviceUsed = sharedPref.getString(getString(R.string.SETTINGS_BT_NAME), null);
 
             imgBluetooth = (ImageView) findViewById(R.id.imgBluetooth);
             if (mSerialModeUsed != SERIAL_BLUETOOTH || mSerialModeUsed == SERIAL_NONE) {
@@ -559,10 +561,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             spnConnectionTypeSpinner.setOnItemSelectedListener(this);
             spnConnectionTypeSpinner.setSelection(mSerialModeUsed);
 
-
             spnBluetoothPairedDevice = (Spinner) findViewById(R.id.spnBluetoothPairedDevice);
-            //ArrayAdapter<CharSequence> bntPairedDeviceAdapter = ArrayAdapter.createFromResource(this,
-            //        R.array.connections_settings, android.R.layout.simple_spinner_item);
 
             ArrayAdapter<CharSequence> bntPairedDeviceAdapter = new ArrayAdapter<CharSequence>(this, android.R.layout.simple_spinner_item);
 
@@ -570,7 +569,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
             spnBluetoothPairedDevice.setAdapter(bntPairedDeviceAdapter);
             spnBluetoothPairedDevice.setOnItemSelectedListener(this);
-            //spnBluetoothPairedDevice.setSelection(mBluetoothDeviceUsed);
 
             mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
             if (mBluetoothAdapter == null) {
@@ -622,7 +620,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             ((TextView) findViewById(R.id.txtLP2GoPackage)).setText(pInfo.packageName);
         }
 
-        setContentView(mView0);  //reset to start view
+        setContentView(mView0);
+        if (mSerialModeUsed == SERIAL_USB ||
+                (mSerialModeUsed == SERIAL_BLUETOOTH && mBluetoothDeviceUsed != null)) {
+            displayView(VIEW_MAIN);  //reset to start view
+        } else {
+            displayView(VIEW_SETTINGS); //reset to settings view
+        }
 
         mPermissionIntent = PendingIntent.getBroadcast(this, 0, new Intent(ACTION_USB_PERMISSION), 0);
         mUsbManager = (UsbManager) getSystemService(Context.USB_SERVICE);
@@ -765,6 +769,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             case VIEW_SETTINGS:
                 fragment = new SettingsFragment();
                 setContentView(mView3, position);
+
+                if (mSerialModeUsed == SERIAL_NONE) {
+                    Toast.makeText(this, getString(R.string.PLEASE_SET_A) + "Connection Type", Toast.LENGTH_LONG).show();
+                } else if (mSerialModeUsed == SERIAL_BLUETOOTH && mBluetoothDeviceUsed == null) {
+                    Toast.makeText(this, getString(R.string.PLEASE_SET_A) + "Bluetooth Device", Toast.LENGTH_LONG).show();
+                }
+
 
                 break;
             case VIEW_LOGS:

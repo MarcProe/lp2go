@@ -66,5 +66,6 @@
     <string name="EMPTY_STRING" />
     <string name="MIME_APPLICATION_OCTETSTREAM">application/octet-stream</string>
     <string name="SHARE_LOG_TITLE">Share Log</string>
+    <string name="PLEASE_SET_A">"Please set a "</string>
 </resources>
 
