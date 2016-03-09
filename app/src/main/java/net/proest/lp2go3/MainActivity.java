@@ -195,6 +195,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     protected TextView txtVehicleName;
     protected ImageView imgBluetooth;
     protected ImageView imgUSB;
+    protected ImageView imgPacketsUp;
+    protected ImageView imgPacketsGood;
+    protected ImageView imgPacketsBad;
     protected TextView txtObjects;
     protected TextView txtLogFilenameLabel;
     protected TextView txtLogFilename;
@@ -303,27 +306,27 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         return null;
     }
 
-    public void setRxObjectsGood(long o) {
+    public synchronized void setRxObjectsGood(long o) {
         this.mRxObjectsGood = o;
     }
 
-    public void incRxObjectsGood() {
+    public synchronized void incRxObjectsGood() {
         this.mRxObjectsGood++;
     }
 
-    public void setRxObjectsBad(long o) {
+    public synchronized void setRxObjectsBad(long o) {
         this.mRxObjectsBad = o;
     }
 
-    public void incRxObjectsBad() {
+    public synchronized void incRxObjectsBad() {
         this.mRxObjectsBad++;
     }
 
-    public void setTxObjects(long o) {
+    public synchronized void setTxObjects(long o) {
         this.mTxObjects = o;
     }
 
-    public void incTxObjects() {
+    public synchronized void incTxObjects() {
         this.mTxObjects++;
     }
 
@@ -446,6 +449,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             mOffset = new Hashtable<String, Object>();
             mOffset.put(OFFSET_BAROSENSOR_ALTITUDE, .0f);
             mOffset.put(OFFSET_VELOCITY_DOWN, .0f);
+
+            imgPacketsUp = (ImageView) findViewById(R.id.imgPacketsUp);
+            imgPacketsGood = (ImageView) findViewById(R.id.imgPacketsGood);
+            imgPacketsBad = (ImageView) findViewById(R.id.imgPacketsBad);
 
             txtObjectLogTx = (TextView) findViewById(R.id.txtObjectLogTx);
             txtObjectLogRxGood = (TextView) findViewById(R.id.txtObjectLogRxGood);
@@ -1242,6 +1249,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                                     txtObjectLogTx.setText(H.k(String.valueOf(mTxObjects)));
                                     txtObjectLogRxGood.setText(H.k(String.valueOf(mRxObjectsGood)));
                                     txtObjectLogRxBad.setText(H.k(String.valueOf(mRxObjectsBad)));
+
+                                    setTxObjects(0);
+                                    setRxObjectsBad(0);
+                                    setRxObjectsGood(0);
 
                                     setText(mActivity.txtVehicleName, getVehicleNameData());
 
