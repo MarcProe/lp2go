@@ -59,11 +59,10 @@ public class UAVTalkUsbDevice extends UAVTalkDevice {
     private final UsbEndpoint mEndpointIn;
 
     private final LinkedList<UsbRequest> mOutRequestPool = new LinkedList<UsbRequest>();
-
     private final LinkedList<UsbRequest> mInRequestPool = new LinkedList<UsbRequest>();
 
     private final WaiterThread mWaiterThread = new WaiterThread();
-    private UAVTalkObjectTree oTree;
+    private UAVTalkObjectTree mObjectTree;
     private String mSerial;
 
     private boolean connected = false;
@@ -75,9 +74,9 @@ public class UAVTalkUsbDevice extends UAVTalkDevice {
         //mActivity = activity;
         mDeviceConnection = connection;
         mSerial = connection.getSerial();
-        this.oTree = new UAVTalkObjectTree();
-        oTree.setXmlObjects(xmlObjects);
-        mActivity.setPollThreadObjectTree(oTree);
+        this.mObjectTree = new UAVTalkObjectTree();
+        mObjectTree.setXmlObjects(xmlObjects);
+        mActivity.setPollThreadObjectTree(mObjectTree);
 
         UsbEndpoint epOut = null;
         UsbEndpoint epIn = null;
@@ -99,8 +98,8 @@ public class UAVTalkUsbDevice extends UAVTalkDevice {
         mEndpointIn = epIn;
     }
 
-    public UAVTalkObjectTree getoTree() {
-        return oTree;
+    public UAVTalkObjectTree getObjectTree() {
+        return mObjectTree;
     }
 
     // return device serial number
@@ -156,7 +155,7 @@ public class UAVTalkUsbDevice extends UAVTalkDevice {
     }
 
     public boolean requestObject(String objectName, int instance) {
-        UAVTalkXMLObject xmlObj = oTree.getXmlObjects().get(objectName);
+        UAVTalkXMLObject xmlObj = mObjectTree.getXmlObjects().get(objectName);
 
         if (xmlObj == null) {
             return false;
@@ -179,15 +178,8 @@ public class UAVTalkUsbDevice extends UAVTalkDevice {
         return this.connected;
     }
 
-    /*@Override
-    public boolean setConnected(boolean connected) {
-        this.connected = connected;
-        return this.connected == connected;
-    }*/
-
-
     public boolean sendSettingsObject(String objectName, int instance, String fieldName, int element, byte[] newFieldData) {
-        byte[] send = UAVTalkDeviceHelper.createSettingsObjectByte(oTree, objectName, instance, fieldName, element, newFieldData);
+        byte[] send = UAVTalkDeviceHelper.createSettingsObjectByte(mObjectTree, objectName, instance, fieldName, element, newFieldData);
         if (send == null) return false;
         mActivity.incTxObjects();
         mDeviceConnection.bulkTransfer(mEndpointOut, send, send.length, 1000);
@@ -258,7 +250,7 @@ public class UAVTalkUsbDevice extends UAVTalkDevice {
                     mActivity.incRxObjectsGood();
 
 
-                    UAVTalkObject myObj = oTree.getObjectFromID(H.intToHex(cM.getObjectId()));
+                    UAVTalkObject myObj = mObjectTree.getObjectFromID(H.intToHex(cM.getObjectId()));
                     UAVTalkObjectInstance myIns;
 
                     try {
@@ -269,7 +261,7 @@ public class UAVTalkUsbDevice extends UAVTalkDevice {
                         myIns = new UAVTalkObjectInstance(cM.getInstanceId(), cM.getData());
                         myObj.setInstance(myIns);
                     }
-                    oTree.updateObject(myObj);
+                    mObjectTree.updateObject(myObj);
                     if (isLogging()) {
                         //TODO: CHECK IF CRC IS IN bytes!
                         log(Arrays.copyOfRange(bytes, 2, bytes.length)); //TODO: This removes the first two byte, added only for USB compatibility

@@ -97,8 +97,8 @@ public class UAVTalkObjectTree {
         UAVTalkXMLObject xmlobj = xmlObjects.get(objectname);
         UAVTalkXMLObject.UAVTalkXMLObjectField xmlfield = xmlobj.getFields().get(fieldname);
 
-        retval = xmlfield.elements.indexOf(element);
-        Arrays.toString(xmlfield.elements.toArray());
+        retval = xmlfield.mElements.indexOf(element);
+        Arrays.toString(xmlfield.mElements.toArray());
         //Log.d(xmlobj.getId(), Arrays.toString(xmlfield.elements.toArray()) + "~" +element+"#" +retval);
         return retval;
     }
@@ -130,7 +130,7 @@ public class UAVTalkObjectTree {
             UAVTalkMissingObjectException e = new UAVTalkMissingObjectException();
             e.setInstance(instance);
             e.setObjectname(objectname);
-            e.setIsSettings(xmlobj.getIsSettings());
+            e.setIsSettings(xmlobj.isSettings());
             throw e;
         }
 
@@ -139,19 +139,19 @@ public class UAVTalkObjectTree {
             UAVTalkMissingObjectException e = new UAVTalkMissingObjectException();
             e.setInstance(instance);
             e.setObjectname(objectname);
-            e.setIsSettings(xmlobj.getIsSettings());
+            e.setIsSettings(xmlobj.isSettings());
             throw e;
         }
 
         byte[] data = ins.getData();
 
-        int[] fl = xmlobj.getFieldlengths();
+        int[] fl = xmlobj.getFieldLengths();
 
-        int pos = xmlfield.pos;
+        int pos = xmlfield.mPos;
 
         Object retval = null;
         if (data != null) {
-            if (xmlfield.type == UAVTalkXMLObject.FIELDTYPE_FLOAT32) {
+            if (xmlfield.mType == UAVTalkXMLObject.FIELDTYPE_FLOAT32) {
                 byte[] fielddata = new byte[4];
                 float f = 0;
                 System.arraycopy(data, pos, fielddata, 0, 4);
@@ -159,36 +159,36 @@ public class UAVTalkObjectTree {
                 f = (float) Math.round(f * 100) / 100;
                 //retval = String.valueOf(f);
                 retval = f;
-            } else if (xmlfield.type == UAVTalkXMLObject.FIELDTYPE_ENUM) {
+            } else if (xmlfield.mType == UAVTalkXMLObject.FIELDTYPE_ENUM) {
                 //byte[] fielddata = new byte[1];
                 byte b = 0;
                 b = data[pos + element];
                 try {
-                    retval = xmlfield.options[H.toInt(b)];
+                    retval = xmlfield.mOptions[H.toInt(b)];
                 } catch (ArrayIndexOutOfBoundsException e) {
                     Log.d("AIOOBE", "" + H.toInt(b));
                 }
                 //retval = b;
-            } else if (xmlfield.type == UAVTalkXMLObject.FIELDTYPE_UINT32) {
+            } else if (xmlfield.mType == UAVTalkXMLObject.FIELDTYPE_UINT32) {
                 byte[] fielddata = new byte[4];
                 System.arraycopy(data, pos, fielddata, 0, 4);
                 int i = ByteBuffer.wrap(fielddata).order(ByteOrder.LITTLE_ENDIAN).getInt();
                 Long l = (long) i;
                 //retval = String.valueOf(l);
                 retval = l;
-            } else if (xmlfield.type == UAVTalkXMLObject.FIELDTYPE_INT32) {
+            } else if (xmlfield.mType == UAVTalkXMLObject.FIELDTYPE_INT32) {
                 byte[] fielddata = new byte[4];
                 System.arraycopy(data, pos, fielddata, 0, 4);
                 int i = ByteBuffer.wrap(fielddata).order(ByteOrder.LITTLE_ENDIAN).getInt();
                 Long l = (long) i & 0xFFFFFFFFL;
                 retval = l;
-            } else if (xmlfield.type == UAVTalkXMLObject.FIELDTYPE_UINT8) {
+            } else if (xmlfield.mType == UAVTalkXMLObject.FIELDTYPE_UINT8) {
                 byte[] fielddata = new byte[1];
                 System.arraycopy(data, pos + element, fielddata, 0, 1);
                 int i = fielddata[0] & 0xff;
                 //retval = String.valueOf(i);
                 retval = i;
-            } else if (xmlfield.type == UAVTalkXMLObject.FIELDTYPE_INT8) {
+            } else if (xmlfield.mType == UAVTalkXMLObject.FIELDTYPE_INT8) {
                 byte[] fielddata = new byte[1];
                 System.arraycopy(data, pos, fielddata, 0, 1);
                 int i = fielddata[0];

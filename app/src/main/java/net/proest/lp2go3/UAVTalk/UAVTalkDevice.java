@@ -17,7 +17,6 @@
 package net.proest.lp2go3.UAVTalk;
 
 import android.content.Context;
-import android.util.Log;
 
 import net.proest.lp2go3.H;
 import net.proest.lp2go3.MainActivity;
@@ -25,77 +24,75 @@ import net.proest.lp2go3.MainActivity;
 import java.io.FileOutputStream;
 import java.util.Arrays;
 
-public class UAVTalkDevice implements UAVTalkDeviceInterface {
-    private static boolean isInstanciated;
+public abstract class UAVTalkDevice {
     MainActivity mActivity;
-    private FileOutputStream logOutputStream;
-    private String logFileName = "OP-YYYY-MM-DD_HH-MM-SS";
-    private long logStartTimeStamp;
-    private boolean isLogging = false;
-    private long logBytesLoggedUAV = 0;
-    private long logBytesLoggedOPL = 0;
-    private long logObjectsLogged = 0;
+    private FileOutputStream mLogOutputStream;
+    private String mLogFileName = "OP-YYYY-MM-DD_HH-MM-SS";
+    private long mLogStartTimeStamp;
+    private boolean mIsLogging = false;
+    private long mLogBytesLoggedUAV = 0;
+    private long mLogBytesLoggedOPL = 0;
+    private long mLogObjectsLogged = 0;
 
     public UAVTalkDevice(MainActivity mActivity) throws IllegalStateException {
         this.mActivity = mActivity;
     }
 
     public long getLogBytesLoggedUAV() {
-        return logBytesLoggedUAV;
+        return mLogBytesLoggedUAV;
     }
 
     public long getLogBytesLoggedOPL() {
-        return logBytesLoggedOPL;
+        return mLogBytesLoggedOPL;
     }
 
     public long getLogObjectsLogged() {
-        return this.logObjectsLogged;
+        return this.mLogObjectsLogged;
     }
 
     public long getLogStartTimeStamp() {
-        return this.logStartTimeStamp;
+        return this.mLogStartTimeStamp;
     }
 
     public boolean isLogging() {
-        return this.isLogging;
+        return this.mIsLogging;
     }
 
     public void setLogging(boolean logNow) {
-        if (isLogging == logNow) {   //if we are already logging, and we should start, just return
+        if (mIsLogging == logNow) {   //if we are already logging, and we should start, just return
             return;                 //if we are not logging and should stop, nothing to do as well
         }
 
-        isLogging = logNow;
+        mIsLogging = logNow;
 
         try {       //anyway, close the current stream
-            logOutputStream.close();
+            mLogOutputStream.close();
         } catch (Exception e) {
             // e.printStackTrace();
         }
 
-        if (isLogging) {  //if logging should start, create new stream
-            mActivity.deleteFile(logFileName); //delete old log
-            logFileName = H.getLogFilename();
+        if (mIsLogging) {  //if logging should start, create new stream
+            mActivity.deleteFile(mLogFileName); //delete old log
+            mLogFileName = H.getLogFilename();
 
             try {
-                logOutputStream = mActivity.openFileOutput(logFileName, Context.MODE_PRIVATE);
+                mLogOutputStream = mActivity.openFileOutput(mLogFileName, Context.MODE_PRIVATE);
                 //outputStream.write(string.getBytes());
                 //outputStream.close();
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            logStartTimeStamp = System.currentTimeMillis();  //and set the time offset
-            logBytesLoggedOPL = 0;
-            logBytesLoggedUAV = 0;
-            logObjectsLogged = 0;
+            mLogStartTimeStamp = System.currentTimeMillis();  //and set the time offset
+            mLogBytesLoggedOPL = 0;
+            mLogBytesLoggedUAV = 0;
+            mLogObjectsLogged = 0;
         }
-        Log.d("setLogging", "" + isLogging());
     }
 
     public void log(byte[] b) {
         if (b == null) return;
         try {
-            long time = System.currentTimeMillis() - logStartTimeStamp;
+            long time = System.currentTimeMillis() - mLogStartTimeStamp;
             long len = b.length;
 
             byte[] btime = Arrays.copyOfRange(H.reverse8bytes(H.toBytes(time)), 0, 4);
@@ -104,57 +101,32 @@ public class UAVTalkDevice implements UAVTalkDeviceInterface {
             byte msg[] = H.concatArray(btime, blen);
             msg = H.concatArray(msg, b);
 
-            logOutputStream.write(msg);
-            logBytesLoggedUAV += b.length;
-            logBytesLoggedOPL += msg.length;
-            logObjectsLogged++;
+            mLogOutputStream.write(msg);
+            mLogBytesLoggedUAV += b.length;
+            mLogBytesLoggedOPL += msg.length;
+            mLogObjectsLogged++;
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    @Override
-    public void start() {
+    public abstract void start();
 
-    }
+    public abstract void stop();
 
-    @Override
-    public void stop() {
+    public abstract UAVTalkObjectTree getObjectTree();
 
-    }
+    public abstract boolean sendSettingsObject(String objectName, int instance, String fieldName, int element, byte[] newFieldData);
 
-    @Override
-    public UAVTalkObjectTree getoTree() {
-        return null;
-    }
+    public abstract boolean requestObject(String objectName);
 
-    @Override
-    public boolean sendSettingsObject(String objectName, int instance, String fieldName, int element, byte[] newFieldData) {
-        return false;
-    }
+    public abstract boolean requestObject(String objectName, int instance);
 
-    @Override
-    public boolean requestObject(String objectName) {
-        return false;
-    }
+    public abstract boolean isConnected();
 
-    @Override
-    public boolean requestObject(String objectName, int instance) {
-        return false;
-    }
-
-    @Override
-    public boolean isConnected() {
-        return false;
-    }
-
-    @Override
-    public boolean isConnecting() {
-        return false;
-    }
-
+    public abstract boolean isConnecting();
 
     public String getLogFileName() {
-        return logFileName;
+        return mLogFileName;
     }
 }

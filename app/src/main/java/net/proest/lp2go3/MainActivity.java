@@ -882,7 +882,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     public void onAltitudeClick(View V) {
         try {
-            mOffset.put(OFFSET_BAROSENSOR_ALTITUDE, mUAVTalkDevice.getoTree().getData("BaroSensor", "Altitude"));
+            mOffset.put(OFFSET_BAROSENSOR_ALTITUDE, mUAVTalkDevice.getObjectTree().getData("BaroSensor", "Altitude"));
             txtAltitude.setText(R.string.EMPTY_STRING);
         } catch (UAVTalkMissingObjectException | NullPointerException e) {
             //e.printStackTrace();
@@ -891,7 +891,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     public void onAltitudeAccelClick(View V) {
         try {
-            mOffset.put(OFFSET_VELOCITY_DOWN, mUAVTalkDevice.getoTree().getData("VelocityState", "Down"));
+            mOffset.put(OFFSET_VELOCITY_DOWN, mUAVTalkDevice.getObjectTree().getData("VelocityState", "Down"));
             txtAltitudeAccel.setText(R.string.EMPTY_STRING);
         } catch (UAVTalkMissingObjectException e) {
             //e.printStackTrace();
@@ -970,7 +970,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     mDeviceConnection = connection;
                     mInterface = intf;
                     mUAVTalkDevice = new UAVTalkUsbDevice(this, mDeviceConnection, intf, mXmlObjects);
-                    mUAVTalkDevice.getoTree().setXmlObjects(mXmlObjects);
+                    mUAVTalkDevice.getObjectTree().setXmlObjects(mXmlObjects);
 
                     mUAVTalkDevice.start();
                     txtDeviceText.setText(device.getDeviceName());
@@ -1400,7 +1400,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                                     break;
                                 case VIEW_OBJECTS:
                                     try {
-                                        txtObjects.setText(mUAVTalkDevice.getoTree().toString());
+                                        txtObjects.setText(mUAVTalkDevice.getObjectTree().toString());
                                     } catch (Exception e) {
                                         e.printStackTrace();
                                     }

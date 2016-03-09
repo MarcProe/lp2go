@@ -15,8 +15,6 @@
  */
 package net.proest.lp2go3.UAVTalk;
 
-import android.util.Log;
-
 import net.proest.lp2go3.H;
 
 import org.w3c.dom.Document;
@@ -73,46 +71,46 @@ public class UAVTalkXMLObject {
     final private static String XML_ATTRIBUTE_SPLITTER = "\\s*,\\s*";
 
     private final boolean DBG = false;
-    private String xml;
-    private String name;
-    private String category;
-    private Boolean isSettings;
-    private Boolean isSingleInst;
-    private int id;
-    private Hashtable<String, Integer> fieldnames;
-    private int[] fieldlengths;
-    private Hashtable<String, UAVTalkXMLObjectField> fields;
-    private UAVTalkXMLObjectField[] fieldArr;
+    private String mXml;
+    private String mName;
+    private String mCategory;
+    private Boolean mIsSettings;
+    private Boolean mIsSingleInst;
+    private int mId;
+    private Hashtable<String, Integer> mFieldNames;
+    private int[] mFieldLengths;
+    private Hashtable<String, UAVTalkXMLObjectField> mFields;
+    private UAVTalkXMLObjectField[] mFieldArray;
 
     public UAVTalkXMLObject(String xml) throws IOException, SAXException, ParserConfigurationException {
-        this.xml = xml;
+        this.mXml = xml;
 
         //TODO: Make this final
-        fieldnames = new Hashtable<String, Integer>();
-        fieldnames.put(FIELDNAME_INT8, Integer.valueOf(FIELDTYPE_INT8));
-        fieldnames.put(FIELDNAME_INT16, Integer.valueOf(FIELDTYPE_INT16));
-        fieldnames.put(FIELDNAME_INT32, Integer.valueOf(FIELDTYPE_INT32));
-        fieldnames.put(FIELDNAME_UINT8, Integer.valueOf(FIELDTYPE_UINT8));
-        fieldnames.put(FIELDNAME_UINT16, Integer.valueOf(FIELDTYPE_UINT16));
-        fieldnames.put(FIELDNAME_UINT32, Integer.valueOf(FIELDTYPE_UINT32));
-        fieldnames.put(FIELDNAME_FLOAT32, Integer.valueOf(FIELDTYPE_FLOAT32));
-        fieldnames.put(FIELDNAME_ENUM, Integer.valueOf(FIELDTYPE_ENUM));
+        mFieldNames = new Hashtable<String, Integer>();
+        mFieldNames.put(FIELDNAME_INT8, Integer.valueOf(FIELDTYPE_INT8));
+        mFieldNames.put(FIELDNAME_INT16, Integer.valueOf(FIELDTYPE_INT16));
+        mFieldNames.put(FIELDNAME_INT32, Integer.valueOf(FIELDTYPE_INT32));
+        mFieldNames.put(FIELDNAME_UINT8, Integer.valueOf(FIELDTYPE_UINT8));
+        mFieldNames.put(FIELDNAME_UINT16, Integer.valueOf(FIELDTYPE_UINT16));
+        mFieldNames.put(FIELDNAME_UINT32, Integer.valueOf(FIELDTYPE_UINT32));
+        mFieldNames.put(FIELDNAME_FLOAT32, Integer.valueOf(FIELDTYPE_FLOAT32));
+        mFieldNames.put(FIELDNAME_ENUM, Integer.valueOf(FIELDTYPE_ENUM));
 
-        Document doc = loadXMLFromString(this.xml);
+        Document doc = loadXMLFromString(this.mXml);
 
         NodeList objectNodeList = doc.getElementsByTagName(XML_TAG_OBJECT);
         Node objectNode = objectNodeList.item(0);
         Element e = (Element) objectNode;
 
-        name = e.getAttribute(XML_ATT_NAME);
-        category = e.getAttribute(XML_ATT_CATEGORY);
-        isSingleInst = e.getAttribute(XML_ATT_SINGLEINSTANCE).equals(XML_TRUE);
-        isSettings = e.getAttribute(XML_ATT_SETTINGS).equals(XML_TRUE);
+        mName = e.getAttribute(XML_ATT_NAME);
+        mCategory = e.getAttribute(XML_ATT_CATEGORY);
+        mIsSingleInst = e.getAttribute(XML_ATT_SINGLEINSTANCE).equals(XML_TRUE);
+        mIsSettings = e.getAttribute(XML_ATT_SETTINGS).equals(XML_TRUE);
 
         NodeList fieldNodeList = doc.getElementsByTagName(XML_TAG_FIELD);
-        fields = new Hashtable<String, UAVTalkXMLObjectField>();
-        fieldArr = new UAVTalkXMLObjectField[fieldNodeList.getLength()];
-        fieldlengths = new int[fieldNodeList.getLength()];
+        mFields = new Hashtable<String, UAVTalkXMLObjectField>();
+        mFieldArray = new UAVTalkXMLObjectField[fieldNodeList.getLength()];
+        mFieldLengths = new int[fieldNodeList.getLength()];
         int x = 0;
 
         for (int i = 0; i < fieldNodeList.getLength(); i++) {
@@ -121,49 +119,45 @@ public class UAVTalkXMLObject {
             Element f = (Element) fieldNode;
 
             String sclone = f.getAttribute(XML_ATT_CLONEOF);
-            uavField.name = f.getAttribute(XML_ATT_NAME);
+            uavField.mName = f.getAttribute(XML_ATT_NAME);
 
             if (sclone != null && sclone != "") {
-                String tn = uavField.name;
-                uavField = fields.get(sclone);
-                uavField.name = tn;
+                String tn = uavField.mName;
+                uavField = mFields.get(sclone);
+                uavField.mName = tn;
             } else {
 
-                uavField.type = fieldnames.get(f.getAttribute(XML_ATT_TYPE)).intValue();
+                uavField.mType = mFieldNames.get(f.getAttribute(XML_ATT_TYPE)).intValue();
 
                 String elementString = f.getAttribute(XML_ATT_ELEMENTNAMES);
 
-                uavField.elements =
+                uavField.mElements =
                         new ArrayList<String>(Arrays.asList(elementString.split(XML_ATTRIBUTE_SPLITTER)));
 
                 String elementCountString = f.getAttribute(XML_ATT_ELEMENTS);
 
                 if (elementCountString != "" && elementCountString != null) {
-                    uavField.elementCount = Integer.parseInt(elementCountString);
-                    if (uavField.type == FIELDTYPE_ENUM
+                    uavField.mElementCount = Integer.parseInt(elementCountString);
+                    if (uavField.mType == FIELDTYPE_ENUM
                             && f.getElementsByTagName(XML_TAG_ELEMENTNAMES).getLength() == 0) {
-                        uavField.elements.clear();
-                        for (int j = 0; j < uavField.elementCount; j++) {
-                            uavField.elements.add(String.valueOf(j));
+                        uavField.mElements.clear();
+                        for (int j = 0; j < uavField.mElementCount; j++) {
+                            uavField.mElements.add(String.valueOf(j));
                         }
                     }
                 }
 
-
-                //if ((uavField.elements.size() == 1) && (uavField.elements.get(0) == "")) {
-                //uavField.elements = new String[0];
-                //}
-                if (uavField.type == FIELDTYPE_ENUM) {
+                if (uavField.mType == FIELDTYPE_ENUM) {
 
                     String optionsString = f.getAttribute(XML_ATT_OPTIONS);
                     try {
-                        uavField.options =
+                        uavField.mOptions =
                                 (String[]) Arrays.asList(optionsString.split(XML_ATTRIBUTE_SPLITTER)).toArray();
                     } catch (Exception ex) {
                     }
 
-                    if (uavField.options == null || uavField.options.length == 0
-                            || ((uavField.options.length == 1) && (uavField.options[0] == ""))) {
+                    if (uavField.mOptions == null || uavField.mOptions.length == 0
+                            || ((uavField.mOptions.length == 1) && (uavField.mOptions[0] == ""))) {
                         if (f.getElementsByTagName(XML_TAG_OPTIONS).getLength() > 0) {
                             NodeList optionnodes =
                                     f.getElementsByTagName(XML_TAG_OPTIONS).item(0).getChildNodes();
@@ -176,7 +170,7 @@ public class UAVTalkXMLObject {
                                     options.add(content);
                                 }
                             }
-                            uavField.options = options.toArray(new String[options.size()]);
+                            uavField.mOptions = options.toArray(new String[options.size()]);
                         }
                     }
                 }
@@ -184,58 +178,53 @@ public class UAVTalkXMLObject {
                 if (f.getElementsByTagName(XML_TAG_ELEMENTNAMES).getLength() > 0) {
                     NodeList elementnodes = f.getElementsByTagName(XML_TAG_ELEMENTNAMES).item(0).getChildNodes();
 
-                    uavField.elements = new ArrayList<String>();
+                    uavField.mElements = new ArrayList<String>();
                     for (int j = 0; j < elementnodes.getLength(); j++) {
                         String content = elementnodes.item(j).getTextContent().replaceAll(REPLACE_ELEMENT_NODES, "");
                         if (content != null && !content.equals("")) {
-                            uavField.elements.add(content);
+                            uavField.mElements.add(content);
                         }
                     }
                 }
 
-                if (uavField.elementCount == 0) {
-                    uavField.elementCount = uavField.elements.size();
+                if (uavField.mElementCount == 0) {
+                    uavField.mElementCount = uavField.mElements.size();
                 }
             }
 
-            if (uavField.type == FIELDTYPE_INT8 || uavField.type == FIELDTYPE_UINT8) {
-                fieldlengths[x] = /*1 * */uavField.elementCount;
-                uavField.size = /*1 * */uavField.elementCount;
-                uavField.typelength = 1;
-            } else if (uavField.type == FIELDTYPE_INT16 || uavField.type == FIELDTYPE_UINT16) {
-                fieldlengths[x] = 2 * uavField.elementCount;
-                uavField.size = 2 * uavField.elementCount;
-                uavField.typelength = 2;
-            } else if (uavField.type == FIELDTYPE_INT32 || uavField.type == FIELDTYPE_UINT32 || uavField.type == FIELDTYPE_FLOAT32) {
-                fieldlengths[x] = 4 * uavField.elementCount;
-                uavField.size = 4 * uavField.elementCount;
-                uavField.typelength = 4;
-            } else if (uavField.type == FIELDTYPE_ENUM) {
-                fieldlengths[x] = uavField.elementCount;
-                uavField.size = uavField.elementCount;
-                uavField.typelength = 1;
+            if (uavField.mType == FIELDTYPE_INT8 || uavField.mType == FIELDTYPE_UINT8) {
+                mFieldLengths[x] = /*1 * */uavField.mElementCount;
+                uavField.mSize = /*1 * */uavField.mElementCount;
+                uavField.mTypelength = 1;
+            } else if (uavField.mType == FIELDTYPE_INT16 || uavField.mType == FIELDTYPE_UINT16) {
+                mFieldLengths[x] = 2 * uavField.mElementCount;
+                uavField.mSize = 2 * uavField.mElementCount;
+                uavField.mTypelength = 2;
+            } else if (uavField.mType == FIELDTYPE_INT32 || uavField.mType == FIELDTYPE_UINT32 || uavField.mType == FIELDTYPE_FLOAT32) {
+                mFieldLengths[x] = 4 * uavField.mElementCount;
+                uavField.mSize = 4 * uavField.mElementCount;
+                uavField.mTypelength = 4;
+            } else if (uavField.mType == FIELDTYPE_ENUM) {
+                mFieldLengths[x] = uavField.mElementCount;
+                uavField.mSize = uavField.mElementCount;
+                uavField.mTypelength = 1;
             }
             x++;
 
-            fields.put(uavField.name, uavField);
-            fieldArr[i] = uavField;
+            mFields.put(uavField.mName, uavField);
+            mFieldArray[i] = uavField;
         }
 
-        Arrays.sort(fieldArr);
-        fields.clear(); //TODO:This is crappy code!
+        Arrays.sort(mFieldArray);
+        mFields.clear(); //TODO:This is crappy code!
         int j = 0;
-        for (UAVTalkXMLObjectField xuav : fieldArr) {
-            xuav.pos = j;     //set new position
-            j += xuav.typelength * xuav.elementCount;
-            fields.put(xuav.name, xuav);
+        for (UAVTalkXMLObjectField xuav : mFieldArray) {
+            xuav.mPos = j;     //set new position
+            j += xuav.mTypelength * xuav.mElementCount;
+            mFields.put(xuav.mName, xuav);
         }
 
-        if (DBG) {
-            Log.d(name, Arrays.toString(fieldArr));
-        }
-
-        this.id = calculateID();
-        if (DBG) Log.d("TTT", H.intToHex(this.id));
+        this.mId = calculateID();
     }
 
     public static Document loadXMLFromString(String xml) throws ParserConfigurationException, IOException, SAXException {
@@ -245,55 +234,51 @@ public class UAVTalkXMLObject {
         return builder.parse(is);
     }
 
-    public int[] getFieldlengths() {
-        return fieldlengths;
+    public int[] getFieldLengths() {
+        return mFieldLengths;
     }
 
     public String getName() {
-        return name;
+        return mName;
     }
 
     public String getCategory() {
-        return category;
+        return mCategory;
     }
 
-    public Boolean getIsSettings() {
-        return isSettings;
+    public Boolean isSettings() {
+        return mIsSettings;
     }
 
-    public Boolean getIsSingleInst() {
-        return isSingleInst;
+    public Boolean isSingleInst() {
+        return mIsSingleInst;
     }
 
     public String getId() {
-        return H.bytesToHex(H.toBytes(id));
+        return H.bytesToHex(H.toBytes(mId));
     }
 
     public int getIntId() {
-        return this.id;
+        return this.mId;
     }
 
     public Hashtable<String, UAVTalkXMLObjectField> getFields() {
-        return fields;
+        return mFields;
     }
 
     private int calculateID() {
         // Hash object name
-        int hash = updateHash(this.name, 0);
-        //long y = hash & 0x00000000ffffffffL;
+        int hash = updateHash(this.mName, 0);
         // Hash object attributes
-        hash = updateHash(this.isSettings.booleanValue() ? 1 : 0, hash);
-        hash = updateHash(this.isSingleInst.booleanValue() ? 1 : 0, hash);
+        hash = updateHash(this.mIsSettings.booleanValue() ? 1 : 0, hash);
+        hash = updateHash(this.mIsSingleInst.booleanValue() ? 1 : 0, hash);
         // Hash field information
-        for (int n = 0; n < this.fieldArr.length; n++) {
-            if (DBG) {
-                Log.d("FLD", this.fieldArr[n].name);
-            }
-            hash = updateHash(this.fieldArr[n].name, hash);
-            hash = updateHash((this.fieldArr[n].elementCount), hash);
-            hash = updateHash(this.fieldArr[n].type, hash);
-            if (this.fieldArr[n].type == FIELDTYPE_ENUM) {
-                String[] options = this.fieldArr[n].options;
+        for (int n = 0; n < this.mFieldArray.length; n++) {
+            hash = updateHash(this.mFieldArray[n].mName, hash);
+            hash = updateHash((this.mFieldArray[n].mElementCount), hash);
+            hash = updateHash(this.mFieldArray[n].mType, hash);
+            if (this.mFieldArray[n].mType == FIELDTYPE_ENUM) {
+                String[] options = this.mFieldArray[n].mOptions;
                 for (int m = 0; m < options.length; m++) {
                     hash = updateHash(options[m], hash);
                 }
@@ -304,11 +289,6 @@ public class UAVTalkXMLObject {
 
     private int updateHash(int value, int hash) {
         int ret = hash ^ ((hash << 5) + (hash >>> 2) + value);
-        if (DBG) {
-            long y = ret & 0x00000000ffffffffL;
-            long in = value & 0x00000000ffffffffL;
-            Log.d("HASH", "" + in + "=>" + y);
-        }
         return ret;
     }
 
@@ -327,22 +307,22 @@ public class UAVTalkXMLObject {
 
     //TODO: Getter and Setter
     protected class UAVTalkXMLObjectField implements Comparable<UAVTalkXMLObjectField> {
-        protected String name;
-        protected ArrayList<String> elements;
-        protected int elementCount;
-        protected int type;
-        protected int typelength;
-        protected String[] options;
-        protected int pos;
-        protected int size;
+        protected String mName;
+        protected ArrayList<String> mElements;
+        protected int mElementCount;
+        protected int mType;
+        protected int mTypelength;
+        protected String[] mOptions;
+        protected int mPos;
+        protected int mSize;
 
         @Override
         public int compareTo(UAVTalkXMLObjectField another) {
-            return another.typelength - typelength;
+            return another.mTypelength - mTypelength;
         }
 
         public String toString() {
-            return name + " Pos: " + pos + " ElementCount: " + elementCount + " Size:" + size + " Type:" + type;
+            return mName + " Pos: " + mPos + " ElementCount: " + mElementCount + " Size:" + mSize + " Type:" + mType;
         }
     }
 }

@@ -18,23 +18,23 @@ package net.proest.lp2go3.UAVTalk;
 
 public class UAVTalkObjectInstance {
 
-    private int id;
-    private byte[] data;
+    private int mId;
+    private byte[] mData;
 
     public UAVTalkObjectInstance(int id, byte[] data) {
-        this.id = id;
-        this.data = data;
+        this.mId = id;
+        this.mData = data;
     }
 
     public int getId() {
-        return id;
+        return mId;
     }
 
     public byte[] getData() {
-        return data;
+        return mData;
     }
 
     public void setData(byte[] data) {
-        this.data = data;
+        this.mData = data;
     }
 }

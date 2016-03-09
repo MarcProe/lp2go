@@ -41,7 +41,7 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
     public static final int STATE_CONNECTED = 2;
     //private final MainActivity mActivity;
     private WaiterThread mWaiterThread;
-    private UAVTalkObjectTree oTree;
+    private UAVTalkObjectTree mObjectTree;
     private BluetoothAdapter mBluetoothAdapter;
     private ConnectThread mConnectThread;
     private BluetoothDevice mDevice;
@@ -51,10 +51,10 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
         super(activity);
 
         //this.mActivity = activity;
-        this.oTree = new UAVTalkObjectTree();
-        oTree.setXmlObjects(xmlObjects);
+        this.mObjectTree = new UAVTalkObjectTree();
+        mObjectTree.setXmlObjects(xmlObjects);
 
-        mActivity.setPollThreadObjectTree(oTree);
+        mActivity.setPollThreadObjectTree(mObjectTree);
 
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
@@ -78,19 +78,10 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
 
     private synchronized void connect(BluetoothDevice device) {
         if (mState == STATE_NONE) {
-            //if (mState == STATE_CONNECTING) {  //if we call connect, while connecting or still connected, it should be ignored.
-            // if (mConnectThread != null) {
-            //      mConnectThread.cancel();
-            //     mConnectThread = null;
-            //}
-            //}
-
-
             if (mWaiterThread != null) {
                 mWaiterThread.cancel();
                 mWaiterThread = null;
             }
-
 
             mConnectThread = new ConnectThread(device);
             mConnectThread.start();
@@ -126,13 +117,13 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
     }
 
     @Override
-    public UAVTalkObjectTree getoTree() {
-        return oTree;
+    public UAVTalkObjectTree getObjectTree() {
+        return mObjectTree;
     }
 
     @Override
     public boolean sendSettingsObject(String objectName, int instance, String fieldName, int element, byte[] newFieldData) {
-        byte[] send = UAVTalkDeviceHelper.createSettingsObjectByte(oTree, objectName, instance, fieldName, element, newFieldData);
+        byte[] send = UAVTalkDeviceHelper.createSettingsObjectByte(mObjectTree, objectName, instance, fieldName, element, newFieldData);
         if (send == null) return false;
 
         write(Arrays.copyOfRange(send, 2, send.length)); //TODO: This removes the first two byte, added only for USB compatibility
@@ -147,7 +138,7 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
     }
 
     public boolean requestObject(String objectName, int instance) {
-        UAVTalkXMLObject xmlObj = oTree.getXmlObjects().get(objectName);
+        UAVTalkXMLObject xmlObj = mObjectTree.getXmlObjects().get(objectName);
         if (xmlObj == null) return false;
 
         byte[] send = UAVTalkObject.getReqMsg((byte) 0x21, xmlObj.getId(), instance);
@@ -371,7 +362,7 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
 
                     try {
                         UAVTalkMessage msg = new UAVTalkMessage(bmsg);
-                        UAVTalkObject myObj = oTree.getObjectFromID(H.intToHex(msg.getObjectId()));
+                        UAVTalkObject myObj = mObjectTree.getObjectFromID(H.intToHex(msg.getObjectId()));
                         UAVTalkObjectInstance myIns;
 
                         try {
@@ -383,7 +374,7 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
                             myObj.setInstance(myIns);
                         }
 
-                        oTree.updateObject(myObj);
+                        mObjectTree.updateObject(myObj);
                         if (isLogging()) {
                             log(bmsg);
                         }
