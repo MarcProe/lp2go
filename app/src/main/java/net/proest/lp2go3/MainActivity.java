@@ -635,9 +635,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             displayView(VIEW_SETTINGS); //reset to settings view
         }
 
-        mPermissionIntent = PendingIntent.getBroadcast(this, 0, new Intent(ACTION_USB_PERMISSION), 0);
-        mUsbManager = (UsbManager) getSystemService(Context.USB_SERVICE);
-
         mXmlObjects = new Hashtable<String, UAVTalkXMLObject>();
 
         try {
@@ -656,6 +653,21 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         if (LOCAL_LOGD) Log.d("MainActivity.onCreate", "XML Loading Complete");
 
+
+
+        isReady = true;
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+        mSerialModeUsed = sharedPref.getInt(getString(R.string.SETTINGS_SERIAL_MODE), 0);
+
+        mPermissionIntent = PendingIntent.getBroadcast(this, 0, new Intent(ACTION_USB_PERMISSION), 0);
+        mUsbManager = (UsbManager) getSystemService(Context.USB_SERVICE);
+
         // listen for new usb devices
         IntentFilter filter = new IntentFilter();
         filter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
@@ -671,7 +683,47 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         mPollThread.start();
         mConnectionThread.start();
 
-        isReady = true;
+        mDoReconnect = true;
+
+        setContentView(mView0);
+
+        Log.d("onStart", "onStart");
+    }
+
+    @Override
+    protected void onStop() {
+
+        if (mUAVTalkDevice != null) mUAVTalkDevice.setLogging(false);
+
+        if (mPollThread != null) {
+            mPollThread.setInvalid();
+            mPollThread = null;
+        }
+
+        if (mConnectionThread != null) {
+            mConnectionThread.setInvalid();
+            mConnectionThread = null;
+            sHasPThread = false;
+        }
+
+        mSerialModeUsed = SERIAL_NONE;
+        mDoReconnect = true;
+
+        if (mUAVTalkDevice != null) mUAVTalkDevice.stop();
+        mUAVTalkDevice = null;
+
+        unregisterReceiver(mUsbReceiver);
+        setUsbInterface(null, null);
+        mPermissionIntent = null;
+
+        Log.d("onStop", "onStop");
+
+        super.onStop();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
     }
 
     private void connectUSB() {
@@ -821,22 +873,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         return baos.toString();
     }
 
-    @Override
-    public void onDestroy() {
-        unregisterReceiver(mUsbReceiver);
-        setUsbInterface(null, null);
-        if (mPollThread != null) {
-            mPollThread.setInvalid();
-            mPollThread = null;
-        }
 
-        if (mConnectionThread != null) {
-            mConnectionThread.setInvalid();
-            mConnectionThread = null;
-        }
-
-        super.onDestroy();
-    }
 
     public void onBatteryCapacityClick(View v) {
         initBatteryCapacityDialog();
@@ -1250,9 +1287,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                                     txtObjectLogRxGood.setText(H.k(String.valueOf(mRxObjectsGood)));
                                     txtObjectLogRxBad.setText(H.k(String.valueOf(mRxObjectsBad)));
 
-                                    setTxObjects(0);
+                                    /*setTxObjects(0);
                                     setRxObjectsBad(0);
                                     setRxObjectsGood(0);
+                                    */
 
                                     setText(mActivity.txtVehicleName, getVehicleNameData());
 
