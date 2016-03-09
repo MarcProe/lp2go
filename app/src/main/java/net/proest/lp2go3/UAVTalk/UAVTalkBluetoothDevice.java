@@ -336,14 +336,22 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
                     int len = lb1 << 8 | lb2;
 
                     if (len > 268 || len < 13) {
+                        mActivity.incRxObjectsBad();
                         continue; // maximum possible packet size
                     }
 
                     oidbuffer = bufferRead(oidbuffer.length);
                     iidbuffer = bufferRead(iidbuffer.length);
                     databuffer = bufferRead(len - 10);
-
                     read = mmInStream.read(crcbuffer);
+
+                    if (lenbuffer.length != 2 || oidbuffer.length != 4 || iidbuffer.length != 2
+                            || databuffer.length == 0 || crcbuffer.length != 1) {
+                        mActivity.incRxObjectsBad();
+                        continue;
+                    }
+
+
 
                     byte[] bmsg = H.concatArray(syncbuffer, msgtypebuffer);
                     bmsg = H.concatArray(bmsg, lenbuffer);
@@ -406,8 +414,14 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
                 byte[] readmore = new byte[dlen - read];
                 pos = mmInStream.read(readmore);
                 read += pos;
+                try {
+                    System.arraycopy(readmore, 0, buffer, dlen - pos, readmore.length);
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    e.printStackTrace();
+                    Log.e("BLUETOOTH", "Bad Packet, should not happen.");
+                    return new byte[0];
+                }
 
-                System.arraycopy(readmore, 0, buffer, dlen - pos, readmore.length);
             }
             return buffer;
         }
