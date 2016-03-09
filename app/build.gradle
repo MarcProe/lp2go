@@ -7,9 +7,10 @@ android {
         applicationId 'net.proest.lp2go3'
         minSdkVersion 16
         targetSdkVersion 16
-        versionName '0.2.4.11'
-        versionCode 20411
+        versionName '0.2.4.12'
+        versionCode 20412
     }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -25,6 +26,27 @@ android {
         }
     }
     productFlavors {
+        alpha_flavor_ {
+            minSdkVersion 16
+            applicationId 'net.proest.lp2go3'
+            targetSdkVersion 16
+            versionCode 20412
+            versionName '0.2.4.12'
+        }
+        beta_flavor_ {
+            minSdkVersion 16
+            applicationId 'org.librepilot.lp2go.beta'
+            targetSdkVersion 16
+            versionCode 30000
+            versionName '0.3.0.0'
+        }
+        release_flavor_ {
+            minSdkVersion 16
+            applicationId 'org.librepilot.lp2go.release'
+            targetSdkVersion 16
+            versionCode 1000000
+            versionName '1.0.0.0'
+        }
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_7
