@@ -1293,10 +1293,24 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                                     txtObjectLogRxGood.setText(H.k(String.valueOf(mRxObjectsGood)));
                                     txtObjectLogRxBad.setText(H.k(String.valueOf(mRxObjectsBad)));
 
-                                    /*setTxObjects(0);
+                                    if (blink) {
+                                        if (mRxObjectsGood > 0)
+                                            imgPacketsGood.setColorFilter(Color.argb(0xff, 0x00, 0x88, 0x00));
+                                        if (mRxObjectsBad > 0)
+                                            imgPacketsBad.setColorFilter(Color.argb(0xff, 0x88, 0x00, 0x00));
+                                        if (mTxObjects > 0)
+                                            imgPacketsUp.setColorFilter(Color.argb(0xff, 0x00, 0x00, 0x88));
+                                    } else {
+                                        if (mRxObjectsGood > 0)
+                                            imgPacketsGood.setColorFilter(Color.argb(0xff, 0x00, 0x00, 0x00));
+                                        if (mRxObjectsBad > 0)
+                                            imgPacketsBad.setColorFilter(Color.argb(0xff, 0x00, 0x00, 0x00));
+                                        if (mTxObjects > 0)
+                                            imgPacketsUp.setColorFilter(Color.argb(0xff, 0x00, 0x00, 0x00));
+                                    }
+                                    setTxObjects(0);
                                     setRxObjectsBad(0);
                                     setRxObjectsGood(0);
-                                    */
 
                                     setText(mActivity.txtVehicleName, getVehicleNameData());
 

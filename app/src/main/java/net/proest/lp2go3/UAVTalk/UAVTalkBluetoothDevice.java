@@ -210,16 +210,14 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
 
             try {
                 mmSocket = mmDevice.createRfcommSocketToServiceRecord(UUID.fromString("00001101-0000-1000-8000-00805F9B34FB"));
-                //mmSocket = mmDevice.createRfcommSocketToServiceRecord(UUID.fromString("00000000-0000-1000-8000-00805F9B34FB"));
                 mmSocket.connect();
             } catch (IOException e) {
-                e.printStackTrace();
+                Log.e("BT", "Default BT  Connection failed, trying fallback.");
                 try {
                     // This is a workaround that reportedly helps on some older devices like HTC Desire, where using
                     // the standard createRfcommSocketToServiceRecord() method always causes connect() to fail.
                     //Method method = mmDevice.getClass().getMethod("createRfcommSocket", new Class[]{int.class});
                     mmSocket = (BluetoothSocket) mmDevice.getClass().getMethod("createRfcommSocket", new Class[]{int.class}).invoke(mmDevice, 1);
-                    //mmSocket = (BluetoothSocket) method.invoke(mmDevice, Integer.valueOf(1));
                     mmSocket.connect();
                 } catch (IOException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e1) {
                     e1.printStackTrace();
@@ -241,11 +239,9 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
                 return;
             }
 
-
             synchronized (this) {
                 mConnectThread = null;
             }
-
 
             connected(mmSocket, mmDevice);
         }
@@ -316,9 +312,13 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
                     seekbuffer[0] = 0x00;
                     syncbuffer[2] = 0x3c;
 
-                    read = mmInStream.read(msgtypebuffer);
-                    if (read != 1) Log.d("TYP", "UNDERRUN " + read);
-                    if (msgtypebuffer[0] != 0x20) continue;
+                    //read = mmInStream.read(msgtypebuffer);
+                    //if (read != 1) Log.d("TYP", "UNDERRUN " + read);
+                    msgtypebuffer = bufferRead(msgtypebuffer.length);
+                    if (msgtypebuffer[0] != 0x20) {
+                        mActivity.incRxObjectsBad();
+                        continue;
+                    }
 
                     lenbuffer = bufferRead(lenbuffer.length);
 
@@ -326,7 +326,7 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
                     int lb2 = lenbuffer[0] & 0x000000ff;
                     int len = lb1 << 8 | lb2;
 
-                    if (len > 268 || len < 13) {
+                    if (len > 266 || len < 10) {
                         mActivity.incRxObjectsBad();
                         continue; // maximum possible packet size
                     }
@@ -334,15 +334,13 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
                     oidbuffer = bufferRead(oidbuffer.length);
                     iidbuffer = bufferRead(iidbuffer.length);
                     databuffer = bufferRead(len - 10);
-                    read = mmInStream.read(crcbuffer);
+                    crcbuffer = bufferRead(crcbuffer.length);
 
                     if (lenbuffer.length != 2 || oidbuffer.length != 4 || iidbuffer.length != 2
                             || databuffer.length == 0 || crcbuffer.length != 1) {
                         mActivity.incRxObjectsBad();
                         continue;
                     }
-
-
 
                     byte[] bmsg = H.concatArray(syncbuffer, msgtypebuffer);
                     bmsg = H.concatArray(bmsg, lenbuffer);
