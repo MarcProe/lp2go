@@ -770,7 +770,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPref.edit();
 
-                String btname = spnBluetoothPairedDevice.getSelectedItem().toString();
+                String btname = "";
+                if (spnBluetoothPairedDevice.getSelectedItem() != null) {
+                    btname = spnBluetoothPairedDevice.getSelectedItem().toString();
+                }
+
                 String btmac = "";
 
                 Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
