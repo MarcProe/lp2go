@@ -628,12 +628,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
 
         setContentView(mView0);
-        if (mSerialModeUsed == SERIAL_USB ||
-                (mSerialModeUsed == SERIAL_BLUETOOTH && mBluetoothDeviceUsed != null)) {
-            displayView(VIEW_MAIN);  //reset to start view
-        } else {
-            displayView(VIEW_SETTINGS); //reset to settings view
-        }
 
         mXmlObjects = new Hashtable<String, UAVTalkXMLObject>();
 
@@ -685,7 +679,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         mDoReconnect = true;
 
-        setContentView(mView0);
+        if (mSerialModeUsed == SERIAL_USB ||
+                (mSerialModeUsed == SERIAL_BLUETOOTH && mBluetoothDeviceUsed != null)) {
+            setContentView(mView0);
+            displayView(VIEW_MAIN);  //reset to start view
+        } else {
+            setContentView(mView3);
+            displayView(VIEW_SETTINGS); //reset to settings view
+        }
 
         Log.d("onStart", "onStart");
     }
@@ -1495,7 +1496,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 }
                 return getData(objectname, fieldname);
             } catch (NullPointerException e) {
-                e.printStackTrace();
+                //e.printStackTrace();
             }
             return "";
         }
