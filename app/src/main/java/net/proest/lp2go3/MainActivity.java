@@ -658,6 +658,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
         mSerialModeUsed = sharedPref.getInt(getString(R.string.SETTINGS_SERIAL_MODE), 0);
+        mBluetoothDeviceUsed = sharedPref.getString(getString(R.string.SETTINGS_BT_NAME), null);
 
         mPermissionIntent = PendingIntent.getBroadcast(this, 0, new Intent(ACTION_USB_PERMISSION), 0);
         mUsbManager = (UsbManager) getSystemService(Context.USB_SERVICE);

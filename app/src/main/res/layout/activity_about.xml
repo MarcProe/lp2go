@@ -38,7 +38,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_margin="5dp"
-                    android:text="LibrePilot 2 Go"
+                    android:text="LibrePilot 2 Go "
                     android:textAlignment="center"
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:textStyle="bold|italic"
