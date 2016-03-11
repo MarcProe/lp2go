@@ -16,71 +16,141 @@
 
 
         <LinearLayout
-            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
 
             <LinearLayout
-                android:orientation="vertical"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="2">
+                android:layout_weight="2"
+                android:orientation="vertical">
 
                 <ImageView
-                    android:layout_width="fill_parent"
+                    android:id="@+id/imgRateRollProportionalLock"
+                    android:layout_width="match_parent"
                     android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:src="@drawable/ic_lock_48dp"
+                    android:tint="@color/Critical" />
+
+                <ImageView
+                    android:id="@+id/imgRatePitchProportionalLock"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:src="@drawable/ic_lock_48dp"
+                    android:tint="@color/Critical" />
+
+                <ImageView
+                    android:id="@+id/imgRateRollIntegralLock"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:src="@drawable/ic_lock_48dp"
+                    android:tint="@color/Critical" />
+
+                <ImageView
+                    android:id="@+id/imgRatePitchIntegralLock"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:src="@drawable/ic_lock_48dp"
+                    android:tint="@color/Critical" />
+
+                <ImageView
+                    android:id="@+id/imgRollProportionalLock"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:src="@drawable/ic_lock_48dp"
+                    android:tint="@color/Critical" />
+
+                <ImageView
+                    android:id="@+id/imgPitchProportionalLock"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:src="@drawable/ic_lock_48dp"
+                    android:tint="@color/Critical" />
+
+                <ImageView
+                    android:id="@+id/imgRateRollDerivativeLock"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:src="@drawable/ic_lock_48dp"
+                    android:tint="@color/Critical" />
+
+                <ImageView
+                    android:id="@+id/imgRatePitchDerivativeLock"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:src="@drawable/ic_lock_48dp"
+                    android:tint="@color/Critical" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:orientation="vertical">
+
+                <ImageView
                     android:id="@+id/imgRateRollProportional"
+                    android:layout_width="fill_parent"
+                    android:layout_height="0dp"
                     android:layout_weight="1"
-                    android:rotation="90"
                     android:src="@drawable/ic_swap_vert_48dp" />
 
                 <ImageView
-                    android:layout_width="fill_parent"
-                    android:layout_height="0dp"
                     android:id="@+id/imgRatePitchProportional"
+                    android:layout_width="fill_parent"
+                    android:layout_height="0dp"
                     android:layout_weight="1"
                     android:src="@drawable/ic_swap_horiz_48dp" />
 
                 <ImageView
+                    android:id="@+id/imgRateRollIntegral"
                     android:layout_width="fill_parent"
                     android:layout_height="0dp"
-                    android:id="@+id/imgRateRollIntegral"
                     android:layout_weight="1"
                     android:src="@drawable/ic_swap_vert_48dp" />
 
                 <ImageView
+                    android:id="@+id/imgRatePitchIntegral"
                     android:layout_width="fill_parent"
                     android:layout_height="0dp"
-                    android:id="@+id/imgRatePitchIntegral"
                     android:layout_weight="1"
-                    android:rotation="90"
                     android:src="@drawable/ic_swap_horiz_48dp" />
 
                 <ImageView
+                    android:id="@+id/imgRollProportional"
                     android:layout_width="fill_parent"
                     android:layout_height="0dp"
-                    android:id="@+id/imgRollProportional"
                     android:layout_weight="1"
                     android:src="@drawable/ic_vertical_align_center_48dp" />
 
                 <ImageView
+                    android:id="@+id/imgPitchProportional"
                     android:layout_width="fill_parent"
                     android:layout_height="0dp"
-                    android:id="@+id/imgPitchProportional"
                     android:layout_weight="1"
                     android:src="@drawable/ic_horizontal_align_center_black_24px" />
 
                 <ImageView
+                    android:id="@+id/imgRollDerivative"
                     android:layout_width="fill_parent"
                     android:layout_height="0dp"
-                    android:id="@+id/imgRollDerivative"
                     android:layout_weight="1"
                     android:src="@drawable/ic_swap_vert_48dp" />
 
                 <ImageView
+                    android:id="@+id/imgPitchDerivative"
                     android:layout_width="fill_parent"
                     android:layout_height="0dp"
-                    android:id="@+id/imgPitchDerivative"
                     android:layout_weight="1"
                     android:src="@drawable/ic_swap_horiz_48dp" />
 
@@ -88,309 +158,246 @@
             </LinearLayout>
 
             <LinearLayout
-                android:orientation="vertical"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:layout_gravity="center"
                 android:layout_weight="1"
                 android:gravity="center_vertical|center_horizontal"
-                android:layout_gravity="center">
+                android:orientation="vertical">
 
                 <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="P"
                     android:id="@+id/txtRateRollProportionalLabel"
-                    android:layout_weight="1"
-                    android:layout_gravity="center"
-                    android:textStyle="bold|italic"
-                    android:textAlignment="center"
-                    android:gravity="center_vertical|center_horizontal" />
-
-                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical|center_horizontal"
                     android:text="P"
+                    android:textAlignment="center"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textStyle="bold|italic" />
+
+                <TextView
                     android:id="@+id/txtRatePitchProportionalLabel"
-                    android:layout_weight="1"
-                    android:layout_gravity="center"
-                    android:textStyle="bold|italic"
-                    android:textAlignment="center"
-                    android:gravity="center_vertical|center_horizontal" />
-
-                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:text="P"
+                    android:textAlignment="center"
                     android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="I"
+                    android:textStyle="bold|italic" />
+
+                <TextView
                     android:id="@+id/txtRateRollIntegralLabel"
-                    android:layout_weight="1"
-                    android:layout_gravity="center"
-                    android:textStyle="bold|italic"
-                    android:textAlignment="center"
-                    android:gravity="center_vertical|center_horizontal" />
-
-                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical|center_horizontal"
                     android:text="I"
+                    android:textAlignment="center"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textStyle="bold|italic" />
+
+                <TextView
                     android:id="@+id/txtRatePitchIntegralLabel"
-                    android:layout_weight="1"
-                    android:layout_gravity="center"
-                    android:textStyle="bold|italic"
-                    android:textAlignment="center"
-                    android:gravity="center_vertical|center_horizontal" />
-
-                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:text="I"
+                    android:textAlignment="center"
                     android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="P"
+                    android:textStyle="bold|italic" />
+
+                <TextView
                     android:id="@+id/txtRollProportionalLabel"
-                    android:layout_weight="1"
-                    android:layout_gravity="center"
-                    android:textStyle="bold|italic"
-                    android:textAlignment="center"
-                    android:gravity="center_vertical|center_horizontal" />
-
-                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical|center_horizontal"
                     android:text="P"
+                    android:textAlignment="center"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textStyle="bold|italic" />
+
+                <TextView
                     android:id="@+id/txtPitchProportionalLabel"
-                    android:layout_weight="1"
-                    android:layout_gravity="center"
-                    android:textStyle="bold|italic"
-                    android:textAlignment="center"
-                    android:gravity="center_vertical|center_horizontal" />
-
-                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:text="P"
+                    android:textAlignment="center"
                     android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="D"
+                    android:textStyle="bold|italic" />
+
+                <TextView
                     android:id="@+id/txtRateRollDerivativeLabel"
-                    android:layout_weight="1"
-                    android:layout_gravity="center"
-                    android:textStyle="bold|italic"
-                    android:textAlignment="center"
-                    android:gravity="center_vertical|center_horizontal" />
-
-                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical|center_horizontal"
                     android:text="D"
-                    android:id="@+id/txtRatePitchDerivativeLabel"
-                    android:layout_weight="1"
-                    android:layout_gravity="center"
-                    android:textStyle="bold|italic"
                     android:textAlignment="center"
-                    android:gravity="center_vertical|center_horizontal" />
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textStyle="bold|italic" />
+
+                <TextView
+                    android:id="@+id/txtRatePitchDerivativeLabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:text="D"
+                    android:textAlignment="center"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textStyle="bold|italic" />
             </LinearLayout>
 
             <LinearLayout
-                android:orientation="vertical"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="18">
+                android:layout_weight="18"
+                android:orientation="vertical">
 
-                <SeekBar
+                <net.proest.lp2go3.UI.PidSeekBar
+                    android:id="@+id/sbrPidRateRollProportional"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:id="@+id/sbrRateRollProportional"
                     android:layout_weight="1"
+                    android:max="10000"
+                    android:progress="3000" />
+
+                <TextView
+                    android:id="@+id/txtPidRateRollProportional"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textAlignment="center"
+                    android:textAppearance="?android:attr/textAppearanceSmall" />
+
+                <net.proest.lp2go3.UI.PidSeekBar
+                    android:id="@+id/sbrPidRatePitchProportional"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:max="10000"
+                    android:progress="3000" />
+
+                <TextView
+                    android:id="@+id/txtPidRatePitchProportional"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textAlignment="center"
+                    android:textAppearance="?android:attr/textAppearanceSmall" />
+
+                <net.proest.lp2go3.UI.PidSeekBar
+                    android:id="@+id/sbrPidRateRollIntegral"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:max="50000"
+                    android:progress="6500" />
+
+                <TextView
+                    android:id="@+id/txtPidRateRollIntegral"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textAlignment="center"
+                    android:textAppearance="?android:attr/textAppearanceSmall" />
+
+                <net.proest.lp2go3.UI.PidSeekBar
+                    android:id="@+id/sbrPidRatePitchIntegral"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:max="50000"
+                    android:progress="6500" />
+
+                <TextView
+                    android:id="@+id/txtPidRatePitchIntegral"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textAlignment="center"
+                    android:textAppearance="?android:attr/textAppearanceSmall" />
+
+                <net.proest.lp2go3.UI.PidSeekBar
+                    android:id="@+id/sbrPidRollProportional"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:max="5000000"
+                    android:progress="2500000" />
+
+                <TextView
+                    android:id="@+id/txtPidRollProportional"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textAlignment="center"
+                    android:textAppearance="?android:attr/textAppearanceSmall" />
+
+                <net.proest.lp2go3.UI.PidSeekBar
+                    android:id="@+id/sbrPidPitchProportional"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:max="5000000"
+                    android:progress="2500000" />
+
+                <TextView
+                    android:id="@+id/txtPidPitchProportional"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textAlignment="center"
+                    android:textAppearance="?android:attr/textAppearanceSmall" />
+
+                <net.proest.lp2go3.UI.PidSeekBar
+                    android:id="@+id/sbrPidRateRollDerivative"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:max="1000"
                     android:progress="50" />
 
                 <TextView
+                    android:id="@+id/txtPidRateRollDerivative"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
                     android:text="0"
-                    android:id="@+id/txtRateRollProportional"
-                    android:textAlignment="center" />
+                    android:textAlignment="center"
+                    android:textAppearance="?android:attr/textAppearanceSmall" />
 
-                <SeekBar
+                <net.proest.lp2go3.UI.PidSeekBar
+                    android:id="@+id/sbrPidRatePitchDerivative"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:id="@+id/sbrRatePitchProportional"
                     android:layout_weight="1"
+                    android:max="1000"
                     android:progress="50" />
 
                 <TextView
+                    android:id="@+id/txtPidRatePitchDerivative"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
                     android:text="0"
-                    android:id="@+id/txtRatePitchProportional"
-                    android:textAlignment="center" />
-
-                <SeekBar
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:id="@+id/sbrRateRollIntegral"
-                    android:layout_weight="1"
-                    android:progress="50" />
-
-                <TextView
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:text="0"
-                    android:id="@+id/txtRateRollIntegral"
-                    android:textAlignment="center" />
-
-                <SeekBar
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:id="@+id/sbrRatePitchIntegral"
-                    android:layout_weight="1"
-                    android:progress="50" />
-
-                <TextView
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:text="0"
-                    android:id="@+id/txtRatePitchIntegral"
-                    android:textAlignment="center" />
-
-                <SeekBar
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:id="@+id/sbrRollProportional"
-                    android:layout_weight="1"
-                    android:progress="50" />
-
-                <TextView
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:text="0"
-                    android:id="@+id/txtRollProportional"
-                    android:textAlignment="center" />
-
-                <SeekBar
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:id="@+id/sbritchProportional"
-                    android:layout_weight="1"
-                    android:progress="50" />
-
-                <TextView
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:text="0"
-                    android:id="@+id/txtPitchProportional"
-                    android:textAlignment="center" />
-
-                <SeekBar
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:id="@+id/sbrRollDerivative"
-                    android:layout_weight="1"
-                    android:progress="50" />
-
-                <TextView
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:text="0"
-                    android:id="@+id/txtRateRollDerivative"
-                    android:textAlignment="center" />
-
-                <SeekBar
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:id="@+id/sbrPitchDerivative"
-                    android:layout_weight="1"
-                    android:progress="50" />
-
-                <TextView
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:text="0"
-                    android:id="@+id/txtRatePitchDerivative"
-                    android:textAlignment="center" />
+                    android:textAlignment="center"
+                    android:textAppearance="?android:attr/textAppearanceSmall" />
 
             </LinearLayout>
 
-            <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="2">
-
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:id="@+id/imgRateRollProportionalLock"
-                    android:src="@drawable/ic_lock_48dp"
-                    android:layout_weight="1"
-                    android:tint="@color/Critical" />
-
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:id="@+id/imgRatePitchProportionalLock"
-                    android:src="@drawable/ic_lock_48dp"
-                    android:layout_weight="1"
-                    android:tint="@color/Critical" />
-
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:id="@+id/imgRateRollIntegralLock"
-                    android:src="@drawable/ic_lock_48dp"
-                    android:layout_weight="1"
-                    android:tint="@color/Critical" />
-
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:id="@+id/imgRatePitchIntegralLock"
-                    android:src="@drawable/ic_lock_48dp"
-                    android:layout_weight="1"
-                    android:tint="@color/Critical" />
-
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:id="@+id/imgRollProportionalLock"
-                    android:src="@drawable/ic_lock_48dp"
-                    android:layout_weight="1"
-                    android:tint="@color/Critical" />
-
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:id="@+id/imgPitchProportionalLock"
-                    android:src="@drawable/ic_lock_48dp"
-                    android:layout_weight="1"
-                    android:tint="@color/Critical" />
-
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:id="@+id/imgRollDerivativeLock"
-                    android:src="@drawable/ic_lock_48dp"
-                    android:layout_weight="1"
-                    android:tint="@color/Critical" />
-
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:id="@+id/imgPitchDerivativeLock"
-                    android:src="@drawable/ic_lock_48dp"
-                    android:layout_weight="1"
-                    android:tint="@color/Critical" />
-
-            </LinearLayout>
 
         </LinearLayout>
 
