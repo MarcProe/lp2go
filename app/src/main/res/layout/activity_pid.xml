@@ -1,0 +1,410 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/frame_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context=".MainActivity">
+
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="2">
+
+                <ImageView
+                    android:layout_width="fill_parent"
+                    android:layout_height="0dp"
+                    android:id="@+id/imgRateRollProportional"
+                    android:layout_weight="1"
+                    android:rotation="90"
+                    android:src="@drawable/ic_swap_vert_48dp" />
+
+                <ImageView
+                    android:layout_width="fill_parent"
+                    android:layout_height="0dp"
+                    android:id="@+id/imgRatePitchProportional"
+                    android:layout_weight="1"
+                    android:src="@drawable/ic_swap_horiz_48dp" />
+
+                <ImageView
+                    android:layout_width="fill_parent"
+                    android:layout_height="0dp"
+                    android:id="@+id/imgRateRollIntegral"
+                    android:layout_weight="1"
+                    android:src="@drawable/ic_swap_vert_48dp" />
+
+                <ImageView
+                    android:layout_width="fill_parent"
+                    android:layout_height="0dp"
+                    android:id="@+id/imgRatePitchIntegral"
+                    android:layout_weight="1"
+                    android:rotation="90"
+                    android:src="@drawable/ic_swap_horiz_48dp" />
+
+                <ImageView
+                    android:layout_width="fill_parent"
+                    android:layout_height="0dp"
+                    android:id="@+id/imgRollProportional"
+                    android:layout_weight="1"
+                    android:src="@drawable/ic_vertical_align_center_48dp" />
+
+                <ImageView
+                    android:layout_width="fill_parent"
+                    android:layout_height="0dp"
+                    android:id="@+id/imgPitchProportional"
+                    android:layout_weight="1"
+                    android:src="@drawable/ic_horizontal_align_center_black_24px" />
+
+                <ImageView
+                    android:layout_width="fill_parent"
+                    android:layout_height="0dp"
+                    android:id="@+id/imgRollDerivative"
+                    android:layout_weight="1"
+                    android:src="@drawable/ic_swap_vert_48dp" />
+
+                <ImageView
+                    android:layout_width="fill_parent"
+                    android:layout_height="0dp"
+                    android:id="@+id/imgPitchDerivative"
+                    android:layout_weight="1"
+                    android:src="@drawable/ic_swap_horiz_48dp" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center_vertical|center_horizontal"
+                android:layout_gravity="center">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="P"
+                    android:id="@+id/txtRateRollProportionalLabel"
+                    android:layout_weight="1"
+                    android:layout_gravity="center"
+                    android:textStyle="bold|italic"
+                    android:textAlignment="center"
+                    android:gravity="center_vertical|center_horizontal" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="P"
+                    android:id="@+id/txtRatePitchProportionalLabel"
+                    android:layout_weight="1"
+                    android:layout_gravity="center"
+                    android:textStyle="bold|italic"
+                    android:textAlignment="center"
+                    android:gravity="center_vertical|center_horizontal" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="I"
+                    android:id="@+id/txtRateRollIntegralLabel"
+                    android:layout_weight="1"
+                    android:layout_gravity="center"
+                    android:textStyle="bold|italic"
+                    android:textAlignment="center"
+                    android:gravity="center_vertical|center_horizontal" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="I"
+                    android:id="@+id/txtRatePitchIntegralLabel"
+                    android:layout_weight="1"
+                    android:layout_gravity="center"
+                    android:textStyle="bold|italic"
+                    android:textAlignment="center"
+                    android:gravity="center_vertical|center_horizontal" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="P"
+                    android:id="@+id/txtRollProportionalLabel"
+                    android:layout_weight="1"
+                    android:layout_gravity="center"
+                    android:textStyle="bold|italic"
+                    android:textAlignment="center"
+                    android:gravity="center_vertical|center_horizontal" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="P"
+                    android:id="@+id/txtPitchProportionalLabel"
+                    android:layout_weight="1"
+                    android:layout_gravity="center"
+                    android:textStyle="bold|italic"
+                    android:textAlignment="center"
+                    android:gravity="center_vertical|center_horizontal" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="D"
+                    android:id="@+id/txtRateRollDerivativeLabel"
+                    android:layout_weight="1"
+                    android:layout_gravity="center"
+                    android:textStyle="bold|italic"
+                    android:textAlignment="center"
+                    android:gravity="center_vertical|center_horizontal" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="D"
+                    android:id="@+id/txtRatePitchDerivativeLabel"
+                    android:layout_weight="1"
+                    android:layout_gravity="center"
+                    android:textStyle="bold|italic"
+                    android:textAlignment="center"
+                    android:gravity="center_vertical|center_horizontal" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="18">
+
+                <SeekBar
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:id="@+id/sbrRateRollProportional"
+                    android:layout_weight="1"
+                    android:progress="50" />
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="0"
+                    android:id="@+id/txtRateRollProportional"
+                    android:textAlignment="center" />
+
+                <SeekBar
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:id="@+id/sbrRatePitchProportional"
+                    android:layout_weight="1"
+                    android:progress="50" />
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="0"
+                    android:id="@+id/txtRatePitchProportional"
+                    android:textAlignment="center" />
+
+                <SeekBar
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:id="@+id/sbrRateRollIntegral"
+                    android:layout_weight="1"
+                    android:progress="50" />
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="0"
+                    android:id="@+id/txtRateRollIntegral"
+                    android:textAlignment="center" />
+
+                <SeekBar
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:id="@+id/sbrRatePitchIntegral"
+                    android:layout_weight="1"
+                    android:progress="50" />
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="0"
+                    android:id="@+id/txtRatePitchIntegral"
+                    android:textAlignment="center" />
+
+                <SeekBar
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:id="@+id/sbrRollProportional"
+                    android:layout_weight="1"
+                    android:progress="50" />
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="0"
+                    android:id="@+id/txtRollProportional"
+                    android:textAlignment="center" />
+
+                <SeekBar
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:id="@+id/sbritchProportional"
+                    android:layout_weight="1"
+                    android:progress="50" />
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="0"
+                    android:id="@+id/txtPitchProportional"
+                    android:textAlignment="center" />
+
+                <SeekBar
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:id="@+id/sbrRollDerivative"
+                    android:layout_weight="1"
+                    android:progress="50" />
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="0"
+                    android:id="@+id/txtRateRollDerivative"
+                    android:textAlignment="center" />
+
+                <SeekBar
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:id="@+id/sbrPitchDerivative"
+                    android:layout_weight="1"
+                    android:progress="50" />
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="0"
+                    android:id="@+id/txtRatePitchDerivative"
+                    android:textAlignment="center" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="2">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:id="@+id/imgRateRollProportionalLock"
+                    android:src="@drawable/ic_lock_48dp"
+                    android:layout_weight="1"
+                    android:tint="@color/Critical" />
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:id="@+id/imgRatePitchProportionalLock"
+                    android:src="@drawable/ic_lock_48dp"
+                    android:layout_weight="1"
+                    android:tint="@color/Critical" />
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:id="@+id/imgRateRollIntegralLock"
+                    android:src="@drawable/ic_lock_48dp"
+                    android:layout_weight="1"
+                    android:tint="@color/Critical" />
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:id="@+id/imgRatePitchIntegralLock"
+                    android:src="@drawable/ic_lock_48dp"
+                    android:layout_weight="1"
+                    android:tint="@color/Critical" />
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:id="@+id/imgRollProportionalLock"
+                    android:src="@drawable/ic_lock_48dp"
+                    android:layout_weight="1"
+                    android:tint="@color/Critical" />
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:id="@+id/imgPitchProportionalLock"
+                    android:src="@drawable/ic_lock_48dp"
+                    android:layout_weight="1"
+                    android:tint="@color/Critical" />
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:id="@+id/imgRollDerivativeLock"
+                    android:src="@drawable/ic_lock_48dp"
+                    android:layout_weight="1"
+                    android:tint="@color/Critical" />
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:id="@+id/imgPitchDerivativeLock"
+                    android:src="@drawable/ic_lock_48dp"
+                    android:layout_weight="1"
+                    android:tint="@color/Critical" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/list_slidermenu"
+        android:layout_width="240dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:background="@color/Warning"
+        android:choiceMode="singleChoice"
+        android:divider="@color/list_divider"
+        android:dividerHeight="1dp"
+        android:listSelector="@drawable/list_selector" />
+
+</android.support.v4.widget.DrawerLayout>
