@@ -22,6 +22,8 @@ public class PidSeekBar extends SeekBar implements SeekBar.OnSeekBarChangeListen
     private String mDecimalFormatString;
     private ImageView mLock;
     private boolean mLockOpen;
+    private ImageView mPlus;
+    private ImageView mMinus;
 
     public PidSeekBar(Context context) {
         super(context);
@@ -46,10 +48,7 @@ public class PidSeekBar extends SeekBar implements SeekBar.OnSeekBarChangeListen
 
             double v = (double) p / mDenominator;
 
-            DecimalFormat df = new DecimalFormat(mDecimalFormatString);
-            String sv = df.format(v);
-
-            mSeekBarProgress.setText(sv);
+            mSeekBarProgress.setText(getDecimalString(v));
         }
     }
 
@@ -63,7 +62,7 @@ public class PidSeekBar extends SeekBar implements SeekBar.OnSeekBarChangeListen
 
     }
 
-    public void init(TextView textView, ImageView lock, int denominator, int max, int step, String dfs) {
+    public void init(TextView textView, ImageView lock, ImageView plus, ImageView minus, int denominator, int max, int step, String dfs) {
         this.mDenominator = denominator;
         this.mStep = step;
         this.mSeekBarProgress = textView;
@@ -74,22 +73,47 @@ public class PidSeekBar extends SeekBar implements SeekBar.OnSeekBarChangeListen
         this.setOnSeekBarChangeListener(this);
 
         this.mLock = lock;
+        this.mPlus = plus;
+        this.mMinus = minus;
+
+        mLock.setOnClickListener(this);
+        mPlus.setOnClickListener(this);
+        mMinus.setOnClickListener(this);
+
         mLockOpen = false;
-        lock.setOnClickListener(this);
 
         onProgressChanged(this, 0, false);
-        //this.setEnabled(mLockOpen);
+        //this.setProgress(0d);
+
+        mPlus.setColorFilter(Color.argb(0xff, 0xaa, 0xaa, 0xaa));
+        mMinus.setColorFilter(Color.argb(0xff, 0xaa, 0xaa, 0xaa));
+
         this.setOnTouchListener(this);
     }
 
     @Override
     public void onClick(View v) {
-        mLockOpen = !mLockOpen;
-        //this.setEnabled(mLockOpen);
-        if (mLockOpen) {
-            mLock.setColorFilter(Color.argb(0xff, 0x00, 0x80, 0x00));
-        } else {
-            mLock.setColorFilter(Color.argb(0xff, 0xd4, 0x00, 0x00));
+        if (v.equals(mLock)) {
+            mLockOpen = !mLockOpen;
+            if (mLockOpen) {
+                mLock.setColorFilter(Color.argb(0xff, 0x00, 0x80, 0x00));
+                mPlus.setColorFilter(Color.argb(0xff, 0x00, 0x00, 0x00));
+                mMinus.setColorFilter(Color.argb(0xff, 0x00, 0x00, 0x00));
+            } else {
+                mLock.setColorFilter(Color.argb(0xff, 0xd4, 0x00, 0x00));
+                mPlus.setColorFilter(Color.argb(0xff, 0xaa, 0xaa, 0xaa));
+                mMinus.setColorFilter(Color.argb(0xff, 0xaa, 0xaa, 0xaa));
+            }
+        } else if (mLockOpen && v.equals(mPlus)) {
+            int p = this.getProgress() + mStep;
+            if (p <= this.getMax()) {
+                this.setProgress(p);
+            }
+        } else if (mLockOpen && v.equals(mMinus)) {
+            int p = this.getProgress() - mStep;
+            if (p >= 0) {
+                this.setProgress(p);
+            }
         }
     }
 
@@ -98,7 +122,15 @@ public class PidSeekBar extends SeekBar implements SeekBar.OnSeekBarChangeListen
         return !mLockOpen;
     }
 
-    public void setProgress(float p) {
+    private String getDecimalString(double v) {
+        DecimalFormat df = new DecimalFormat(mDecimalFormatString);
+        return df.format(v);
+    }
+
+    /*
+    * Set Progress from PollThread, overriding the lock.
+     */
+    public void setProgress(double p) {
         this.setProgress(Math.round(p * this.mDenominator));
     }
 }

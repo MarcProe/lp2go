@@ -99,6 +99,124 @@
                 android:orientation="vertical">
 
                 <ImageView
+                    android:id="@+id/imgRateRollProportionalPlus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:src="@drawable/ic_add_circle_outline_48dp" />
+
+                <ImageView
+                    android:id="@+id/imgRateRollProportionalMinus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:src="@drawable/ic_remove_circle_outline_48dp" />
+
+                <ImageView
+                    android:id="@+id/imgRatePitchProportionalPlus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:src="@drawable/ic_add_circle_outline_48dp" />
+
+                <ImageView
+                    android:id="@+id/imgRatePitchProportionalMinus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:src="@drawable/ic_remove_circle_outline_48dp" />
+
+                <ImageView
+                    android:id="@+id/imgRateRollIntegralPlus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:src="@drawable/ic_add_circle_outline_48dp" />
+
+                <ImageView
+                    android:id="@+id/imgRateRollIntegralMinus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:src="@drawable/ic_remove_circle_outline_48dp" />
+
+                <ImageView
+                    android:id="@+id/imgRatePitchIntegralPlus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:src="@drawable/ic_add_circle_outline_48dp" />
+
+                <ImageView
+                    android:id="@+id/imgRatePitchIntegralMinus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:src="@drawable/ic_remove_circle_outline_48dp" />
+
+                <ImageView
+                    android:id="@+id/imgRollProportionalPlus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:src="@drawable/ic_add_circle_outline_48dp" />
+
+                <ImageView
+                    android:id="@+id/imgRollProportionalMinus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:src="@drawable/ic_remove_circle_outline_48dp" />
+
+                <ImageView
+                    android:id="@+id/imgPitchProportionalPlus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:src="@drawable/ic_add_circle_outline_48dp" />
+
+                <ImageView
+                    android:id="@+id/imgPitchProportionalMinus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:src="@drawable/ic_remove_circle_outline_48dp" />
+
+                <ImageView
+                    android:id="@+id/imgRateRollDerivativePlus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:src="@drawable/ic_add_circle_outline_48dp" />
+
+                <ImageView
+                    android:id="@+id/imgRateRollDerivativeMinus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:src="@drawable/ic_remove_circle_outline_48dp" />
+
+                <ImageView
+                    android:id="@+id/imgRatePitchDerivativePlus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:src="@drawable/ic_add_circle_outline_48dp" />
+
+                <ImageView
+                    android:id="@+id/imgRatePitchDerivativeMinus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:src="@drawable/ic_remove_circle_outline_48dp" />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:orientation="vertical">
+
+                <ImageView
                     android:id="@+id/imgRateRollProportional"
                     android:layout_width="fill_parent"
                     android:layout_height="0dp"
@@ -400,6 +518,11 @@
 
 
         </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"></LinearLayout>
 
     </LinearLayout>
 
