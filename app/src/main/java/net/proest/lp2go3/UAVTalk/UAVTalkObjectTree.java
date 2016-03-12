@@ -160,13 +160,17 @@ public class UAVTalkObjectTree {
                 //retval = String.valueOf(f);
                 retval = f;
             } else if (xmlfield.mType == UAVTalkXMLObject.FIELDTYPE_ENUM) {
-                //byte[] fielddata = new byte[1];
+                byte[] fielddata = new byte[1];
                 byte b = 0;
                 b = data[pos + element];
+                fielddata[0] = b;
                 try {
+                    //retval = xmlfield.mOptions[H.toInt(b)];
                     retval = xmlfield.mOptions[H.toInt(b)];
                 } catch (ArrayIndexOutOfBoundsException e) {
-                    Log.d("AIOOBE", "" + H.toInt(b));
+                    Log.d("AIOOBE", "" + H.toInt(b) + " " + data.length + " " + b + " " + H.bytesToHex(fielddata) + " " + H.bytesToHex(data) + " " + pos + " " + element);
+                    //Log.d("XXO", Arrays.toString(xmlfield.mOptions));
+                    //Log.d("XXE", Arrays.toString(xmlfield.mElements.toArray()));
                 }
                 //retval = b;
             } else if (xmlfield.mType == UAVTalkXMLObject.FIELDTYPE_UINT32) {

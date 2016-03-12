@@ -41,11 +41,11 @@ import android.hardware.usb.UsbDeviceConnection;
 import android.hardware.usb.UsbEndpoint;
 import android.hardware.usb.UsbInterface;
 import android.hardware.usb.UsbRequest;
+import android.util.Log;
 
 import net.proest.lp2go3.H;
 import net.proest.lp2go3.MainActivity;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.LinkedList;
@@ -190,8 +190,6 @@ public class UAVTalkUsbDevice extends UAVTalkDevice {
 
     private class WaiterThread extends Thread {
         public boolean mStop;
-        private ArrayList<Byte> stack;
-
 
         public void run() {
             byte[] bytes;
@@ -205,8 +203,6 @@ public class UAVTalkUsbDevice extends UAVTalkDevice {
                 }
 
                 byte[] buffer = new byte[mEndpointIn.getMaxPacketSize()];
-                //stack.
-
 
                 int result = mDeviceConnection.bulkTransfer(mEndpointIn, buffer, buffer.length, 1000);
                 //synbuffer[0] = buffer[2];
@@ -219,6 +215,7 @@ public class UAVTalkUsbDevice extends UAVTalkDevice {
                     UAVTalkMessage cM = new UAVTalkMessage(bytes, 2);
                     if (cM.getLength() > 266) {
                         mActivity.incRxObjectsBad();
+                        Log.d("TOO", "LONG");
                         continue;
                     }
 
@@ -226,7 +223,8 @@ public class UAVTalkUsbDevice extends UAVTalkDevice {
                     if (cM.getLength() > mEndpointIn.getMaxPacketSize()) {
                         byte[] bigbuffer = new byte[mEndpointIn.getMaxPacketSize() * 2];
                         System.arraycopy(bytes, 0, bigbuffer, 0, mEndpointIn.getMaxPacketSize());
-                        System.arraycopy(buffer, 0, bigbuffer, mEndpointIn.getMaxPacketSize(), mEndpointIn.getMaxPacketSize());
+                        result = mDeviceConnection.bulkTransfer(mEndpointIn, buffer, buffer.length, 1000);
+                        System.arraycopy(buffer, 2, bigbuffer, mEndpointIn.getMaxPacketSize(), mEndpointIn.getMaxPacketSize() - 2);
                         bytes = bigbuffer;
                         cM = new UAVTalkMessage(bytes, 2);
                     }
@@ -234,7 +232,8 @@ public class UAVTalkUsbDevice extends UAVTalkDevice {
                     if (cM.getLength() > mEndpointIn.getMaxPacketSize() * 2) {
                         byte[] bigbuffer = new byte[mEndpointIn.getMaxPacketSize() * 3];
                         System.arraycopy(bytes, 0, bigbuffer, 0, mEndpointIn.getMaxPacketSize());
-                        System.arraycopy(buffer, 0, bigbuffer, mEndpointIn.getMaxPacketSize(), mEndpointIn.getMaxPacketSize());
+                        result = mDeviceConnection.bulkTransfer(mEndpointIn, buffer, buffer.length, 1000);
+                        System.arraycopy(buffer, 2, bigbuffer, mEndpointIn.getMaxPacketSize(), mEndpointIn.getMaxPacketSize() - 2);
                         bytes = bigbuffer;
                         cM = new UAVTalkMessage(bytes, 2);
                     }
@@ -242,7 +241,8 @@ public class UAVTalkUsbDevice extends UAVTalkDevice {
                     if (cM.getLength() > mEndpointIn.getMaxPacketSize() * 3) {
                         byte[] bigbuffer = new byte[mEndpointIn.getMaxPacketSize() * 4];
                         System.arraycopy(bytes, 0, bigbuffer, 0, mEndpointIn.getMaxPacketSize());
-                        System.arraycopy(buffer, 0, bigbuffer, mEndpointIn.getMaxPacketSize(), mEndpointIn.getMaxPacketSize());
+                        result = mDeviceConnection.bulkTransfer(mEndpointIn, buffer, buffer.length, 1000);
+                        System.arraycopy(buffer, 2, bigbuffer, mEndpointIn.getMaxPacketSize(), mEndpointIn.getMaxPacketSize() - 2);
                         bytes = bigbuffer;
                         cM = new UAVTalkMessage(bytes, 2);
                     }

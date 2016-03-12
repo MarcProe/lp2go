@@ -15,6 +15,8 @@
  */
 package net.proest.lp2go3.UAVTalk;
 
+import android.util.Log;
+
 import net.proest.lp2go3.H;
 
 import org.w3c.dom.Document;
@@ -268,18 +270,22 @@ public class UAVTalkXMLObject {
 
     private int calculateID() {
         // Hash object name
+        if(DBG) Log.d("HASH"," ");
+        if(DBG) Log.d("HASH", this.mName);
         int hash = updateHash(this.mName, 0);
         // Hash object attributes
         hash = updateHash(this.mIsSettings.booleanValue() ? 1 : 0, hash);
         hash = updateHash(this.mIsSingleInst.booleanValue() ? 1 : 0, hash);
         // Hash field information
         for (int n = 0; n < this.mFieldArray.length; n++) {
+            if(DBG) Log.d("HASH", this.mFieldArray[n].mName);
             hash = updateHash(this.mFieldArray[n].mName, hash);
             hash = updateHash((this.mFieldArray[n].mElementCount), hash);
             hash = updateHash(this.mFieldArray[n].mType, hash);
             if (this.mFieldArray[n].mType == FIELDTYPE_ENUM) {
                 String[] options = this.mFieldArray[n].mOptions;
                 for (int m = 0; m < options.length; m++) {
+                    if(DBG) Log.d("HASH", options[m]);
                     hash = updateHash(options[m], hash);
                 }
             }
@@ -289,6 +295,11 @@ public class UAVTalkXMLObject {
 
     private int updateHash(int value, int hash) {
         int ret = hash ^ ((hash << 5) + (hash >>> 2) + value);
+        if (DBG) {
+                      long y = ret & 0x00000000ffffffffL;
+                      long in = value & 0x00000000ffffffffL;
+                     //Log.d("HASH", "" + in + "=>" + y);
+                  }
         return ret;
     }
 
