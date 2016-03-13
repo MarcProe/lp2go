@@ -29,26 +29,32 @@
                 android:layout_marginTop="0dp" />
 
 
-            <include
-                layout="@layout/activity_main_inc_health"
-                android:layout_width="fill_parent"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginLeft="0dp"
-                android:layout_marginTop="0dp"
-                android:layout_weight="1" />
+                android:orientation="horizontal">
 
+                <include
+                    layout="@layout/activity_main_inc_health"
+                    android:layout_width="fill_parent"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginLeft="0dp"
+                    android:layout_marginTop="0dp"
+                    android:layout_weight="1" />
 
-            <include
-                layout="@layout/activity_main_inc_info"
-                android:layout_width="fill_parent"
-                android:layout_height="match_parent"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginLeft="0dp"
-                android:layout_marginTop="0dp"
-                android:layout_weight="1" />
+                <include
+                    layout="@layout/activity_main_inc_info"
+                    android:layout_width="fill_parent"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginLeft="0dp"
+                    android:layout_marginTop="0dp"
+                    android:layout_weight="1" />
+            </LinearLayout>
+
 
         </LinearLayout>
 

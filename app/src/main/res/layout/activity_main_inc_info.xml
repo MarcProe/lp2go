@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_weight="1"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center_vertical|center_horizontal"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/txtVolt"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_margin="1dp"
+            android:layout_weight="1"
+            android:background="@drawable/rounded_corner_left"
+            android:gravity="center_vertical|center_horizontal"
+            android:textAlignment="center"
+            android:textColor="@color/dark" />
+
+        <TextView
+            android:id="@+id/txtVoltLabel"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_margin="1dp"
+            android:layout_weight="1"
+            android:background="@drawable/rounded_corner_right"
+            android:gravity="center_vertical|center_horizontal"
+            android:text="Volt"
+            android:textAlignment="center"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@color/dark" />
+
+        <TextView
+            android:id="@+id/txtAmpere"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_margin="1dp"
+            android:layout_weight="1"
+            android:background="@drawable/rounded_corner_left"
+            android:gravity="center_vertical|center_horizontal"
+            android:textAlignment="center"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@color/dark" />
+
+        <TextView
+            android:id="@+id/txtAmpereLabel"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_margin="1dp"
+            android:layout_weight="1"
+            android:background="@drawable/rounded_corner_right"
+            android:gravity="center_vertical|center_horizontal"
+            android:text="Ampere"
+            android:textAlignment="center"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@color/dark" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center_vertical|center_horizontal"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/txtmAh"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_margin="1dp"
+            android:layout_weight="1"
+            android:background="@drawable/rounded_corner_left"
+            android:gravity="center_vertical|center_horizontal"
+            android:textAlignment="center"
+            android:textColor="@color/dark" />
+
+        <TextView
+            android:id="@+id/txtmAhLabel"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_margin="1dp"
+            android:layout_weight="1"
+            android:background="@drawable/rounded_corner_right"
+            android:gravity="center_vertical|center_horizontal"
+            android:text="mAh"
+            android:textAlignment="center"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@color/dark" />
+
+        <TextView
+            android:id="@+id/txtTimeLeft"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_margin="1dp"
+            android:layout_weight="1"
+            android:background="@drawable/rounded_corner_left"
+            android:gravity="center_vertical|center_horizontal"
+            android:textAlignment="center"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@color/dark" />
+
+        <TextView
+            android:id="@+id/txtTimeLeftLabel"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_margin="1dp"
+            android:layout_weight="1"
+            android:background="@drawable/rounded_corner_right"
+            android:gravity="center_vertical|center_horizontal"
+            android:text="Time Left"
+            android:textAlignment="center"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@color/dark" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center_vertical|center_horizontal"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/txtCapacity"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_margin="1dp"
+            android:layout_weight="1"
+            android:background="@drawable/rounded_corner_left"
+            android:gravity="center_vertical|center_horizontal"
+            android:onClick="onBatteryCapacityClick"
+            android:textAlignment="center"
+            android:textColor="@color/dark" />
+
+        <TextView
+            android:id="@+id/txtCapacityLabel"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_margin="1dp"
+            android:layout_weight="1"
+            android:background="@drawable/rounded_corner_right"
+            android:gravity="center_vertical|center_horizontal"
+            android:onClick="onBatteryCapacityClick"
+            android:text="Capacity"
+            android:textAlignment="center"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@color/dark" />
+
+        <TextView
+            android:id="@+id/txtCells"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_margin="1dp"
+            android:layout_weight="1"
+            android:background="@drawable/rounded_corner_left"
+            android:gravity="center_vertical|center_horizontal"
+            android:onClick="onBatteryCellsClick"
+            android:textAlignment="center"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@color/dark" />
+
+        <TextView
+            android:id="@+id/txtCellsLabel"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_margin="1dp"
+            android:layout_weight="1"
+            android:background="@drawable/rounded_corner_right"
+            android:gravity="center_vertical|center_horizontal"
+            android:onClick="onBatteryCellsClick"
+            android:text="Cells"
+            android:textAlignment="center"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@color/dark" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center_vertical|center_horizontal"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/txtFlightTelemetry"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:background="@drawable/rounded_corner_uninitialised"
+            android:gravity="center_vertical|center_horizontal"
+            android:text="FlightTelemetry"
+            android:textAlignment="center"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@color/light" />
+
+        <TextView
+            android:id="@+id/txtGCSTelemetry"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:background="@drawable/rounded_corner_uninitialised"
+            android:gravity="center_vertical|center_horizontal"
+            android:text="GCSTelemetry"
+            android:textAlignment="center"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@color/light" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center_vertical|center_horizontal"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/txtAltitude"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_margin="1dp"
+            android:layout_weight="1"
+            android:background="@drawable/rounded_corner_left"
+            android:gravity="center_vertical|center_horizontal"
+            android:onClick="onAltitudeClick"
+            android:textAlignment="center"
+            android:textColor="@color/dark" />
+
+        <TextView
+            android:id="@+id/txtAltitudeLabel"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_margin="1dp"
+            android:layout_weight="1"
+            android:background="@drawable/rounded_corner_right"
+            android:gravity="center_vertical|center_horizontal"
+            android:onClick="onAltitudeClick"
+            android:text="Altitude"
+            android:textAlignment="center"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@color/dark" />
+
+        <TextView
+            android:id="@+id/txtAltitudeAccel"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_margin="1dp"
+            android:layout_weight="1"
+            android:background="@drawable/rounded_corner_left"
+            android:gravity="center_vertical|center_horizontal"
+            android:onClick="onAltitudeAccelClick"
+            android:textAlignment="center"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@color/dark" />
+
+        <TextView
+            android:id="@+id/txtAltitudeAccelLabel"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_margin="1dp"
+            android:layout_weight="1"
+            android:background="@drawable/rounded_corner_right"
+            android:gravity="center_vertical|center_horizontal"
+            android:onClick="onAltitudeAccelClick"
+            android:text="m/s"
+            android:textAlignment="center"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@color/dark" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center_vertical|center_horizontal"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/txtModeNum"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_margin="1dp"
+            android:layout_weight="0.2"
+            android:background="@drawable/rounded_corner_left"
+            android:gravity="center_vertical|center_horizontal"
+            android:onClick="onAltitudeClick"
+            android:text="0"
+            android:textAlignment="center"
+            android:textColor="@color/dark" />
+
+        <TextView
+            android:id="@+id/txtModeFlightMode"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_margin="1dp"
+            android:layout_weight="0.8"
+            android:background="@drawable/rounded_corner_middle"
+            android:gravity="center_vertical|center_horizontal"
+            android:onClick="onAltitudeClick"
+            android:textAlignment="center"
+            android:textColor="@color/dark" />
+
+        <TextView
+            android:id="@+id/txtModeAssistedControl"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_margin="1dp"
+            android:layout_weight="0.5"
+            android:background="@drawable/rounded_corner_right"
+            android:gravity="center_vertical|center_horizontal"
+            android:onClick="onAltitudeAccelClick"
+            android:textAlignment="center"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@color/dark" />
+
+    </LinearLayout>
+</LinearLayout>

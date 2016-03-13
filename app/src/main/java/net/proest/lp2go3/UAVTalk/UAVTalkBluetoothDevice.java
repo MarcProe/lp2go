@@ -192,6 +192,7 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
     }
 
     private void connectionLost() {
+        mActivity.reconnect();
         setState(STATE_NONE);
     }
 
