@@ -818,30 +818,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         return false;
     }
 
-    private boolean loadXmlObjectsx() {
-        long millis = System.currentTimeMillis();
-        AssetManager assets = getAssets();
-        if (mXmlObjects == null) {
-            mXmlObjects = new Hashtable<String, UAVTalkXMLObject>();
-
-            try {
-                String path = "uav-15.09";
-                String files[] = assets.list(path);
-                for (String file : files) {
-                    InputStream ius = assets.open(path + File.separator + file);
-                    UAVTalkXMLObject obj = new UAVTalkXMLObject(readFully(ius));
-                    mXmlObjects.put(obj.getName(), obj);
-                    ius.close();
-                    ius = null;
-                }
-            } catch (IOException | SAXException | ParserConfigurationException e) {
-                e.printStackTrace();
-            }
-            return true;
-        }
-        return false;
-    }
-
     @Override
     protected void onStart() {
         super.onStart();
