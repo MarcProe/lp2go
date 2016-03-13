@@ -108,6 +108,7 @@ import net.proest.lp2go3.slider.model.NavDrawerItem;
 
 import org.xml.sax.SAXException;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -115,6 +116,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Set;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -772,6 +775,50 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     private boolean loadXmlObjects() {
+        if (mXmlObjects == null) {
+            mXmlObjects = new Hashtable<String, UAVTalkXMLObject>();
+
+            AssetManager assets = getAssets();
+            String path = "uavo";
+            String file = "uav-15.09.zip";
+            ZipInputStream zis = null;
+            try {
+                InputStream is = assets.open(path + File.separator + file);
+                zis = new ZipInputStream(new BufferedInputStream(is));
+                ZipEntry ze;
+                while ((ze = zis.getNextEntry()) != null) {
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    byte[] buffer = new byte[1024];
+                    int count;
+                    while ((count = zis.read(buffer)) != -1) {
+                        baos.write(buffer, 0, count);
+                    }
+                    String filename = ze.getName();
+                    String xml = baos.toString();
+                    //byte[] bytes = baos.toByteArray();
+                    // do something with 'filename' and 'bytes'...
+                    Log.d(filename, "" + xml.length());
+                    if (xml.length() > 0) {
+                        UAVTalkXMLObject obj = new UAVTalkXMLObject(baos.toString());
+                        mXmlObjects.put(obj.getName(), obj);
+                    }
+
+                }
+            } catch (IOException | SAXException | ParserConfigurationException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    if (zis != null) zis.close();
+                } catch (IOException e) {
+
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
+    private boolean loadXmlObjectsx() {
         long millis = System.currentTimeMillis();
         AssetManager assets = getAssets();
         if (mXmlObjects == null) {
