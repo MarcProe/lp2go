@@ -4,10 +4,10 @@ android {
     compileSdkVersion 23
     buildToolsVersion '23.0.2'
     defaultConfig {
-        minSdkVersion 14
-        targetSdkVersion 14
-        versionName '0.2.4.20'
-        versionCode 20420
+        minSdkVersion 16
+        targetSdkVersion 16
+        versionName '0.2.4.21'
+        versionCode 20421
     }
 
     buildTypes {
@@ -29,14 +29,14 @@ android {
             applicationId 'net.proest.lp2go3'
         }
         beta_flavor_ {
-            minSdkVersion 14
+            minSdkVersion 16
             applicationId 'org.librepilot.lp2go.beta'
             targetSdkVersion 16
             versionCode 30000
             versionName '0.3.0.0'
         }
         release_flavor_ {
-            minSdkVersion 14
+            minSdkVersion 16
             applicationId 'org.librepilot.lp2go.release'
             targetSdkVersion 16
             versionCode 1000000
