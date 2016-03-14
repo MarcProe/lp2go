@@ -111,17 +111,22 @@ import org.xml.sax.SAXException;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import javax.xml.parsers.ParserConfigurationException;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+    private static final String UAVO_INTERNAL_PATH = "uavo";
     private static final int ICON_OPAQUE = 255;
     private static final int ICON_TRANSPARENT = 64;
     private static final int SERIAL_NONE = 0;
@@ -242,6 +247,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     protected TextView txtLogObjectsLabel;
     protected TextView txtLogDuration;
     protected TextView txtLogDurationLabel;
+    protected Spinner spnUavoSource;
     protected Spinner spnConnectionTypeSpinner;
     protected Spinner spnBluetoothPairedDevice;
     protected PidSeekBar sbrPidRateRollProportional;
@@ -372,6 +378,47 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         this.mTxObjects++;
     }
 
+    private void copyAssets() {
+
+        Log.d("STARTING", "CopyAssets");
+        AssetManager assetManager = getAssets();
+        String[] files = null;
+        try {
+            files = assetManager.list(UAVO_INTERNAL_PATH);
+        } catch (IOException e) {
+            Log.e("tag", "Failed to get asset file list.", e);
+        }
+        for (String filename : files) {
+            InputStream in = null;
+            FileOutputStream out = null;
+            try {
+                Log.d("COPY", "Copy " + filename);
+                in = assetManager.open(UAVO_INTERNAL_PATH + File.separator + filename);
+                out = openFileOutput(UAVO_INTERNAL_PATH + "-" + filename, Context.MODE_PRIVATE);
+                //File outFile = new File(out, Filename);
+
+
+                //out = new FileOutputStream(outFile);
+                copyFile(in, out);
+                in.close();
+                in = null;
+                out.flush();
+                out.close();
+                out = null;
+            } catch (IOException e) {
+                Log.e("tag", "Failed to copy asset file: " + filename, e);
+            }
+        }
+    }
+
+    private void copyFile(InputStream in, OutputStream out) throws IOException {
+        byte[] buffer = new byte[1024];
+        int read;
+        while ((read = in.read(buffer)) != -1) {
+            out.write(buffer, 0, read);
+        }
+    }
+
     private void initSlider(Bundle savedInstanceState) {
         mTitle = mDrawerTitle = getTitle();
         mNavMenuTitles = getResources().getStringArray(R.array.nav_drawer_items);
@@ -469,6 +516,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         displayView(mCurrentView);
     }
 
+
+    public void reconnect() {
+        mDoReconnect = true;
+    }
+
     private void initViewMain(Bundle savedInstanceState) {
         mView0 = getLayoutInflater().inflate(R.layout.activity_main, null);
         setContentView(mView0);  //Main
@@ -560,10 +612,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     }
 
-    public void reconnect() {
-        mDoReconnect = true;
-    }
-
     private void initViewMap(Bundle savedInstanceState) {
         mView1 = getLayoutInflater().inflate(R.layout.activity_map, null);
         setContentView(mView1); //Map
@@ -604,7 +652,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private void initViewSettings() {
         mView3 = getLayoutInflater().inflate(R.layout.activity_settings, null);
         setContentView(mView3); //Settings
-        {
+
             spnConnectionTypeSpinner = (Spinner) findViewById(R.id.spnConnectionTypeSpinner);
             ArrayAdapter<CharSequence> serialConnectionTypeAdapter = ArrayAdapter.createFromResource(this,
                     R.array.connections_settings, android.R.layout.simple_spinner_item);
@@ -617,11 +665,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
             spnBluetoothPairedDevice = (Spinner) findViewById(R.id.spnBluetoothPairedDevice);
 
-            ArrayAdapter<CharSequence> bntPairedDeviceAdapter = new ArrayAdapter<CharSequence>(this, android.R.layout.simple_spinner_item);
+        ArrayAdapter<CharSequence> btPairedDeviceAdapter = new ArrayAdapter<CharSequence>(this, android.R.layout.simple_spinner_item);
+        btPairedDeviceAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-            bntPairedDeviceAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-            spnBluetoothPairedDevice.setAdapter(bntPairedDeviceAdapter);
+        spnBluetoothPairedDevice.setAdapter(btPairedDeviceAdapter);
             spnBluetoothPairedDevice.setOnItemSelectedListener(this);
 
             mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -629,27 +676,54 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 // Device does support Bluetooth
 
                 if (!mBluetoothAdapter.isEnabled()) {
-                    Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                    startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-                }
+                    //Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                    //startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+                    Toast.makeText(this, "To use Bluetooth, turn it on in your device.", Toast.LENGTH_LONG);
 
-                Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
-                // If there are paired devices
-                if (pairedDevices.size() > 0) {
-                    // Loop through paired devices
-                    int btpd = 0;
-                    for (BluetoothDevice device : pairedDevices) {
-                        // Add the name and address to an array adapter to show in a ListView
-                        bntPairedDeviceAdapter.add(device.getName());
-                        if (device.getName().equals(mBluetoothDeviceUsed)) {
-                            spnBluetoothPairedDevice.setSelection(btpd);
+                } else {
+
+                    Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
+                    // If there are paired devices
+                    if (pairedDevices.size() > 0) {
+                        // Loop through paired devices
+                        int btpd = 0;
+                        for (BluetoothDevice device : pairedDevices) {
+                            // Add the name and address to an array adapter to show in a ListView
+                            btPairedDeviceAdapter.add(device.getName());
+                            if (device.getName().equals(mBluetoothDeviceUsed)) {
+                                spnBluetoothPairedDevice.setSelection(btpd);
+                            }
+                            btpd++;
+                            if (LOCAL_LOGD)
+                                Log.d("BTE", device.getName() + " " + device.getAddress());
                         }
-                        btpd++;
-                        if (LOCAL_LOGD) Log.d("BTE", device.getName() + " " + device.getAddress());
                     }
                 }
             }
+
+        spnUavoSource = (Spinner) findViewById(R.id.spnUavoSource);
+        ArrayAdapter<CharSequence> uavoSourceAdapter = new ArrayAdapter<CharSequence>(this, android.R.layout.simple_spinner_item);
+        uavoSourceAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        spnUavoSource.setAdapter(uavoSourceAdapter);
+        spnUavoSource.setOnItemSelectedListener(this);
+
+        File dir = getFilesDir();
+        File[] subFiles = dir.listFiles();
+
+        if (subFiles != null) {
+            for (File file : subFiles) {
+                Pattern p = Pattern.compile(".*uavo-(.*)\\.zip");
+                Matcher m = p.matcher(file.toString());
+                boolean b = m.matches();
+                if (b) {
+                    Log.d("FILELIST", file.toString());
+                    uavoSourceAdapter.add(m.group(1));
+                }
+            }
         }
+
+
     }
 
     private void initViewLogs() {
@@ -775,15 +849,17 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     private boolean loadXmlObjects() {
+
+        copyAssets();
+
         if (mXmlObjects == null) {
             mXmlObjects = new Hashtable<String, UAVTalkXMLObject>();
 
             AssetManager assets = getAssets();
-            String path = "uavo";
-            String file = "uav-15.09.zip";
+            String file = "uav-15.09.zip"; //TODO: Get files from internal storage
             ZipInputStream zis = null;
             try {
-                InputStream is = assets.open(path + File.separator + file);
+                InputStream is = assets.open(UAVO_INTERNAL_PATH + File.separator + file);
                 zis = new ZipInputStream(new BufferedInputStream(is));
                 ZipEntry ze;
                 while ((ze = zis.getNextEntry()) != null) {
@@ -797,7 +873,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     String xml = baos.toString();
                     //byte[] bytes = baos.toByteArray();
                     // do something with 'filename' and 'bytes'...
-                    Log.d(filename, "" + xml.length());
+                    //Log.d(filename, "" + xml.length());
                     if (xml.length() > 0) {
                         UAVTalkXMLObject obj = new UAVTalkXMLObject(baos.toString());
                         mXmlObjects.put(obj.getName(), obj);
@@ -925,9 +1001,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
     }
 
-    private void connectBluetooth() {
+    private void connectBluetooth(MainActivity activity) {
         if (mSerialModeUsed == SERIAL_BLUETOOTH) {
-            setBluetoothInterface();
+            setBluetoothInterface(activity);
         }
     }
 
@@ -1132,7 +1208,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         mPollThread.setObjectTree(oTree);
     }
 
-    private boolean setBluetoothInterface() {
+    private boolean setBluetoothInterface(MainActivity activity) {
         if (mUAVTalkDevice != null) {
             mUAVTalkDevice.stop();
         }
@@ -1768,6 +1844,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             } catch (InterruptedException e) {
                 //wakeup little prince
             }
+
+
             final long millis = System.currentTimeMillis();
 
             boolean loaded = loadXmlObjects();
@@ -1782,6 +1860,22 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
 
             while (mIsValid) {
+
+                if (mBluetoothAdapter != null || !mBluetoothAdapter.isEnabled()) {
+                    try {
+                        mActivity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(mActivity, "To use Bluetooth, turn it on in your device.", Toast.LENGTH_SHORT);
+                            }
+                        });
+                    } catch (RuntimeException e) {
+                        Log.d("RTE", "Toast not successfull");
+                    }
+                } else {
+                    Log.d("RTED", "" + mBluetoothAdapter.isEnabled());
+                }
+
                 if (mDoReconnect) {
                     if (mUAVTalkDevice != null) mUAVTalkDevice.stop();
                     mUAVTalkDevice = null;
@@ -1797,7 +1891,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 if (mUAVTalkDevice == null || (!mUAVTalkDevice.isConnected() && !mUAVTalkDevice.isConnecting())) {
                     switch (mSerialModeUsed) {
                         case SERIAL_BLUETOOTH:
-                            connectBluetooth();
+                            connectBluetooth(mActivity);
                             break;
                         case SERIAL_USB:
                             connectUSB();
