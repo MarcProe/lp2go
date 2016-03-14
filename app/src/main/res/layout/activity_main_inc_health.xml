@@ -228,7 +228,7 @@
             android:layout_width="0dp"
             android:layout_height="fill_parent"
             android:layout_weight="0.5"
-            android:src="@drawable/ic_bluetooth_disabled_24dp" />
+            android:src="@drawable/ic_bluetooth_disabled_128dp" />
 
         <ImageView
             android:id="@+id/imgUSB"
@@ -236,7 +236,7 @@
             android:layout_height="fill_parent"
             android:layout_weight="0.5"
             android:contentDescription="USB"
-            android:src="@drawable/ic_usb_24dp" />
+            android:src="@drawable/ic_usb_128dp" />
 
     </LinearLayout>
 

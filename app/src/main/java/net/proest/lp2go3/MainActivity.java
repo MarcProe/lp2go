@@ -1496,7 +1496,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                             imgUSB.setColorFilter(Color.argb(0xff, 0x00, 0x00, 0x00));
                             if (mUAVTalkDevice != null && mUAVTalkDevice.isConnected()) {
                                 imgBluetooth.setColorFilter(Color.argb(0xff, 0x00, 0x80, 0x00));
-                                imgBluetooth.setImageDrawable(getResources().getDrawable(R.drawable.ic_bluetooth_connected_24dp));
+                                imgBluetooth.setImageDrawable(getResources().getDrawable(R.drawable.ic_bluetooth_connected_128dp));
                                 serialConnectionState = SERIAL_CONNECTED;
 
                             } else if (mUAVTalkDevice != null && mUAVTalkDevice.isConnecting()) {
@@ -1504,21 +1504,21 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                                 int alpha;
                                 if (blink) {
                                     imgBluetooth.setColorFilter(Color.argb(0xff, 0xff, 0x66, 0x00));
-                                    imgBluetooth.setImageDrawable(getResources().getDrawable(R.drawable.ic_bluetooth_24dp));
+                                    imgBluetooth.setImageDrawable(getResources().getDrawable(R.drawable.ic_bluetooth_128dp));
                                 } else {
                                     imgBluetooth.setColorFilter(Color.argb(0xff, 0xff, 0x66, 0x00));
-                                    imgBluetooth.setImageDrawable(getResources().getDrawable(R.drawable.ic_bluetooth_connected_24dp));
+                                    imgBluetooth.setImageDrawable(getResources().getDrawable(R.drawable.ic_bluetooth_connected_128dp));
                                 }
                             } else {
                                 serialConnectionState = SERIAL_DISCONNECTED;
                                 imgBluetooth.setColorFilter(Color.argb(0xff, 0xd4, 0x00, 0x00));
-                                imgBluetooth.setImageDrawable(getResources().getDrawable(R.drawable.ic_bluetooth_disabled_24dp));
+                                imgBluetooth.setImageDrawable(getResources().getDrawable(R.drawable.ic_bluetooth_disabled_128dp));
                             }
                         } else if (mSerialModeUsed == SERIAL_USB) {
                             imgBluetooth.setColorFilter(Color.argb(0xff, 0x00, 0x00, 0x00));
                             if (mUAVTalkDevice != null && mUAVTalkDevice.isConnected()) {
                                 imgUSB.setColorFilter(Color.argb(0xff, 0x00, 0x80, 0x00));
-                                //imgUSB.setImageDrawable(getResources().getDrawable(R.drawable.ic_usb_24dp));
+                                //imgUSB.setImageDrawable(getResources().getDrawable(R.drawable.ic_usb_128dp));
                                 serialConnectionState = SERIAL_CONNECTED;
 
                             } else if (mUAVTalkDevice != null && mUAVTalkDevice.isConnecting()) {
