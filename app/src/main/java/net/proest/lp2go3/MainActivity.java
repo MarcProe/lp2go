@@ -836,6 +836,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         Log.d("INIT", "" + initDone);
         serialConnectionState = SERIAL_DISCONNECTED;
 
+        copyAssets();
+
         initViewPid();
         initViewAbout();
         initViewLogs();
@@ -844,7 +846,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         initViewMap(savedInstanceState);
         initViewMain(savedInstanceState);
 
-        copyAssets();
 
         initDone = true;
 
