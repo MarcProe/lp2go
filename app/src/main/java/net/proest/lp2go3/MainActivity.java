@@ -1123,7 +1123,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         if (fragment != null) {
             FragmentManager fragmentManager = getFragmentManager();
-            fragmentManager.beginTransaction().replace(R.id.frame_container, fragment).commit();
+            try {
+                fragmentManager.beginTransaction().replace(R.id.frame_container, fragment).commit();
+            } catch (IllegalStateException e) {
+                //Maybe there's no need to fix, because we don't really replace the fragment here
+                Log.e("FIXME", "After wakeup in different orientation, this happens.");
+            }
 
             mDrawerList.setItemChecked(position, true);
             mDrawerList.setSelection(position);
