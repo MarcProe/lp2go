@@ -253,7 +253,6 @@
             android:layout_weight="1"
             android:background="@drawable/rounded_corner_left"
             android:gravity="center_vertical|center_horizontal"
-            android:onClick="onAltitudeAccelClick"
             android:textAlignment="center"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="@color/dark" />
@@ -266,7 +265,6 @@
             android:layout_weight="1"
             android:background="@drawable/rounded_corner_right"
             android:gravity="center_vertical|center_horizontal"
-            android:onClick="onAltitudeAccelClick"
             android:text="m/s"
             android:textAlignment="center"
             android:textAppearance="?android:attr/textAppearanceSmall"
