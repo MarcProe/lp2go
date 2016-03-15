@@ -260,6 +260,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     protected PidSeekBar sbrPidPitchProportional;
     protected TextView txtDeviceText;
     int mCurrentPosMarker = 0;
+    private String loadedUavo = null;
     private BluetoothAdapter mBluetoothAdapter;
     private long mTxObjects;
     private long mRxObjectsGood;
@@ -843,20 +844,27 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         initViewMap(savedInstanceState);
         initViewMain(savedInstanceState);
 
+        copyAssets();
+
         initDone = true;
 
         isReady = true;
     }
 
     private boolean loadXmlObjects() {
+        String fileid = "uav-15.09";
+        return loadXmlObjects(fileid, false);
+    }
 
-        copyAssets();
+    private boolean loadXmlObjects(String fileid, boolean overwrite) {
 
-        if (mXmlObjects == null) {
+        if (mXmlObjects == null || overwrite) {
             mXmlObjects = new Hashtable<String, UAVTalkXMLObject>();
 
             AssetManager assets = getAssets();
-            String file = "uav-15.09.zip"; //TODO: Get files from internal storage
+
+            this.loadedUavo = fileid;
+            String file = fileid + ".zip"; //TODO: Get files from internal storage
             ZipInputStream zis = null;
             try {
                 InputStream is = assets.open(UAVO_INTERNAL_PATH + File.separator + file);
@@ -1358,6 +1366,16 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 SharedPreferences.Editor editor = sharedPref.edit();
                 editor.putInt(getString(R.string.SETTINGS_SERIAL_MODE), mSerialModeUsed);
                 editor.commit();
+                break;
+            }
+            case R.id.spnUavoSource: {
+                String fileid = spnUavoSource.getItemAtPosition(pos).toString();
+                Log.d("UAVSource", fileid + "  " + loadedUavo);
+                if (!loadedUavo.equals(fileid)) {
+                    loadXmlObjects(fileid, true);
+                    Toast.makeText(this, "UAVO load completed", Toast.LENGTH_SHORT).show();
+                }
+
                 break;
             }
         }
