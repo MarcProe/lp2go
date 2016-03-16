@@ -197,7 +197,8 @@
             android:text="FlightTelemetry"
             android:textAlignment="center"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:textColor="@color/light" />
+            android:textColor="@color/light"
+            android:visibility="invisible" />
 
         <TextView
             android:id="@+id/txtGCSTelemetry"
@@ -209,7 +210,8 @@
             android:text="GCSTelemetry"
             android:textAlignment="center"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:textColor="@color/light" />
+            android:textColor="@color/light"
+            android:visibility="invisible" />
     </LinearLayout>
 
     <LinearLayout

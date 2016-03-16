@@ -222,6 +222,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     protected TextView txtAltitudeAccel;
     protected TextView txtModeNum;
     protected TextView txtModeFlightMode;
+    protected TextView txtFlightTime;
     protected TextView txtModeSettingsBank;
     protected TextView txtModeAssistedControl;
     protected TextView txtModeRoll;
@@ -574,6 +575,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         txtCPU = (TextView) findViewById(R.id.txtCPU);
 
         txtArmed = (TextView) findViewById(R.id.txtArmed);
+        txtFlightTime = (TextView) findViewById(R.id.txtFlightTime);
 
         txtVolt = (TextView) findViewById(R.id.txtVolt);
         txtAmpere = (TextView) findViewById(R.id.txtAmpere);
@@ -1630,6 +1632,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                                     setTextBGColor(mActivity.txtCPU, getData("SystemAlarms", "Alarm", "CPUOverload").toString());
 
                                     setText(mActivity.txtArmed, getData("FlightStatus", "Armed").toString());
+
+                                    setText(mActivity.txtFlightTime, H.getDateFromMilliSeconds(getData("SystemStats", "FlightTime").toString()));
 
                                     setText(mActivity.txtVolt, getData("FlightBatteryState", "Voltage").toString());
                                     setText(mActivity.txtAmpere, getData("FlightBatteryState", "Current").toString());

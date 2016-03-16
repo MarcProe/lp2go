@@ -141,6 +141,19 @@ public class H {
         return bytesToPrintHex(ba);
     }*/
 
+    public static String getDateFromMilliSeconds(String ms) {
+        if (ms == null || ms.equals("")) {
+            return "";
+        }
+        long millis = Math.round(Float.parseFloat(ms));
+        return String.format("%02d:%02d:%02d",
+                TimeUnit.MILLISECONDS.toHours(millis),
+                TimeUnit.MILLISECONDS.toMinutes(millis) -
+                        TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millis)),
+                TimeUnit.MILLISECONDS.toSeconds(millis) -
+                        TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis)));
+    }
+
     public static String getDateFromSeconds(String seconds) {
         if (seconds == null || seconds.equals("")) {
             return "";
