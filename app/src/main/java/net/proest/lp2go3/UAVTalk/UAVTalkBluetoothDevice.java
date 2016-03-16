@@ -193,6 +193,7 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
 
     private void connectionLost() {
         mActivity.reconnect();
+
         setState(STATE_NONE);
     }
 
@@ -383,6 +384,13 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
 
                 } catch (IOException e) {
                     e.printStackTrace();
+                    if (mmInStream != null) {
+                        try {
+                            mmInStream.close();
+                        } catch (IOException e1) {
+                            e1.printStackTrace();
+                        }
+                    }
                     connectionLost();
                     break;
                 }
