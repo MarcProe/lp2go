@@ -181,7 +181,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private static final boolean LOCAL_LOGD = true;
     private final static int HISTORY_MARKER_NUM = 5;
     static boolean sHasPThread = false;
-    private static boolean DEV = false;
+    private static boolean DEV = true;
     private static boolean initDone = false;
     private static int mCurrentView = 0;
     public boolean isReady = false;
@@ -767,64 +767,48 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             sbrPidRateRollProportional = (PidSeekBar) findViewById(R.id.sbrPidRateRollProportional);
             sbrPidRateRollProportional.init((TextView) findViewById(R.id.txtPidRateRollProportional),
                     (ImageView) findViewById(R.id.imgRateRollProportionalLock),
-                    (ImageView) findViewById(R.id.imgRateRollProportionalPlus),
-                    (ImageView) findViewById(R.id.imgRateRollProportionalMinus),
                     PID_RATE_ROLL_PROP_DENOM, PID_RATE_ROLL_PROP_MAX,
                     PID_RATE_ROLL_PROP_STEP, PID_RATE_ROLL_PROP_DFS);
 
             sbrPidRatePitchProportional = (PidSeekBar) findViewById(R.id.sbrPidRatePitchProportional);
             sbrPidRatePitchProportional.init((TextView) findViewById(R.id.txtPidRatePitchProportional),
                     (ImageView) findViewById(R.id.imgRatePitchProportionalLock),
-                    (ImageView) findViewById(R.id.imgRatePitchProportionalPlus),
-                    (ImageView) findViewById(R.id.imgRatePitchProportionalMinus),
                     PID_RATE_PITCH_PROP_DENOM, PID_RATE_PITCH_PROP_MAX,
                     PID_RATE_PITCH_PROP_STEP, PID_RATE_PITCH_PROP_DFS);
 
             sbrPidRateRollIntegral = (PidSeekBar) findViewById(R.id.sbrPidRateRollIntegral);
             sbrPidRateRollIntegral.init((TextView) findViewById(R.id.txtPidRateRollIntegral),
                     (ImageView) findViewById(R.id.imgRateRollIntegralLock),
-                    (ImageView) findViewById(R.id.imgRateRollIntegralPlus),
-                    (ImageView) findViewById(R.id.imgRateRollIntegralMinus),
                     PID_RATE_ROLL_INTE_DENOM, PID_RATE_ROLL_INTE_MAX,
                     PID_RATE_ROLL_INTE_STEP, PID_RATE_ROLL_INTE_DFS);
 
             sbrPidRatePitchIntegral = (PidSeekBar) findViewById(R.id.sbrPidRatePitchIntegral);
             sbrPidRatePitchIntegral.init((TextView) findViewById(R.id.txtPidRatePitchIntegral),
                     (ImageView) findViewById(R.id.imgRatePitchIntegralLock),
-                    (ImageView) findViewById(R.id.imgRatePitchIntegralPlus),
-                    (ImageView) findViewById(R.id.imgRatePitchIntegralMinus),
                     PID_RATE_PITCH_INTE_DENOM, PID_RATE_PITCH_INTE_MAX,
                     PID_RATE_PITCH_INTE_STEP, PID_RATE_PITCH_INTE_DFS);
 
             sbrPidRollProportional = (PidSeekBar) findViewById(R.id.sbrPidRollProportional);
             sbrPidRollProportional.init((TextView) findViewById(R.id.txtPidRollProportional),
                     (ImageView) findViewById(R.id.imgRollProportionalLock),
-                    (ImageView) findViewById(R.id.imgRollProportionalPlus),
-                    (ImageView) findViewById(R.id.imgRollProportionalMinus),
                     PID_ROLL_PROP_DENOM, PID_ROLL_PROP_MAX,
                     PID_ROLL_PROP_STEP, PID_ROLL_PROP_DFS);
 
             sbrPidPitchProportional = (PidSeekBar) findViewById(R.id.sbrPidPitchProportional);
             sbrPidPitchProportional.init((TextView) findViewById(R.id.txtPidPitchProportional),
                     (ImageView) findViewById(R.id.imgPitchProportionalLock),
-                    (ImageView) findViewById(R.id.imgPitchProportionalPlus),
-                    (ImageView) findViewById(R.id.imgPitchProportionalMinus),
                     PID_PITCH_PROP_DENOM, PID_PITCH_PROP_MAX,
                     PID_PITCH_PROP_STEP, PID_PITCH_PROP_DFS);
 
             sbrPidRateRollDerivative = (PidSeekBar) findViewById(R.id.sbrPidRateRollDerivative);
             sbrPidRateRollDerivative.init((TextView) findViewById(R.id.txtPidRateRollDerivative),
                     (ImageView) findViewById(R.id.imgRateRollDerivativeLock),
-                    (ImageView) findViewById(R.id.imgRateRollDerivativePlus),
-                    (ImageView) findViewById(R.id.imgRateRollDerivativeMinus),
                     PID_RATE_ROLL_DERI_DENOM, PID_RATE_ROLL_DERI_MAX,
                     PID_RATE_ROLL_DERI_STEP, PID_RATE_ROLL_DERI_DFS);
 
             sbrPidRatePitchDerivative = (PidSeekBar) findViewById(R.id.sbrPidRatePitchDerivative);
             sbrPidRatePitchDerivative.init((TextView) findViewById(R.id.txtPidRatePitchDerivative),
                     (ImageView) findViewById(R.id.imgRatePitchDerivativeLock),
-                    (ImageView) findViewById(R.id.imgRatePitchDerivativePlus),
-                    (ImageView) findViewById(R.id.imgRatePitchDerivativeMinus),
                     PID_RATE_PITCH_DERI_DENOM, PID_RATE_PITCH_DERI_MAX,
                     PID_RATE_PITCH_DERI_STEP, PID_RATE_PITCH_DERI_DFS);
 
