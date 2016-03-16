@@ -6,8 +6,8 @@ android {
     defaultConfig {
         minSdkVersion 16
         targetSdkVersion 16
-        versionName '0.2.5.1'
-        versionCode 20501
+        versionName '0.2.5.2'
+        versionCode 20502
     }
 
     buildTypes {
