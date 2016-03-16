@@ -102,6 +102,7 @@ import net.proest.lp2go3.slider.LogsFragment;
 import net.proest.lp2go3.slider.MainFragment;
 import net.proest.lp2go3.slider.MapFragment;
 import net.proest.lp2go3.slider.ObjectsFragment;
+import net.proest.lp2go3.slider.PidFragment;
 import net.proest.lp2go3.slider.SettingsFragment;
 import net.proest.lp2go3.slider.adapter.NavDrawerListAdapter;
 import net.proest.lp2go3.slider.model.NavDrawerItem;
@@ -125,6 +126,8 @@ import java.util.zip.ZipInputStream;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import c.PID;
+
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     private static final String UAVO_INTERNAL_PATH = "uavo";
     private static final int ICON_OPAQUE = 255;
@@ -146,42 +149,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private static final int VIEW_LOGS = 4;
     private static final int VIEW_ABOUT = 5;
     private static final int VIEW_PID = 6;
-    private static final int PID_RATE_ROLL_PROP_DENOM = 100000;
-    private static final int PID_RATE_ROLL_PROP_STEP = 10;
-    private static final int PID_RATE_ROLL_PROP_MAX = 1000;
-    private static final String PID_RATE_ROLL_PROP_DFS = "0.00000";
-    private static final int PID_RATE_PITCH_PROP_DENOM = 100000;
-    private static final int PID_RATE_PITCH_PROP_STEP = 10;
-    private static final int PID_RATE_PITCH_PROP_MAX = 1000;
-    private static final String PID_RATE_PITCH_PROP_DFS = "0.00000";
-    private static final int PID_RATE_ROLL_INTE_DENOM = 100000;
-    private static final int PID_RATE_ROLL_INTE_STEP = 10;
-    private static final int PID_RATE_ROLL_INTE_MAX = 1000;
-    private static final String PID_RATE_ROLL_INTE_DFS = "0.00000";
-    private static final int PID_RATE_PITCH_INTE_DENOM = 100000;
-    private static final int PID_RATE_PITCH_INTE_STEP = 10;
-    private static final int PID_RATE_PITCH_INTE_MAX = 1000;
-    private static final String PID_RATE_PITCH_INTE_DFS = "0.00000";
-    private static final int PID_RATE_ROLL_DERI_DENOM = 1000000;
-    private static final int PID_RATE_ROLL_DERI_STEP = 1;
-    private static final int PID_RATE_ROLL_DERI_MAX = 1000;
-    private static final String PID_RATE_ROLL_DERI_DFS = "0.000000";
-    private static final int PID_RATE_PITCH_DERI_DENOM = 1000000;
-    private static final int PID_RATE_PITCH_DERI_STEP = 1;
-    private static final int PID_RATE_PITCH_DERI_MAX = 100000;
-    private static final String PID_RATE_PITCH_DERI_DFS = "0.000000";
-    private static final int PID_ROLL_PROP_DENOM = 100000;
-    private static final int PID_ROLL_PROP_STEP = 10000;
-    private static final int PID_ROLL_PROP_MAX = 500000;
-    private static final String PID_ROLL_PROP_DFS = "0.000";
-    private static final int PID_PITCH_PROP_DENOM = 100000;
-    private static final int PID_PITCH_PROP_STEP = 10000;
-    private static final int PID_PITCH_PROP_MAX = 500000;
-    private static final String PID_PITCH_PROP_DFS = "0.000";
+
     private static final boolean LOCAL_LOGD = true;
     private final static int HISTORY_MARKER_NUM = 5;
     static boolean sHasPThread = false;
-    private static boolean DEV = true;
+    private static boolean DEV = false;
     private static boolean initDone = false;
     private static int mCurrentView = 0;
     public boolean isReady = false;
@@ -259,6 +231,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     protected PidSeekBar sbrPidRatePitchDerivative;
     protected PidSeekBar sbrPidRollProportional;
     protected PidSeekBar sbrPidPitchProportional;
+
+    protected ImageView imgPidBank;
+
     protected TextView txtDeviceText;
     int mCurrentPosMarker = 0;
     private String loadedUavo = null;
@@ -437,6 +412,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         mNavDrawerItems.add(new NavDrawerItem(mNavMenuTitles[3], mNavMenuIcons.getResourceId(3, -1)));
         mNavDrawerItems.add(new NavDrawerItem(mNavMenuTitles[4], mNavMenuIcons.getResourceId(4, -1)));
         mNavDrawerItems.add(new NavDrawerItem(mNavMenuTitles[5], mNavMenuIcons.getResourceId(5, -1)));
+        mNavDrawerItems.add(new NavDrawerItem(mNavMenuTitles[6], mNavMenuIcons.getResourceId(6, -1)));
 
         mNavMenuIcons.recycle();
         mDrawListAdapter = new NavDrawerListAdapter(getApplicationContext(),
@@ -763,56 +739,58 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private void initViewPid() {
         mView6 = getLayoutInflater().inflate(R.layout.activity_pid, null);
         setContentView(mView6);
-        {
+
+        imgPidBank = (ImageView) findViewById(R.id.imgPidBank);
+
             sbrPidRateRollProportional = (PidSeekBar) findViewById(R.id.sbrPidRateRollProportional);
             sbrPidRateRollProportional.init((TextView) findViewById(R.id.txtPidRateRollProportional),
                     (ImageView) findViewById(R.id.imgRateRollProportionalLock),
-                    PID_RATE_ROLL_PROP_DENOM, PID_RATE_ROLL_PROP_MAX,
-                    PID_RATE_ROLL_PROP_STEP, PID_RATE_ROLL_PROP_DFS);
+                    PID.PID_RATE_ROLL_PROP_DENOM, PID.PID_RATE_ROLL_PROP_MAX,
+                    PID.PID_RATE_ROLL_PROP_STEP, PID.PID_RATE_ROLL_PROP_DFS);
 
             sbrPidRatePitchProportional = (PidSeekBar) findViewById(R.id.sbrPidRatePitchProportional);
             sbrPidRatePitchProportional.init((TextView) findViewById(R.id.txtPidRatePitchProportional),
                     (ImageView) findViewById(R.id.imgRatePitchProportionalLock),
-                    PID_RATE_PITCH_PROP_DENOM, PID_RATE_PITCH_PROP_MAX,
-                    PID_RATE_PITCH_PROP_STEP, PID_RATE_PITCH_PROP_DFS);
+                    PID.PID_RATE_PITCH_PROP_DENOM, PID.PID_RATE_PITCH_PROP_MAX,
+                    PID.PID_RATE_PITCH_PROP_STEP, PID.PID_RATE_PITCH_PROP_DFS);
 
             sbrPidRateRollIntegral = (PidSeekBar) findViewById(R.id.sbrPidRateRollIntegral);
             sbrPidRateRollIntegral.init((TextView) findViewById(R.id.txtPidRateRollIntegral),
                     (ImageView) findViewById(R.id.imgRateRollIntegralLock),
-                    PID_RATE_ROLL_INTE_DENOM, PID_RATE_ROLL_INTE_MAX,
-                    PID_RATE_ROLL_INTE_STEP, PID_RATE_ROLL_INTE_DFS);
+                    PID.PID_RATE_ROLL_INTE_DENOM, PID.PID_RATE_ROLL_INTE_MAX,
+                    PID.PID_RATE_ROLL_INTE_STEP, PID.PID_RATE_ROLL_INTE_DFS);
 
             sbrPidRatePitchIntegral = (PidSeekBar) findViewById(R.id.sbrPidRatePitchIntegral);
             sbrPidRatePitchIntegral.init((TextView) findViewById(R.id.txtPidRatePitchIntegral),
                     (ImageView) findViewById(R.id.imgRatePitchIntegralLock),
-                    PID_RATE_PITCH_INTE_DENOM, PID_RATE_PITCH_INTE_MAX,
-                    PID_RATE_PITCH_INTE_STEP, PID_RATE_PITCH_INTE_DFS);
+                    PID.PID_RATE_PITCH_INTE_DENOM, PID.PID_RATE_PITCH_INTE_MAX,
+                    PID.PID_RATE_PITCH_INTE_STEP, PID.PID_RATE_PITCH_INTE_DFS);
 
             sbrPidRollProportional = (PidSeekBar) findViewById(R.id.sbrPidRollProportional);
             sbrPidRollProportional.init((TextView) findViewById(R.id.txtPidRollProportional),
                     (ImageView) findViewById(R.id.imgRollProportionalLock),
-                    PID_ROLL_PROP_DENOM, PID_ROLL_PROP_MAX,
-                    PID_ROLL_PROP_STEP, PID_ROLL_PROP_DFS);
+                    PID.PID_ROLL_PROP_DENOM, PID.PID_ROLL_PROP_MAX,
+                    PID.PID_ROLL_PROP_STEP, PID.PID_ROLL_PROP_DFS);
 
             sbrPidPitchProportional = (PidSeekBar) findViewById(R.id.sbrPidPitchProportional);
             sbrPidPitchProportional.init((TextView) findViewById(R.id.txtPidPitchProportional),
                     (ImageView) findViewById(R.id.imgPitchProportionalLock),
-                    PID_PITCH_PROP_DENOM, PID_PITCH_PROP_MAX,
-                    PID_PITCH_PROP_STEP, PID_PITCH_PROP_DFS);
+                    PID.PID_PITCH_PROP_DENOM, PID.PID_PITCH_PROP_MAX,
+                    PID.PID_PITCH_PROP_STEP, PID.PID_PITCH_PROP_DFS);
 
             sbrPidRateRollDerivative = (PidSeekBar) findViewById(R.id.sbrPidRateRollDerivative);
             sbrPidRateRollDerivative.init((TextView) findViewById(R.id.txtPidRateRollDerivative),
                     (ImageView) findViewById(R.id.imgRateRollDerivativeLock),
-                    PID_RATE_ROLL_DERI_DENOM, PID_RATE_ROLL_DERI_MAX,
-                    PID_RATE_ROLL_DERI_STEP, PID_RATE_ROLL_DERI_DFS);
+                    PID.PID_RATE_ROLL_DERI_DENOM, PID.PID_RATE_ROLL_DERI_MAX,
+                    PID.PID_RATE_ROLL_DERI_STEP, PID.PID_RATE_ROLL_DERI_DFS);
 
             sbrPidRatePitchDerivative = (PidSeekBar) findViewById(R.id.sbrPidRatePitchDerivative);
             sbrPidRatePitchDerivative.init((TextView) findViewById(R.id.txtPidRatePitchDerivative),
                     (ImageView) findViewById(R.id.imgRatePitchDerivativeLock),
-                    PID_RATE_PITCH_DERI_DENOM, PID_RATE_PITCH_DERI_MAX,
-                    PID_RATE_PITCH_DERI_STEP, PID_RATE_PITCH_DERI_DFS);
+                    PID.PID_RATE_PITCH_DERI_DENOM, PID.PID_RATE_PITCH_DERI_MAX,
+                    PID.PID_RATE_PITCH_DERI_STEP, PID.PID_RATE_PITCH_DERI_DFS);
 
-        }
+
     }
 
     @Override
@@ -831,7 +809,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         initViewObjects();
         initViewMap(savedInstanceState);
         initViewMain(savedInstanceState);
-
 
         initDone = true;
 
@@ -1065,6 +1042,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
                 break;
 
+            case VIEW_PID:
+                break;
+
             default:
                 break;
         }
@@ -1110,6 +1090,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 fragment = new AboutFragment();
                 setContentView(mView5, position);
 
+                break;
+
+            case VIEW_PID:
+                fragment = new PidFragment();
+                setContentView(mView6, position);
+                allowPidSliderUpdate();
                 break;
 
             default:
@@ -1184,6 +1170,26 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         } catch (NullPointerException e) {
 
         }
+    }
+
+    public void onPidUploadClock(View v) {
+        Toast.makeText(this, "Not yet implemented (Sorry) ¯\\_(ツ)_/¯", Toast.LENGTH_LONG).show();
+    }
+
+    public void onPidDownloadClick(View v) {
+        allowPidSliderUpdate();
+    }
+
+    private void allowPidSliderUpdate() {
+        sbrPidRateRollProportional.setAllowUpdateFromFC(true);
+        sbrPidRatePitchProportional.setAllowUpdateFromFC(true);
+        sbrPidRateRollIntegral.setAllowUpdateFromFC(true);
+        sbrPidRatePitchIntegral.setAllowUpdateFromFC(true);
+        sbrPidRollProportional.setAllowUpdateFromFC(true);
+        sbrPidPitchProportional.setAllowUpdateFromFC(true);
+        sbrPidRateRollDerivative.setAllowUpdateFromFC(true);
+        sbrPidRatePitchDerivative.setAllowUpdateFromFC(true);
+        Toast.makeText(this, "Loading current PID", Toast.LENGTH_SHORT).show();
     }
 
     public void onLogShare(View v) {
@@ -1713,14 +1719,43 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                                         }
                                     }
                                     break;
-                                //case VIEW_PID:
-                                case VIEW_ABOUT:
+                                case VIEW_PID:
+
                                     String fmode = getData("ManualControlCommand", "FlightModeSwitchPosition").toString();
-                                    String fm1position = getData("StabilizationSettings", "FlightModeMap", fmode).toString();
+                                    String bank = getData("StabilizationSettings", "FlightModeMap", fmode).toString();
 
-                                    //String arming = getData("FlightModeSettings", "Arming").toString();
+                                    String stabbank = "StabilizationSettings" + bank;
 
-                                    Log.d("PID", fmode + " " + fm1position + " " + " " + " " + " " + " ");
+                                    switch (stabbank) {
+                                        case "StabilizationSettingsBank1":
+                                            imgPidBank.setImageDrawable(getResources().getDrawable(R.drawable.ic_filter_1_128dp));
+                                            break;
+                                        case "StabilizationSettingsBank2":
+                                            imgPidBank.setImageDrawable(getResources().getDrawable(R.drawable.ic_filter_2_128dp));
+                                            break;
+                                        case "StabilizationSettingsBank3":
+                                            imgPidBank.setImageDrawable(getResources().getDrawable(R.drawable.ic_filter_3_128dp));
+                                            break;
+                                        default:
+                                            imgPidBank.setImageDrawable(getResources().getDrawable(R.drawable.ic_filter_none_128dp));
+                                            break;
+                                    }
+
+                                    sbrPidRateRollProportional.setProgress(toFloat(getData(stabbank, "RollRatePID", "Kp")));
+                                    sbrPidRatePitchProportional.setProgress(toFloat(getData(stabbank, "PitchRatePID", "Kp")));
+
+                                    sbrPidRateRollIntegral.setProgress(toFloat(getData(stabbank, "RollRatePID", "Ki")));
+                                    sbrPidRatePitchIntegral.setProgress(toFloat(getData(stabbank, "PitchRatePID", "Ki")));
+
+                                    sbrPidRollProportional.setProgress(toFloat(getData(stabbank, "RollPI", "Kp")));
+                                    sbrPidPitchProportional.setProgress(toFloat(getData(stabbank, "PitchPI", "Kp")));
+
+                                    sbrPidRateRollDerivative.setProgress(toFloat(getData(stabbank, "RollRatePID", "Kd")));
+                                    sbrPidRatePitchDerivative.setProgress(toFloat(getData(stabbank, "PitchRatePID", "Kd")));
+
+                                    break;
+                                case VIEW_ABOUT:
+
                                     break;
 
                             }
@@ -1733,19 +1768,36 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         }
 
+        private Float toFloat(Object o) {
+            try {
+                return (Float) o;
+            } catch (ClassCastException e) {
+                return Float.valueOf(.0f);
+            }
+        }
+
         private void requestObjects() {
-            if (mUAVTalkDevice != null && mSerialModeUsed == SERIAL_BLUETOOTH) {
-                mUAVTalkDevice.requestObject("SystemAlarms");
-                mUAVTalkDevice.requestObject("PathStatus");
-                mUAVTalkDevice.requestObject("GPSSatellites");
-                mUAVTalkDevice.requestObject("FlightTelemetryStats");
-                mUAVTalkDevice.requestObject("GCSTelemetryStats");
-                mUAVTalkDevice.requestObject("FlightStatus");
-                mUAVTalkDevice.requestObject("FlightBatteryState");
-                mUAVTalkDevice.requestObject("FlightBatterySettings");
-                mUAVTalkDevice.requestObject("BaroSensor");
-                mUAVTalkDevice.requestObject("VelocityState");
-                mUAVTalkDevice.requestObject("ManualControlCommand");
+            try {
+                if (mUAVTalkDevice != null && mSerialModeUsed == SERIAL_BLUETOOTH) {
+                    mUAVTalkDevice.requestObject("SystemAlarms");
+                    mUAVTalkDevice.requestObject("PathStatus");
+                    mUAVTalkDevice.requestObject("GPSSatellites");
+                    mUAVTalkDevice.requestObject("FlightTelemetryStats");
+                    mUAVTalkDevice.requestObject("GCSTelemetryStats");
+                    mUAVTalkDevice.requestObject("FlightStatus");
+                    mUAVTalkDevice.requestObject("FlightBatteryState");
+                    mUAVTalkDevice.requestObject("FlightBatterySettings");
+                    mUAVTalkDevice.requestObject("BaroSensor");
+                    mUAVTalkDevice.requestObject("VelocityState");
+                    mUAVTalkDevice.requestObject("ManualControlCommand");
+                    mUAVTalkDevice.requestObject("StabilizationSettings");
+                    mUAVTalkDevice.requestObject("StabilizationSettingsBank1");
+                    mUAVTalkDevice.requestObject("StabilizationSettingsBank2");
+                    mUAVTalkDevice.requestObject("StabilizationSettingsBank3");
+
+                }
+            } catch (NullPointerException e) {
+                Log.e("ERR", "UAVTalkdevice is null. Reconnecting?");
             }
         }
 
@@ -1827,7 +1879,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     e2.printStackTrace();
                 }
             } catch (NullPointerException e3) {
-                e3.printStackTrace();
+                Log.e("ERR", "Object Tree not loaded yet.");
             }
             if (o != null) {
                 return o;

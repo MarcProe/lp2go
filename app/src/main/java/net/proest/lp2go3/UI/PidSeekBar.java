@@ -23,6 +23,7 @@ public class PidSeekBar extends SeekBar implements SeekBar.OnSeekBarChangeListen
     private ImageView mLock;
     private boolean mLockOpen;
     private int mProgress;
+    private boolean mAllowUpdateFromFC = true;
 
     public PidSeekBar(Context context) {
         super(context);
@@ -36,6 +37,10 @@ public class PidSeekBar extends SeekBar implements SeekBar.OnSeekBarChangeListen
         super(context, attrs, defStyleAttr);
     }
 
+    public void setAllowUpdateFromFC(boolean allowUpdate) {
+        this.mAllowUpdateFromFC = allowUpdate;
+    }
+
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
         if (fromUser && mLockOpen) {
@@ -44,18 +49,16 @@ public class PidSeekBar extends SeekBar implements SeekBar.OnSeekBarChangeListen
             } else if (progress > mProgress) {
                 this.setProgress(mProgress + mStep);
             }
-
-            int p = seekBar.getProgress();
-
-            if (p % mStep != 0) {
-                p = p - p % mStep;
-            }
-
-            double v = (double) p / mDenominator;
-            mTxtSeekBarProgress.setText(getDecimalString(v));
-            mProgress = seekBar.getProgress();
-
         }
+        int p = seekBar.getProgress();
+        mProgress = p;
+
+        if (p % mStep != 0) {
+            p = p - p % mStep;
+        }
+
+        double v = (double) p / mDenominator;
+        mTxtSeekBarProgress.setText(getDecimalString(v));
     }
 
     @Override
@@ -114,8 +117,19 @@ public class PidSeekBar extends SeekBar implements SeekBar.OnSeekBarChangeListen
 
     /*
     * Set Progress from PollThread, overriding the lock.
+    *
+    * @returns true, if view and saved value are equal
      */
-    public void setProgress(double p) {
-        this.setProgress(Math.round(p * this.mDenominator));
+    public void setProgress(float p) {
+        int ip = Math.round(p * this.mDenominator);
+        if (mAllowUpdateFromFC) {
+            this.setProgress(ip);
+            mAllowUpdateFromFC = false;
+        }
+        if (ip == this.getProgress()) {
+            mTxtSeekBarProgress.setTextColor(Color.argb(0xff, 0x33, 0x33, 0x33));
+        } else {
+            mTxtSeekBarProgress.setTextColor(Color.argb(0xff, 0xff, 0x00, 0x00));
+        }
     }
 }
