@@ -754,7 +754,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             ((TextView) findViewById(R.id.txtAndroidVersionRelease))
                     .setText(getString(R.string.RUNNING_ON_ANDROID_VERSION) + Build.VERSION.RELEASE);
             ((TextView) findViewById(R.id.txtLP2GoVersionRelease))
-                    .setText(getString(R.string.LP2GO_RELEASE) + pInfo.versionName + getString(R.string.OPEN_ROUND_BRACKET_WITH_SPACE) + pInfo.versionName + getString(R.string.CLOSE_ROUND_BRACKET));
+                    .setText(getString(R.string.LP2GO_RELEASE) + pInfo.versionName + " " + getString(R.string.OPEN_ROUND_BRACKET_WITH_SPACE) + pInfo.versionName + getString(R.string.CLOSE_ROUND_BRACKET));
             ((TextView) findViewById(R.id.txtLP2GoPackage)).setText(pInfo.packageName);
         }
 
