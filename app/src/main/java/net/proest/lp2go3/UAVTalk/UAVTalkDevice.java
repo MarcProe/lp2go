@@ -118,6 +118,8 @@ public abstract class UAVTalkDevice {
 
     public abstract boolean sendSettingsObject(String objectName, int instance, String fieldName, int element, byte[] newFieldData);
 
+    public abstract boolean sendSettingsObject(String objectName, int instance, String fieldName, String elementName, byte[] newFieldData);
+
     public abstract boolean requestObject(String objectName);
 
     public abstract boolean requestObject(String objectName, int instance);

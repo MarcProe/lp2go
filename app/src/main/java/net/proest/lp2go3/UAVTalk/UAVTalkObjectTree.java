@@ -92,7 +92,7 @@ public class UAVTalkObjectTree {
         return ins.getData();
     }
 
-    private int getElementIndex(String objectname, String fieldname, String element) {
+    public int getElementIndex(String objectname, String fieldname, String element) {
         int retval;
         UAVTalkXMLObject xmlobj = xmlObjects.get(objectname);
         UAVTalkXMLObject.UAVTalkXMLObjectField xmlfield = xmlobj.getFields().get(fieldname);

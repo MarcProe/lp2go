@@ -233,10 +233,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     protected PidSeekBar sbrPidPitchProportional;
 
     protected ImageView imgPidBank;
-
     protected TextView txtDeviceText;
     int mCurrentPosMarker = 0;
-    private String loadedUavo = null;
+    private String mCurrentStabilizationBank;
+    private String mLoadedUavo = null;
     private BluetoothAdapter mBluetoothAdapter;
     private long mTxObjects;
     private long mRxObjectsGood;
@@ -570,8 +570,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         txtModeAssistedControl = (TextView) findViewById(R.id.txtModeAssistedControl);
         txtVehicleName = (TextView) findViewById(R.id.txtVehicleName);
 
-        mSerialModeUsed = sharedPref.getInt(getString(R.string.SETTINGS_SERIAL_MODE), 0);
-        mBluetoothDeviceUsed = sharedPref.getString(getString(R.string.SETTINGS_BT_NAME), null);
+        //mSerialModeUsed = sharedPref.getInt(getString(R.string.SETTINGS_SERIAL_MODE), 0);
+        //mBluetoothDeviceUsed = sharedPref.getString(getString(R.string.SETTINGS_BT_NAME), null);
 
         imgBluetooth = (ImageView) findViewById(R.id.imgBluetooth);
         if (mSerialModeUsed != SERIAL_BLUETOOTH || mSerialModeUsed == SERIAL_NONE) {
@@ -632,53 +632,53 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         mView3 = getLayoutInflater().inflate(R.layout.activity_settings, null);
         setContentView(mView3); //Settings
 
-            spnConnectionTypeSpinner = (Spinner) findViewById(R.id.spnConnectionTypeSpinner);
-            ArrayAdapter<CharSequence> serialConnectionTypeAdapter = ArrayAdapter.createFromResource(this,
-                    R.array.connections_settings, android.R.layout.simple_spinner_item);
+        spnConnectionTypeSpinner = (Spinner) findViewById(R.id.spnConnectionTypeSpinner);
+        ArrayAdapter<CharSequence> serialConnectionTypeAdapter = ArrayAdapter.createFromResource(this,
+                R.array.connections_settings, android.R.layout.simple_spinner_item);
 
-            serialConnectionTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        serialConnectionTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-            spnConnectionTypeSpinner.setAdapter(serialConnectionTypeAdapter);
-            spnConnectionTypeSpinner.setOnItemSelectedListener(this);
-            spnConnectionTypeSpinner.setSelection(mSerialModeUsed);
+        spnConnectionTypeSpinner.setAdapter(serialConnectionTypeAdapter);
+        spnConnectionTypeSpinner.setOnItemSelectedListener(this);
+        spnConnectionTypeSpinner.setSelection(mSerialModeUsed);
 
-            spnBluetoothPairedDevice = (Spinner) findViewById(R.id.spnBluetoothPairedDevice);
+        spnBluetoothPairedDevice = (Spinner) findViewById(R.id.spnBluetoothPairedDevice);
 
         ArrayAdapter<CharSequence> btPairedDeviceAdapter = new ArrayAdapter<CharSequence>(this, android.R.layout.simple_spinner_item);
         btPairedDeviceAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         spnBluetoothPairedDevice.setAdapter(btPairedDeviceAdapter);
-            spnBluetoothPairedDevice.setOnItemSelectedListener(this);
+        spnBluetoothPairedDevice.setOnItemSelectedListener(this);
 
-            mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-            if (mBluetoothAdapter != null) {
-                // Device does support Bluetooth
+        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        if (mBluetoothAdapter != null) {
+            // Device does support Bluetooth
 
-                if (!mBluetoothAdapter.isEnabled()) {
-                    //Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                    //startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-                    Toast.makeText(this, "To use Bluetooth, turn it on in your device.", Toast.LENGTH_LONG);
+            if (!mBluetoothAdapter.isEnabled()) {
+                //Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                //startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+                Toast.makeText(this, "To use Bluetooth, turn it on in your device.", Toast.LENGTH_LONG);
 
-                } else {
+            } else {
 
-                    Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
-                    // If there are paired devices
-                    if (pairedDevices.size() > 0) {
-                        // Loop through paired devices
-                        int btpd = 0;
-                        for (BluetoothDevice device : pairedDevices) {
-                            // Add the name and address to an array adapter to show in a ListView
-                            btPairedDeviceAdapter.add(device.getName());
-                            if (device.getName().equals(mBluetoothDeviceUsed)) {
-                                spnBluetoothPairedDevice.setSelection(btpd);
-                            }
-                            btpd++;
-                            if (LOCAL_LOGD)
-                                Log.d("BTE", device.getName() + " " + device.getAddress());
+                Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
+                // If there are paired devices
+                if (pairedDevices.size() > 0) {
+                    // Loop through paired devices
+                    int btpd = 0;
+                    for (BluetoothDevice device : pairedDevices) {
+                        // Add the name and address to an array adapter to show in a ListView
+                        btPairedDeviceAdapter.add(device.getName());
+                        if (device.getName().equals(mBluetoothDeviceUsed)) {
+                            spnBluetoothPairedDevice.setSelection(btpd);
                         }
+                        btpd++;
+                        if (LOCAL_LOGD)
+                            Log.d("BTE", device.getName() + " " + device.getAddress());
                     }
                 }
             }
+        }
 
         spnUavoSource = (Spinner) findViewById(R.id.spnUavoSource);
         ArrayAdapter<CharSequence> uavoSourceAdapter = new ArrayAdapter<CharSequence>(this, android.R.layout.simple_spinner_item);
@@ -691,6 +691,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         File[] subFiles = dir.listFiles();
 
         if (subFiles != null) {
+            int i = 0;
             for (File file : subFiles) {
                 Pattern p = Pattern.compile(".*uavo-(.*)\\.zip");
                 Matcher m = p.matcher(file.toString());
@@ -698,11 +699,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 if (b) {
                     Log.d("FILELIST", file.toString());
                     uavoSourceAdapter.add(m.group(1));
+                    if (m.group(1).equals(mLoadedUavo)) {
+                        spnUavoSource.setSelection(i);
+                    }
+                    i++;
                 }
             }
         }
-
-
     }
 
     private void initViewLogs() {
@@ -802,6 +805,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         copyAssets();
 
+        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+        mSerialModeUsed = sharedPref.getInt(getString(R.string.SETTINGS_SERIAL_MODE), 0);
+        mBluetoothDeviceUsed = sharedPref.getString(getString(R.string.SETTINGS_BT_NAME), null);
+        mLoadedUavo = sharedPref.getString(getString(R.string.SETTINGS_UAVO_SOURCE), "uav-15.09");
+
         initViewPid();
         initViewAbout();
         initViewLogs();
@@ -815,20 +823,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         isReady = true;
     }
 
-    private boolean loadXmlObjects() {
-        String fileid = "uav-15.09";
-        return loadXmlObjects(fileid, false);
-    }
+    private boolean loadXmlObjects(boolean overwrite) {
 
-    private boolean loadXmlObjects(String fileid, boolean overwrite) {
-
-        if (mXmlObjects == null || overwrite) {
+        if (mXmlObjects == null || (overwrite && mLoadedUavo != null)) {
             mXmlObjects = new Hashtable<String, UAVTalkXMLObject>();
 
             AssetManager assets = getAssets();
 
-            this.loadedUavo = fileid;
-            String file = fileid + ".zip"; //TODO: Get files from internal storage
+            String file = this.mLoadedUavo + ".zip"; //TODO: Get files from internal storage
             ZipInputStream zis = null;
             try {
                 InputStream is = assets.open(UAVO_INTERNAL_PATH + File.separator + file);
@@ -871,9 +873,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         super.onStart();
         Log.d("START", "" + isChangingConfigurations() + " - " + initDone);
 
-        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
-        mSerialModeUsed = sharedPref.getInt(getString(R.string.SETTINGS_SERIAL_MODE), 0);
-        mBluetoothDeviceUsed = sharedPref.getString(getString(R.string.SETTINGS_BT_NAME), null);
 
         if (mPermissionIntent == null)
             mPermissionIntent = PendingIntent.getBroadcast(this, 0, new Intent(ACTION_USB_PERMISSION), 0);
@@ -918,10 +917,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 //        displayView(VIEW_MAIN);  //reset to start view
 
         Log.d("onStart", "onStart");
-        if (DEV) {
-            setContentView(mView6);
-            mCurrentView = VIEW_PID;
-        }
+
     }
 
     @Override
@@ -1028,9 +1024,41 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     }
                 }
 
-                //etxSettingsBTMac.setText(btmac);
+                mSerialModeUsed = spnConnectionTypeSpinner.getSelectedItemPosition();
+
+                imgBluetooth.setColorFilter(Color.argb(0xff, 0xd4, 0x00, 0x00));
+                imgUSB.setColorFilter(Color.argb(0xff, 0xd4, 0x00, 0x00));
+                switch (mSerialModeUsed) {
+                    case SERIAL_NONE:
+                        imgBluetooth.setAlpha(ICON_TRANSPARENT);
+                        imgUSB.setAlpha(ICON_TRANSPARENT);
+                        break;
+                    case SERIAL_USB:
+                        imgBluetooth.setAlpha(ICON_TRANSPARENT);
+                        imgUSB.setAlpha(ICON_OPAQUE);
+                        break;
+                    case SERIAL_BLUETOOTH:
+                        imgBluetooth.setAlpha(ICON_OPAQUE);
+                        imgUSB.setAlpha(ICON_TRANSPARENT);
+                        break;
+                }
+
+
+                if (spnUavoSource.getSelectedItem() != null && !spnUavoSource.getSelectedItem().toString().equals(mLoadedUavo)) {
+                    mLoadedUavo = spnUavoSource.getSelectedItem().toString();
+                    Log.d("UAVSource", mLoadedUavo + "  " + mLoadedUavo);
+
+                    loadXmlObjects(true);
+                    Toast.makeText(this, "UAVO load completed", Toast.LENGTH_SHORT).show();
+                }
+
+
+
                 editor.putString(getString(R.string.SETTINGS_BT_MAC), btmac);
                 editor.putString(getString(R.string.SETTINGS_BT_NAME), btname);
+                editor.putString(getString(R.string.SETTINGS_UAVO_SOURCE), mLoadedUavo);
+                editor.putInt(getString(R.string.SETTINGS_SERIAL_MODE), mSerialModeUsed);
+
                 editor.commit();
                 mDoReconnect = true;
 
@@ -1172,8 +1200,47 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
     }
 
-    public void onPidUploadClock(View v) {
+    public void onPidSaveClick(View v) {
         Toast.makeText(this, "Not yet implemented (Sorry) ¯\\_(ツ)_/¯", Toast.LENGTH_LONG).show();
+    }
+
+    public void onPidUploadClick(View v) {
+
+        Toast.makeText(this, "Not yet implemented (Sorry) ¯\\_(ツ)_/¯", Toast.LENGTH_LONG).show();
+        if (1 == 1) return; // more testing for USB required.
+
+        /*float f = (float)sbrPidRateRollProportional.getProgress() / PID.PID_RATE_ROLL_PROP_DENOM;
+
+        byte[] buffer = H.reverse4bytes(H.floatToByteArray((float)sbrPidRateRollProportional.getProgress() / PID.PID_RATE_ROLL_PROP_DENOM));
+        float ref = ByteBuffer.wrap(buffer).order(ByteOrder.LITTLE_ENDIAN).getFloat();
+
+        Log.d("FLOAT", ""+f + " "+Arrays.toString(buffer) + " " + ref + " " +sbrPidRateRollProportional.getProgress());
+*/
+        byte[] buffer0 = H.reverse4bytes(H.floatToByteArray((float) sbrPidRateRollProportional.getProgress() / PID.PID_RATE_ROLL_PROP_DENOM));
+        mUAVTalkDevice.sendSettingsObject(mCurrentStabilizationBank, 0, "RollRatePID", "Kp", buffer0);
+
+        byte[] buffer1 = H.reverse4bytes(H.floatToByteArray((float) sbrPidRatePitchProportional.getProgress() / PID.PID_RATE_PITCH_PROP_DENOM));
+        mUAVTalkDevice.sendSettingsObject(mCurrentStabilizationBank, 0, "PitchRatePID", "Kp", buffer1);
+
+        byte[] buffer2 = H.reverse4bytes(H.floatToByteArray((float) sbrPidRateRollIntegral.getProgress() / PID.PID_RATE_ROLL_INTE_DENOM));
+        mUAVTalkDevice.sendSettingsObject(mCurrentStabilizationBank, 0, "RollRatePID", "Ki", buffer2);
+
+        byte[] buffer3 = H.reverse4bytes(H.floatToByteArray((float) sbrPidRatePitchIntegral.getProgress() / PID.PID_RATE_PITCH_INTE_DENOM));
+        mUAVTalkDevice.sendSettingsObject(mCurrentStabilizationBank, 0, "PitchRatePID", "Ki", buffer3);
+
+        byte[] buffer4 = H.reverse4bytes(H.floatToByteArray((float) sbrPidRollProportional.getProgress() / PID.PID_ROLL_PROP_DENOM));
+        mUAVTalkDevice.sendSettingsObject(mCurrentStabilizationBank, 0, "RollPI", "Kp", buffer4);
+
+        byte[] buffer5 = H.reverse4bytes(H.floatToByteArray((float) sbrPidPitchProportional.getProgress() / PID.PID_PITCH_PROP_DENOM));
+        mUAVTalkDevice.sendSettingsObject(mCurrentStabilizationBank, 0, "PitchPI", "Kp", buffer5);
+
+        byte[] buffer6 = H.reverse4bytes(H.floatToByteArray((float) sbrPidRateRollDerivative.getProgress() / PID.PID_RATE_ROLL_DERI_DENOM));
+        mUAVTalkDevice.sendSettingsObject(mCurrentStabilizationBank, 0, "RollRatePID", "Kd", buffer6);
+
+        byte[] buffer7 = H.reverse4bytes(H.floatToByteArray((float) sbrPidRatePitchDerivative.getProgress() / PID.PID_RATE_PITCH_DERI_DENOM));
+        mUAVTalkDevice.sendSettingsObject(mCurrentStabilizationBank, 0, "PitchRatePID", "Kd", buffer7);
+
+        Toast.makeText(this, "Send! Numbers should turn black now.", Toast.LENGTH_LONG).show();
     }
 
     public void onPidDownloadClick(View v) {
@@ -1337,37 +1404,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
         switch (parent.getId()) {
             case R.id.spnConnectionTypeSpinner: {
-                mSerialModeUsed = pos;
-                imgBluetooth.setColorFilter(Color.argb(0xff, 0xd4, 0x00, 0x00));
-                imgUSB.setColorFilter(Color.argb(0xff, 0xd4, 0x00, 0x00));
-                switch (mSerialModeUsed) {
-                    case SERIAL_NONE:
 
-                        imgBluetooth.setAlpha(ICON_TRANSPARENT);
-                        imgUSB.setAlpha(ICON_TRANSPARENT);
-                        break;
-                    case SERIAL_USB:
-                        imgBluetooth.setAlpha(ICON_TRANSPARENT);
-                        imgUSB.setAlpha(ICON_OPAQUE);
-                        break;
-                    case SERIAL_BLUETOOTH:
-                        imgBluetooth.setAlpha(ICON_OPAQUE);
-                        imgUSB.setAlpha(ICON_TRANSPARENT);
-                        break;
-                }
-                SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPref.edit();
-                editor.putInt(getString(R.string.SETTINGS_SERIAL_MODE), mSerialModeUsed);
-                editor.commit();
+
                 break;
             }
             case R.id.spnUavoSource: {
-                String fileid = spnUavoSource.getItemAtPosition(pos).toString();
-                Log.d("UAVSource", fileid + "  " + loadedUavo);
-                if (!loadedUavo.equals(fileid)) {
-                    loadXmlObjects(fileid, true);
-                    Toast.makeText(this, "UAVO load completed", Toast.LENGTH_SHORT).show();
-                }
+
 
                 break;
             }
@@ -1724,9 +1766,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                                     String fmode = getData("ManualControlCommand", "FlightModeSwitchPosition").toString();
                                     String bank = getData("StabilizationSettings", "FlightModeMap", fmode).toString();
 
-                                    String stabbank = "StabilizationSettings" + bank;
+                                    mCurrentStabilizationBank = "StabilizationSettings" + bank;
 
-                                    switch (stabbank) {
+
+                                    switch (mCurrentStabilizationBank) {
                                         case "StabilizationSettingsBank1":
                                             imgPidBank.setImageDrawable(getResources().getDrawable(R.drawable.ic_filter_1_128dp));
                                             break;
@@ -1741,17 +1784,17 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                                             break;
                                     }
 
-                                    sbrPidRateRollProportional.setProgress(toFloat(getData(stabbank, "RollRatePID", "Kp")));
-                                    sbrPidRatePitchProportional.setProgress(toFloat(getData(stabbank, "PitchRatePID", "Kp")));
+                                    sbrPidRateRollProportional.setProgress(toFloat(getData(mCurrentStabilizationBank, "RollRatePID", "Kp")));
+                                    sbrPidRatePitchProportional.setProgress(toFloat(getData(mCurrentStabilizationBank, "PitchRatePID", "Kp")));
 
-                                    sbrPidRateRollIntegral.setProgress(toFloat(getData(stabbank, "RollRatePID", "Ki")));
-                                    sbrPidRatePitchIntegral.setProgress(toFloat(getData(stabbank, "PitchRatePID", "Ki")));
+                                    sbrPidRateRollIntegral.setProgress(toFloat(getData(mCurrentStabilizationBank, "RollRatePID", "Ki")));
+                                    sbrPidRatePitchIntegral.setProgress(toFloat(getData(mCurrentStabilizationBank, "PitchRatePID", "Ki")));
 
-                                    sbrPidRollProportional.setProgress(toFloat(getData(stabbank, "RollPI", "Kp")));
-                                    sbrPidPitchProportional.setProgress(toFloat(getData(stabbank, "PitchPI", "Kp")));
+                                    sbrPidRollProportional.setProgress(toFloat(getData(mCurrentStabilizationBank, "RollPI", "Kp")));
+                                    sbrPidPitchProportional.setProgress(toFloat(getData(mCurrentStabilizationBank, "PitchPI", "Kp")));
 
-                                    sbrPidRateRollDerivative.setProgress(toFloat(getData(stabbank, "RollRatePID", "Kd")));
-                                    sbrPidRatePitchDerivative.setProgress(toFloat(getData(stabbank, "PitchRatePID", "Kd")));
+                                    sbrPidRateRollDerivative.setProgress(toFloat(getData(mCurrentStabilizationBank, "RollRatePID", "Kd")));
+                                    sbrPidRatePitchDerivative.setProgress(toFloat(getData(mCurrentStabilizationBank, "PitchRatePID", "Kd")));
 
                                     break;
                                 case VIEW_ABOUT:
@@ -1912,7 +1955,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
             final long millis = System.currentTimeMillis();
 
-            boolean loaded = loadXmlObjects();
+            boolean loaded = false;
+            if (mLoadedUavo != null) {
+                loaded = loadXmlObjects(false);
+            }
             if (loaded) {
                 mActivity.runOnUiThread(new Runnable() {
                     @Override

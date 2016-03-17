@@ -137,6 +137,17 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
         return requestObject(objectName, 0);
     }
 
+    @Override
+    public boolean sendSettingsObject(String objectName, int instance, String fieldName, String elementName, byte[] newFieldData) {
+        return sendSettingsObject(
+                objectName,
+                instance,
+                fieldName,
+                mObjectTree.getElementIndex(objectName, fieldName, elementName),
+                newFieldData
+        );
+    }
+
     public boolean requestObject(String objectName, int instance) {
         UAVTalkXMLObject xmlObj = mObjectTree.getXmlObjects().get(objectName);
         if (xmlObj == null) return false;

@@ -178,6 +178,17 @@ public class UAVTalkUsbDevice extends UAVTalkDevice {
         return this.connected;
     }
 
+    @Override
+    public boolean sendSettingsObject(String objectName, int instance, String fieldName, String elementName, byte[] newFieldData) {
+        return sendSettingsObject(
+                objectName,
+                instance,
+                fieldName,
+                mObjectTree.getElementIndex(objectName, fieldName, elementName),
+                newFieldData
+        );
+    }
+
     public boolean sendSettingsObject(String objectName, int instance, String fieldName, int element, byte[] newFieldData) {
         byte[] send = UAVTalkDeviceHelper.createSettingsObjectByte(mObjectTree, objectName, instance, fieldName, element, newFieldData);
         if (send == null) return false;

@@ -19,6 +19,7 @@ package net.proest.lp2go3;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.math.BigDecimal;
+import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
@@ -235,5 +236,9 @@ public class H {
             return s;
         }*/
         return s;
+    }
+
+    public static byte[] floatToByteArray(float value) {
+        return ByteBuffer.allocate(4).putFloat(value).array();
     }
 }

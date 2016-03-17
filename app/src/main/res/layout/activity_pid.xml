@@ -441,8 +441,16 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:onClick="onPidUploadClock"
+                    android:onClick="onPidUploadClick"
                     android:src="@drawable/ic_cloud_upload_128dp" />
+
+                <ImageView
+                    android:id="@+id/imgPidSave"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:onClick="onPidSaveClick"
+                    android:src="@drawable/ic_cloud_done_96dp" />
 
                 <ImageView
                     android:id="@+id/imgPidBank"
@@ -450,6 +458,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:src="@drawable/ic_filter_none_128dp" />
+
             </LinearLayout>
         </LinearLayout>
 
