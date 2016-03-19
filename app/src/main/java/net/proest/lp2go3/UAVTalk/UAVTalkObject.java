@@ -18,17 +18,17 @@ package net.proest.lp2go3.UAVTalk;
 
 import net.proest.lp2go3.H;
 
-import java.util.Hashtable;
+import java.util.HashMap;
 
 public class UAVTalkObject {
 
     private String mId;
 
-    private Hashtable<Integer, UAVTalkObjectInstance> mInstances;
+    private HashMap<Integer, UAVTalkObjectInstance> mInstances;
 
     public UAVTalkObject(String id) {
         this.mId = id;
-        mInstances = new Hashtable<Integer, UAVTalkObjectInstance>();
+        mInstances = new HashMap<Integer, UAVTalkObjectInstance>();
     }
 
     public static byte[] getReqMsg(byte type, String objectId, int instance) {

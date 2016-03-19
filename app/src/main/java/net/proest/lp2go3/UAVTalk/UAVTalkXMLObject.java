@@ -30,7 +30,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Hashtable;
+import java.util.HashMap;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -79,16 +79,16 @@ public class UAVTalkXMLObject {
     private Boolean mIsSettings;
     private Boolean mIsSingleInst;
     private int mId;
-    private Hashtable<String, Integer> mFieldNames;
+    private HashMap<String, Integer> mFieldNames;
     private int[] mFieldLengths;
-    private Hashtable<String, UAVTalkXMLObjectField> mFields;
+    private HashMap<String, UAVTalkXMLObjectField> mFields;
     private UAVTalkXMLObjectField[] mFieldArray;
 
     public UAVTalkXMLObject(String xml) throws IOException, SAXException, ParserConfigurationException {
         this.mXml = xml;
 
         //TODO: Make this final
-        mFieldNames = new Hashtable<String, Integer>();
+        mFieldNames = new HashMap<String, Integer>();
         mFieldNames.put(FIELDNAME_INT8, Integer.valueOf(FIELDTYPE_INT8));
         mFieldNames.put(FIELDNAME_INT16, Integer.valueOf(FIELDTYPE_INT16));
         mFieldNames.put(FIELDNAME_INT32, Integer.valueOf(FIELDTYPE_INT32));
@@ -110,7 +110,7 @@ public class UAVTalkXMLObject {
         mIsSettings = e.getAttribute(XML_ATT_SETTINGS).equals(XML_TRUE);
 
         NodeList fieldNodeList = doc.getElementsByTagName(XML_TAG_FIELD);
-        mFields = new Hashtable<String, UAVTalkXMLObjectField>();
+        mFields = new HashMap<String, UAVTalkXMLObjectField>();
         mFieldArray = new UAVTalkXMLObjectField[fieldNodeList.getLength()];
         mFieldLengths = new int[fieldNodeList.getLength()];
         int x = 0;
@@ -264,7 +264,7 @@ public class UAVTalkXMLObject {
         return this.mId;
     }
 
-    public Hashtable<String, UAVTalkXMLObjectField> getFields() {
+    public HashMap<String, UAVTalkXMLObjectField> getFields() {
         return mFields;
     }
 

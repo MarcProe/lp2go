@@ -121,7 +121,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -255,7 +255,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private TypedArray mNavMenuIcons;
     private ArrayList<NavDrawerItem> mNavDrawerItems;
     private NavDrawerListAdapter mDrawListAdapter;
-    private Hashtable<String, Object> mOffset;
+    private HashMap<String, Object> mOffset;
     private PollThread mPollThread = null;
     private ConnectionThread mConnectionThread = null;
     private UsbManager mUsbManager = null;
@@ -264,7 +264,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private PendingIntent mPermissionIntent = null;
     private UsbInterface mInterface;
     private UAVTalkDevice mUAVTalkDevice;
-    private Hashtable<String, UAVTalkXMLObject> mXmlObjects = null;
+    private HashMap<String, UAVTalkXMLObject> mXmlObjects = null;
     BroadcastReceiver mUsbReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
@@ -509,7 +509,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
 
-        mOffset = new Hashtable<String, Object>();
+        mOffset = new HashMap<String, Object>();
         mOffset.put(OFFSET_BAROSENSOR_ALTITUDE, .0f);
         mOffset.put(OFFSET_VELOCITY_DOWN, .0f);
 
@@ -838,7 +838,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private boolean loadXmlObjects(boolean overwrite) {
 
         if (mXmlObjects == null || (overwrite && mLoadedUavo != null)) {
-            mXmlObjects = new Hashtable<String, UAVTalkXMLObject>();
+            mXmlObjects = new HashMap<String, UAVTalkXMLObject>();
 
             AssetManager assets = getAssets();
 

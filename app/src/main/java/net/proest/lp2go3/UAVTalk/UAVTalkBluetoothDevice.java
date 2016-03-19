@@ -32,7 +32,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.UUID;
 
 public class UAVTalkBluetoothDevice extends UAVTalkDevice {
@@ -48,7 +48,7 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
     private BluetoothDevice mDevice;
     private int mState;
 
-    public UAVTalkBluetoothDevice(MainActivity activity, Hashtable<String, UAVTalkXMLObject> xmlObjects) {
+    public UAVTalkBluetoothDevice(MainActivity activity, HashMap<String, UAVTalkXMLObject> xmlObjects) {
         super(activity);
 
         //this.mActivity = activity;

@@ -23,33 +23,34 @@ import net.proest.lp2go3.H;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.Arrays;
-import java.util.Enumeration;
-import java.util.Hashtable;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class UAVTalkObjectTree {
 
-    private Hashtable<String, UAVTalkObject> objects;
-    private Hashtable<String, UAVTalkXMLObject> xmlObjects;
+    private ConcurrentHashMap<String, UAVTalkObject> objects;
+    private HashMap<String, UAVTalkXMLObject> xmlObjects;
 
     public UAVTalkObjectTree() {
-        objects = new Hashtable<String, UAVTalkObject>();
+        objects = new ConcurrentHashMap<String, UAVTalkObject>();
     }
 
     public String toString() {
         String ret = "";
-        Enumeration<String> e = xmlObjects.keys();
-        while (e.hasMoreElements()) {
-            String key = e.nextElement();
+        Iterator<String> i = xmlObjects.keySet().iterator();
+        while (i.hasNext()) {
+            String key = i.next();
             ret += xmlObjects.get(key).getId() + " " + key + "\r\n";
         }
         return ret;
     }
 
-    public Hashtable<String, UAVTalkXMLObject> getXmlObjects() {
+    public HashMap<String, UAVTalkXMLObject> getXmlObjects() {
         return xmlObjects;
     }
 
-    public void setXmlObjects(Hashtable<String, UAVTalkXMLObject> xmlObjects) {
+    public void setXmlObjects(HashMap<String, UAVTalkXMLObject> xmlObjects) {
         this.xmlObjects = xmlObjects;
     }
 

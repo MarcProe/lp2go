@@ -47,7 +47,7 @@ import net.proest.lp2go3.H;
 import net.proest.lp2go3.MainActivity;
 
 import java.util.Arrays;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.LinkedList;
 
 public class UAVTalkUsbDevice extends UAVTalkDevice {
@@ -68,7 +68,7 @@ public class UAVTalkUsbDevice extends UAVTalkDevice {
     private boolean connected = false;
 
     public UAVTalkUsbDevice(MainActivity activity, UsbDeviceConnection connection,
-                            UsbInterface intf, Hashtable<String, UAVTalkXMLObject> xmlObjects) {
+                            UsbInterface intf, HashMap<String, UAVTalkXMLObject> xmlObjects) {
         super(activity);
 
         //mActivity = activity;
