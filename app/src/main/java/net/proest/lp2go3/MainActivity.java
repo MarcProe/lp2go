@@ -1188,8 +1188,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     public void onPidUploadClick(View v) {
 
-        //Toast.makeText(this, "Not yet implemented (Sorry) ¯\\_(ツ)_/¯", Toast.LENGTH_LONG).show();
-        //if (1 == 1) return; // more testing for USB required.
+        Toast.makeText(this, "Not yet implemented (Sorry) ¯\\_(ツ)_/¯", Toast.LENGTH_LONG).show();
+        if (1 == 1) return; // more testing for USB required.
 
         float f = (float) sbrPidRateRollProportional.getProgress() / PID.PID_RATE_ROLL_PROP_DENOM;
 
@@ -1421,8 +1421,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         txtI2C.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.rounded_corner_uninitialised));
         txtTelemetry.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.rounded_corner_uninitialised));
 
-        txtFlightTelemetry.setText(R.string.EMPTY_STRING);
-        txtGCSTelemetry.setText(R.string.EMPTY_STRING);
+        txtFlightTelemetry.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.rounded_corner_uninitialised));
+        txtGCSTelemetry.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.rounded_corner_uninitialised));
 
         txtBatt.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.rounded_corner_uninitialised));
         txtTime.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.rounded_corner_uninitialised));
@@ -1489,9 +1489,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             switch (color) {
                 case "OK":
                 case "None":
+                case "Connected":
                     t.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.rounded_corner_ok));
                     break;
                 case "Warning":
+                case "HandshakeReq":
+                case "HandshakeAck":
                     t.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.rounded_corner_warning));
                     break;
                 case "Error":
@@ -1499,6 +1502,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     break;
                 case "Critical":
                 case "RebootRequired":
+                case "Disconnected":
                     t.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.rounded_corner_critical));
                     break;
                 case "Uninitialised":
@@ -1624,8 +1628,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                                     setTextBGColor(mActivity.txtI2C, getData("SystemAlarms", "Alarm", "I2C").toString());
                                     setTextBGColor(mActivity.txtTelemetry, getData("SystemAlarms", "Alarm", "Telemetry").toString());
 
-                                    setText(mActivity.txtFlightTelemetry, getData("FlightTelemetryStats", "Status").toString());
-                                    setText(mActivity.txtGCSTelemetry, getData("GCSTelemetryStats", "Status").toString());
+                                    setTextBGColor(mActivity.txtFlightTelemetry, getData("FlightTelemetryStats", "Status").toString());
+                                    setTextBGColor(mActivity.txtGCSTelemetry, getData("GCSTelemetryStats", "Status").toString());
 
                                     setTextBGColor(mActivity.txtBatt, getData("SystemAlarms", "Alarm", "Battery").toString());
                                     setTextBGColor(mActivity.txtTime, getData("SystemAlarms", "Alarm", "FlightTime").toString());
