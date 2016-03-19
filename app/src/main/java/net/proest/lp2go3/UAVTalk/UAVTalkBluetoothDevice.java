@@ -71,9 +71,7 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
         //String reg1 = "^([0-9A-F]{2}[:]){5}([0-9A-F]{2})$";
         if (mDeviceAddress.matches("^([0-9A-F]{2}[:-]){5}([0-9A-F]{2})$")) {
             mDevice = mBluetoothAdapter.getRemoteDevice(mDeviceAddress);
-        } else {
         }
-
         connect(mDevice);
     }
 
@@ -173,7 +171,7 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
     }
 
 
-    public synchronized void connected(BluetoothSocket socket, BluetoothDevice device) {  //this is only called when we weren't connected before
+    public synchronized void connected(BluetoothSocket socket) {  //this is only called when we weren't connected before
         if (mConnectThread != null) {
             mConnectThread.cancel();
             mConnectThread = null;
@@ -258,7 +256,7 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
                 mConnectThread = null;
             }
 
-            connected(mmSocket, mmDevice);
+            connected(mmSocket);
         }
 
         public void cancel() {
@@ -294,14 +292,6 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
             mmOutStream = tmpOut;
         }
 
-        private byte[] addTwoBytes(byte[] b) {
-            byte[] r = new byte[b.length + 2];
-            r[0] = 0x00;
-            r[1] = 0x00;
-            System.arraycopy(b, 0, r, 2, b.length);
-            return r;
-        }
-
         public void run() {
 
             byte[] seekbuffer = new byte[1];
@@ -310,9 +300,8 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
             byte[] lenbuffer = new byte[2];
             byte[] oidbuffer = new byte[4];
             byte[] iidbuffer = new byte[2];
-            byte[] databuffer = new byte[0];
+            byte[] databuffer;
             byte[] crcbuffer = new byte[1];
-            int read;
 
             mActivity.setRxObjectsGood(0);
             mActivity.setRxObjectsBad(0);
@@ -323,7 +312,7 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
                 try {
 
                     while (seekbuffer[0] != 0x3c) {
-                        read = mmInStream.read(seekbuffer);
+                        int read = mmInStream.read(seekbuffer);
                     }
                     seekbuffer[0] = 0x00;
                     syncbuffer[2] = 0x3c;

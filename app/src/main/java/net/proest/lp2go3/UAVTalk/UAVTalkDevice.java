@@ -100,6 +100,7 @@ public abstract class UAVTalkDevice {
             long time = System.currentTimeMillis() - mLogStartTimeStamp;
             long len = b.length;
 
+            @SuppressWarnings("ConstantConditions") //time is long, so reverse8bytes is just fine.
             byte[] btime = Arrays.copyOfRange(H.reverse8bytes(H.toBytes(time)), 0, 4);
             byte[] blen = H.reverse8bytes(H.toBytes(len));
 
@@ -150,13 +151,9 @@ public abstract class UAVTalkDevice {
             msg[0] = UAVTALK_CONNECTED;
             sendSettingsObject("GCSTelemetryStats", 0, "Status", 0, msg);
             mUavTalkConnectionState = UAVTALK_CONNECTED;
-        } else if (flightTelemtryStatusField == UAVTALK_CONNECTED && mUavTalkConnectionState == UAVTALK_CONNECTED) {
+        } else //noinspection StatementWithEmptyBody
+            if (flightTelemtryStatusField == UAVTALK_CONNECTED && mUavTalkConnectionState == UAVTALK_CONNECTED) {
             //We are connected, that is good.
-        } /*else {  no
-            //We have some bad status. try to reset telemetry handshake
-            byte[] msg = new byte[1];
-            msg[0] = UAVTALK_DISCONNECTED;
-            sendSettingsObject("GCSTelemetryStats", 0, "Status", 0, msg);
-        }*/
+            }
     }
 }
