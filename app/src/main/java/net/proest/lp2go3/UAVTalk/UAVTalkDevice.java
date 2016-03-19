@@ -25,6 +25,10 @@ import java.io.FileOutputStream;
 import java.util.Arrays;
 
 public abstract class UAVTalkDevice {
+    public static final byte UAVTALK_DISCONNECTED = 0x00;
+    public static final byte UAVTALK_HANDSHAKE_REQUESTED = 0x01;
+    public static final byte UAVTALK_HANDSHAKE_ACKNOWLEDGED = 0x02;
+    public static final byte UAVTALK_CONNECTED = 0x03;
     MainActivity mActivity;
     private FileOutputStream mLogOutputStream;
     private String mLogFileName = "OP-YYYY-MM-DD_HH-MM-SS";
@@ -33,6 +37,7 @@ public abstract class UAVTalkDevice {
     private long mLogBytesLoggedUAV = 0;
     private long mLogBytesLoggedOPL = 0;
     private long mLogObjectsLogged = 0;
+    private int mUavTalkConnectionState = 0x00;
 
     public UAVTalkDevice(MainActivity mActivity) throws IllegalStateException {
         this.mActivity = mActivity;
@@ -130,5 +135,28 @@ public abstract class UAVTalkDevice {
 
     public String getLogFileName() {
         return mLogFileName;
+    }
+
+    public void handleHandshake(byte flightTelemtryStatusField) {
+
+        if (mUavTalkConnectionState == UAVTALK_DISCONNECTED) {
+            //Send Handshake initiator packet (HANDSHAKE_REQUEST)
+            byte[] msg = new byte[1];
+            msg[0] = UAVTALK_HANDSHAKE_REQUESTED;
+            sendSettingsObject("GCSTelemetryStats", 0, "Status", 0, msg);
+            mUavTalkConnectionState = UAVTALK_HANDSHAKE_REQUESTED;
+        } else if (flightTelemtryStatusField == UAVTALK_HANDSHAKE_ACKNOWLEDGED && mUavTalkConnectionState == UAVTALK_HANDSHAKE_REQUESTED) {
+            byte[] msg = new byte[1];
+            msg[0] = UAVTALK_CONNECTED;
+            sendSettingsObject("GCSTelemetryStats", 0, "Status", 0, msg);
+            mUavTalkConnectionState = UAVTALK_CONNECTED;
+        } else if (flightTelemtryStatusField == UAVTALK_CONNECTED && mUavTalkConnectionState == UAVTALK_CONNECTED) {
+            //We are connected, that is good.
+        } /*else {  no
+            //We have some bad status. try to reset telemetry handshake
+            byte[] msg = new byte[1];
+            msg[0] = UAVTALK_DISCONNECTED;
+            sendSettingsObject("GCSTelemetryStats", 0, "Status", 0, msg);
+        }*/
     }
 }

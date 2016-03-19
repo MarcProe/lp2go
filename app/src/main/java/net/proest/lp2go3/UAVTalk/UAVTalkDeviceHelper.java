@@ -21,19 +21,24 @@ public class UAVTalkDeviceHelper {
     public static byte[] createSettingsObjectByte(UAVTalkObjectTree oTree, String objectName,
                                                   int instance, String fieldName, int element, byte[] newFieldData) {
 
-        UAVTalkObject obj = oTree.getObjectNoCreate(objectName);
-        if (obj == null) {
-            return null;
-        }
-        UAVTalkObjectInstance ins = obj.getInstance(instance);
-        if (ins == null) {
-            return null;
-        }
-
         UAVTalkXMLObject xmlObj = oTree.getXmlObjects().get(objectName);
         if (xmlObj == null) {
             return null;
         }
+
+        UAVTalkObject obj = oTree.getObjectNoCreate(objectName);
+        if (obj == null) {
+            obj = new UAVTalkObject(xmlObj.getId());
+            //return null;
+        }
+
+        UAVTalkObjectInstance ins = obj.getInstance(instance);
+        if (ins == null) {
+            byte[] emptydata = new byte[xmlObj.getLength()];
+            obj.setInstance(new UAVTalkObjectInstance(instance, emptydata));
+            //return null;
+        }
+
         UAVTalkXMLObject.UAVTalkXMLObjectField xmlField = xmlObj.getFields().get(fieldName);
         if (xmlField == null) {
             return null;
@@ -54,7 +59,7 @@ public class UAVTalkDeviceHelper {
         obj.setInstance(ins);
         oTree.updateObject(obj);
 
-        byte[] send = obj.toMsg((byte) 0x20, ins.getId());
+        byte[] send = obj.toMsg((byte) 0x22, ins.getId());
         return send;
     }
 }

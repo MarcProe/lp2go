@@ -39,9 +39,10 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
     public static final int STATE_NONE = 0;
     public static final int STATE_CONNECTING = 1;
     public static final int STATE_CONNECTED = 2;
+
     //private final MainActivity mActivity;
     private WaiterThread mWaiterThread;
-    private UAVTalkObjectTree mObjectTree;
+    private volatile UAVTalkObjectTree mObjectTree;
     private BluetoothAdapter mBluetoothAdapter;
     private ConnectThread mConnectThread;
     private BluetoothDevice mDevice;
@@ -124,6 +125,7 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
     @Override
     public boolean sendSettingsObject(String objectName, int instance, String fieldName, int element, byte[] newFieldData) {
         byte[] send = UAVTalkDeviceHelper.createSettingsObjectByte(mObjectTree, objectName, instance, fieldName, element, newFieldData);
+        Log.d("SEND", H.bytesToHex(send));
         if (send == null) return false;
 
         write(Arrays.copyOfRange(send, 2, send.length)); //TODO: This removes the first two byte, added only for USB compatibility
@@ -233,7 +235,7 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
                     mmSocket = (BluetoothSocket) mmDevice.getClass().getMethod("createRfcommSocket", new Class[]{int.class}).invoke(mmDevice, 1);
                     mmSocket.connect();
                 } catch (IOException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e1) {
-                    e1.printStackTrace();
+                    Log.e("BT", "Fallback BT  Connection failed, trying again.");
                     connectionFailed();
                     try {
                         mmSocket.close();
@@ -319,18 +321,38 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
 
             while (true) {
                 try {
+
                     while (seekbuffer[0] != 0x3c) {
                         read = mmInStream.read(seekbuffer);
                     }
                     seekbuffer[0] = 0x00;
                     syncbuffer[2] = 0x3c;
 
-                    //read = mmInStream.read(msgtypebuffer);
-                    //if (read != 1) Log.d("TYP", "UNDERRUN " + read);
                     msgtypebuffer = bufferRead(msgtypebuffer.length);
-                    if (msgtypebuffer[0] != 0x20) {
-                        mActivity.incRxObjectsBad();
-                        continue;
+
+                    switch (msgtypebuffer[0]) {
+                        case 0x20:
+                            //handle default package, nothing to do
+                            break;
+                        case 0x21:
+                            //handle request message, nobody should request from LP2Go (so we don't implement this)
+                            Log.e("UAVTalk", "Received Object Request, but won't send any");
+                            break;
+                        case 0x22:
+                            //handle object with ACK REQ, means send ACK
+                            Log.d("UAVTalk", "Received Object with ACK Request");
+                            break;
+                        case 0x23:
+                            //handle received ACK, e.g. save in Object that it has been acknowledged
+                            break;
+                        case 0x24:
+                            //handle NACK, e.g. show warning
+                            Log.w("UAVTalk", "Received NACK Object");
+                            break;
+                        default:
+                            mActivity.incRxObjectsBad();
+                            Log.w("UAVTalk", "Received bad Object Type " + H.bytesToHex(msgtypebuffer));
+                            continue;
                     }
 
                     lenbuffer = bufferRead(lenbuffer.length);

@@ -97,6 +97,7 @@ import net.proest.lp2go3.UAVTalk.UAVTalkObjectTree;
 import net.proest.lp2go3.UAVTalk.UAVTalkUsbDevice;
 import net.proest.lp2go3.UAVTalk.UAVTalkXMLObject;
 import net.proest.lp2go3.UI.PidSeekBar;
+import net.proest.lp2go3.c.PID;
 import net.proest.lp2go3.slider.AboutFragment;
 import net.proest.lp2go3.slider.LogsFragment;
 import net.proest.lp2go3.slider.MainFragment;
@@ -116,7 +117,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -125,8 +129,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import javax.xml.parsers.ParserConfigurationException;
-
-import c.PID;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     private static final String UAVO_INTERNAL_PATH = "uavo";
@@ -797,6 +799,16 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     @Override
+    public void onRestart() {
+        super.onRestart();
+
+        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+        mSerialModeUsed = sharedPref.getInt(getString(R.string.SETTINGS_SERIAL_MODE), 0);
+        mBluetoothDeviceUsed = sharedPref.getString(getString(R.string.SETTINGS_BT_NAME), null);
+        mLoadedUavo = sharedPref.getString(getString(R.string.SETTINGS_UAVO_SOURCE), "uav-15.09");
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -863,6 +875,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
                 }
             }
+            mDoReconnect = true;
             return true;
         }
         return false;
@@ -872,6 +885,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     protected void onStart() {
         super.onStart();
         Log.d("START", "" + isChangingConfigurations() + " - " + initDone);
+
 
 
         if (mPermissionIntent == null)
@@ -1206,16 +1220,16 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     public void onPidUploadClick(View v) {
 
-        Toast.makeText(this, "Not yet implemented (Sorry) ¯\\_(ツ)_/¯", Toast.LENGTH_LONG).show();
-        if (1 == 1) return; // more testing for USB required.
+        //Toast.makeText(this, "Not yet implemented (Sorry) ¯\\_(ツ)_/¯", Toast.LENGTH_LONG).show();
+        //if (1 == 1) return; // more testing for USB required.
 
-        /*float f = (float)sbrPidRateRollProportional.getProgress() / PID.PID_RATE_ROLL_PROP_DENOM;
+        float f = (float) sbrPidRateRollProportional.getProgress() / PID.PID_RATE_ROLL_PROP_DENOM;
 
         byte[] buffer = H.reverse4bytes(H.floatToByteArray((float)sbrPidRateRollProportional.getProgress() / PID.PID_RATE_ROLL_PROP_DENOM));
         float ref = ByteBuffer.wrap(buffer).order(ByteOrder.LITTLE_ENDIAN).getFloat();
 
-        Log.d("FLOAT", ""+f + " "+Arrays.toString(buffer) + " " + ref + " " +sbrPidRateRollProportional.getProgress());
-*/
+        Log.d("FLOAT", "" + f + " " + Arrays.toString(buffer) + " " + ref + " " + sbrPidRateRollProportional.getProgress());
+
         byte[] buffer0 = H.reverse4bytes(H.floatToByteArray((float) sbrPidRateRollProportional.getProgress() / PID.PID_RATE_ROLL_PROP_DENOM));
         mUAVTalkDevice.sendSettingsObject(mCurrentStabilizationBank, 0, "RollRatePID", "Kp", buffer0);
 
@@ -1240,7 +1254,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         byte[] buffer7 = H.reverse4bytes(H.floatToByteArray((float) sbrPidRatePitchDerivative.getProgress() / PID.PID_RATE_PITCH_DERI_DENOM));
         mUAVTalkDevice.sendSettingsObject(mCurrentStabilizationBank, 0, "PitchRatePID", "Kd", buffer7);
 
-        Toast.makeText(this, "Send! Numbers should turn black now.", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "Sent! Numbers should turn black now.", Toast.LENGTH_LONG).show();
     }
 
     public void onPidDownloadClick(View v) {
@@ -1952,7 +1966,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 //wakeup little prince
             }
 
-
             final long millis = System.currentTimeMillis();
 
             boolean loaded = false;
@@ -1970,6 +1983,25 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
 
             while (mIsValid) {
+
+                if (mUAVTalkDevice != null && mUAVTalkDevice.isConnected()) {
+                    try {
+                        String status = (String) mUAVTalkDevice.getObjectTree().getData("FlightTelemetryStats", "Status");
+                        String[] options = mUAVTalkDevice.getObjectTree().getXmlObjects()
+                                .get("FlightTelemetryStats").getFields().get("Status").getOptions();
+                        byte b = 0;
+                        for (String o : options) {
+                            if (o.equals(status)) {
+                                break;
+                            }
+                            b++;
+                        }
+                        mUAVTalkDevice.handleHandshake(b);
+                    } catch (UAVTalkMissingObjectException e) {
+                        e.printStackTrace();
+                    }
+
+                }
 
                 if (mBluetoothAdapter != null || !mBluetoothAdapter.isEnabled()) {
                     try {

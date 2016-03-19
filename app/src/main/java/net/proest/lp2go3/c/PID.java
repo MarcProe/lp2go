@@ -13,7 +13,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-package c;
+package net.proest.lp2go3.c;
 
 public class PID {
     public static final int PID_RATE_ROLL_PROP_DENOM = 100000;

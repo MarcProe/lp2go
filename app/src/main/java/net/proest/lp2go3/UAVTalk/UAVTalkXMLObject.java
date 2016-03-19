@@ -316,8 +316,16 @@ public class UAVTalkXMLObject {
         return hashout;
     }
 
+    public int getLength() {
+        int retval = 0;
+        for (int i : mFieldLengths) {
+            retval += i;
+        }
+        return retval;
+    }
+
     //TODO: Getter and Setter
-    protected class UAVTalkXMLObjectField implements Comparable<UAVTalkXMLObjectField> {
+    public class UAVTalkXMLObjectField implements Comparable<UAVTalkXMLObjectField> {
         protected String mName;
         protected ArrayList<String> mElements;
         protected int mElementCount;
@@ -326,6 +334,10 @@ public class UAVTalkXMLObject {
         protected String[] mOptions;
         protected int mPos;
         protected int mSize;
+
+        public String[] getOptions() {
+            return mOptions;
+        }
 
         @Override
         public int compareTo(UAVTalkXMLObjectField another) {
