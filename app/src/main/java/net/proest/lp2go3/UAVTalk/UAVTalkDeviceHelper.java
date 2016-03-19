@@ -35,8 +35,14 @@ public class UAVTalkDeviceHelper {
         UAVTalkObjectInstance ins = obj.getInstance(instance);
         if (ins == null) {
             byte[] emptydata = new byte[xmlObj.getLength()];
-            obj.setInstance(new UAVTalkObjectInstance(instance, emptydata));
+            ins = new UAVTalkObjectInstance(instance, emptydata);
+            obj.setInstance(ins);
             //return null;
+        }
+
+        byte[] data = ins.getData();
+        if (data == null) {
+            return null;
         }
 
         UAVTalkXMLObject.UAVTalkXMLObjectField xmlField = xmlObj.getFields().get(fieldName);
@@ -44,10 +50,6 @@ public class UAVTalkDeviceHelper {
             return null;
         }
 
-        byte[] data = ins.getData();
-        if (data == null) {
-            return null;
-        }
         int fpos = xmlField.mPos;
         int elen = xmlField.mTypelength;
 
