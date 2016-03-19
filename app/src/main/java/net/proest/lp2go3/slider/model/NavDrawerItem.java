@@ -20,9 +20,6 @@ public class NavDrawerItem {
     private String title;
     private int icon;
 
-    public NavDrawerItem() {
-    }
-
     public NavDrawerItem(String title, int icon) {
         this.title = title;
         this.icon = icon;

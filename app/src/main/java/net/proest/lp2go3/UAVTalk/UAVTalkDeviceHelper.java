@@ -61,7 +61,6 @@ public class UAVTalkDeviceHelper {
         obj.setInstance(ins);
         oTree.updateObject(obj);
 
-        byte[] send = obj.toMsg((byte) 0x22, ins.getId());
-        return send;
+        return obj.toMsg((byte) 0x22, ins.getId());
     }
 }

@@ -150,6 +150,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private static final int VIEW_ABOUT = 5;
     private static final int VIEW_PID = 6;
 
+    private static final int POLL_WAIT_TIME = 500;
+    private static final int POLL_SECOND_FACTOR = 1000 / POLL_WAIT_TIME;
+
     private static final boolean LOCAL_LOGD = true;
     private final static int HISTORY_MARKER_NUM = 5;
     static boolean sHasPThread = false;
@@ -816,6 +819,19 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         initDone = true;
 
         isReady = true;
+
+        if (mBluetoothAdapter != null || !mBluetoothAdapter.isEnabled()) {
+            try {
+                this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(getParent(), "To use Bluetooth, turn it on in your device.", Toast.LENGTH_LONG).show();
+                    }
+                });
+            } catch (RuntimeException e) {
+                Log.d("RTE", "Toast not successful");
+            }
+        }
     }
 
     private boolean loadXmlObjects(boolean overwrite) {
@@ -897,24 +913,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         mDoReconnect = true;
 
-        /*
-        if (mSerialModeUsed == SERIAL_USB ||
-                (mSerialModeUsed == SERIAL_BLUETOOTH && mBluetoothDeviceUsed != null)) {
-            setContentView(mView0);
-            displayView(VIEW_MAIN);  //reset to start view
-        } else {
-            setContentView(mView3);
-            displayView(VIEW_SETTINGS); //reset to settings view
-        }
-        */
-
         displayView(mCurrentView);
 
-//        setContentView(mView0);
-//        displayView(VIEW_MAIN);  //reset to start view
-
         Log.d("onStart", "onStart");
-
     }
 
     @Override
@@ -1009,13 +1010,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 // If there are paired devices
                 if (pairedDevices.size() > 0) {
                     // Loop through paired devices
-                    int btpd = 0;
                     for (BluetoothDevice device : pairedDevices) {
                         // Add the name and address to an array adapter to show in a ListView
                         if (device.getName().equals(btname)) {
                             btmac = device.getAddress();
                         }
-                        btpd++;
                         //Log.d("BTE",device.getName() + " " + device.getAddress());
                     }
                 }
@@ -1100,7 +1099,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 } else if (mSerialModeUsed == SERIAL_BLUETOOTH && mBluetoothDeviceUsed == null) {
                     Toast.makeText(this, getString(R.string.PLEASE_SET_A) + "Bluetooth Device", Toast.LENGTH_LONG).show();
                 }
-
 
                 break;
             case VIEW_LOGS:
@@ -1526,7 +1524,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 blink = !blink;
                 //Log.d("PING","PONG");
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(POLL_WAIT_TIME);
                 } catch (InterruptedException e) {
                 }
 
@@ -1558,7 +1556,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                                 imgUSB.setColorFilter(Color.argb(0xff, 0x00, 0x80, 0x00));
 
                             } else if (mUAVTalkDevice != null && mUAVTalkDevice.isConnecting()) {
-                                int alpha;
                                 if (blink) {
                                     imgUSB.setColorFilter(Color.argb(0xff, 0xff, 0x66, 0x00));
                                 } else {
@@ -1585,9 +1582,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                             switch (mCurrentView) {
                                 case VIEW_MAIN:
 
-                                    txtObjectLogTx.setText(H.k(String.valueOf(mTxObjects)));
-                                    txtObjectLogRxGood.setText(H.k(String.valueOf(mRxObjectsGood)));
-                                    txtObjectLogRxBad.setText(H.k(String.valueOf(mRxObjectsBad)));
+                                    txtObjectLogTx.setText(H.k(String.valueOf(mTxObjects * POLL_SECOND_FACTOR)));
+                                    txtObjectLogRxGood.setText(H.k(String.valueOf(mRxObjectsGood * POLL_SECOND_FACTOR)));
+                                    txtObjectLogRxBad.setText(H.k(String.valueOf(mRxObjectsBad * POLL_SECOND_FACTOR)));
 
                                     if (blink) {
                                         if (mRxObjectsGood > 0)
@@ -1604,6 +1601,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                                         if (mTxObjects > 0)
                                             imgPacketsUp.setColorFilter(Color.argb(0xff, 0x00, 0x00, 0x00));
                                     }
+
                                     setTxObjects(0);
                                     setRxObjectsBad(0);
                                     setRxObjectsGood(0);
@@ -1790,7 +1788,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             try {
                 return (Float) o;
             } catch (ClassCastException e) {
-                return Float.valueOf(.0f);
+                return .0f;
             }
         }
 
@@ -1962,21 +1960,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         e.printStackTrace();
                     }
 
-                }
-
-                if (mBluetoothAdapter != null || !mBluetoothAdapter.isEnabled()) {
-                    try {
-                        mActivity.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(mActivity, "To use Bluetooth, turn it on in your device.", Toast.LENGTH_SHORT);
-                            }
-                        });
-                    } catch (RuntimeException e) {
-                        Log.d("RTE", "Toast not successfull");
-                    }
-                } else {
-                    Log.d("RTED", "" + mBluetoothAdapter.isEnabled());
                 }
 
                 if (mDoReconnect) {

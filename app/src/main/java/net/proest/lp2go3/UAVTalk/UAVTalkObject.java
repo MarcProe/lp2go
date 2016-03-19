@@ -72,7 +72,7 @@ public class UAVTalkObject {
     }
 
     public void setInstance(UAVTalkObjectInstance instance) {
-        mInstances.put(Integer.valueOf(instance.getId()), instance);
+        mInstances.put(instance.getId(), instance);
     }
 
     public int size() {

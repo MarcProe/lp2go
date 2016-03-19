@@ -72,33 +72,29 @@ public class UAVTalkXMLObject {
     final private static String REPLACE_ELEMENT_NODES = "\\r\\n|\\r|\\n| |\\t";
     final private static String XML_ATTRIBUTE_SPLITTER = "\\s*,\\s*";
 
-    private final boolean DBG = false;
-    private String mXml;
+    private final boolean DBG = 1 == 0;
     private String mName;
     private String mCategory;
     private Boolean mIsSettings;
     private Boolean mIsSingleInst;
     private int mId;
-    private HashMap<String, Integer> mFieldNames;
     private int[] mFieldLengths;
     private HashMap<String, UAVTalkXMLObjectField> mFields;
     private UAVTalkXMLObjectField[] mFieldArray;
 
     public UAVTalkXMLObject(String xml) throws IOException, SAXException, ParserConfigurationException {
-        this.mXml = xml;
-
         //TODO: Make this final
-        mFieldNames = new HashMap<String, Integer>();
-        mFieldNames.put(FIELDNAME_INT8, Integer.valueOf(FIELDTYPE_INT8));
-        mFieldNames.put(FIELDNAME_INT16, Integer.valueOf(FIELDTYPE_INT16));
-        mFieldNames.put(FIELDNAME_INT32, Integer.valueOf(FIELDTYPE_INT32));
-        mFieldNames.put(FIELDNAME_UINT8, Integer.valueOf(FIELDTYPE_UINT8));
-        mFieldNames.put(FIELDNAME_UINT16, Integer.valueOf(FIELDTYPE_UINT16));
-        mFieldNames.put(FIELDNAME_UINT32, Integer.valueOf(FIELDTYPE_UINT32));
-        mFieldNames.put(FIELDNAME_FLOAT32, Integer.valueOf(FIELDTYPE_FLOAT32));
-        mFieldNames.put(FIELDNAME_ENUM, Integer.valueOf(FIELDTYPE_ENUM));
+        HashMap<String, Integer> fieldNames = new HashMap<String, Integer>();
+        fieldNames.put(FIELDNAME_INT8, FIELDTYPE_INT8);
+        fieldNames.put(FIELDNAME_INT16, FIELDTYPE_INT16);
+        fieldNames.put(FIELDNAME_INT32, FIELDTYPE_INT32);
+        fieldNames.put(FIELDNAME_UINT8, FIELDTYPE_UINT8);
+        fieldNames.put(FIELDNAME_UINT16, FIELDTYPE_UINT16);
+        fieldNames.put(FIELDNAME_UINT32, FIELDTYPE_UINT32);
+        fieldNames.put(FIELDNAME_FLOAT32, FIELDTYPE_FLOAT32);
+        fieldNames.put(FIELDNAME_ENUM, FIELDTYPE_ENUM);
 
-        Document doc = loadXMLFromString(this.mXml);
+        Document doc = loadXMLFromString(xml);
 
         NodeList objectNodeList = doc.getElementsByTagName(XML_TAG_OBJECT);
         Node objectNode = objectNodeList.item(0);
@@ -129,7 +125,7 @@ public class UAVTalkXMLObject {
                 uavField.mName = tn;
             } else {
 
-                uavField.mType = mFieldNames.get(f.getAttribute(XML_ATT_TYPE)).intValue();
+                uavField.mType = fieldNames.get(f.getAttribute(XML_ATT_TYPE));
 
                 String elementString = f.getAttribute(XML_ATT_ELEMENTNAMES);
 
@@ -159,7 +155,7 @@ public class UAVTalkXMLObject {
                     }
 
                     if (uavField.mOptions == null || uavField.mOptions.length == 0
-                            || ((uavField.mOptions.length == 1) && (uavField.mOptions[0] == ""))) {
+                            || ((uavField.mOptions.length == 1) && (uavField.mOptions[0].equals("")))) {
                         if (f.getElementsByTagName(XML_TAG_OPTIONS).getLength() > 0) {
                             NodeList optionnodes =
                                     f.getElementsByTagName(XML_TAG_OPTIONS).item(0).getChildNodes();
@@ -274,8 +270,8 @@ public class UAVTalkXMLObject {
         if(DBG) Log.d("HASH", this.mName);
         int hash = updateHash(this.mName, 0);
         // Hash object attributes
-        hash = updateHash(this.mIsSettings.booleanValue() ? 1 : 0, hash);
-        hash = updateHash(this.mIsSingleInst.booleanValue() ? 1 : 0, hash);
+        hash = updateHash(this.mIsSettings ? 1 : 0, hash);
+        hash = updateHash(this.mIsSingleInst ? 1 : 0, hash);
         // Hash field information
         for (int n = 0; n < this.mFieldArray.length; n++) {
             if(DBG) Log.d("HASH", this.mFieldArray[n].mName);
@@ -296,10 +292,10 @@ public class UAVTalkXMLObject {
     private int updateHash(int value, int hash) {
         int ret = hash ^ ((hash << 5) + (hash >>> 2) + value);
         if (DBG) {
-                      long y = ret & 0x00000000ffffffffL;
-                      long in = value & 0x00000000ffffffffL;
-                     //Log.d("HASH", "" + in + "=>" + y);
-                  }
+            long y = ret & 0x00000000ffffffffL;
+            long in = value & 0x00000000ffffffffL;
+            Log.d("HASH", "" + in + "=>" + y);
+        }
         return ret;
     }
 
@@ -309,8 +305,8 @@ public class UAVTalkXMLObject {
     private int updateHash(String value, int hash) {
         byte[] bytes = value.getBytes();
         int hashout = hash;
-        for (int n = 0; n < bytes.length; ++n) {
-            hashout = updateHash(bytes[n], hashout);
+        for (byte aByte : bytes) {
+            hashout = updateHash(aByte, hashout);
         }
 
         return hashout;
