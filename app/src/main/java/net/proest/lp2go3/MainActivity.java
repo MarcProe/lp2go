@@ -119,10 +119,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -1188,15 +1185,17 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     public void onPidUploadClick(View v) {
 
-        Toast.makeText(this, "Not yet implemented (Sorry) ¯\\_(ツ)_/¯", Toast.LENGTH_LONG).show();
-        if (1 == 1) return; // more testing for USB required.
+        //Toast.makeText(this, "Not yet implemented (Sorry) ¯\\_(ツ)_/¯", Toast.LENGTH_LONG).show();
+        //if (1 == 1) return; // more testing for USB required.
 
+        /*
         float f = (float) sbrPidRateRollProportional.getProgress() / PID.PID_RATE_ROLL_PROP_DENOM;
 
         byte[] buffer = H.reverse4bytes(H.floatToByteArray((float)sbrPidRateRollProportional.getProgress() / PID.PID_RATE_ROLL_PROP_DENOM));
         float ref = ByteBuffer.wrap(buffer).order(ByteOrder.LITTLE_ENDIAN).getFloat();
 
         Log.d("FLOAT", "" + f + " " + Arrays.toString(buffer) + " " + ref + " " + sbrPidRateRollProportional.getProgress());
+        */
 
         byte[] buffer0 = H.reverse4bytes(H.floatToByteArray((float) sbrPidRateRollProportional.getProgress() / PID.PID_RATE_ROLL_PROP_DENOM));
         mUAVTalkDevice.sendSettingsObject(mCurrentStabilizationBank, 0, "RollRatePID", "Kp", buffer0);

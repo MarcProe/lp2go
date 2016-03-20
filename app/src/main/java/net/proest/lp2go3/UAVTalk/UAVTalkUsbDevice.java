@@ -194,8 +194,22 @@ public class UAVTalkUsbDevice extends UAVTalkDevice {
         if (send == null) return false;
         mActivity.incTxObjects();
 
-        int i = mDeviceConnection.bulkTransfer(mEndpointOut, send, send.length, 1000);
-        Log.d("USB", "SEND " + i + ":" + H.bytesToHex(send));
+        //This whole code needs rewrite. Bugger that two bytes preceding USB.
+        int written = 2;
+        int towrite = send.length;
+        int packetsize = mEndpointOut.getMaxPacketSize() - 2;
+
+        while (towrite > 0) {
+            int nextpacketsize = (towrite > packetsize ? packetsize + 2 : towrite);
+            byte[] packet = new byte[nextpacketsize];
+            System.arraycopy(send, written, packet, 2, nextpacketsize - 2);
+            packet[0] = send[0];
+            packet[1] = send[1];
+            int i = mDeviceConnection.bulkTransfer(mEndpointOut, packet, packet.length, 1000);
+            towrite -= nextpacketsize;
+            written += nextpacketsize;
+        }
+
         requestObject(objectName, instance);
         return true;
     }
@@ -210,6 +224,7 @@ public class UAVTalkUsbDevice extends UAVTalkDevice {
                     try {
                         Thread.sleep(200);
                     } catch (InterruptedException e) {
+                        //Thread wakes up
                     }
                     continue;
                 }
