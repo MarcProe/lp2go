@@ -77,7 +77,13 @@ public class UAVTalkObjectTree {
     }
 
     public void updateObject(UAVTalkObject obj) {
-        objects.put(obj.getId(), obj);
+        try {
+            if (objects.get(obj.getId()) == null || !objects.get(obj.getId()).isWriteBlocked()) { //FIXME: This is maybe expensive
+                objects.put(obj.getId(), obj);
+            }
+        } catch (NullPointerException e) {
+            Log.w("WAR", "objects not initialized");
+        }
     }
 
     public int getSize() {

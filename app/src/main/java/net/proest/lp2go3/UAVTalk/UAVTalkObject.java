@@ -23,7 +23,7 @@ import java.util.HashMap;
 public class UAVTalkObject {
 
     private String mId;
-
+    private boolean mWriteBlocked = false;
     private HashMap<Integer, UAVTalkObjectInstance> mInstances;
 
     public UAVTalkObject(String id) {
@@ -57,6 +57,14 @@ public class UAVTalkObject {
         retval[12] = (byte) (H.crc8(retval, 2, 10) & 0xff);
 
         return retval;
+    }
+
+    public boolean isWriteBlocked() {
+        return mWriteBlocked;
+    }
+
+    public void setWriteBlocked(boolean mWriteBlocked) {
+        this.mWriteBlocked = mWriteBlocked;
     }
 
     public String toString() {

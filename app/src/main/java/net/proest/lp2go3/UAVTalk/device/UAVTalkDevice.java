@@ -14,12 +14,15 @@
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-package net.proest.lp2go3.UAVTalk;
+package net.proest.lp2go3.UAVTalk.device;
 
 import android.content.Context;
+import android.util.Log;
 
 import net.proest.lp2go3.H;
 import net.proest.lp2go3.MainActivity;
+import net.proest.lp2go3.UAVTalk.UAVTalkDeviceHelper;
+import net.proest.lp2go3.UAVTalk.UAVTalkObjectTree;
 
 import java.io.FileOutputStream;
 import java.util.Arrays;
@@ -29,6 +32,7 @@ public abstract class UAVTalkDevice {
     public static final byte UAVTALK_HANDSHAKE_REQUESTED = 0x01;
     public static final byte UAVTALK_HANDSHAKE_ACKNOWLEDGED = 0x02;
     public static final byte UAVTALK_CONNECTED = 0x03;
+    protected volatile UAVTalkObjectTree mObjectTree;
     MainActivity mActivity;
     private FileOutputStream mLogOutputStream;
     private String mLogFileName = "OP-YYYY-MM-DD_HH-MM-SS";
@@ -124,11 +128,48 @@ public abstract class UAVTalkDevice {
 
     public abstract boolean sendSettingsObject(String objectName, int instance, String fieldName, int element, byte[] newFieldData);
 
-    public abstract boolean sendSettingsObject(String objectName, int instance, String fieldName, String elementName, byte[] newFieldData);
-
+    public boolean sendSettingsObject(String objectName, int instance, String fieldName, String elementName, byte[] newFieldData) {
+        return sendSettingsObject(
+                objectName,
+                instance,
+                fieldName,
+                mObjectTree.getElementIndex(objectName, fieldName, elementName),
+                newFieldData
+        );
+    }
     public abstract boolean requestObject(String objectName);
 
     public abstract boolean requestObject(String objectName, int instance);
+
+    public boolean savePersistent(String saveObjectName) {
+        boolean retval = true;
+
+        byte[] send;
+
+        mObjectTree.getObjectFromName("ObjectPersistence").setWriteBlocked(true);
+
+        byte[] op = {0x02};
+        send = UAVTalkDeviceHelper.createSettingsObjectByte(mObjectTree, "ObjectPersistence", 0, "Operation", 0, op);
+
+        byte[] sel = {0x00};
+        send = UAVTalkDeviceHelper.createSettingsObjectByte(mObjectTree, "ObjectPersistence", 0, "Selection", 0, sel);
+        String sid = mObjectTree.getXmlObjects().get(saveObjectName).getId();
+
+        byte[] oid = H.reverse4bytes(H.hexStringToByteArray(sid));
+
+        send = UAVTalkDeviceHelper.createSettingsObjectByte(mObjectTree, "ObjectPersistence", 0, "ObjectID", 0, oid);
+
+        //for the last things we set, we can just use the sendsettingsobject. It will call createSettingsObjectByte for the last field.
+        byte[] ins = {0x00};
+        sendSettingsObject("ObjectPersistence", 0, "InstanceID", 0, ins);
+
+        Log.d("OBJ", "" + sid + " " + H.bytesToHex(oid));
+        Log.d("PACK", "" + H.bytesToHex(send));
+
+        mObjectTree.getObjectFromName("ObjectPersistence").setWriteBlocked(false);
+
+        return retval;
+    }
 
     public abstract boolean isConnected();
 

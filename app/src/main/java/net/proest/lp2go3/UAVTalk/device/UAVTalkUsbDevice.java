@@ -34,7 +34,7 @@
  * limitations under the License.
  */
 
-package net.proest.lp2go3.UAVTalk;
+package net.proest.lp2go3.UAVTalk.device;
 
 import android.hardware.usb.UsbConstants;
 import android.hardware.usb.UsbDeviceConnection;
@@ -45,6 +45,12 @@ import android.util.Log;
 
 import net.proest.lp2go3.H;
 import net.proest.lp2go3.MainActivity;
+import net.proest.lp2go3.UAVTalk.UAVTalkDeviceHelper;
+import net.proest.lp2go3.UAVTalk.UAVTalkMessage;
+import net.proest.lp2go3.UAVTalk.UAVTalkObject;
+import net.proest.lp2go3.UAVTalk.UAVTalkObjectInstance;
+import net.proest.lp2go3.UAVTalk.UAVTalkObjectTree;
+import net.proest.lp2go3.UAVTalk.UAVTalkXMLObject;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -62,7 +68,7 @@ public class UAVTalkUsbDevice extends UAVTalkDevice {
     private final LinkedList<UsbRequest> mInRequestPool = new LinkedList<UsbRequest>();
 
     private final WaiterThread mWaiterThread = new WaiterThread();
-    private volatile UAVTalkObjectTree mObjectTree;
+
     private String mSerial;
 
     private boolean connected = false;
@@ -74,7 +80,7 @@ public class UAVTalkUsbDevice extends UAVTalkDevice {
         //mActivity = activity;
         mDeviceConnection = connection;
         mSerial = connection.getSerial();
-        this.mObjectTree = new UAVTalkObjectTree();
+        mObjectTree = new UAVTalkObjectTree();
         mObjectTree.setXmlObjects(xmlObjects);
         mActivity.setPollThreadObjectTree(mObjectTree);
 
@@ -179,15 +185,6 @@ public class UAVTalkUsbDevice extends UAVTalkDevice {
     }
 
     @Override
-    public boolean sendSettingsObject(String objectName, int instance, String fieldName, String elementName, byte[] newFieldData) {
-        return sendSettingsObject(
-                objectName,
-                instance,
-                fieldName,
-                mObjectTree.getElementIndex(objectName, fieldName, elementName),
-                newFieldData
-        );
-    }
 
     public boolean sendSettingsObject(String objectName, int instance, String fieldName, int element, byte[] newFieldData) {
         byte[] send = UAVTalkDeviceHelper.createSettingsObjectByte(mObjectTree, objectName, instance, fieldName, element, newFieldData);
@@ -294,10 +291,11 @@ public class UAVTalkUsbDevice extends UAVTalkDevice {
                             break;
                         case 0x23:
                             //handle received ACK, e.g. save in Object that it has been acknowledged
+                            Log.w("UAVTalk", "Received ACK Object for " + myObj.getId() + ". Which is nice.");
                             break;
                         case 0x24:
                             //handle NACK, e.g. show warning
-                            Log.w("UAVTalk", "Received NACK Object");
+                            Log.w("UAVTalk", "Received NACK Object for " + myObj.getId() + ". Which is bad.");
                             break;
                         default:
                             mActivity.incRxObjectsBad();

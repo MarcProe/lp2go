@@ -14,7 +14,7 @@
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-package net.proest.lp2go3.UAVTalk;
+package net.proest.lp2go3.UAVTalk.device;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -26,6 +26,12 @@ import android.util.Log;
 import net.proest.lp2go3.H;
 import net.proest.lp2go3.MainActivity;
 import net.proest.lp2go3.R;
+import net.proest.lp2go3.UAVTalk.UAVTalkDeviceHelper;
+import net.proest.lp2go3.UAVTalk.UAVTalkMessage;
+import net.proest.lp2go3.UAVTalk.UAVTalkObject;
+import net.proest.lp2go3.UAVTalk.UAVTalkObjectInstance;
+import net.proest.lp2go3.UAVTalk.UAVTalkObjectTree;
+import net.proest.lp2go3.UAVTalk.UAVTalkXMLObject;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -42,7 +48,7 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
 
     //private final MainActivity mActivity;
     private WaiterThread mWaiterThread;
-    private volatile UAVTalkObjectTree mObjectTree;
+
     private BluetoothAdapter mBluetoothAdapter;
     private ConnectThread mConnectThread;
     private BluetoothDevice mDevice;
@@ -135,17 +141,6 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
     @Override
     public boolean requestObject(String objectName) {
         return requestObject(objectName, 0);
-    }
-
-    @Override
-    public boolean sendSettingsObject(String objectName, int instance, String fieldName, String elementName, byte[] newFieldData) {
-        return sendSettingsObject(
-                objectName,
-                instance,
-                fieldName,
-                mObjectTree.getElementIndex(objectName, fieldName, elementName),
-                newFieldData
-        );
     }
 
     public boolean requestObject(String objectName, int instance) {

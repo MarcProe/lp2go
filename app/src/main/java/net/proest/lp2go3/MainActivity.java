@@ -92,12 +92,12 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import net.proest.lp2go3.UAVTalk.UAVTalkBluetoothDevice;
-import net.proest.lp2go3.UAVTalk.UAVTalkDevice;
 import net.proest.lp2go3.UAVTalk.UAVTalkMissingObjectException;
 import net.proest.lp2go3.UAVTalk.UAVTalkObjectTree;
-import net.proest.lp2go3.UAVTalk.UAVTalkUsbDevice;
 import net.proest.lp2go3.UAVTalk.UAVTalkXMLObject;
+import net.proest.lp2go3.UAVTalk.device.UAVTalkBluetoothDevice;
+import net.proest.lp2go3.UAVTalk.device.UAVTalkDevice;
+import net.proest.lp2go3.UAVTalk.device.UAVTalkUsbDevice;
 import net.proest.lp2go3.UI.PidSeekBar;
 import net.proest.lp2go3.c.PID;
 import net.proest.lp2go3.slider.AboutFragment;
@@ -1195,6 +1195,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     public void onPidSaveClick(View v) {
         Toast.makeText(this, "Not yet implemented (Sorry) ¯\\_(ツ)_/¯", Toast.LENGTH_LONG).show();
+        //mUAVTalkDevice.savePersistent(mCurrentStabilizationBank);
     }
 
     public void onPidUploadClick(View v) {
@@ -1345,6 +1346,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 if (mUAVTalkDevice != null && bcdata.length == 4) {
                     bcdata = H.reverse4bytes(bcdata);
                     mUAVTalkDevice.sendSettingsObject("FlightBatterySettings", 0, "Capacity", 0, bcdata);
+                    //mUAVTalkDevice.savePersistent("FlightBatterySettings");
                 }
                 dialog.dismiss();
                 dialog.cancel();
@@ -1381,6 +1383,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 }
                 if (mUAVTalkDevice != null && bcdata.length == 1) {
                     mUAVTalkDevice.sendSettingsObject("FlightBatterySettings", 0, "NbCells", 0, bcdata);
+                    //mUAVTalkDevice.savePersistent("FlightBatterySettings");
                 }
                 dialog.dismiss();
                 dialog.cancel();
@@ -1417,6 +1420,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 send[0] = (byte) which;
                 if (mUAVTalkDevice != null) {
                     mUAVTalkDevice.sendSettingsObject("RevoSettings", 0, "FusionAlgorithm", 0, send);
+                    //mUAVTalkDevice.savePersistent("RevoSettings");
                 }
             }
 
