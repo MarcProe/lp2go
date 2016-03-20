@@ -174,6 +174,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     protected TextView txtTelemetry;
     protected TextView txtFlightTelemetry;
     protected TextView txtGCSTelemetry;
+    protected TextView txtFusionAlgorithm;
     protected TextView txtBatt;
     protected TextView txtTime;
     protected TextView txtConfig;
@@ -296,8 +297,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     };
     private boolean mSettingsOK = false;
     private Marker[] mPosHistory = new Marker[HISTORY_MARKER_NUM];
-    private AlertDialog.Builder mBatteryCapacityDialogBuilder;
-    private AlertDialog.Builder mBatteryCellsDialogBuilder;
     private View mView0, mView0l, mView1, mView2, mView3, mView4, mView5, mView6;
     private GoogleMap mMap;
     private MapView mMapView;
@@ -525,6 +524,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         txtTelemetry = (TextView) findViewById(R.id.txtTelemetry);
         txtFlightTelemetry = (TextView) findViewById(R.id.txtFlightTelemetry);
         txtGCSTelemetry = (TextView) findViewById(R.id.txtGCSTelemetry);
+        txtFusionAlgorithm = (TextView) findViewById(R.id.txtFusionAlgorithm);
 
         txtBatt = (TextView) findViewById(R.id.txtBatt);
         txtTime = (TextView) findViewById(R.id.txtTime);
@@ -1136,8 +1136,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     public void onBatteryCapacityClick(View v) {
-        initBatteryCapacityDialog();
-        mBatteryCapacityDialogBuilder.show();
+        initBatteryCapacityDialog().show();
     }
 
     public void onAltitudeClick(View V) {
@@ -1159,8 +1158,23 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     public void onBatteryCellsClick(View v) {
-        initBatteryCellsDialog();
-        mBatteryCellsDialogBuilder.show();
+        initBatteryCellsDialog().show();
+    }
+
+    public void onFusionAlgoClick(View v) {
+        String armingState;
+        try {
+            armingState = mUAVTalkDevice.getObjectTree().getData("FlightStatus", "Armed").toString();
+        } catch (UAVTalkMissingObjectException e) {
+            armingState = "";
+        }
+        if (armingState.equals("Disarmed")) {
+            initFusionAlgoDialog().show();
+        } else {
+            Toast.makeText(this, "Change of Fusion Algorithm only allowed while disarmed", Toast.LENGTH_LONG).show();
+        }
+
+
     }
 
     public void onLogStartClick(View v) {
@@ -1310,16 +1324,16 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         return false;
     }
 
-    private void initBatteryCapacityDialog() {
-        mBatteryCapacityDialogBuilder = new AlertDialog.Builder(this);
-        mBatteryCapacityDialogBuilder.setTitle(R.string.CAPACITY_DIALOG_TITLE);
+    private AlertDialog.Builder initBatteryCapacityDialog() {
+        AlertDialog.Builder batteryCapacityDialogBuilder = new AlertDialog.Builder(this);
+        batteryCapacityDialogBuilder.setTitle(R.string.CAPACITY_DIALOG_TITLE);
 
         final EditText input = new EditText(this);
         input.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
-        mBatteryCapacityDialogBuilder.setView(input);
+        batteryCapacityDialogBuilder.setView(input);
         input.setText(txtCapacity.getText());
 
-        mBatteryCapacityDialogBuilder.setPositiveButton(R.string.OK_BUTTON, new DialogInterface.OnClickListener() {
+        batteryCapacityDialogBuilder.setPositiveButton(R.string.OK_BUTTON, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 byte[] bcdata;
@@ -1337,25 +1351,26 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         });
 
-        mBatteryCapacityDialogBuilder.setNegativeButton(R.string.CANCEL_BUTTON, new DialogInterface.OnClickListener() {
+        batteryCapacityDialogBuilder.setNegativeButton(R.string.CANCEL_BUTTON, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
                 dialog.dismiss();
             }
         });
+        return batteryCapacityDialogBuilder;
     }
 
-    private void initBatteryCellsDialog() {
-        mBatteryCellsDialogBuilder = new AlertDialog.Builder(this);
-        mBatteryCellsDialogBuilder.setTitle(R.string.CELLS_DIALOG_TITLE);
+    private AlertDialog.Builder initBatteryCellsDialog() {
+        AlertDialog.Builder batteryCellsDialogBuilder = new AlertDialog.Builder(this);
+        batteryCellsDialogBuilder.setTitle(R.string.CELLS_DIALOG_TITLE);
 
         final EditText input = new EditText(this);
         input.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
-        mBatteryCellsDialogBuilder.setView(input);
+        batteryCellsDialogBuilder.setView(input);
         input.setText(txtCells.getText());
 
-        mBatteryCellsDialogBuilder.setPositiveButton(R.string.OK_BUTTON, new DialogInterface.OnClickListener() {
+        batteryCellsDialogBuilder.setPositiveButton(R.string.OK_BUTTON, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 byte[] bcdata = new byte[1];
@@ -1372,13 +1387,42 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         });
 
-        mBatteryCellsDialogBuilder.setNegativeButton(R.string.CANCEL_BUTTON, new DialogInterface.OnClickListener() {
+        batteryCellsDialogBuilder.setNegativeButton(R.string.CANCEL_BUTTON, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
                 dialog.dismiss();
             }
         });
+        return batteryCellsDialogBuilder;
+    }
+
+    public AlertDialog.Builder initFusionAlgoDialog() {
+        AlertDialog.Builder fusionAlgoDialogBuilder = new AlertDialog.Builder(this);
+        fusionAlgoDialogBuilder.setTitle("Select Fusion Algorithm");
+
+        String[] types;
+        try {
+            types = mXmlObjects.get("RevoSettings").getFields().get("FusionAlgorithm").getOptions();
+        } catch (NullPointerException e) {
+            types = null;
+        }
+        fusionAlgoDialogBuilder.setItems(types, new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                dialog.dismiss();
+                byte[] send = new byte[1];
+                send[0] = (byte) which;
+                if (mUAVTalkDevice != null) {
+                    mUAVTalkDevice.sendSettingsObject("RevoSettings", 0, "FusionAlgorithm", 0, send);
+                }
+            }
+
+        });
+
+        return fusionAlgoDialogBuilder;
     }
 
     @Override
@@ -1629,6 +1673,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
                                     setTextBGColor(mActivity.txtFlightTelemetry, getData("FlightTelemetryStats", "Status").toString());
                                     setTextBGColor(mActivity.txtGCSTelemetry, getData("GCSTelemetryStats", "Status").toString());
+                                    setText(mActivity.txtFusionAlgorithm, getData("RevoSettings", "FusionAlgorithm").toString());
 
                                     setTextBGColor(mActivity.txtBatt, getData("SystemAlarms", "Alarm", "Battery").toString());
                                     setTextBGColor(mActivity.txtTime, getData("SystemAlarms", "Alarm", "FlightTime").toString());
