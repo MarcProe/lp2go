@@ -1115,7 +1115,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             case VIEW_PID:
                 fragment = new PidFragment();
                 setContentView(mView6, position);
-                allowPidSliderUpdate();
+                //allowPidSliderUpdate();
                 Toast.makeText(this, "PLEASE CHECK PIDs WITH GCS BEFORE FLYING!", Toast.LENGTH_SHORT).show();
                 break;
 
@@ -1210,17 +1210,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     public void onPidUploadClick(View v) {
 
-        //Toast.makeText(this, "Not yet implemented (Sorry) ¯\\_(ツ)_/¯", Toast.LENGTH_LONG).show();
-        //if (1 == 1) return; // more testing for USB required.
-
-        /*
-        float f = (float) sbrPidRateRollProportional.getProgress() / PID.PID_RATE_ROLL_PROP_DENOM;
-
-        byte[] buffer = H.reverse4bytes(H.floatToByteArray((float)sbrPidRateRollProportional.getProgress() / PID.PID_RATE_ROLL_PROP_DENOM));
-        float ref = ByteBuffer.wrap(buffer).order(ByteOrder.LITTLE_ENDIAN).getFloat();
-
-        Log.d("FLOAT", "" + f + " " + Arrays.toString(buffer) + " " + ref + " " + sbrPidRateRollProportional.getProgress());
-        */
         if (mUAVTalkDevice != null) {
             UAVTalkObjectTree oTree = mUAVTalkDevice.getObjectTree();
             if (oTree != null) {
@@ -1261,6 +1250,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     public void onPidDownloadClick(View v) {
         allowPidSliderUpdate();
+        Toast.makeText(this, "Loading current PID. PLEASE CHECK WITH GCS BEFORE FLYING!", Toast.LENGTH_SHORT).show();
     }
 
     private void allowPidSliderUpdate() {
@@ -1272,7 +1262,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         sbrPidPitchProportional.setAllowUpdateFromFC(true);
         sbrPidRateRollDerivative.setAllowUpdateFromFC(true);
         sbrPidRatePitchDerivative.setAllowUpdateFromFC(true);
-        Toast.makeText(this, "Loading current PID", Toast.LENGTH_SHORT).show();
     }
 
     public void onLogShare(View v) {
