@@ -42,9 +42,12 @@ public abstract class UAVTalkDevice {
     private long mLogBytesLoggedOPL = 0;
     private long mLogObjectsLogged = 0;
     private int mUavTalkConnectionState = 0x00;
-
     public UAVTalkDevice(MainActivity mActivity) throws IllegalStateException {
         this.mActivity = mActivity;
+    }
+
+    public UAVTalkObjectTree getObjectTree() {
+        return mObjectTree;
     }
 
     public long getLogBytesLoggedUAV() {
@@ -124,9 +127,35 @@ public abstract class UAVTalkDevice {
 
     public abstract void stop();
 
-    public abstract UAVTalkObjectTree getObjectTree();
+    public boolean sendSettingsObject(String objectName, int instance, String fieldName, int element, byte[] newFieldData) {
+        return sendSettingsObject(
+                objectName,
+                instance,
+                fieldName,
+                element,
+                newFieldData,
+                false
+        );
+    }
 
-    public abstract boolean sendSettingsObject(String objectName, int instance, String fieldName, int element, byte[] newFieldData);
+    protected abstract boolean writeByteArray(byte[] bytes);
+
+    public abstract boolean sendAck(String objectId, int instance);
+
+    public abstract boolean sendSettingsObject(String objectName, int instance);
+
+    public abstract boolean sendSettingsObject(String objectName, int instance, String fieldName, int element, byte[] newFieldData, final boolean block);
+
+    public boolean sendSettingsObject(String objectName, int instance, String fieldName, String elementName, byte[] newFieldData, final boolean block) {
+        return sendSettingsObject(
+                objectName,
+                instance,
+                fieldName,
+                mObjectTree.getElementIndex(objectName, fieldName, elementName),
+                newFieldData,
+                block
+        );
+    }
 
     public boolean sendSettingsObject(String objectName, int instance, String fieldName, String elementName, byte[] newFieldData) {
         return sendSettingsObject(
@@ -134,7 +163,8 @@ public abstract class UAVTalkDevice {
                 instance,
                 fieldName,
                 mObjectTree.getElementIndex(objectName, fieldName, elementName),
-                newFieldData
+                newFieldData,
+                false
         );
     }
     public abstract boolean requestObject(String objectName);
@@ -149,22 +179,23 @@ public abstract class UAVTalkDevice {
         mObjectTree.getObjectFromName("ObjectPersistence").setWriteBlocked(true);
 
         byte[] op = {0x02};
-        send = UAVTalkDeviceHelper.createSettingsObjectByte(mObjectTree, "ObjectPersistence", 0, "Operation", 0, op);
+        UAVTalkDeviceHelper.updateSettingsObject(mObjectTree, "ObjectPersistence", 0, "Operation", 0, op);
 
         byte[] sel = {0x00};
-        send = UAVTalkDeviceHelper.createSettingsObjectByte(mObjectTree, "ObjectPersistence", 0, "Selection", 0, sel);
+        UAVTalkDeviceHelper.updateSettingsObject(mObjectTree, "ObjectPersistence", 0, "Selection", 0, sel);
         String sid = mObjectTree.getXmlObjects().get(saveObjectName).getId();
 
         byte[] oid = H.reverse4bytes(H.hexStringToByteArray(sid));
 
-        send = UAVTalkDeviceHelper.createSettingsObjectByte(mObjectTree, "ObjectPersistence", 0, "ObjectID", 0, oid);
+        UAVTalkDeviceHelper.updateSettingsObject(mObjectTree, "ObjectPersistence", 0, "ObjectID", 0, oid);
 
-        //for the last things we set, we can just use the sendsettingsobject. It will call createSettingsObjectByte for the last field.
+        //for the last things we set, we can just use the sendsettingsobject. It will call updateSettingsObjectDeprecated for the last field.
         byte[] ins = {0x00};
-        sendSettingsObject("ObjectPersistence", 0, "InstanceID", 0, ins);
+        UAVTalkDeviceHelper.updateSettingsObject(mObjectTree, "ObjectPersistence", 0, "InstanceID", 0, ins);
+
+        sendSettingsObject("ObjectPersistence", 0);
 
         Log.d("OBJ", "" + sid + " " + H.bytesToHex(oid));
-        Log.d("PACK", "" + H.bytesToHex(send));
 
         mObjectTree.getObjectFromName("ObjectPersistence").setWriteBlocked(false);
 
@@ -192,9 +223,8 @@ public abstract class UAVTalkDevice {
             msg[0] = UAVTALK_CONNECTED;
             sendSettingsObject("GCSTelemetryStats", 0, "Status", 0, msg);
             mUavTalkConnectionState = UAVTALK_CONNECTED;
-        } else //noinspection StatementWithEmptyBody
-            if (flightTelemtryStatusField == UAVTALK_CONNECTED && mUavTalkConnectionState == UAVTALK_CONNECTED) {
+        } else if (flightTelemtryStatusField == UAVTALK_CONNECTED && mUavTalkConnectionState == UAVTALK_CONNECTED) {
             //We are connected, that is good.
-            }
+        }
     }
 }

@@ -913,6 +913,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         displayView(mCurrentView);
 
+        initWarnDialog().show();
+
         Log.d("onStart", "onStart");
     }
 
@@ -1114,6 +1116,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 fragment = new PidFragment();
                 setContentView(mView6, position);
                 allowPidSliderUpdate();
+                Toast.makeText(this, "PLEASE CHECK PIDs WITH GCS BEFORE FLYING!", Toast.LENGTH_SHORT).show();
                 break;
 
             default:
@@ -1198,7 +1201,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         //Toast.makeText(this, "Not yet implemented (Sorry) ¯\\_(ツ)_/¯", Toast.LENGTH_LONG).show();
         if (mUAVTalkDevice != null) {
             mUAVTalkDevice.savePersistent(mCurrentStabilizationBank);
-            Toast.makeText(this, "Saved to persistent storage.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Saved to persistent storage. PLEASE CHECK WITH GCS BEFORE FLYING!", Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(this, "Not connected?", Toast.LENGTH_SHORT).show();
         }
@@ -1224,32 +1227,32 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 oTree.getObjectFromName(mCurrentStabilizationBank).setWriteBlocked(true);
 
                 byte[] buffer0 = H.reverse4bytes(H.floatToByteArray((float) sbrPidRateRollProportional.getProgress() / PID.PID_RATE_ROLL_PROP_DENOM));
-                UAVTalkDeviceHelper.updateSettingsObjectDeprecated(oTree, mCurrentStabilizationBank, 0, "RollRatePID", "Kp", buffer0);
+                UAVTalkDeviceHelper.updateSettingsObject(oTree, mCurrentStabilizationBank, 0, "RollRatePID", "Kp", buffer0);
 
                 byte[] buffer1 = H.reverse4bytes(H.floatToByteArray((float) sbrPidRatePitchProportional.getProgress() / PID.PID_RATE_PITCH_PROP_DENOM));
-                UAVTalkDeviceHelper.updateSettingsObjectDeprecated(oTree, mCurrentStabilizationBank, 0, "PitchRatePID", "Kp", buffer1);
+                UAVTalkDeviceHelper.updateSettingsObject(oTree, mCurrentStabilizationBank, 0, "PitchRatePID", "Kp", buffer1);
 
                 byte[] buffer2 = H.reverse4bytes(H.floatToByteArray((float) sbrPidRateRollIntegral.getProgress() / PID.PID_RATE_ROLL_INTE_DENOM));
-                UAVTalkDeviceHelper.updateSettingsObjectDeprecated(oTree, mCurrentStabilizationBank, 0, "RollRatePID", "Ki", buffer2);
+                UAVTalkDeviceHelper.updateSettingsObject(oTree, mCurrentStabilizationBank, 0, "RollRatePID", "Ki", buffer2);
 
                 byte[] buffer3 = H.reverse4bytes(H.floatToByteArray((float) sbrPidRatePitchIntegral.getProgress() / PID.PID_RATE_PITCH_INTE_DENOM));
-                UAVTalkDeviceHelper.updateSettingsObjectDeprecated(oTree, mCurrentStabilizationBank, 0, "PitchRatePID", "Ki", buffer3);
+                UAVTalkDeviceHelper.updateSettingsObject(oTree, mCurrentStabilizationBank, 0, "PitchRatePID", "Ki", buffer3);
 
                 byte[] buffer4 = H.reverse4bytes(H.floatToByteArray((float) sbrPidRollProportional.getProgress() / PID.PID_ROLL_PROP_DENOM));
-                UAVTalkDeviceHelper.updateSettingsObjectDeprecated(oTree, mCurrentStabilizationBank, 0, "RollPI", "Kp", buffer4);
+                UAVTalkDeviceHelper.updateSettingsObject(oTree, mCurrentStabilizationBank, 0, "RollPI", "Kp", buffer4);
 
                 byte[] buffer5 = H.reverse4bytes(H.floatToByteArray((float) sbrPidPitchProportional.getProgress() / PID.PID_PITCH_PROP_DENOM));
-                UAVTalkDeviceHelper.updateSettingsObjectDeprecated(oTree, mCurrentStabilizationBank, 0, "PitchPI", "Kp", buffer5);
+                UAVTalkDeviceHelper.updateSettingsObject(oTree, mCurrentStabilizationBank, 0, "PitchPI", "Kp", buffer5);
 
                 byte[] buffer6 = H.reverse4bytes(H.floatToByteArray((float) sbrPidRateRollDerivative.getProgress() / PID.PID_RATE_ROLL_DERI_DENOM));
-                UAVTalkDeviceHelper.updateSettingsObjectDeprecated(oTree, mCurrentStabilizationBank, 0, "RollRatePID", "Kd", buffer6);
+                UAVTalkDeviceHelper.updateSettingsObject(oTree, mCurrentStabilizationBank, 0, "RollRatePID", "Kd", buffer6);
 
                 byte[] buffer7 = H.reverse4bytes(H.floatToByteArray((float) sbrPidRatePitchDerivative.getProgress() / PID.PID_RATE_PITCH_DERI_DENOM));
-                UAVTalkDeviceHelper.updateSettingsObjectDeprecated(oTree, mCurrentStabilizationBank, 0, "PitchRatePID", "Kd", buffer7);
+                UAVTalkDeviceHelper.updateSettingsObject(oTree, mCurrentStabilizationBank, 0, "PitchRatePID", "Kd", buffer7);
 
                 mUAVTalkDevice.sendSettingsObject(mCurrentStabilizationBank, 0);
 
-                Toast.makeText(this, "Sent! Numbers should turn black now.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Sent! Numbers should turn black now. PLEASE CHECK WITH GCS BEFORE FLYING!", Toast.LENGTH_SHORT).show();
 
                 oTree.getObjectFromName(mCurrentStabilizationBank).setWriteBlocked(false);
             }
@@ -1378,6 +1381,28 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         });
         return batteryCapacityDialogBuilder;
+    }
+
+    private AlertDialog.Builder initWarnDialog() {
+        AlertDialog.Builder warnDialogBuilder = new AlertDialog.Builder(this);
+        warnDialogBuilder.setTitle(R.string.WARNING);
+
+        warnDialogBuilder.setCancelable(false);
+
+        final TextView info = new TextView(this);
+        warnDialogBuilder.setView(info);
+        info.setText(R.string.GNU_WARNING);
+        info.setPadding(5, 5, 5, 5);
+
+
+        warnDialogBuilder.setPositiveButton(R.string.I_UNDERSTAND, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                dialog.cancel();
+            }
+        });
+        return warnDialogBuilder;
     }
 
     private AlertDialog.Builder initBatteryCellsDialog() {

@@ -18,8 +18,22 @@ package net.proest.lp2go3.UAVTalk;
 
 public class UAVTalkDeviceHelper {
 
-    public static byte[] createSettingsObjectByte(UAVTalkObjectTree oTree, String objectName,
-                                                  int instance, String fieldName, int element, byte[] newFieldData) {
+    public static byte[] updateSettingsObject(
+            UAVTalkObjectTree oTree, String objectName, int instance, String fieldName,
+            String elementName, byte[] newFieldData) {
+
+        return updateSettingsObject(
+                oTree,
+                objectName,
+                instance,
+                fieldName,
+                oTree.getElementIndex(objectName, fieldName, elementName),
+                newFieldData);
+    }
+
+    public static byte[] updateSettingsObject(
+            UAVTalkObjectTree oTree, String objectName, int instance,
+            String fieldName, int element, byte[] newFieldData) {
 
         UAVTalkXMLObject xmlObj = oTree.getXmlObjects().get(objectName);
         if (xmlObj == null) {
@@ -61,6 +75,6 @@ public class UAVTalkDeviceHelper {
         obj.setInstance(ins);
         oTree.updateObject(obj);
 
-        return obj.toMsg((byte) 0x22, ins.getId());
+        return obj.toMessage((byte) 0x22, ins.getId(), false);
     }
 }

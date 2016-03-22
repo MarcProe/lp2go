@@ -70,5 +70,8 @@
     <string name="MIME_APPLICATION_OCTETSTREAM">application/octet-stream</string>
     <string name="SHARE_LOG_TITLE">Share Log</string>
     <string name="PLEASE_SET_A">"Please set a "</string>
+    <string name="GNU_WARNING">This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.</string>
+    <string name="I_UNDERSTAND">I UNDERSTAND!</string>
+    <string name="WARNING">WARNING</string>
 </resources>
 

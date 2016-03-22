@@ -87,13 +87,21 @@ public class UAVTalkObject {
         return mInstances.size();
     }
 
-    public byte[] toMsg(byte type, int instance) {
+    @Deprecated
+    public byte[] toMsg(byte type, int instance, boolean asAck) {
         UAVTalkObjectInstance inst = mInstances.get(instance);
 
         byte[] instData = inst.getData();
-        byte[] retval = new byte[instData.length + 13];
 
-        System.arraycopy(instData, 0, retval, 12, instData.length);
+        byte[] retval;
+
+        if (asAck) {
+            retval = new byte[13]; //only the header and CRC
+        } else {
+            if (instData == null) return new byte[0];
+            retval = new byte[instData.length + 13]; // data as well
+            System.arraycopy(instData, 0, retval, 12, instData.length); // copy the data
+        }
 
         retval[0] = 0x02;
         retval[1] = 0x30;
@@ -117,6 +125,44 @@ public class UAVTalkObject {
         retval[11] = iid[2];
 
         retval[retval.length - 1] = (byte) (H.crc8(retval, 2, retval.length - 3) & 0xff);
+
+        return retval;
+    }
+
+    public byte[] toMessage(byte type, int instance, boolean asAck) {
+        UAVTalkObjectInstance inst = mInstances.get(instance);
+
+        byte[] instData = inst.getData();
+        byte[] retval;
+
+        if (asAck) {
+            retval = new byte[11]; //only the header and CRC
+        } else {
+            if (instData == null) return new byte[0];
+            retval = new byte[instData.length + 11]; // data as well
+            System.arraycopy(instData, 0, retval, 10, instData.length); // copy the data
+        }
+
+        retval[0] = 0x3c;
+        retval[1] = type;
+
+        byte[] len = H.toBytes(instData.length + 10);
+        retval[2] = len[3];
+        retval[3] = len[2];
+
+        byte[] objId = H.hexStringToByteArray(this.mId);
+
+        retval[4] = objId[3];
+        retval[5] = objId[2];
+        retval[6] = objId[1];
+        retval[7] = objId[0];
+
+        byte[] iid = H.toBytes(instance);
+
+        retval[8] = iid[3];
+        retval[9] = iid[2];
+
+        retval[retval.length - 1] = (byte) (H.crc8(retval, 0, retval.length - 1) & 0xff);
 
         return retval;
     }

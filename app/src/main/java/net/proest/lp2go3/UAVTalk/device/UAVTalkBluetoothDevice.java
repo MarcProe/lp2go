@@ -42,9 +42,9 @@ import java.util.HashMap;
 import java.util.UUID;
 
 public class UAVTalkBluetoothDevice extends UAVTalkDevice {
-    public static final int STATE_NONE = 0;
-    public static final int STATE_CONNECTING = 1;
-    public static final int STATE_CONNECTED = 2;
+    private static final int STATE_NONE = 0;
+    private static final int STATE_CONNECTING = 1;
+    private static final int STATE_CONNECTED = 2;
 
     //private final MainActivity mActivity;
     private WaiterThread mWaiterThread;
@@ -122,20 +122,40 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
     }
 
     @Override
-    public UAVTalkObjectTree getObjectTree() {
-        return mObjectTree;
+    public boolean sendAck(String objectId, int instance) {
+        byte[] send = mObjectTree.getObjectFromID(objectId).toMessage((byte) 0x23, instance, true);
+        Log.d("SEND", "" + H.bytesToHex(send));
+        if (send != null) {
+            writeByteArray(Arrays.copyOfRange(send, 0, send.length));
+            return true;
+        } else {
+            return false;
+        }
+
     }
 
     @Override
-    public boolean sendSettingsObject(String objectName, int instance, String fieldName, int element, byte[] newFieldData) {
-        byte[] send = UAVTalkDeviceHelper.createSettingsObjectByte(mObjectTree, objectName, instance, fieldName, element, newFieldData);
-        Log.d("SEND", H.bytesToHex(send));
-        if (send == null) return false;
+    public boolean sendSettingsObject(String objectName, int instance) {
+        byte[] send = mObjectTree.getObjectFromName(objectName).toMessage((byte) 0x22, instance, false);
+        if (send != null) {
+            writeByteArray(Arrays.copyOfRange(send, 0, send.length));
+            requestObject(objectName, instance);
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-        write(Arrays.copyOfRange(send, 2, send.length)); //TODO: This removes the first two byte, added only for USB compatibility
+    @Override
+    public boolean sendSettingsObject(String objectName, int instance, String fieldName, int element, byte[] newFieldData, final boolean block) {
+        boolean retval;
+        if (block) mObjectTree.getObjectFromName(objectName).setWriteBlocked(true);
+        UAVTalkDeviceHelper.updateSettingsObject(mObjectTree, objectName, instance, fieldName, element, newFieldData);
 
-        requestObject(objectName, instance);
-        return true;
+        retval = sendSettingsObject(objectName, instance);
+
+        if (block) mObjectTree.getObjectFromName(objectName).setWriteBlocked(false);
+        return retval;
     }
 
     @Override
@@ -143,13 +163,14 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
         return requestObject(objectName, 0);
     }
 
+    @Override
     public boolean requestObject(String objectName, int instance) {
         UAVTalkXMLObject xmlObj = mObjectTree.getXmlObjects().get(objectName);
         if (xmlObj == null) return false;
 
         byte[] send = UAVTalkObject.getReqMsg((byte) 0x21, xmlObj.getId(), instance);
 
-        write(Arrays.copyOfRange(send, 2, send.length));
+        writeByteArray(Arrays.copyOfRange(send, 2, send.length));
 
         return true;
     }
@@ -166,7 +187,7 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
     }
 
 
-    public synchronized void connected(BluetoothSocket socket) {  //this is only called when we weren't connected before
+    private synchronized void connected(BluetoothSocket socket) {  //this is only called when we weren't connected before
         if (mConnectThread != null) {
             mConnectThread.cancel();
             mConnectThread = null;
@@ -185,16 +206,17 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
         setState(STATE_CONNECTED);
     }
 
-    private void write(byte[] out) {
+    @Override
+    protected boolean writeByteArray(byte[] out) {
         WaiterThread r;
         synchronized (this) {
             if (mState != STATE_CONNECTED) {
-                return;
+                return false;
             }
             r = mWaiterThread;
         }
-
         r.write(out);
+        return true;
     }
 
     private void connectionLost() {
