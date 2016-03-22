@@ -92,6 +92,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import net.proest.lp2go3.UAVTalk.UAVTalkDeviceHelper;
 import net.proest.lp2go3.UAVTalk.UAVTalkMissingObjectException;
 import net.proest.lp2go3.UAVTalk.UAVTalkObjectTree;
 import net.proest.lp2go3.UAVTalk.UAVTalkXMLObject;
@@ -1194,8 +1195,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     public void onPidSaveClick(View v) {
-        Toast.makeText(this, "Not yet implemented (Sorry) ¯\\_(ツ)_/¯", Toast.LENGTH_LONG).show();
-        //mUAVTalkDevice.savePersistent(mCurrentStabilizationBank);
+        //Toast.makeText(this, "Not yet implemented (Sorry) ¯\\_(ツ)_/¯", Toast.LENGTH_LONG).show();
+        if (mUAVTalkDevice != null) {
+            mUAVTalkDevice.savePersistent(mCurrentStabilizationBank);
+            Toast.makeText(this, "Saved to persistent storage.", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "Not connected?", Toast.LENGTH_SHORT).show();
+        }
+
     }
 
     public void onPidUploadClick(View v) {
@@ -1211,32 +1218,42 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         Log.d("FLOAT", "" + f + " " + Arrays.toString(buffer) + " " + ref + " " + sbrPidRateRollProportional.getProgress());
         */
+        if (mUAVTalkDevice != null) {
+            UAVTalkObjectTree oTree = mUAVTalkDevice.getObjectTree();
+            if (oTree != null) {
+                oTree.getObjectFromName(mCurrentStabilizationBank).setWriteBlocked(true);
 
-        byte[] buffer0 = H.reverse4bytes(H.floatToByteArray((float) sbrPidRateRollProportional.getProgress() / PID.PID_RATE_ROLL_PROP_DENOM));
-        mUAVTalkDevice.sendSettingsObject(mCurrentStabilizationBank, 0, "RollRatePID", "Kp", buffer0);
+                byte[] buffer0 = H.reverse4bytes(H.floatToByteArray((float) sbrPidRateRollProportional.getProgress() / PID.PID_RATE_ROLL_PROP_DENOM));
+                UAVTalkDeviceHelper.updateSettingsObjectDeprecated(oTree, mCurrentStabilizationBank, 0, "RollRatePID", "Kp", buffer0);
 
-        byte[] buffer1 = H.reverse4bytes(H.floatToByteArray((float) sbrPidRatePitchProportional.getProgress() / PID.PID_RATE_PITCH_PROP_DENOM));
-        mUAVTalkDevice.sendSettingsObject(mCurrentStabilizationBank, 0, "PitchRatePID", "Kp", buffer1);
+                byte[] buffer1 = H.reverse4bytes(H.floatToByteArray((float) sbrPidRatePitchProportional.getProgress() / PID.PID_RATE_PITCH_PROP_DENOM));
+                UAVTalkDeviceHelper.updateSettingsObjectDeprecated(oTree, mCurrentStabilizationBank, 0, "PitchRatePID", "Kp", buffer1);
 
-        byte[] buffer2 = H.reverse4bytes(H.floatToByteArray((float) sbrPidRateRollIntegral.getProgress() / PID.PID_RATE_ROLL_INTE_DENOM));
-        mUAVTalkDevice.sendSettingsObject(mCurrentStabilizationBank, 0, "RollRatePID", "Ki", buffer2);
+                byte[] buffer2 = H.reverse4bytes(H.floatToByteArray((float) sbrPidRateRollIntegral.getProgress() / PID.PID_RATE_ROLL_INTE_DENOM));
+                UAVTalkDeviceHelper.updateSettingsObjectDeprecated(oTree, mCurrentStabilizationBank, 0, "RollRatePID", "Ki", buffer2);
 
-        byte[] buffer3 = H.reverse4bytes(H.floatToByteArray((float) sbrPidRatePitchIntegral.getProgress() / PID.PID_RATE_PITCH_INTE_DENOM));
-        mUAVTalkDevice.sendSettingsObject(mCurrentStabilizationBank, 0, "PitchRatePID", "Ki", buffer3);
+                byte[] buffer3 = H.reverse4bytes(H.floatToByteArray((float) sbrPidRatePitchIntegral.getProgress() / PID.PID_RATE_PITCH_INTE_DENOM));
+                UAVTalkDeviceHelper.updateSettingsObjectDeprecated(oTree, mCurrentStabilizationBank, 0, "PitchRatePID", "Ki", buffer3);
 
-        byte[] buffer4 = H.reverse4bytes(H.floatToByteArray((float) sbrPidRollProportional.getProgress() / PID.PID_ROLL_PROP_DENOM));
-        mUAVTalkDevice.sendSettingsObject(mCurrentStabilizationBank, 0, "RollPI", "Kp", buffer4);
+                byte[] buffer4 = H.reverse4bytes(H.floatToByteArray((float) sbrPidRollProportional.getProgress() / PID.PID_ROLL_PROP_DENOM));
+                UAVTalkDeviceHelper.updateSettingsObjectDeprecated(oTree, mCurrentStabilizationBank, 0, "RollPI", "Kp", buffer4);
 
-        byte[] buffer5 = H.reverse4bytes(H.floatToByteArray((float) sbrPidPitchProportional.getProgress() / PID.PID_PITCH_PROP_DENOM));
-        mUAVTalkDevice.sendSettingsObject(mCurrentStabilizationBank, 0, "PitchPI", "Kp", buffer5);
+                byte[] buffer5 = H.reverse4bytes(H.floatToByteArray((float) sbrPidPitchProportional.getProgress() / PID.PID_PITCH_PROP_DENOM));
+                UAVTalkDeviceHelper.updateSettingsObjectDeprecated(oTree, mCurrentStabilizationBank, 0, "PitchPI", "Kp", buffer5);
 
-        byte[] buffer6 = H.reverse4bytes(H.floatToByteArray((float) sbrPidRateRollDerivative.getProgress() / PID.PID_RATE_ROLL_DERI_DENOM));
-        mUAVTalkDevice.sendSettingsObject(mCurrentStabilizationBank, 0, "RollRatePID", "Kd", buffer6);
+                byte[] buffer6 = H.reverse4bytes(H.floatToByteArray((float) sbrPidRateRollDerivative.getProgress() / PID.PID_RATE_ROLL_DERI_DENOM));
+                UAVTalkDeviceHelper.updateSettingsObjectDeprecated(oTree, mCurrentStabilizationBank, 0, "RollRatePID", "Kd", buffer6);
 
-        byte[] buffer7 = H.reverse4bytes(H.floatToByteArray((float) sbrPidRatePitchDerivative.getProgress() / PID.PID_RATE_PITCH_DERI_DENOM));
-        mUAVTalkDevice.sendSettingsObject(mCurrentStabilizationBank, 0, "PitchRatePID", "Kd", buffer7);
+                byte[] buffer7 = H.reverse4bytes(H.floatToByteArray((float) sbrPidRatePitchDerivative.getProgress() / PID.PID_RATE_PITCH_DERI_DENOM));
+                UAVTalkDeviceHelper.updateSettingsObjectDeprecated(oTree, mCurrentStabilizationBank, 0, "PitchRatePID", "Kd", buffer7);
 
-        Toast.makeText(this, "Sent! Numbers should turn black now.", Toast.LENGTH_LONG).show();
+                mUAVTalkDevice.sendSettingsObject(mCurrentStabilizationBank, 0);
+
+                Toast.makeText(this, "Sent! Numbers should turn black now.", Toast.LENGTH_SHORT).show();
+
+                oTree.getObjectFromName(mCurrentStabilizationBank).setWriteBlocked(false);
+            }
+        }
     }
 
     public void onPidDownloadClick(View v) {
