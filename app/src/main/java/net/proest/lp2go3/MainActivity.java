@@ -1547,6 +1547,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         private boolean mIsValid = true;
 
         public PollThread(MainActivity mActivity) {
+            this.setName("LP2GoPollThread");
             if (sHasPThread) throw new IllegalStateException("double mPollThread");
             sHasPThread = true;
             this.mActivity = mActivity;
@@ -2008,6 +2009,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         private boolean mIsValid = true;
 
         public ConnectionThread(MainActivity mActivity) {
+            this.setName("LP2GoConnectionThread");
             this.mActivity = mActivity;
         }
 

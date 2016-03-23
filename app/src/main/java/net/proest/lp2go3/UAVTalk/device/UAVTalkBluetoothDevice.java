@@ -170,7 +170,7 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
 
         byte[] send = UAVTalkObject.getReqMsg((byte) 0x21, xmlObj.getId(), instance);
 
-        writeByteArray(Arrays.copyOfRange(send, 2, send.length));
+        writeByteArray(send);
 
         return true;
     }
@@ -234,7 +234,7 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
         }
 
         public void run() {
-            setName("ConnectThread");
+            setName("LP2GoDeviceBluetoothConnectThread");
 
             mBluetoothAdapter.cancelDiscovery();
 
@@ -294,6 +294,7 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
         public boolean mStop;
 
         public WaiterThread(BluetoothSocket socket) {
+            this.setName("LP2GoDeviceBluetoothWaiterThread");
             mmSocket = socket;
             InputStream tmpIn = null;
             OutputStream tmpOut = null;

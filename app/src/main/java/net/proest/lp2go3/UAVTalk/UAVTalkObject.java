@@ -32,29 +32,27 @@ public class UAVTalkObject {
     }
 
     public static byte[] getReqMsg(byte type, String objectId, int instance) {
-        byte[] retval = new byte[13];
+        byte[] retval = new byte[11];
 
-        retval[0] = 0x02;
-        retval[1] = 0x30;
-        retval[2] = 0x3c;
-        retval[3] = type;
+        retval[0] = 0x3c;
+        retval[1] = type;
 
-        retval[4] = 0x0a;
-        retval[5] = 0x00;
+        retval[2] = 0x0a;
+        retval[3] = 0x00;
 
         byte[] objId = H.hexStringToByteArray(objectId);
 
-        retval[6] = objId[3];
-        retval[7] = objId[2];
-        retval[8] = objId[1];
-        retval[9] = objId[0];
+        retval[4] = objId[3];
+        retval[5] = objId[2];
+        retval[6] = objId[1];
+        retval[7] = objId[0];
 
         byte[] iid = H.toBytes(instance);
 
-        retval[10] = iid[3];
-        retval[11] = iid[2];
+        retval[8] = iid[3];
+        retval[9] = iid[2];
 
-        retval[12] = (byte) (H.crc8(retval, 2, 10) & 0xff);
+        retval[10] = (byte) (H.crc8(retval, 0, 10) & 0xff);
 
         return retval;
     }
