@@ -17,7 +17,6 @@
 package net.proest.lp2go3.UAVTalk.device;
 
 import android.content.Context;
-import android.util.Log;
 
 import net.proest.lp2go3.H;
 import net.proest.lp2go3.MainActivity;
@@ -32,8 +31,11 @@ public abstract class UAVTalkDevice {
     public static final byte UAVTALK_HANDSHAKE_REQUESTED = 0x01;
     public static final byte UAVTALK_HANDSHAKE_ACKNOWLEDGED = 0x02;
     public static final byte UAVTALK_CONNECTED = 0x03;
+
+    private static final int MAX_HANDSHAKE_FAILURE_CYCLES = 3;
     protected volatile UAVTalkObjectTree mObjectTree;
     MainActivity mActivity;
+    private int mFailedHandshakes = 0;
     private FileOutputStream mLogOutputStream;
     private String mLogFileName = "OP-YYYY-MM-DD_HH-MM-SS";
     private long mLogStartTimeStamp;
@@ -171,11 +173,7 @@ public abstract class UAVTalkDevice {
 
     public abstract boolean requestObject(String objectName, int instance);
 
-    public boolean savePersistent(String saveObjectName) {
-        boolean retval = true;
-
-        byte[] send;
-
+    public void savePersistent(String saveObjectName) {
         mObjectTree.getObjectFromName("ObjectPersistence").setWriteBlocked(true);
 
         byte[] op = {0x02};
@@ -195,11 +193,7 @@ public abstract class UAVTalkDevice {
 
         sendSettingsObject("ObjectPersistence", 0);
 
-        Log.d("OBJ", "" + sid + " " + H.bytesToHex(oid));
-
         mObjectTree.getObjectFromName("ObjectPersistence").setWriteBlocked(false);
-
-        return retval;
     }
 
     public abstract boolean isConnected();
@@ -212,6 +206,11 @@ public abstract class UAVTalkDevice {
 
     public void handleHandshake(byte flightTelemtryStatusField) {
 
+        if (mFailedHandshakes > MAX_HANDSHAKE_FAILURE_CYCLES) {
+            mUavTalkConnectionState = UAVTALK_DISCONNECTED;
+            mFailedHandshakes = 0;
+        }
+
         if (mUavTalkConnectionState == UAVTALK_DISCONNECTED) {
             //Send Handshake initiator packet (HANDSHAKE_REQUEST)
             byte[] msg = new byte[1];
@@ -223,8 +222,13 @@ public abstract class UAVTalkDevice {
             msg[0] = UAVTALK_CONNECTED;
             sendSettingsObject("GCSTelemetryStats", 0, "Status", 0, msg);
             mUavTalkConnectionState = UAVTALK_CONNECTED;
+
         } else if (flightTelemtryStatusField == UAVTALK_CONNECTED && mUavTalkConnectionState == UAVTALK_CONNECTED) {
             //We are connected, that is good.
+            mFailedHandshakes = 0;
+
+        } else {
+            mFailedHandshakes++;
         }
     }
 }

@@ -73,5 +73,13 @@
     <string name="GNU_WARNING">This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.</string>
     <string name="I_UNDERSTAND">I UNDERSTAND!</string>
     <string name="WARNING">WARNING</string>
+    <string name="SEND_FAILED">Could not send. Check Connection.</string>
+    <string name="CON_TYPE">Connection Type</string>
+    <string name="BT_DEVICE">Bluetooth Device</string>
+    <string name="CHECK_PID_WARNING">PLEASE CHECK PIDs WITH GCS BEFORE FLYING!</string>
+    <string name="CHANGE_FUSION_ALGO_DISARMED">Change of Fusion Algorithm only allowed while disarmed</string>
+    <string name="SAVED_PERSISTENT">"Saved to persistent storage. "</string>
+    <string name="PID_SENT">"Sent! Numbers should turn black now. "</string>
+    <string name="PID_LOADING">"Loading current PID. "</string>
 </resources>
 

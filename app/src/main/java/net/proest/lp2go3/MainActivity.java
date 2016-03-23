@@ -100,6 +100,7 @@ import net.proest.lp2go3.UAVTalk.device.UAVTalkBluetoothDevice;
 import net.proest.lp2go3.UAVTalk.device.UAVTalkDevice;
 import net.proest.lp2go3.UAVTalk.device.UAVTalkUsbDevice;
 import net.proest.lp2go3.UI.PidSeekBar;
+import net.proest.lp2go3.UI.SingleToast;
 import net.proest.lp2go3.c.PID;
 import net.proest.lp2go3.slider.AboutFragment;
 import net.proest.lp2go3.slider.LogsFragment;
@@ -286,7 +287,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                             //UsbDevice device = (UsbDevice)intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
                             UsbInterface intf = findAdbInterface(device);
                             if (intf != null) {
-                                boolean ok = setUsbInterface(device, intf);
+                                setUsbInterface(device, intf);
                             }
                         }
                     } else {
@@ -296,9 +297,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         }
     };
-    private boolean mSettingsOK = false;
     private Marker[] mPosHistory = new Marker[HISTORY_MARKER_NUM];
-    private View mView0, mView0l, mView1, mView2, mView3, mView4, mView5, mView6;
+    private View mView0, mView1, mView2, mView3, mView4, mView5, mView6;
     private GoogleMap mMap;
     private MapView mMapView;
     private boolean mDoReconnect = false;
@@ -594,7 +594,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(32.154599, -110.827369), 18);
                 mMap.animateCamera(cameraUpdate);
                 mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
-                Marker center = mMap.addMarker(new MarkerOptions()
+                mMap.addMarker(new MarkerOptions()
                         .position(new LatLng(32.154599, -110.827369))
                         .title("Librepilot")
                         .snippet("LP rules")
@@ -644,7 +644,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             if (!mBluetoothAdapter.isEnabled()) {
                 //Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                 //startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-                Toast.makeText(this, "To use Bluetooth, turn it on in your device.", Toast.LENGTH_LONG).show();
+                SingleToast.makeText(this, "To use Bluetooth, turn it on in your device.", Toast.LENGTH_LONG).show();
 
             } else {
 
@@ -823,7 +823,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 this.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(getParent(), "To use Bluetooth, turn it on in your device.", Toast.LENGTH_LONG).show();
+                        SingleToast.makeText(getParent(), "To use Bluetooth, turn it on in your device.", Toast.LENGTH_LONG).show();
                     }
                 });
             } catch (RuntimeException e) {
@@ -852,16 +852,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     while ((count = zis.read(buffer)) != -1) {
                         baos.write(buffer, 0, count);
                     }
-                    //String filename = ze.getName();
                     String xml = baos.toString();
-                    //byte[] bytes = baos.toByteArray();
-                    // do something with 'filename' and 'bytes'...
-                    //Log.d(filename, "" + xml.length());
                     if (xml.length() > 0) {
-                        UAVTalkXMLObject obj = new UAVTalkXMLObject(baos.toString());
+                        UAVTalkXMLObject obj = new UAVTalkXMLObject(xml);
                         mXmlObjects.put(obj.getName(), obj);
                     }
-
                 }
             } catch (IOException | SAXException | ParserConfigurationException e) {
                 e.printStackTrace();
@@ -881,9 +876,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     protected void onStart() {
         super.onStart();
-        Log.d("START", "" + isChangingConfigurations() + " - " + initDone);
-
-
 
         if (mPermissionIntent == null)
             mPermissionIntent = PendingIntent.getBroadcast(this, 0, new Intent(ACTION_USB_PERMISSION), 0);
@@ -920,8 +912,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @Override
     protected void onStop() {
-
-        Log.d("STOP", "" + isChangingConfigurations() + " - " + initDone);
 
         if (mUAVTalkDevice != null) mUAVTalkDevice.setLogging(false);
 
@@ -999,12 +989,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPref.edit();
 
-                String btname = "";
+                String btname = getString(R.string.EMPTY_STRING);
                 if (spnBluetoothPairedDevice.getSelectedItem() != null) {
                     btname = spnBluetoothPairedDevice.getSelectedItem().toString();
                 }
 
-                String btmac = "";
+                String btmac = getString(R.string.EMPTY_STRING);
 
                 Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
                 // If there are paired devices
@@ -1015,7 +1005,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         if (device.getName().equals(btname)) {
                             btmac = device.getAddress();
                         }
-                        //Log.d("BTE",device.getName() + " " + device.getAddress());
                     }
                 }
 
@@ -1038,13 +1027,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         break;
                 }
 
-
                 if (spnUavoSource.getSelectedItem() != null && !spnUavoSource.getSelectedItem().toString().equals(mLoadedUavo)) {
                     mLoadedUavo = spnUavoSource.getSelectedItem().toString();
                     Log.d("UAVSource", mLoadedUavo + "  " + mLoadedUavo);
 
                     loadXmlObjects(true);
-                    Toast.makeText(this, "UAVO load completed", Toast.LENGTH_SHORT).show();
+                    SingleToast.makeText(this, "UAVO load completed", Toast.LENGTH_SHORT).show();
                 }
 
                 editor.putString(getString(R.string.SETTINGS_BT_MAC), btmac);
@@ -1070,7 +1058,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 break;
         }
 
-
         //init new view
         switch (position) {
             case VIEW_MAIN:
@@ -1082,7 +1069,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             case VIEW_MAP:
                 fragment = new MapFragment();
                 setContentView(mView1, position);
-                mMapView.onResume();  //(re)activate the mMap
+                mMapView.onResume();  //(re)activate the Map
 
                 break;
             case VIEW_OBJECTS:
@@ -1095,9 +1082,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 setContentView(mView3, position);
 
                 if (mSerialModeUsed == SERIAL_NONE) {
-                    Toast.makeText(this, getString(R.string.PLEASE_SET_A) + "Connection Type", Toast.LENGTH_LONG).show();
+                    SingleToast.makeText(this, getString(R.string.PLEASE_SET_A)
+                            + getString(R.string.CON_TYPE), Toast.LENGTH_LONG).show();
                 } else if (mSerialModeUsed == SERIAL_BLUETOOTH && mBluetoothDeviceUsed == null) {
-                    Toast.makeText(this, getString(R.string.PLEASE_SET_A) + "Bluetooth Device", Toast.LENGTH_LONG).show();
+                    SingleToast.makeText(this, getString(R.string.PLEASE_SET_A)
+                            + getString(R.string.BT_DEVICE), Toast.LENGTH_LONG).show();
                 }
 
                 break;
@@ -1116,7 +1105,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 fragment = new PidFragment();
                 setContentView(mView6, position);
                 //allowPidSliderUpdate();
-                Toast.makeText(this, "PLEASE CHECK PIDs WITH GCS BEFORE FLYING!", Toast.LENGTH_SHORT).show();
+                SingleToast.makeText(this, R.string.CHECK_PID_WARNING, Toast.LENGTH_SHORT).show();
                 break;
 
             default:
@@ -1145,7 +1134,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     public void onAltitudeClick(View V) {
         try {
-            mOffset.put(OFFSET_BAROSENSOR_ALTITUDE, mUAVTalkDevice.getObjectTree().getData("BaroSensor", "Altitude"));
+            mOffset.put(OFFSET_BAROSENSOR_ALTITUDE, mUAVTalkDevice.getObjectTree()
+                    .getData("BaroSensor", "Altitude"));
             txtAltitude.setText(R.string.EMPTY_STRING);
         } catch (UAVTalkMissingObjectException | NullPointerException e) {
             Log.i("INFO", "UAVO is missing");
@@ -1154,7 +1144,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     public void onAltitudeAccelClick(View V) {
         try {
-            mOffset.put(OFFSET_VELOCITY_DOWN, mUAVTalkDevice.getObjectTree().getData("VelocityState", "Down"));
+            mOffset.put(OFFSET_VELOCITY_DOWN, mUAVTalkDevice.getObjectTree()
+                    .getData("VelocityState", "Down"));
             txtAltitudeAccel.setText(R.string.EMPTY_STRING);
         } catch (UAVTalkMissingObjectException | NullPointerException e) {
             Log.i("INFO", "UAVO is missing");
@@ -1168,14 +1159,16 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public void onFusionAlgoClick(View v) {
         String armingState;
         try {
-            armingState = mUAVTalkDevice.getObjectTree().getData("FlightStatus", "Armed").toString();
+            armingState = mUAVTalkDevice.getObjectTree()
+                    .getData("FlightStatus", "Armed").toString();
         } catch (UAVTalkMissingObjectException e) {
             armingState = "";
         }
         if (armingState.equals("Disarmed")) {
             initFusionAlgoDialog().show();
         } else {
-            Toast.makeText(this, "Change of Fusion Algorithm only allowed while disarmed", Toast.LENGTH_LONG).show();
+            SingleToast.makeText(this, getString(R.string.CHANGE_FUSION_ALGO_DISARMED),
+                    Toast.LENGTH_LONG).show();
         }
 
 
@@ -1198,19 +1191,17 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     public void onPidSaveClick(View v) {
-        //Toast.makeText(this, "Not yet implemented (Sorry) ¯\\_(ツ)_/¯", Toast.LENGTH_LONG).show();
-        if (mUAVTalkDevice != null) {
+        if (mUAVTalkDevice != null && mUAVTalkDevice.isConnected()) {
             mUAVTalkDevice.savePersistent(mCurrentStabilizationBank);
-            Toast.makeText(this, "Saved to persistent storage. PLEASE CHECK WITH GCS BEFORE FLYING!", Toast.LENGTH_SHORT).show();
+            SingleToast.makeText(this, getString(R.string.SAVED_PERSISTENT)
+                    + getString(R.string.CHECK_PID_WARNING), Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(this, "Not connected?", Toast.LENGTH_SHORT).show();
+            SingleToast.makeText(this, R.string.SEND_FAILED, Toast.LENGTH_SHORT).show();
         }
-
     }
 
     public void onPidUploadClick(View v) {
-
-        if (mUAVTalkDevice != null) {
+        if (mUAVTalkDevice != null && mUAVTalkDevice.isConnected()) {
             UAVTalkObjectTree oTree = mUAVTalkDevice.getObjectTree();
             if (oTree != null) {
                 oTree.getObjectFromName(mCurrentStabilizationBank).setWriteBlocked(true);
@@ -1241,16 +1232,24 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
                 mUAVTalkDevice.sendSettingsObject(mCurrentStabilizationBank, 0);
 
-                Toast.makeText(this, "Sent! Numbers should turn black now. PLEASE CHECK WITH GCS BEFORE FLYING!", Toast.LENGTH_SHORT).show();
+                SingleToast.makeText(this, getString(R.string.PID_SENT)
+                        + getString(R.string.CHECK_PID_WARNING), Toast.LENGTH_SHORT).show();
 
                 oTree.getObjectFromName(mCurrentStabilizationBank).setWriteBlocked(false);
             }
+        } else {
+            SingleToast.makeText(this, R.string.SEND_FAILED, Toast.LENGTH_SHORT).show();
         }
     }
 
     public void onPidDownloadClick(View v) {
-        allowPidSliderUpdate();
-        Toast.makeText(this, "Loading current PID. PLEASE CHECK WITH GCS BEFORE FLYING!", Toast.LENGTH_SHORT).show();
+        if (mUAVTalkDevice != null && mUAVTalkDevice.isConnected()) {
+            allowPidSliderUpdate();
+            SingleToast.makeText(this, getString(R.string.PID_LOADING)
+                    + getString(R.string.CHECK_PID_WARNING), Toast.LENGTH_SHORT).show();
+        } else {
+            SingleToast.makeText(this, R.string.SEND_FAILED, Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void allowPidSliderUpdate() {
@@ -1276,7 +1275,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         File logPath = new File(this.getFilesDir(), "");
         File logFile = new File(logPath, mUAVTalkDevice.getLogFileName());
-        Uri contentUri = FileProvider.getUriForFile(this, "net.proest.lp2go3.logfileprovider", logFile);
+        Uri contentUri =
+                FileProvider.getUriForFile(this, "net.proest.lp2go3.logfileprovider", logFile);
 
         share.putExtra(Intent.EXTRA_STREAM, contentUri);
         startActivity(Intent.createChooser(share, getString(R.string.SHARE_LOG_TITLE)));
@@ -1315,7 +1315,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     mDevice = device;
                     mDeviceConnection = connection;
                     mInterface = intf;
-                    mUAVTalkDevice = new UAVTalkUsbDevice(this, mDeviceConnection, intf, mXmlObjects);
+                    mUAVTalkDevice = new UAVTalkUsbDevice(this, mDeviceConnection, intf,
+                            mXmlObjects);
                     mUAVTalkDevice.getObjectTree().setXmlObjects(mXmlObjects);
 
                     mUAVTalkDevice.start();
@@ -1343,7 +1344,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         batteryCapacityDialogBuilder.setView(input);
         input.setText(txtCapacity.getText());
 
-        batteryCapacityDialogBuilder.setPositiveButton(R.string.OK_BUTTON, new DialogInterface.OnClickListener() {
+        batteryCapacityDialogBuilder.setPositiveButton(R.string.OK_BUTTON,
+                new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 byte[] bcdata;
@@ -1354,7 +1356,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 }
                 if (mUAVTalkDevice != null && bcdata.length == 4) {
                     bcdata = H.reverse4bytes(bcdata);
-                    mUAVTalkDevice.sendSettingsObject("FlightBatterySettings", 0, "Capacity", 0, bcdata);
+                    mUAVTalkDevice.sendSettingsObject("FlightBatterySettings", 0, "Capacity", 0,
+                            bcdata);
                     //mUAVTalkDevice.savePersistent("FlightBatterySettings");
                 }
                 dialog.dismiss();
@@ -1362,7 +1365,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         });
 
-        batteryCapacityDialogBuilder.setNegativeButton(R.string.CANCEL_BUTTON, new DialogInterface.OnClickListener() {
+        batteryCapacityDialogBuilder.setNegativeButton(R.string.CANCEL_BUTTON,
+                new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
@@ -1413,7 +1417,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     bcdata[0] = 0x00;
                 }
                 if (mUAVTalkDevice != null && bcdata.length == 1) {
-                    mUAVTalkDevice.sendSettingsObject("FlightBatterySettings", 0, "NbCells", 0, bcdata);
+                    mUAVTalkDevice.sendSettingsObject("FlightBatterySettings", 0, "NbCells", 0,
+                            bcdata);
                     //mUAVTalkDevice.savePersistent("FlightBatterySettings");
                 }
                 dialog.dismiss();
@@ -1421,7 +1426,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         });
 
-        batteryCellsDialogBuilder.setNegativeButton(R.string.CANCEL_BUTTON, new DialogInterface.OnClickListener() {
+        batteryCellsDialogBuilder.setNegativeButton(R.string.CANCEL_BUTTON,
+                new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
@@ -1454,9 +1460,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     //mUAVTalkDevice.savePersistent("RevoSettings");
                 }
             }
-
         });
-
         return fusionAlgoDialogBuilder;
     }
 
@@ -1465,11 +1469,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         switch (parent.getId()) {
             case R.id.spnConnectionTypeSpinner: {
 
-
                 break;
             }
             case R.id.spnUavoSource: {
-
 
                 break;
             }
@@ -1600,37 +1602,41 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
 
         public void run() {
-
-            //while (isValid) {
             while (mIsValid) {
                 blink = !blink;
-                //Log.d("PING","PONG");
                 try {
                     Thread.sleep(POLL_WAIT_TIME);
-                } catch (InterruptedException e) {
+                } catch (InterruptedException ignored) {
                 }
 
                 mActivity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-
                         if (mSerialModeUsed == SERIAL_BLUETOOTH) {
                             imgUSB.setColorFilter(Color.argb(0xff, 0x00, 0x00, 0x00));
                             if (mUAVTalkDevice != null && mUAVTalkDevice.isConnected()) {
                                 imgBluetooth.setColorFilter(Color.argb(0xff, 0x00, 0x80, 0x00));
-                                imgBluetooth.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_bluetooth_connected_128dp));
+                                imgBluetooth.setImageDrawable(
+                                        ContextCompat.getDrawable(getApplicationContext(),
+                                                R.drawable.ic_bluetooth_connected_128dp));
 
                             } else if (mUAVTalkDevice != null && mUAVTalkDevice.isConnecting()) {
                                 if (blink) {
                                     imgBluetooth.setColorFilter(Color.argb(0xff, 0xff, 0x66, 0x00));
-                                    imgBluetooth.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_bluetooth_128dp));
+                                    imgBluetooth.setImageDrawable(
+                                            ContextCompat.getDrawable(getApplicationContext(),
+                                                    R.drawable.ic_bluetooth_128dp));
                                 } else {
                                     imgBluetooth.setColorFilter(Color.argb(0xff, 0xff, 0x66, 0x00));
-                                    imgBluetooth.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_bluetooth_connected_128dp));
+                                    imgBluetooth.setImageDrawable(
+                                            ContextCompat.getDrawable(getApplicationContext(),
+                                                    R.drawable.ic_bluetooth_connected_128dp));
                                 }
                             } else {
                                 imgBluetooth.setColorFilter(Color.argb(0xff, 0xd4, 0x00, 0x00));
-                                imgBluetooth.setImageDrawable(getResources().getDrawable(R.drawable.ic_bluetooth_disabled_128dp));
+                                imgBluetooth.setImageDrawable(
+                                        ContextCompat.getDrawable(getApplicationContext(),
+                                                R.drawable.ic_bluetooth_disabled_128dp));
                             }
                         } else if (mSerialModeUsed == SERIAL_USB) {
                             imgBluetooth.setColorFilter(Color.argb(0xff, 0x00, 0x00, 0x00));
@@ -1650,11 +1656,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     }
                 });
 
-                if (this.mObjectTree == null || mUAVTalkDevice == null || !mUAVTalkDevice.isConnected()) {
+                if (this.mObjectTree == null || mUAVTalkDevice == null
+                        || !mUAVTalkDevice.isConnected()) {
                     continue;  //nothing yet to show, or not connected
                 }
 
-                requestObjects();  //BT is flightmode, so the flow is not flowing..missing handshake?
+                requestObjects();
 
                 mActivity.runOnUiThread(new Runnable() {
                     @Override
@@ -1664,24 +1671,33 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                             switch (mCurrentView) {
                                 case VIEW_MAIN:
 
-                                    txtObjectLogTx.setText(H.k(String.valueOf(mTxObjects * POLL_SECOND_FACTOR)));
-                                    txtObjectLogRxGood.setText(H.k(String.valueOf(mRxObjectsGood * POLL_SECOND_FACTOR)));
-                                    txtObjectLogRxBad.setText(H.k(String.valueOf(mRxObjectsBad * POLL_SECOND_FACTOR)));
+                                    txtObjectLogTx.setText(
+                                            H.k(String.valueOf(mTxObjects * POLL_SECOND_FACTOR)));
+                                    txtObjectLogRxGood.setText(
+                                            H.k(String.valueOf(mRxObjectsGood * POLL_SECOND_FACTOR)));
+                                    txtObjectLogRxBad.setText(
+                                            H.k(String.valueOf(mRxObjectsBad * POLL_SECOND_FACTOR)));
 
                                     if (blink) {
                                         if (mRxObjectsGood > 0)
-                                            imgPacketsGood.setColorFilter(Color.argb(0xff, 0x00, 0x88, 0x00));
+                                            imgPacketsGood.setColorFilter(
+                                                    Color.argb(0xff, 0x00, 0x88, 0x00));
                                         if (mRxObjectsBad > 0)
-                                            imgPacketsBad.setColorFilter(Color.argb(0xff, 0x88, 0x00, 0x00));
+                                            imgPacketsBad.setColorFilter(
+                                                    Color.argb(0xff, 0x88, 0x00, 0x00));
                                         if (mTxObjects > 0)
-                                            imgPacketsUp.setColorFilter(Color.argb(0xff, 0x00, 0x00, 0x88));
+                                            imgPacketsUp.setColorFilter(
+                                                    Color.argb(0xff, 0x00, 0x00, 0x88));
                                     } else {
                                         if (mRxObjectsGood > 0)
-                                            imgPacketsGood.setColorFilter(Color.argb(0xff, 0x00, 0x00, 0x00));
+                                            imgPacketsGood.setColorFilter(
+                                                    Color.argb(0xff, 0x00, 0x00, 0x00));
                                         if (mRxObjectsBad > 0)
-                                            imgPacketsBad.setColorFilter(Color.argb(0xff, 0x00, 0x00, 0x00));
+                                            imgPacketsBad.setColorFilter(
+                                                    Color.argb(0xff, 0x00, 0x00, 0x00));
                                         if (mTxObjects > 0)
-                                            imgPacketsUp.setColorFilter(Color.argb(0xff, 0x00, 0x00, 0x00));
+                                            imgPacketsUp.setColorFilter(
+                                                    Color.argb(0xff, 0x00, 0x00, 0x00));
                                     }
 
                                     setTxObjects(0);
@@ -1754,8 +1770,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                                     float deg = 0;
                                     try {
                                         deg = (Float) getData("GPSPositionSensor", "Heading");
-                                    } catch (Exception e) {
-
+                                    } catch (Exception ignored) {
                                     }
 
                                     Float lat = getGPSCoordinates("GPSPositionSensor", "Latitude");
@@ -1784,7 +1799,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                                                         .flat(true)
                                                         .anchor(0.5f, 0.5f)
                                                         .rotation(deg)
-                                                //.icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_launcher))
                                         );
 
                                         mCurrentPosMarker++;
@@ -1904,7 +1918,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             char[] b = new char[20];
             try {
                 for (int i = 0; i < 20; i++) {
-                    String str = mObjectTree.getData("SystemSettings", 0, "VehicleName", i).toString();
+                    String str = mObjectTree.getData("SystemSettings", 0, "VehicleName", i)
+                            .toString();
                     b[i] = (char) Byte.parseByte(str);
 
                 }
@@ -2018,7 +2033,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 mActivity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(mActivity, "UAVO load completed in " + (System.currentTimeMillis() - millis) + " milliseconds", Toast.LENGTH_SHORT).show();
+                        final long submil = (System.currentTimeMillis() - millis);
+                        SingleToast.makeText(mActivity,
+                                "UAVO load completed in " + submil + " milliseconds",
+                                Toast.LENGTH_SHORT).show();
 
                     }
                 });
@@ -2028,7 +2046,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
                 if (mUAVTalkDevice != null && mUAVTalkDevice.isConnected()) {
                     try {
-                        String status = (String) mUAVTalkDevice.getObjectTree().getData("FlightTelemetryStats", "Status");
+                        String status = (String) mUAVTalkDevice.getObjectTree()
+                                .getData("FlightTelemetryStats", "Status");
                         String[] options = mUAVTalkDevice.getObjectTree().getXmlObjects()
                                 .get("FlightTelemetryStats").getFields().get("Status").getOptions();
                         byte b = 0;
@@ -2057,7 +2076,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     });
                 }
 
-                if (mUAVTalkDevice == null || (!mUAVTalkDevice.isConnected() && !mUAVTalkDevice.isConnecting())) {
+                if (mUAVTalkDevice == null
+                        || (!mUAVTalkDevice.isConnected() && !mUAVTalkDevice.isConnecting())) {
                     switch (mSerialModeUsed) {
                         case SERIAL_BLUETOOTH:
                             connectBluetooth();
@@ -2069,8 +2089,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 }
                 try {
                     Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    //thread wakes up
+                } catch (InterruptedException ignored) {
                 }
             }
         }

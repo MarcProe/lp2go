@@ -40,7 +40,6 @@ import android.hardware.usb.UsbConstants;
 import android.hardware.usb.UsbDeviceConnection;
 import android.hardware.usb.UsbEndpoint;
 import android.hardware.usb.UsbInterface;
-import android.hardware.usb.UsbRequest;
 import android.util.Log;
 
 import net.proest.lp2go3.H;
@@ -52,24 +51,15 @@ import net.proest.lp2go3.UAVTalk.UAVTalkObjectInstance;
 import net.proest.lp2go3.UAVTalk.UAVTalkObjectTree;
 import net.proest.lp2go3.UAVTalk.UAVTalkXMLObject;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.LinkedList;
 
 public class UAVTalkUsbDevice extends UAVTalkDevice {
 
-    final private static char[] hexArray = "0123456789ABCDEF".toCharArray();
-    //private final MainActivity mActivity;
     private final UsbDeviceConnection mDeviceConnection;
     private final UsbEndpoint mEndpointOut;
     private final UsbEndpoint mEndpointIn;
 
-    private final LinkedList<UsbRequest> mOutRequestPool = new LinkedList<UsbRequest>();
-    private final LinkedList<UsbRequest> mInRequestPool = new LinkedList<UsbRequest>();
-
     private final WaiterThread mWaiterThread = new WaiterThread();
-
-    private String mSerial;
 
     private boolean connected = false;
 
@@ -79,7 +69,6 @@ public class UAVTalkUsbDevice extends UAVTalkDevice {
 
         //mActivity = activity;
         mDeviceConnection = connection;
-        mSerial = connection.getSerial();
         mObjectTree = new UAVTalkObjectTree();
         mObjectTree.setXmlObjects(xmlObjects);
         mActivity.setPollThreadObjectTree(mObjectTree);
@@ -196,7 +185,7 @@ public class UAVTalkUsbDevice extends UAVTalkDevice {
             buffer[1] = (byte) ((sendlen) & 0xff);//bytes to send, which is packet.size()-2
 
             Log.d("USBSEND", "" + H.bytesToHex(buffer));
-            int i = mDeviceConnection.bulkTransfer(mEndpointOut, buffer, buffer.length, 1000);
+            mDeviceConnection.bulkTransfer(mEndpointOut, buffer, buffer.length, 1000);
 
             toWrite -= sendlen;
         }
@@ -233,12 +222,6 @@ public class UAVTalkUsbDevice extends UAVTalkDevice {
                 byte[] buffer = new byte[mEndpointIn.getMaxPacketSize()];
 
                 int result = mDeviceConnection.bulkTransfer(mEndpointIn, buffer, buffer.length, 1000);
-                byte[] usbheader = new byte[2];
-                usbheader[0] = buffer[0];
-                usbheader[1] = buffer[1];
-
-                //synbuffer[0] = buffer[2];
-                //Log.d("SYNC "+result, H.bytesToHex(buffer));
 
                 if (result > 0 && mActivity.isReady && buffer.length > 3 && buffer[2] == 0x3C) {
 
@@ -250,8 +233,6 @@ public class UAVTalkUsbDevice extends UAVTalkDevice {
                         Log.d("TOO", "LONG");
                         continue;
                     }
-
-                    //Log.d("USBH", H.bytesToHex(usbheader) + " " + H.bytesToHex(buffer));
 
                     //TODO: crappy code...
                     if (cM.getLength() > mEndpointIn.getMaxPacketSize()) {
@@ -282,7 +263,6 @@ public class UAVTalkUsbDevice extends UAVTalkDevice {
                     }
 
                     mActivity.incRxObjectsGood();
-
 
                     UAVTalkObject myObj = mObjectTree.getObjectFromID(H.intToHex(cM.getObjectId()));
                     UAVTalkObjectInstance myIns;
@@ -327,7 +307,7 @@ public class UAVTalkUsbDevice extends UAVTalkDevice {
 
                     if (isLogging()) {
                         //TODO: CHECK IF CRC IS IN bytes!
-                        log(Arrays.copyOfRange(bytes, 2, bytes.length)); //TODO: This removes the first two byte, added only for USB compatibility
+                        log(bytes);
                     }
                 }
             }
