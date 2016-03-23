@@ -222,7 +222,7 @@ public abstract class UAVTalkDevice {
             msg[0] = UAVTALK_CONNECTED;
             sendSettingsObject("GCSTelemetryStats", 0, "Status", 0, msg);
             mUavTalkConnectionState = UAVTALK_CONNECTED;
-
+            mFailedHandshakes++;
         } else if (flightTelemtryStatusField == UAVTALK_CONNECTED && mUavTalkConnectionState == UAVTALK_CONNECTED) {
             //We are connected, that is good.
             mFailedHandshakes = 0;
