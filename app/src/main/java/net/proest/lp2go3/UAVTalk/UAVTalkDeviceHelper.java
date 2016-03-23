@@ -16,19 +16,27 @@
 
 package net.proest.lp2go3.UAVTalk;
 
+import android.util.Log;
+
 public class UAVTalkDeviceHelper {
+
+    private static final String TAG = UAVTalkDeviceHelper.class.getSimpleName();
 
     public static byte[] updateSettingsObject(
             UAVTalkObjectTree oTree, String objectName, int instance, String fieldName,
             String elementName, byte[] newFieldData) {
-
-        return updateSettingsObject(
-                oTree,
-                objectName,
-                instance,
-                fieldName,
-                oTree.getElementIndex(objectName, fieldName, elementName),
-                newFieldData);
+        try {
+            return updateSettingsObject(
+                    oTree,
+                    objectName,
+                    instance,
+                    fieldName,
+                    oTree.getElementIndex(objectName, fieldName, elementName),
+                    newFieldData);
+        } catch (NullPointerException e) {
+            Log.e(TAG, e.getMessage());
+            return new byte[0];
+        }
     }
 
     public static byte[] updateSettingsObject(
