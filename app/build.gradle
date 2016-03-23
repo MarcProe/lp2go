@@ -6,8 +6,8 @@ android {
     defaultConfig {
         minSdkVersion 16
         targetSdkVersion 16
-        versionName '0.2.5.8'
-        versionCode 20508
+        versionName '0.2.5.10'
+        versionCode 20510
     }
 
     buildTypes {
@@ -51,6 +51,9 @@ android {
         maven {
             url "https://jitpack.io"
         }
+        maven {
+            url "http://dl.bintray.com/lukaville/maven"
+        }
     }
 }
 
@@ -61,4 +64,5 @@ dependencies {
     compile 'com.google.android.gms:play-services-appindexing:8.4.0'
     compile 'com.google.android.gms:play-services:8.4.0'
     compile 'com.github.Triggertrap:SeekArc:v1.1'
+    compile 'com.nbsp:library:1.08'
 }
