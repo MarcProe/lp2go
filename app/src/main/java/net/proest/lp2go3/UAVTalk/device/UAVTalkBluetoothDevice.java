@@ -354,6 +354,7 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
                             break;
                         case 0x24:
                             //handle NACK, e.g. show warning
+                            mActivity.incRxObjectsBad();
                             Log.w("UAVTalk", "Received NACK Object");
                             break;
                         default:

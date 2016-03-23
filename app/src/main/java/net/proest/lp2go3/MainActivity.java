@@ -91,6 +91,8 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.nbsp.materialfilepicker.MaterialFilePicker;
+import com.nbsp.materialfilepicker.ui.FilePickerActivity;
 
 import net.proest.lp2go3.UAVTalk.UAVTalkDeviceHelper;
 import net.proest.lp2go3.UAVTalk.UAVTalkMissingObjectException;
@@ -117,6 +119,8 @@ import org.xml.sax.SAXException;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -148,6 +152,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private static final int VIEW_LOGS = 4;
     private static final int VIEW_ABOUT = 5;
     private static final int VIEW_PID = 6;
+    private static final int CALLBACK_FILEPICKER = 3456;
 
     private static final int POLL_WAIT_TIME = 500;
     private static final int POLL_SECOND_FACTOR = 1000 / POLL_WAIT_TIME;
@@ -354,22 +359,27 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         if (files != null) {
             for (String filename : files) {
                 try {
-                    Log.d("COPY", "Copy " + filename);
-                    InputStream in = assetManager.open(UAVO_INTERNAL_PATH + File.separator + filename);
-                    FileOutputStream out = openFileOutput(UAVO_INTERNAL_PATH + "-" + filename, Context.MODE_PRIVATE);
-                    //File outFile = new File(out, Filename);
-
-
-                    //out = new FileOutputStream(outFile);
-                    copyFile(in, out);
-                    in.close();
-                    out.flush();
-                    out.close();
+                    copyFile(assetManager.open(UAVO_INTERNAL_PATH + File.separator + filename), filename);
                 } catch (IOException e) {
                     Log.e("tag", "Failed to copy asset file: " + filename, e);
                 }
             }
         }
+    }
+
+    private void copyFile(InputStream source, String relativeFilename) throws IOException {
+
+        Log.d("COPY", "Copy " + relativeFilename);
+
+        FileOutputStream out = openFileOutput(UAVO_INTERNAL_PATH + "-" + relativeFilename, Context.MODE_PRIVATE);
+        //File outFile = new File(out, Filename);
+
+
+        //out = new FileOutputStream(outFile);
+        copyFile(source, out);
+        source.close();
+        out.flush();
+        out.close();
     }
 
     private void copyFile(InputStream in, OutputStream out) throws IOException {
@@ -666,7 +676,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 }
             }
         }
+        initUavoSpinner();
+    }
 
+    private void initUavoSpinner() {
         spnUavoSource = (Spinner) findViewById(R.id.spnUavoSource);
         ArrayAdapter<CharSequence> uavoSourceAdapter = new ArrayAdapter<CharSequence>(this, android.R.layout.simple_spinner_item);
         uavoSourceAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -680,7 +693,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         if (subFiles != null) {
             int i = 0;
             for (File file : subFiles) {
-                Pattern p = Pattern.compile(".*uavo-(.*)\\.zip");
+                Pattern p = Pattern.compile(".*uavo-(.*)\\.zip$");
                 Matcher m = p.matcher(file.toString());
                 boolean b = m.matches();
                 if (b) {
@@ -830,6 +843,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 Log.d("RTE", "Toast not successful");
             }
         }
+
+        initWarnDialog().show();
+
     }
 
     private boolean loadXmlObjects(boolean overwrite) {
@@ -839,10 +855,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
             AssetManager assets = getAssets();
 
-            String file = this.mLoadedUavo + ".zip"; //TODO: Get files from internal storage
+            String file = this.mLoadedUavo + ".zip";
             ZipInputStream zis = null;
             try {
-                InputStream is = assets.open(UAVO_INTERNAL_PATH + File.separator + file);
+                //InputStream is = assets.open(UAVO_INTERNAL_PATH + File.separator + file);  //FIXME: load from files
+                InputStream is = openFileInput(UAVO_INTERNAL_PATH + "-" + file);
                 zis = new ZipInputStream(new BufferedInputStream(is));
                 ZipEntry ze;
                 while ((ze = zis.getNextEntry()) != null) {
@@ -904,8 +921,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         mDoReconnect = true;
 
         displayView(mCurrentView);
-
-        initWarnDialog().show();
 
         Log.d("onStart", "onStart");
     }
@@ -1126,6 +1141,68 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             setTitle(mNavMenuTitles[position]);
             mDrawerLayout.closeDrawer(mDrawerList);
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == CALLBACK_FILEPICKER && resultCode == RESULT_OK) {
+            String filePath = data.getStringExtra(FilePickerActivity.RESULT_FILE_PATH);
+            SingleToast.makeText(this, filePath, Toast.LENGTH_LONG).show();
+
+            try {
+                FileInputStream in = new FileInputStream(new File(filePath));
+                Uri uri = Uri.parse(filePath);
+                String strFileName = uri.getLastPathSegment();
+                copyFile(in, strFileName);
+                Log.d("FNF", "FNF");
+            } catch (FileNotFoundException e) {
+                Log.d("FNF", "FNF");
+                SingleToast.makeText(this, filePath + " not found", Toast.LENGTH_LONG).show();
+            } catch (IOException e) {
+                Log.d("IOE", "IOE");
+                SingleToast.makeText(this, "Cannot open " + filePath, Toast.LENGTH_LONG).show();
+            }
+
+            initUavoSpinner();
+
+
+        }
+    }
+
+    public void onClearUavObjectFilesClick(View v) {
+
+        File dir = getFilesDir();
+        File[] subFiles = dir.listFiles();
+
+        if (subFiles != null) {
+            int i = 0;
+            for (File file : subFiles) {
+                Pattern p = Pattern.compile(".*uavo-(.*)\\.zip$");
+                Matcher m = p.matcher(file.toString());
+                boolean b = m.matches();
+                if (b) {
+                    file.delete();
+                }
+            }
+        }
+
+        copyAssets();
+        initUavoSpinner();
+
+
+        SingleToast.makeText(this, "Files deleted", Toast.LENGTH_LONG).show();
+    }
+
+    public void onSelectUavObjectsSourceFileClick(View v) {
+        new MaterialFilePicker()
+                .withActivity(this)
+                .withRequestCode(CALLBACK_FILEPICKER)
+                .withFilter(Pattern.compile(".*\\.zip$")) // Filtering files and directories by file name using regexp
+                .withFilterDirectories(false) // Set directories filterable (false by default)
+                .withHiddenFiles(false) // Show hidden files and folders
+                .start();
     }
 
     public void onBatteryCapacityClick(View v) {
@@ -1924,7 +2001,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     b[i] = (char) Byte.parseByte(str);
 
                 }
-            } catch (UAVTalkMissingObjectException e) {
+            } catch (UAVTalkMissingObjectException | NumberFormatException e) {
                 try {
                     mUAVTalkDevice.requestObject("SystemSettings");
                 } catch (NullPointerException e2) {
@@ -1938,9 +2015,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             try {
                 Long l = (Long) mObjectTree.getData(object, field);
                 return ((float) l / 10000000);
-            } catch (UAVTalkMissingObjectException e1) {
-                return 0.0f;
-            } catch (NullPointerException e1) {
+            } catch (UAVTalkMissingObjectException | NullPointerException | ClassCastException e1) {
                 return 0.0f;
             }
         }
@@ -2060,7 +2135,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                             b++;
                         }
                         mUAVTalkDevice.handleHandshake(b);
-                    } catch (UAVTalkMissingObjectException e) {
+                    } catch (UAVTalkMissingObjectException | NullPointerException e) {
                         e.printStackTrace();
                     }
 

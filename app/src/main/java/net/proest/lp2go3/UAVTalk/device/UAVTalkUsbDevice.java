@@ -140,7 +140,6 @@ public class UAVTalkUsbDevice extends UAVTalkDevice {
     @Override
     public boolean sendAck(String objectId, int instance) {
         byte[] send = mObjectTree.getObjectFromID(objectId).toMessage((byte) 0x23, instance, true);
-        Log.d("ACKSEND", "" + H.bytesToHex(send));
         if (send != null) {
             mActivity.incTxObjects();
 
@@ -156,9 +155,7 @@ public class UAVTalkUsbDevice extends UAVTalkDevice {
     public boolean sendSettingsObject(String objectName, int instance) {
         byte[] send;
         send = mObjectTree.getObjectFromName(objectName).toMessage((byte) 0x22, instance, false);
-        Log.d("SENDx", "" + H.bytesToHex(send));
 
-        Log.d("SEND", "" + H.bytesToHex(send));
         if (send != null) {
             mActivity.incTxObjects();
 
@@ -184,7 +181,6 @@ public class UAVTalkUsbDevice extends UAVTalkDevice {
             buffer[0] = (byte) 0x02;//report id, is always 2. Period.
             buffer[1] = (byte) ((sendlen) & 0xff);//bytes to send, which is packet.size()-2
 
-            Log.d("USBSEND", "" + H.bytesToHex(buffer));
             mDeviceConnection.bulkTransfer(mEndpointOut, buffer, buffer.length, 1000);
 
             toWrite -= sendlen;
@@ -235,7 +231,6 @@ public class UAVTalkUsbDevice extends UAVTalkDevice {
                     UAVTalkMessage cM = new UAVTalkMessage(bytes, 2);
                     if (cM.getLength() > 266) {
                         mActivity.incRxObjectsBad();
-                        Log.d("TOO", "LONG");
                         continue;
                     }
 
@@ -302,6 +297,7 @@ public class UAVTalkUsbDevice extends UAVTalkDevice {
                             break;
                         case 0x24:
                             //handle NACK, e.g. show warning
+                            mActivity.incRxObjectsBad();
                             Log.w("UAVTalk", "Received NACK Object for " + myObj.getId() + ". Which is bad.");
                             break;
                         default:
