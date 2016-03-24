@@ -1186,7 +1186,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         File[] subFiles = dir.listFiles();
 
         if (subFiles != null) {
-            int i = 0;
             for (File file : subFiles) {
                 Pattern p = Pattern.compile(".*uavo-(.*)\\.zip$");
                 Matcher m = p.matcher(file.toString());
@@ -1917,8 +1916,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                                             txtLogSize.setText(String.valueOf(lUAV) + getString(R.string.TAB) + "(" + String.valueOf(lOPL) + ") KB");
                                             txtLogObjects.setText(String.valueOf(mUAVTalkDevice.getLogObjectsLogged()));
                                             txtLogDuration.setText(String.valueOf((System.currentTimeMillis() - mUAVTalkDevice.getLogStartTimeStamp()) / 1000) + " s");
-                                        } catch (Exception e) {
-
+                                        } catch (Exception ignored) {
                                         }
                                     }
                                     break;

@@ -18,20 +18,16 @@ package net.proest.lp2go3.UAVTalk;
 
 public class UAVTalkMessage {
 
-    private int mHead;
-    private byte mSync;
     private byte mType;
     private int mLength;
     private int mObjectId;
     private int mInstanceId;
-    private int mTimestamp;
     private byte[] mData;
-    private byte mCrc;
 
     public UAVTalkMessage(byte[] bytes, int offset) {
         if (bytes.length >= 10 + offset) {
-            //mHead = bytes[0] + bytes[1]*8;
-            this.mSync = bytes[0 + offset];
+
+            //this.mSync = bytes[offset];
             this.mType = bytes[1 + offset];
 
             int lb1 = bytes[3 + offset] & 0x000000ff;
@@ -69,7 +65,7 @@ public class UAVTalkMessage {
     public UAVTalkMessage(byte[] bytes) {
         if (bytes.length >= 12) {
             //mHead = bytes[0] + bytes[1]*8;
-            this.mSync = bytes[2];
+            //this.mSync = bytes[2];
             this.mType = bytes[3];
 
             int lb1 = bytes[5] & 0x000000ff;
@@ -99,10 +95,6 @@ public class UAVTalkMessage {
         }
     }
 
-    public byte getCrc() {
-        return mCrc;
-    }
-
     public byte getType() {
         return mType;
     }
@@ -117,10 +109,6 @@ public class UAVTalkMessage {
 
     public int getInstanceId() {
         return mInstanceId;
-    }
-
-    public int getTimestamp() {
-        return mTimestamp;
     }
 
     public byte[] getData() {

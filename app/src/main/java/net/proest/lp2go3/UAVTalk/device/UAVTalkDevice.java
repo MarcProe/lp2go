@@ -148,27 +148,6 @@ public abstract class UAVTalkDevice {
 
     public abstract boolean sendSettingsObject(String objectName, int instance, String fieldName, int element, byte[] newFieldData, final boolean block);
 
-    public boolean sendSettingsObject(String objectName, int instance, String fieldName, String elementName, byte[] newFieldData, final boolean block) {
-        return sendSettingsObject(
-                objectName,
-                instance,
-                fieldName,
-                mObjectTree.getElementIndex(objectName, fieldName, elementName),
-                newFieldData,
-                block
-        );
-    }
-
-    public boolean sendSettingsObject(String objectName, int instance, String fieldName, String elementName, byte[] newFieldData) {
-        return sendSettingsObject(
-                objectName,
-                instance,
-                fieldName,
-                mObjectTree.getElementIndex(objectName, fieldName, elementName),
-                newFieldData,
-                false
-        );
-    }
     public abstract boolean requestObject(String objectName);
 
     public abstract boolean requestObject(String objectName, int instance);

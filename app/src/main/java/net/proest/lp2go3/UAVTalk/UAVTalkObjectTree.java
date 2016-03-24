@@ -86,10 +86,6 @@ public class UAVTalkObjectTree {
         }
     }
 
-    public int getSize() {
-        return objects.size();
-    }
-
     public byte[] getInstanceData(String objectname, int instance) {
         UAVTalkObject obj = getObjectFromName(objectname);
         UAVTalkObjectInstance ins = obj.getInstance(instance);
@@ -116,10 +112,6 @@ public class UAVTalkObjectTree {
 
     public Object getData(String objectname, String fieldname, String element) throws UAVTalkMissingObjectException {
         return getData(objectname, 0, fieldname, element);
-    }
-
-    public Object getData(String objectname, int instance, String fieldname) throws UAVTalkMissingObjectException {
-        return getData(objectname, instance, fieldname, 0);
     }
 
     public Object getData(String objectname, int instance, String fieldname, String elementname) throws UAVTalkMissingObjectException {
@@ -152,8 +144,6 @@ public class UAVTalkObjectTree {
 
         byte[] data = ins.getData();
 
-        int[] fl = xmlobj.getFieldLengths();
-
         int pos = xmlfield.mPos;
 
         Object retval = null;
@@ -168,8 +158,7 @@ public class UAVTalkObjectTree {
                 retval = Float.valueOf(f);
             } else if (xmlfield.mType == UAVTalkXMLObject.FIELDTYPE_ENUM) {
                 byte[] fielddata = new byte[1];
-                byte b = 0;
-                b = data[pos + element];
+                byte b = data[pos + element];
                 fielddata[0] = b;
                 try {
                     //retval = xmlfield.mOptions[H.toInt(b)];

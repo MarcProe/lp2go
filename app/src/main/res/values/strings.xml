@@ -60,7 +60,6 @@
     <drawable name="ic_logs">@drawable/rounded_corner_ok</drawable>
     <drawable name="ic_about">@drawable/rounded_corner_ok</drawable>
     <drawable name="ic_pid">@drawable/rounded_corner_ok</drawable>
-    <string name="GOOGLE_ICONS_CC_BY"><![CDATA[<br />Menu-Icons by Google<br />(https://design.google.com/icons/)<br />under the<br />CC-BY license<br />(https://creativecommons.org/licenses/by/4.0/)<br />]]></string>
     <string name="RUNNING_ON_ANDROID_VERSION">"Running on Android "</string>
     <string name="LP2GO_RELEASE">"LP2Go Release "</string>
     <string name="OPEN_ROUND_BRACKET_WITH_SPACE"><![CDATA[ (]]></string>

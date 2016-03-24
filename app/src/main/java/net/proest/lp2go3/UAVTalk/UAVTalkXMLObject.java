@@ -15,6 +15,7 @@
  */
 package net.proest.lp2go3.UAVTalk;
 
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import net.proest.lp2go3.H;
@@ -232,32 +233,17 @@ public class UAVTalkXMLObject {
         return builder.parse(is);
     }
 
-    public int[] getFieldLengths() {
-        return mFieldLengths;
-    }
 
     public String getName() {
         return mName;
-    }
-
-    public String getCategory() {
-        return mCategory;
     }
 
     public Boolean isSettings() {
         return mIsSettings;
     }
 
-    public Boolean isSingleInst() {
-        return mIsSingleInst;
-    }
-
     public String getId() {
         return H.bytesToHex(H.toBytes(mId));
-    }
-
-    public int getIntId() {
-        return this.mId;
     }
 
     public HashMap<String, UAVTalkXMLObjectField> getFields() {
@@ -336,7 +322,7 @@ public class UAVTalkXMLObject {
         }
 
         @Override
-        public int compareTo(UAVTalkXMLObjectField another) {
+        public int compareTo(@NonNull UAVTalkXMLObjectField another) {
             return another.mTypelength - mTypelength;
         }
 

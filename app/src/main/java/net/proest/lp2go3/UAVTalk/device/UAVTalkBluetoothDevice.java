@@ -439,10 +439,10 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
         }
 
         private byte[] bufferRead(int dlen) throws IOException {
-            int read = 0;
             byte[] buffer = new byte[dlen];
-            read = mmInStream.read(buffer);
-            int pos = read;
+            int read = mmInStream.read(buffer);
+            int pos;
+
             while (read < dlen) {
                 try {
                     Thread.sleep(100);
@@ -460,7 +460,6 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
                     Log.e("BLUETOOTH", "Bad Packet, should not happen.");
                     return new byte[0];
                 }
-
             }
             return buffer;
         }
@@ -470,8 +469,7 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
                 mActivity.incTxObjects();
                 mmOutStream.write(buffer);
             } catch (IOException e) {
-                //e.printStackTrace();
-                // XXX
+                Log.e("ERR", "Error while writing to BT Stack");
             }
         }
 
