@@ -130,7 +130,12 @@ public class UAVTalkObject {
     public byte[] toMessage(byte type, int instance, boolean asAck) {
         UAVTalkObjectInstance inst = mInstances.get(instance);
 
-        byte[] instData = inst.getData();
+        byte[] instData = null;
+
+        if (inst != null) {
+            instData = inst.getData();
+        }
+
         byte[] retval;
 
         if (asAck) {
