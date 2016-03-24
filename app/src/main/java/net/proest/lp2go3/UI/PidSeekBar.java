@@ -75,7 +75,7 @@ public class PidSeekBar extends SeekBar implements SeekBar.OnSeekBarChangeListen
             p = p - p % mStep;
         }
 
-        double v = (double) p / mDenominator;
+        float v = (float) p / mDenominator;
         mTxtSeekBarProgress.setText(getDecimalString(v));
     }
 
@@ -130,7 +130,12 @@ public class PidSeekBar extends SeekBar implements SeekBar.OnSeekBarChangeListen
         return !mLockOpen;
     }
 
-    private String getDecimalString(double v) {
+    protected String getDecimalString(double v) {
+        DecimalFormat df = new DecimalFormat(mDecimalFormatString);
+        return df.format(v);
+    }
+
+    protected String getDecimalString(float v) {
         DecimalFormat df = new DecimalFormat(mDecimalFormatString);
         return df.format(v);
     }
@@ -151,5 +156,10 @@ public class PidSeekBar extends SeekBar implements SeekBar.OnSeekBarChangeListen
         } else {
             mTxtSeekBarProgress.setTextColor(Color.argb(0xff, 0xff, 0x00, 0x00));
         }
+    }
+
+    protected void setProgressOverride(float p) {
+        int ip = Math.round(p * this.mDenominator);
+        this.setProgress(ip);
     }
 }

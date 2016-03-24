@@ -74,9 +74,10 @@ public class PidTextView extends TextView {
                     public void onClick(DialogInterface dialog, int which) {
 
                         try {
-                            Float parse = Float.parseFloat(input.getText().toString());
-                            me.setText(parse.toString());
-                            me.getPidSeekBar().setProgress(parse);
+                            float parse = Float.parseFloat(input.getText().toString());
+                            String s = mPidSeekBar.getDecimalString(parse);
+                            me.setText(s);
+                            me.getPidSeekBar().setProgressOverride(parse);
                         } catch (Exception e) {
                             SingleToast.makeText(me.getContext(), getContext().getString(R.string.PID_COULD_NOT_PARSE), Toast.LENGTH_LONG).show();
                         }
