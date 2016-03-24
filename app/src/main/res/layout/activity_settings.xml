@@ -21,7 +21,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
                 android:layout_weight="1"
                 android:orientation="horizontal">
 
@@ -30,7 +30,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:text="Connection Type"
+                    android:text="@string/CONNECTION_TYPE"
                     android:textAppearance="?android:attr/textAppearanceLarge" />
 
                 <Spinner
@@ -56,7 +56,7 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:text="Bluetooth device"
+                        android:text="@string/BLUETOOTH_DEVICE"
                         android:textAppearance="?android:attr/textAppearanceLarge" />
 
                     <Spinner
@@ -84,7 +84,7 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:text="UAVO Source"
+                        android:text="@string/UAVO_SOURCE"
                         android:textAppearance="?android:attr/textAppearanceLarge" />
 
                     <LinearLayout
@@ -117,7 +117,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="18"
                     android:onClick="onSelectUavObjectsSourceFileClick"
-                    android:text="Load new File" />
+                    android:text="@string/LOAD_UAVO_FILE" />
 
                 <Button
                     android:id="@+id/button4"
@@ -126,7 +126,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="12"
                     android:onClick="onClearUavObjectFilesClick"
-                    android:text="Clear" />
+                    android:text="@string/CLEAR_UAVO_FILE" />
             </LinearLayout>
 
             <ScrollView
@@ -137,8 +137,8 @@
                 <TextView
                     android:id="@+id/textView13"
                     android:layout_width="match_parent"
-                    android:layout_height="fill_parent"
-                    android:text="To load a custom UAV File, you have to zip all XML files in the shared\\uavobjectdefinition directory. The XML files have to be on top level, you may not zip the folder. Then put the file with .zip ending on your phone and load it here. After that, it appears in the dropdown box. To delete all custom UAVO Files, hit Clear. At the moment, there is not much checking here. If you load some bad zip file, this will crash."
+                    android:layout_height="wrap_content"
+                    android:text="@string/HELP_CUSTOM_UAVO_FILES"
                     android:textAppearance="?android:attr/textAppearanceMedium" />
             </ScrollView>
 

@@ -96,7 +96,7 @@
                         android:id="@+id/imgRatePitchDerivativeLock"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
-                        android:layout_marginBottom="2px"
+                        android:layout_marginBottom="2dp"
                         android:layout_weight="1"
                         android:background="#dddddd"
                         android:src="@drawable/ic_lock_48dp"
@@ -167,7 +167,7 @@
                         android:id="@+id/imgPitchDerivative"
                         android:layout_width="fill_parent"
                         android:layout_height="0dp"
-                        android:layout_marginBottom="2px"
+                        android:layout_marginBottom="2dp"
                         android:layout_weight="1"
                         android:background="#dddddd"
                         android:src="@drawable/ic_swap_horiz_48dp" />
@@ -499,6 +499,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:contentDescription="@string/DOWNLOAD_PID_FROM_FC"
                     android:onClick="onPidDownloadClick"
                     android:src="@drawable/ic_cloud_download_96dp" />
 
@@ -507,6 +508,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:contentDescription="@string/UPLOAD_PID_TO_FC"
                     android:onClick="onPidUploadClick"
                     android:src="@drawable/ic_cloud_upload_128dp" />
 
@@ -515,6 +517,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:contentDescription="@string/SAVE_PID_PERSISTENT"
                     android:onClick="onPidSaveClick"
                     android:src="@drawable/ic_cloud_done_96dp" />
 
@@ -523,6 +526,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:contentDescription="@string/PID_BANK"
                     android:src="@drawable/ic_filter_none_128dp" />
 
             </LinearLayout>

@@ -130,11 +130,6 @@ public class PidSeekBar extends SeekBar implements SeekBar.OnSeekBarChangeListen
         return !mLockOpen;
     }
 
-    protected String getDecimalString(double v) {
-        DecimalFormat df = new DecimalFormat(mDecimalFormatString);
-        return df.format(v);
-    }
-
     protected String getDecimalString(float v) {
         DecimalFormat df = new DecimalFormat(mDecimalFormatString);
         return df.format(v);

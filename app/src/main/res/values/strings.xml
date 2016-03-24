@@ -89,5 +89,15 @@
     <string name="PID_NAME_RRD">Rate Roll Derivative</string>
     <string name="PID_NAME_RPD">Rate Pitch Derivative</string>
     <string name="PID_COULD_NOT_PARSE">Could not parse Input as PID</string>
+    <string name="CONNECTION_TYPE">Connection Type</string>
+    <string name="BLUETOOTH_DEVICE">Bluetooth device</string>
+    <string name="UAVO_SOURCE">UAVO Source</string>
+    <string name="LOAD_UAVO_FILE">Load UAVO File</string>
+    <string name="CLEAR_UAVO_FILE">Clear</string>
+    <string name="HELP_CUSTOM_UAVO_FILES">To load a custom UAV File, you have to zip all XML files in the shared\\uavobjectdefinition directory. The XML files have to be on top level, you may not zip the folder. Then put the file with .zip ending on your phone and load it here. After that, it appears in the dropdown box. To delete all custom UAVO Files, hit Clear. At the moment, there is not much checking here. If you load some bad zip file, this will crash.</string>
+    <string name="UPLOAD_PID_TO_FC">Upload PID to FC</string>
+    <string name="DOWNLOAD_PID_FROM_FC">Download PID from FC</string>
+    <string name="SAVE_PID_PERSISTENT">Save PID persistent on FC</string>
+    <string name="PID_BANK">Used PID Bank</string>
 </resources>
 
