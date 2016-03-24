@@ -28,6 +28,7 @@ public class UAVTalkObject {
 
     public UAVTalkObject(String id) {
         this.mId = id;
+
         mInstances = new HashMap<Integer, UAVTalkObjectInstance>();
     }
 
@@ -55,6 +56,10 @@ public class UAVTalkObject {
         retval[10] = (byte) (H.crc8(retval, 0, 10) & 0xff);
 
         return retval;
+    }
+
+    public HashMap<Integer, UAVTalkObjectInstance> getInstances() {
+        return mInstances;
     }
 
     public boolean isWriteBlocked() {

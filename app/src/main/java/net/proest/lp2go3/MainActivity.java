@@ -76,6 +76,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -96,11 +97,14 @@ import com.nbsp.materialfilepicker.ui.FilePickerActivity;
 
 import net.proest.lp2go3.UAVTalk.UAVTalkDeviceHelper;
 import net.proest.lp2go3.UAVTalk.UAVTalkMissingObjectException;
+import net.proest.lp2go3.UAVTalk.UAVTalkObject;
+import net.proest.lp2go3.UAVTalk.UAVTalkObjectInstance;
 import net.proest.lp2go3.UAVTalk.UAVTalkObjectTree;
 import net.proest.lp2go3.UAVTalk.UAVTalkXMLObject;
 import net.proest.lp2go3.UAVTalk.device.UAVTalkBluetoothDevice;
 import net.proest.lp2go3.UAVTalk.device.UAVTalkDevice;
 import net.proest.lp2go3.UAVTalk.device.UAVTalkUsbDevice;
+import net.proest.lp2go3.UI.ObjectsExpandableListViewAdapter;
 import net.proest.lp2go3.UI.PidSeekBar;
 import net.proest.lp2go3.UI.PidTextView;
 import net.proest.lp2go3.UI.SingleToast;
@@ -128,6 +132,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -230,9 +235,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     protected PidSeekBar sbrPidRatePitchDerivative;
     protected PidSeekBar sbrPidRollProportional;
     protected PidSeekBar sbrPidPitchProportional;
-
+    protected HashMap<String, List<String>> mListDataChild;
     protected ImageView imgPidBank;
     protected TextView txtDeviceText;
+    ObjectsExpandableListViewAdapter mListAdapter;
+    ExpandableListView mExpListView;
+    List<String> mListDataHeader;
     int mCurrentPosMarker = 0;
     private String mCurrentStabilizationBank;
     private String mLoadedUavo = null;
@@ -621,9 +629,119 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private void initViewObjects() {
         mView2 = getLayoutInflater().inflate(R.layout.activity_objects, null);
         setContentView(mView2); //Objects
-        {
-            txtObjects = (EditText) findViewById(R.id.etxObjects);
-        }
+
+        txtObjects = new EditText(this); //(EditText) findViewById(R.id.etxObjects);
+        mExpListView = (ExpandableListView) findViewById(R.id.elvObjects);
+        // get the listview
+        mExpListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
+
+            @Override
+            public void onGroupExpand(int groupPosition) {
+                Toast.makeText(getApplicationContext(),
+                        mListDataHeader.get(groupPosition) + " Expanded",
+                        Toast.LENGTH_SHORT).show();
+                List<String> fields = new ArrayList<String>();
+                if (mUAVTalkDevice != null && mUAVTalkDevice.getObjectTree() != null) {
+                    UAVTalkObject obj = mUAVTalkDevice.getObjectTree().getObjectNoCreate(mListDataHeader.get(groupPosition));
+                    if (obj != null) {
+                        for (UAVTalkObjectInstance ins : obj.getInstances().values()) {
+                            fields.add("" + ins.getId());
+                            Log.d("INS", "ADDED");
+                        }
+                        Log.d("OBJ", obj.getId());
+                    } else {
+                        Log.d("OBJ", "NULL");
+                        mUAVTalkDevice.requestObject(mListDataHeader.get(groupPosition));
+                    }
+                } else {
+                    Log.d("DEV_TREE", "NULL");
+                }
+                /*)
+                for (UAVTalkXMLObject.UAVTalkXMLObjectField xmlfield : xmlobj.getFields().values()) {
+                    Log.d("FLD", xmlfield.toString());
+                    fields.add(xmlfield.toString());
+                }
+                */
+                mListDataChild.put(mListDataHeader.get(groupPosition), fields);
+            }
+            //mListDataChild = new HashMap<String, List<String>>()
+
+        });
+
+        // preparing list data
+        //initObjectListData();
+
+
+    }
+
+    /*
+     * Preparing the list data
+     */
+    private void initObjectListData() {
+        final MainActivity me = this;
+        this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mListDataHeader = new ArrayList<String>();
+                mListDataChild = new HashMap<String, List<String>>();
+
+                // Adding child data
+                int i = 0;
+                for (UAVTalkXMLObject xmlobj : mXmlObjects.values()) {
+                    mListDataHeader.add(xmlobj.getName());
+                    Log.d("OBJ", xmlobj.getName());
+
+                    List<String> fields = new ArrayList<String>();
+                    /*
+                    for (UAVTalkXMLObject.UAVTalkXMLObjectField xmlfield : xmlobj.getFields().values()) {
+                        Log.d("FLD", xmlfield.toString());
+                        fields.add(xmlfield.toString());
+                    }
+                    */
+
+                    mListDataChild.put(mListDataHeader.get(i), fields);
+                }
+
+                mListAdapter = new ObjectsExpandableListViewAdapter(me, mListDataHeader, mListDataChild);
+
+                // setting list adapter
+                mExpListView.setAdapter(mListAdapter);
+            }
+        });
+                /*
+        mListDataHeader.add("Top 250");
+        mListDataHeader.add("Now Showing");
+        mListDataHeader.add("Coming Soon..");
+
+        // Adding child data
+        List<String> top250 = new ArrayList<String>();
+        top250.add("The Shawshank Redemption");
+        top250.add("The Godfather");
+        top250.add("The Godfather: Part II");
+        top250.add("Pulp Fiction");
+        top250.add("The Good, the Bad and the Ugly");
+        top250.add("The Dark Knight");
+        top250.add("12 Angry Men");
+
+        List<String> nowShowing = new ArrayList<String>();
+        nowShowing.add("The Conjuring");
+        nowShowing.add("Despicable Me 2");
+        nowShowing.add("Turbo");
+        nowShowing.add("Grown Ups 2");
+        nowShowing.add("Red 2");
+        nowShowing.add("The Wolverine");
+
+        List<String> comingSoon = new ArrayList<String>();
+        comingSoon.add("2 Guns");
+        comingSoon.add("The Smurfs 2");
+        comingSoon.add("The Spectacular Now");
+        comingSoon.add("The Canyons");
+        comingSoon.add("Europa Report");
+
+        mListDataChild.put(mListDataHeader.get(0), top250); // Header, Child data
+        mListDataChild.put(mListDataHeader.get(1), nowShowing);
+        mListDataChild.put(mListDataHeader.get(2), comingSoon);
+        */
     }
 
     private void initViewSettings() {
@@ -894,6 +1012,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 }
             }
             mDoReconnect = true;
+
+            initObjectListData();
+
             return true;
         }
         return false;
