@@ -40,6 +40,7 @@ import android.hardware.usb.UsbConstants;
 import android.hardware.usb.UsbDeviceConnection;
 import android.hardware.usb.UsbEndpoint;
 import android.hardware.usb.UsbInterface;
+import android.hardware.usb.UsbRequest;
 import android.util.Log;
 
 import net.proest.lp2go3.H;
@@ -51,6 +52,7 @@ import net.proest.lp2go3.UAVTalk.UAVTalkObjectInstance;
 import net.proest.lp2go3.UAVTalk.UAVTalkObjectTree;
 import net.proest.lp2go3.UAVTalk.UAVTalkXMLObject;
 
+import java.nio.ByteBuffer;
 import java.util.HashMap;
 
 public class UAVTalkUsbDevice extends UAVTalkDevice {
@@ -58,10 +60,10 @@ public class UAVTalkUsbDevice extends UAVTalkDevice {
     private final UsbDeviceConnection mDeviceConnection;
     private final UsbEndpoint mEndpointOut;
     private final UsbEndpoint mEndpointIn;
-
     private final WaiterThread mWaiterThread = new WaiterThread();
-
+    private UsbRequest mOutRequest = null;
     private boolean connected = false;
+
 
     public UAVTalkUsbDevice(MainActivity activity, UsbDeviceConnection connection,
                             UsbInterface intf, HashMap<String, UAVTalkXMLObject> xmlObjects) {
@@ -170,6 +172,7 @@ public class UAVTalkUsbDevice extends UAVTalkDevice {
 
     @Override
     protected boolean writeByteArray(byte[] bytes) {
+        boolean retval = false;
         int psize = mEndpointOut.getMaxPacketSize() - 2;
         int toWrite = bytes.length;
 
@@ -181,14 +184,41 @@ public class UAVTalkUsbDevice extends UAVTalkDevice {
             buffer[0] = (byte) 0x02;//report id, is always 2. Period.
             buffer[1] = (byte) ((sendlen) & 0xff);//bytes to send, which is packet.size()-2
 
-            mDeviceConnection.bulkTransfer(mEndpointOut, buffer, buffer.length, 1000);
+            if (mOutRequest == null) {
+                mOutRequest = new UsbRequest();
+                mOutRequest.initialize(mDeviceConnection, mEndpointOut);
+            }
+
+            retval = mOutRequest.queue(ByteBuffer.wrap(buffer), buffer.length);
 
             toWrite -= sendlen;
         }
 
-        return true;
+        return retval;
     }
 
+    /*
+        @Override
+        protected boolean writeByteArray(byte[] bytes) {
+            int psize = mEndpointOut.getMaxPacketSize() - 2;
+            int toWrite = bytes.length;
+
+            while (toWrite > 0) {
+                int sendlen = toWrite - psize > 0 ? psize : toWrite;
+                byte[] buffer = new byte[sendlen + 2];
+
+                System.arraycopy(bytes, bytes.length - toWrite, buffer, 2, sendlen);
+                buffer[0] = (byte) 0x02;//report id, is always 2. Period.
+                buffer[1] = (byte) ((sendlen) & 0xff);//bytes to send, which is packet.size()-2
+
+                mDeviceConnection.bulkTransfer(mEndpointOut, buffer, buffer.length, 1000);
+
+                toWrite -= sendlen;
+            }
+
+            return true;
+        }
+    */
     @Override
     public boolean sendSettingsObject(String objectName, int instance, String fieldName, int element, byte[] newFieldData, final boolean block) {
         if (block) mObjectTree.getObjectFromName(objectName).setWriteBlocked(true);
