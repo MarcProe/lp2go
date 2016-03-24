@@ -81,5 +81,14 @@
     <string name="SAVED_PERSISTENT">"Saved to persistent storage. "</string>
     <string name="PID_SENT">"Sent! Numbers should turn black now. "</string>
     <string name="PID_LOADING">"Loading current PID. "</string>
+    <string name="PID_NAME_RRP">Rate Roll Proportional</string>
+    <string name="PID_NAME_RPP">Rate Pitch Proportional</string>
+    <string name="PID_NAME_RRI">Rate Roll Integral</string>
+    <string name="PID_NAME_RPI">Rate Pitch Integral</string>
+    <string name="PID_NAME_ARP">Attitude Roll Proportional</string>
+    <string name="PID_NAME_APP">Attitude Pitch Proportional</string>
+    <string name="PID_NAME_RRD">Rate Roll Derivative</string>
+    <string name="PID_NAME_RPD">Rate Pitch Derivative</string>
+    <string name="PID_COULD_NOT_PARSE">Could not parse Input as PID</string>
 </resources>
 

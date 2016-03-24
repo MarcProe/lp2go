@@ -54,6 +54,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
                         android:layout_weight="1"
+                        android:background="#dddddd"
                         android:src="@drawable/ic_lock_48dp"
                         android:tint="@color/Critical" />
 
@@ -62,6 +63,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
                         android:layout_weight="1"
+                        android:background="#dddddd"
                         android:src="@drawable/ic_lock_48dp"
                         android:tint="@color/Critical" />
 
@@ -86,6 +88,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
                         android:layout_weight="1"
+                        android:background="#dddddd"
                         android:src="@drawable/ic_lock_48dp"
                         android:tint="@color/Critical" />
 
@@ -95,6 +98,7 @@
                         android:layout_height="0dp"
                         android:layout_marginBottom="2px"
                         android:layout_weight="1"
+                        android:background="#dddddd"
                         android:src="@drawable/ic_lock_48dp"
                         android:tint="@color/Critical" />
 
@@ -126,6 +130,7 @@
                         android:layout_width="fill_parent"
                         android:layout_height="0dp"
                         android:layout_weight="1"
+                        android:background="#dddddd"
                         android:src="@drawable/ic_swap_vert_48dp" />
 
                     <ImageView
@@ -133,6 +138,7 @@
                         android:layout_width="fill_parent"
                         android:layout_height="0dp"
                         android:layout_weight="1"
+                        android:background="#dddddd"
                         android:src="@drawable/ic_swap_horiz_48dp" />
 
                     <ImageView
@@ -154,6 +160,7 @@
                         android:layout_width="fill_parent"
                         android:layout_height="0dp"
                         android:layout_weight="1"
+                        android:background="#dddddd"
                         android:src="@drawable/ic_swap_vert_48dp" />
 
                     <ImageView
@@ -162,6 +169,7 @@
                         android:layout_height="0dp"
                         android:layout_marginBottom="2px"
                         android:layout_weight="1"
+                        android:background="#dddddd"
                         android:src="@drawable/ic_swap_horiz_48dp" />
 
 
@@ -206,6 +214,7 @@
                         android:layout_height="0dp"
                         android:layout_gravity="center"
                         android:layout_weight="1"
+                        android:background="#dddddd"
                         android:gravity="center_vertical|center_horizontal"
                         android:text="I"
                         android:textAlignment="center"
@@ -218,6 +227,7 @@
                         android:layout_height="0dp"
                         android:layout_gravity="center"
                         android:layout_weight="1"
+                        android:background="#dddddd"
                         android:gravity="center_vertical|center_horizontal"
                         android:text="I"
                         android:textAlignment="center"
@@ -254,6 +264,7 @@
                         android:layout_height="0dp"
                         android:layout_gravity="center"
                         android:layout_weight="1"
+                        android:background="#dddddd"
                         android:gravity="center_vertical|center_horizontal"
                         android:text="D"
                         android:textAlignment="center"
@@ -267,6 +278,7 @@
                         android:layout_gravity="center"
                         android:layout_marginBottom="2px"
                         android:layout_weight="1"
+                        android:background="#dddddd"
                         android:gravity="center_vertical|center_horizontal"
                         android:text="D"
                         android:textAlignment="center"
@@ -280,11 +292,16 @@
                     android:layout_weight="18"
                     android:orientation="vertical">
 
-                    <TextView
+                    <net.proest.lp2go3.UI.PidTextView
                         android:id="@+id/txtPidRateRollProportional"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
+                        android:layout_margin="0dp"
+                        android:layout_marginBottom="0dp"
+                        android:layout_marginLeft="0dp"
+                        android:layout_marginRight="0dp"
                         android:layout_marginTop="2dp"
+                        android:onClick="onPidTextViewClick"
                         android:text="0"
                         android:textAlignment="center"
                         android:textAppearance="?android:attr/textAppearanceSmall" />
@@ -298,10 +315,16 @@
                         android:progress="3000" />
 
 
-                    <TextView
+                    <net.proest.lp2go3.UI.PidTextView
                         android:id="@+id/txtPidRatePitchProportional"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
+                        android:layout_margin="0dp"
+                        android:layout_marginBottom="0dp"
+                        android:layout_marginLeft="0dp"
+                        android:layout_marginRight="0dp"
+                        android:layout_marginTop="0dp"
+                        android:onClick="onPidTextViewClick"
                         android:text="0"
                         android:textAlignment="center"
                         android:textAppearance="?android:attr/textAppearanceSmall" />
@@ -315,10 +338,17 @@
                         android:progress="3000" />
 
 
-                    <TextView
+                    <net.proest.lp2go3.UI.PidTextView
                         android:id="@+id/txtPidRateRollIntegral"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
+                        android:layout_margin="0dp"
+                        android:layout_marginBottom="0dp"
+                        android:layout_marginLeft="0dp"
+                        android:layout_marginRight="0dp"
+                        android:layout_marginTop="2dp"
+                        android:background="#dddddd"
+                        android:onClick="onPidTextViewClick"
                         android:text="0"
                         android:textAlignment="center"
                         android:textAppearance="?android:attr/textAppearanceSmall" />
@@ -328,13 +358,21 @@
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
                         android:layout_weight="1"
+                        android:background="#dddddd"
                         android:max="50000"
                         android:progress="6500" />
 
-                    <TextView
+                    <net.proest.lp2go3.UI.PidTextView
                         android:id="@+id/txtPidRatePitchIntegral"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
+                        android:layout_margin="0dp"
+                        android:layout_marginBottom="0dp"
+                        android:layout_marginLeft="0dp"
+                        android:layout_marginRight="0dp"
+                        android:layout_marginTop="0dp"
+                        android:background="#dddddd"
+                        android:onClick="onPidTextViewClick"
                         android:text="0"
                         android:textAlignment="center"
                         android:textAppearance="?android:attr/textAppearanceSmall" />
@@ -344,14 +382,21 @@
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
                         android:layout_weight="1"
+                        android:background="#dddddd"
                         android:max="50000"
                         android:progress="6500" />
 
 
-                    <TextView
+                    <net.proest.lp2go3.UI.PidTextView
                         android:id="@+id/txtPidRollProportional"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
+                        android:layout_margin="0dp"
+                        android:layout_marginBottom="0dp"
+                        android:layout_marginLeft="0dp"
+                        android:layout_marginRight="0dp"
+                        android:layout_marginTop="2dp"
+                        android:onClick="onPidTextViewClick"
                         android:text="0"
                         android:textAlignment="center"
                         android:textAppearance="?android:attr/textAppearanceSmall" />
@@ -365,10 +410,16 @@
                         android:progress="2500000" />
 
 
-                    <TextView
+                    <net.proest.lp2go3.UI.PidTextView
                         android:id="@+id/txtPidPitchProportional"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
+                        android:layout_margin="0dp"
+                        android:layout_marginBottom="0dp"
+                        android:layout_marginLeft="0dp"
+                        android:layout_marginRight="0dp"
+                        android:layout_marginTop="0dp"
+                        android:onClick="onPidTextViewClick"
                         android:text="0"
                         android:textAlignment="center"
                         android:textAppearance="?android:attr/textAppearanceSmall" />
@@ -382,10 +433,17 @@
                         android:progress="2500000" />
 
 
-                    <TextView
+                    <net.proest.lp2go3.UI.PidTextView
                         android:id="@+id/txtPidRateRollDerivative"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
+                        android:layout_margin="0dp"
+                        android:layout_marginBottom="0dp"
+                        android:layout_marginLeft="0dp"
+                        android:layout_marginRight="0dp"
+                        android:layout_marginTop="2dp"
+                        android:background="#dddddd"
+                        android:onClick="onPidTextViewClick"
                         android:text="0"
                         android:textAlignment="center"
                         android:textAppearance="?android:attr/textAppearanceSmall" />
@@ -395,15 +453,22 @@
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
                         android:layout_weight="1"
+                        android:background="#dddddd"
                         android:max="1000"
                         android:progress="50" />
 
 
-                    <TextView
+                    <net.proest.lp2go3.UI.PidTextView
                         android:id="@+id/txtPidRatePitchDerivative"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="2px"
+                        android:layout_margin="0dp"
+                        android:layout_marginBottom="0dp"
+                        android:layout_marginLeft="0dp"
+                        android:layout_marginRight="0dp"
+                        android:layout_marginTop="0dp"
+                        android:background="#dddddd"
+                        android:onClick="onPidTextViewClick"
                         android:text="0"
                         android:textAlignment="center"
                         android:textAppearance="?android:attr/textAppearanceSmall" />
@@ -413,6 +478,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
                         android:layout_weight="1"
+                        android:background="#dddddd"
                         android:max="1000"
                         android:progress="50" />
 

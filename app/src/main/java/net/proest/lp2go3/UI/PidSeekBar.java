@@ -23,14 +23,13 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.SeekBar;
-import android.widget.TextView;
 
 import java.text.DecimalFormat;
 
 
 public class PidSeekBar extends SeekBar implements SeekBar.OnSeekBarChangeListener, SeekBar.OnTouchListener, View.OnClickListener {
 
-    private TextView mTxtSeekBarProgress;
+    private PidTextView mTxtSeekBarProgress;
     private int mDenominator;
     private int mStep;
     private String mDecimalFormatString;
@@ -38,6 +37,7 @@ public class PidSeekBar extends SeekBar implements SeekBar.OnSeekBarChangeListen
     private boolean mLockOpen;
     private int mProgress;
     private boolean mAllowUpdateFromFC = true;
+    private String mName;
 
     public PidSeekBar(Context context) {
         super(context);
@@ -49,6 +49,10 @@ public class PidSeekBar extends SeekBar implements SeekBar.OnSeekBarChangeListen
 
     public PidSeekBar(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+    }
+
+    public String getName() {
+        return mName;
     }
 
     public void setAllowUpdateFromFC(boolean allowUpdate) {
@@ -85,11 +89,13 @@ public class PidSeekBar extends SeekBar implements SeekBar.OnSeekBarChangeListen
 
     }
 
-    public void init(TextView textView, ImageView lock, int denominator, int max, int step, String dfs) {
+    public void init(PidTextView textView, ImageView lock, int denominator, int max, int step, String dfs, String name) {
         this.mDenominator = denominator;
         this.mStep = step;
         this.mTxtSeekBarProgress = textView;
+        this.mTxtSeekBarProgress.setPidSeekBar(this);
         this.mDecimalFormatString = dfs;
+        this.mName = name;
 
         this.setProgress(0);
         this.setMax(max);

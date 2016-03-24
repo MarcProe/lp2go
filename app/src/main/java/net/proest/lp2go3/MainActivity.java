@@ -102,6 +102,7 @@ import net.proest.lp2go3.UAVTalk.device.UAVTalkBluetoothDevice;
 import net.proest.lp2go3.UAVTalk.device.UAVTalkDevice;
 import net.proest.lp2go3.UAVTalk.device.UAVTalkUsbDevice;
 import net.proest.lp2go3.UI.PidSeekBar;
+import net.proest.lp2go3.UI.PidTextView;
 import net.proest.lp2go3.UI.SingleToast;
 import net.proest.lp2go3.c.PID;
 import net.proest.lp2go3.slider.AboutFragment;
@@ -746,52 +747,60 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         imgPidBank = (ImageView) findViewById(R.id.imgPidBank);
 
             sbrPidRateRollProportional = (PidSeekBar) findViewById(R.id.sbrPidRateRollProportional);
-            sbrPidRateRollProportional.init((TextView) findViewById(R.id.txtPidRateRollProportional),
+        sbrPidRateRollProportional.init((PidTextView) findViewById(R.id.txtPidRateRollProportional),
                     (ImageView) findViewById(R.id.imgRateRollProportionalLock),
                     PID.PID_RATE_ROLL_PROP_DENOM, PID.PID_RATE_ROLL_PROP_MAX,
-                    PID.PID_RATE_ROLL_PROP_STEP, PID.PID_RATE_ROLL_PROP_DFS);
+                PID.PID_RATE_ROLL_PROP_STEP, PID.PID_RATE_ROLL_PROP_DFS,
+                getString(R.string.PID_NAME_RRP));
 
             sbrPidRatePitchProportional = (PidSeekBar) findViewById(R.id.sbrPidRatePitchProportional);
-            sbrPidRatePitchProportional.init((TextView) findViewById(R.id.txtPidRatePitchProportional),
+        sbrPidRatePitchProportional.init((PidTextView) findViewById(R.id.txtPidRatePitchProportional),
                     (ImageView) findViewById(R.id.imgRatePitchProportionalLock),
                     PID.PID_RATE_PITCH_PROP_DENOM, PID.PID_RATE_PITCH_PROP_MAX,
-                    PID.PID_RATE_PITCH_PROP_STEP, PID.PID_RATE_PITCH_PROP_DFS);
+                PID.PID_RATE_PITCH_PROP_STEP, PID.PID_RATE_PITCH_PROP_DFS,
+                getString(R.string.PID_NAME_RPP));
 
             sbrPidRateRollIntegral = (PidSeekBar) findViewById(R.id.sbrPidRateRollIntegral);
-            sbrPidRateRollIntegral.init((TextView) findViewById(R.id.txtPidRateRollIntegral),
+        sbrPidRateRollIntegral.init((PidTextView) findViewById(R.id.txtPidRateRollIntegral),
                     (ImageView) findViewById(R.id.imgRateRollIntegralLock),
                     PID.PID_RATE_ROLL_INTE_DENOM, PID.PID_RATE_ROLL_INTE_MAX,
-                    PID.PID_RATE_ROLL_INTE_STEP, PID.PID_RATE_ROLL_INTE_DFS);
+                PID.PID_RATE_ROLL_INTE_STEP, PID.PID_RATE_ROLL_INTE_DFS,
+                getString(R.string.PID_NAME_RRI));
 
             sbrPidRatePitchIntegral = (PidSeekBar) findViewById(R.id.sbrPidRatePitchIntegral);
-            sbrPidRatePitchIntegral.init((TextView) findViewById(R.id.txtPidRatePitchIntegral),
+        sbrPidRatePitchIntegral.init((PidTextView) findViewById(R.id.txtPidRatePitchIntegral),
                     (ImageView) findViewById(R.id.imgRatePitchIntegralLock),
                     PID.PID_RATE_PITCH_INTE_DENOM, PID.PID_RATE_PITCH_INTE_MAX,
-                    PID.PID_RATE_PITCH_INTE_STEP, PID.PID_RATE_PITCH_INTE_DFS);
+                PID.PID_RATE_PITCH_INTE_STEP, PID.PID_RATE_PITCH_INTE_DFS,
+                getString(R.string.PID_NAME_RPI));
 
             sbrPidRollProportional = (PidSeekBar) findViewById(R.id.sbrPidRollProportional);
-            sbrPidRollProportional.init((TextView) findViewById(R.id.txtPidRollProportional),
+        sbrPidRollProportional.init((PidTextView) findViewById(R.id.txtPidRollProportional),
                     (ImageView) findViewById(R.id.imgRollProportionalLock),
                     PID.PID_ROLL_PROP_DENOM, PID.PID_ROLL_PROP_MAX,
-                    PID.PID_ROLL_PROP_STEP, PID.PID_ROLL_PROP_DFS);
+                PID.PID_ROLL_PROP_STEP, PID.PID_ROLL_PROP_DFS,
+                getString(R.string.PID_NAME_ARP));
 
             sbrPidPitchProportional = (PidSeekBar) findViewById(R.id.sbrPidPitchProportional);
-            sbrPidPitchProportional.init((TextView) findViewById(R.id.txtPidPitchProportional),
+        sbrPidPitchProportional.init((PidTextView) findViewById(R.id.txtPidPitchProportional),
                     (ImageView) findViewById(R.id.imgPitchProportionalLock),
                     PID.PID_PITCH_PROP_DENOM, PID.PID_PITCH_PROP_MAX,
-                    PID.PID_PITCH_PROP_STEP, PID.PID_PITCH_PROP_DFS);
+                PID.PID_PITCH_PROP_STEP, PID.PID_PITCH_PROP_DFS,
+                getString(R.string.PID_NAME_APP));
 
             sbrPidRateRollDerivative = (PidSeekBar) findViewById(R.id.sbrPidRateRollDerivative);
-            sbrPidRateRollDerivative.init((TextView) findViewById(R.id.txtPidRateRollDerivative),
+        sbrPidRateRollDerivative.init((PidTextView) findViewById(R.id.txtPidRateRollDerivative),
                     (ImageView) findViewById(R.id.imgRateRollDerivativeLock),
                     PID.PID_RATE_ROLL_DERI_DENOM, PID.PID_RATE_ROLL_DERI_MAX,
-                    PID.PID_RATE_ROLL_DERI_STEP, PID.PID_RATE_ROLL_DERI_DFS);
+                PID.PID_RATE_ROLL_DERI_STEP, PID.PID_RATE_ROLL_DERI_DFS,
+                getString(R.string.PID_NAME_RRD));
 
             sbrPidRatePitchDerivative = (PidSeekBar) findViewById(R.id.sbrPidRatePitchDerivative);
-            sbrPidRatePitchDerivative.init((TextView) findViewById(R.id.txtPidRatePitchDerivative),
+        sbrPidRatePitchDerivative.init((PidTextView) findViewById(R.id.txtPidRatePitchDerivative),
                     (ImageView) findViewById(R.id.imgRatePitchDerivativeLock),
                     PID.PID_RATE_PITCH_DERI_DENOM, PID.PID_RATE_PITCH_DERI_MAX,
-                    PID.PID_RATE_PITCH_DERI_STEP, PID.PID_RATE_PITCH_DERI_DFS);
+                PID.PID_RATE_PITCH_DERI_STEP, PID.PID_RATE_PITCH_DERI_DFS,
+                getString(R.string.PID_NAME_RPD));
 
 
     }
@@ -1317,6 +1326,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         } else {
             SingleToast.makeText(this, R.string.SEND_FAILED, Toast.LENGTH_SHORT).show();
         }
+    }
+
+    public void onPidTextViewClick(View v) {
+        //((PidTextView)v).onClick();
     }
 
     public void onPidDownloadClick(View v) {
