@@ -108,6 +108,8 @@ import net.proest.lp2go3.UI.ObjectsExpandableListViewAdapter;
 import net.proest.lp2go3.UI.PidSeekBar;
 import net.proest.lp2go3.UI.PidTextView;
 import net.proest.lp2go3.UI.SingleToast;
+import net.proest.lp2go3.UI.alertdialog.EnumInputAlertDialog;
+import net.proest.lp2go3.UI.alertdialog.IntegerInputAlertDialog;
 import net.proest.lp2go3.c.PID;
 import net.proest.lp2go3.slider.AboutFragment;
 import net.proest.lp2go3.slider.LogsFragment;
@@ -646,15 +648,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     if (obj != null) {
                         for (UAVTalkObjectInstance ins : obj.getInstances().values()) {
                             fields.add("" + ins.getId());
-                            Log.d("INS", "ADDED");
+                            //Log.d("INS", "ADDED");
                         }
-                        Log.d("OBJ", obj.getId());
+                        //Log.d("OBJ", obj.getId());
                     } else {
-                        Log.d("OBJ", "NULL");
+                        //Log.d("OBJ", "NULL");
                         mUAVTalkDevice.requestObject(mListDataHeader.get(groupPosition));
                     }
                 } else {
-                    Log.d("DEV_TREE", "NULL");
+                    //Log.d("DEV_TREE", "NULL");
                 }
                 /*)
                 for (UAVTalkXMLObject.UAVTalkXMLObjectField xmlfield : xmlobj.getFields().values()) {
@@ -689,7 +691,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 int i = 0;
                 for (UAVTalkXMLObject xmlobj : mXmlObjects.values()) {
                     mListDataHeader.add(xmlobj.getName());
-                    Log.d("OBJ", xmlobj.getName());
+                    //Log.d("OBJ", xmlobj.getName());
 
                     List<String> fields = new ArrayList<String>();
                     /*
@@ -708,40 +710,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 mExpListView.setAdapter(mListAdapter);
             }
         });
-                /*
-        mListDataHeader.add("Top 250");
-        mListDataHeader.add("Now Showing");
-        mListDataHeader.add("Coming Soon..");
-
-        // Adding child data
-        List<String> top250 = new ArrayList<String>();
-        top250.add("The Shawshank Redemption");
-        top250.add("The Godfather");
-        top250.add("The Godfather: Part II");
-        top250.add("Pulp Fiction");
-        top250.add("The Good, the Bad and the Ugly");
-        top250.add("The Dark Knight");
-        top250.add("12 Angry Men");
-
-        List<String> nowShowing = new ArrayList<String>();
-        nowShowing.add("The Conjuring");
-        nowShowing.add("Despicable Me 2");
-        nowShowing.add("Turbo");
-        nowShowing.add("Grown Ups 2");
-        nowShowing.add("Red 2");
-        nowShowing.add("The Wolverine");
-
-        List<String> comingSoon = new ArrayList<String>();
-        comingSoon.add("2 Guns");
-        comingSoon.add("The Smurfs 2");
-        comingSoon.add("The Spectacular Now");
-        comingSoon.add("The Canyons");
-        comingSoon.add("Europa Report");
-
-        mListDataChild.put(mListDataHeader.get(0), top250); // Header, Child data
-        mListDataChild.put(mListDataHeader.get(1), nowShowing);
-        mListDataChild.put(mListDataHeader.get(2), comingSoon);
-        */
     }
 
     private void initViewSettings() {
@@ -1335,7 +1303,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     public void onBatteryCapacityClick(View v) {
-        initBatteryCapacityDialog().show();
+        new IntegerInputAlertDialog(this)
+                .withText(txtCapacity.getText().toString())
+                .withTitle(getString(R.string.CAPACITY_DIALOG_TITLE))
+                .withLayout(R.layout.alert_dialog_integer_input)
+                .withUavTalkDevice(mUAVTalkDevice)
+                .withObject("FlightBatterySettings")
+                .withField("Capacity")
+                .withFieldType(UAVTalkXMLObject.FIELDTYPE_UINT32)
+                .show();
     }
 
     public void onAltitudeClick(View V) {
@@ -1359,7 +1335,16 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     public void onBatteryCellsClick(View v) {
-        initBatteryCellsDialog().show();
+        new IntegerInputAlertDialog(this)
+                .withText(txtCells.getText().toString())
+                .withTitle(getString(R.string.CELLS_DIALOG_TITLE))
+                .withLayout(R.layout.alert_dialog_integer_input)
+                .withUavTalkDevice(mUAVTalkDevice)
+                .withObject("FlightBatterySettings")
+                .withField("NbCells")
+                .withFieldType(UAVTalkXMLObject.FIELDTYPE_UINT8)
+                .withMinMax(1, 254)
+                .show();
     }
 
     public void onFusionAlgoClick(View v) {
@@ -1372,7 +1357,17 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 armingState = "";
             }
             if (armingState.equals("Disarmed")) {
-                initFusionAlgoDialog().show();
+                //initFusionAlgoDialog().show();
+                new EnumInputAlertDialog(this)
+                        //.withText(txtCells.getText().toString())
+                        .withTitle("Select Fusion Algorithm")
+                                //.withLayout(R.layout.alert_dialog_integer_input)
+                        .withUavTalkDevice(mUAVTalkDevice)
+                        .withObject("RevoSettings")
+                        .withField("FusionAlgorithm")
+                                //.withFieldType(UAVTalkXMLObject.FIELDTYPE_UINT8)
+                                //.withMinMax(1, 254)
+                        .show();
             } else {
                 SingleToast.makeText(this, getString(R.string.CHANGE_FUSION_ALGO_DISARMED),
                         Toast.LENGTH_LONG).show();
@@ -1546,47 +1541,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             mUAVTalkDevice = null;
         }
         return false;
-    }
-
-    private AlertDialog.Builder initBatteryCapacityDialog() {
-        AlertDialog.Builder batteryCapacityDialogBuilder = new AlertDialog.Builder(this);
-        batteryCapacityDialogBuilder.setTitle(R.string.CAPACITY_DIALOG_TITLE);
-
-        final EditText input = new EditText(this);
-        input.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
-        batteryCapacityDialogBuilder.setView(input);
-        input.setText(txtCapacity.getText());
-
-        batteryCapacityDialogBuilder.setPositiveButton(R.string.OK_BUTTON,
-                new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                byte[] bcdata;
-                try {
-                    bcdata = H.toBytes(Integer.parseInt(input.getText().toString()));
-                } catch (NumberFormatException e) {
-                    bcdata = H.toBytes(0);
-                }
-                if (mUAVTalkDevice != null && bcdata.length == 4) {
-                    bcdata = H.reverse4bytes(bcdata);
-                    mUAVTalkDevice.sendSettingsObject("FlightBatterySettings", 0, "Capacity", 0,
-                            bcdata);
-                    //mUAVTalkDevice.savePersistent("FlightBatterySettings");
-                }
-                dialog.dismiss();
-                dialog.cancel();
-            }
-        });
-
-        batteryCapacityDialogBuilder.setNegativeButton(R.string.CANCEL_BUTTON,
-                new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-                dialog.dismiss();
-            }
-        });
-        return batteryCapacityDialogBuilder;
     }
 
     private AlertDialog.Builder initWarnDialog() {
