@@ -1363,20 +1363,23 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     public void onFusionAlgoClick(View v) {
-        String armingState;
-        try {
-            armingState = mUAVTalkDevice.getObjectTree()
-                    .getData("FlightStatus", "Armed").toString();
-        } catch (UAVTalkMissingObjectException e) {
-            armingState = "";
-        }
-        if (armingState.equals("Disarmed")) {
-            initFusionAlgoDialog().show();
+        if (mUAVTalkDevice != null) {
+            String armingState;
+            try {
+                armingState = mUAVTalkDevice.getObjectTree()
+                        .getData("FlightStatus", "Armed").toString();
+            } catch (UAVTalkMissingObjectException e) {
+                armingState = "";
+            }
+            if (armingState.equals("Disarmed")) {
+                initFusionAlgoDialog().show();
+            } else {
+                SingleToast.makeText(this, getString(R.string.CHANGE_FUSION_ALGO_DISARMED),
+                        Toast.LENGTH_LONG).show();
+            }
         } else {
-            SingleToast.makeText(this, getString(R.string.CHANGE_FUSION_ALGO_DISARMED),
-                    Toast.LENGTH_LONG).show();
+            SingleToast.makeText(this, R.string.SEND_FAILED, Toast.LENGTH_SHORT).show();
         }
-
 
     }
 
