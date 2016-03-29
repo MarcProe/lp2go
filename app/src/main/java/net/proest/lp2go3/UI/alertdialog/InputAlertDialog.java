@@ -22,15 +22,15 @@ import android.content.Context;
 import net.proest.lp2go3.UAVTalk.device.UAVTalkDevice;
 
 public abstract class InputAlertDialog extends AlertDialog {
-    protected int mLayout;
-    protected String mTitle;
-    protected String mText;
-    protected UAVTalkDevice mUavTalkDevice;
-    protected String mObject;
-    protected String mField;
-    protected int mFieldType;
-    protected int mMin = -1;
-    protected int mMax = -1;
+    int mLayout;
+    String mTitle;
+    String mText;
+    UAVTalkDevice mUavTalkDevice;
+    String mObject;
+    String mField;
+    int mFieldType;
+    int mMin = -1;
+    int mMax = -1;
 
     public InputAlertDialog(Context parent) {
         super(parent);

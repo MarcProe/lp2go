@@ -167,83 +167,84 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     private static final boolean LOCAL_LOGD = true;
     private final static int HISTORY_MARKER_NUM = 5;
-    static boolean sHasPThread = false;
+    private static boolean sHasPThread = false;
     private static boolean initDone = false;
     private static int mCurrentView = 0;
+    private final Marker[] mPosHistory = new Marker[HISTORY_MARKER_NUM];
     public boolean isReady = false;
-    protected TextView txtObjectLogTx;
-    protected TextView txtObjectLogRxGood;
-    protected TextView txtObjectLogRxBad;
-    protected TextView txtAtti;
-    protected TextView txtPlan;
-    protected TextView txtStab;
-    protected TextView txtPath;
-    protected TextView txtGPS;
-    protected TextView txtGPSSatsInView;
-    protected TextView txtSensor;
-    protected TextView txtAirspd;
-    protected TextView txtMag;
-    protected TextView txtInput;
-    protected TextView txtOutput;
-    protected TextView txtI2C;
-    protected TextView txtTelemetry;
-    protected TextView txtFlightTelemetry;
-    protected TextView txtGCSTelemetry;
-    protected TextView txtFusionAlgorithm;
-    protected TextView txtBatt;
-    protected TextView txtTime;
-    protected TextView txtConfig;
-    protected TextView txtBoot;
-    protected TextView txtStack;
-    protected TextView txtMem;
-    protected TextView txtEvent;
-    protected TextView txtCPU;
-    protected TextView txtArmed;
-    protected TextView txtVolt;
-    protected TextView txtAmpere;
-    protected TextView txtmAh;
-    protected TextView txtTimeLeft;
-    protected TextView txtCapacity;
-    protected TextView txtCells;
-    protected TextView txtAltitude;
-    protected TextView txtAltitudeAccel;
-    protected TextView txtModeNum;
-    protected TextView txtModeFlightMode;
-    protected TextView txtFlightTime;
-    protected TextView txtModeAssistedControl;
-    protected TextView txtLatitude;
-    protected TextView txtLongitude;
-    protected TextView txtMapGPS;
-    protected TextView txtMapGPSSatsInView;
-    protected TextView txtVehicleName;
-    protected ImageView imgBluetooth;
-    protected ImageView imgUSB;
-    protected ImageView imgPacketsUp;
-    protected ImageView imgPacketsGood;
-    protected ImageView imgPacketsBad;
-    protected TextView txtObjects;
-    protected TextView txtLogFilename;
-    protected TextView txtLogSize;
-    protected TextView txtLogObjects;
-    protected TextView txtLogDuration;
-    protected Spinner spnUavoSource;
-    protected Spinner spnConnectionTypeSpinner;
-    protected Spinner spnBluetoothPairedDevice;
-    protected PidSeekBar sbrPidRateRollProportional;
-    protected PidSeekBar sbrPidRatePitchProportional;
-    protected PidSeekBar sbrPidRateRollIntegral;
-    protected PidSeekBar sbrPidRatePitchIntegral;
-    protected PidSeekBar sbrPidRateRollDerivative;
-    protected PidSeekBar sbrPidRatePitchDerivative;
-    protected PidSeekBar sbrPidRollProportional;
-    protected PidSeekBar sbrPidPitchProportional;
-    protected HashMap<String, List<String>> mListDataChild;
-    protected ImageView imgPidBank;
-    protected TextView txtDeviceText;
-    ObjectsExpandableListViewAdapter mListAdapter;
-    ExpandableListView mExpListView;
-    List<String> mListDataHeader;
-    int mCurrentPosMarker = 0;
+    private TextView txtObjectLogTx;
+    private TextView txtObjectLogRxGood;
+    private TextView txtObjectLogRxBad;
+    private TextView txtAtti;
+    private TextView txtPlan;
+    private TextView txtStab;
+    private TextView txtPath;
+    private TextView txtGPS;
+    private TextView txtGPSSatsInView;
+    private TextView txtSensor;
+    private TextView txtAirspd;
+    private TextView txtMag;
+    private TextView txtInput;
+    private TextView txtOutput;
+    private TextView txtI2C;
+    private TextView txtTelemetry;
+    private TextView txtFlightTelemetry;
+    private TextView txtGCSTelemetry;
+    private TextView txtFusionAlgorithm;
+    private TextView txtBatt;
+    private TextView txtTime;
+    private TextView txtConfig;
+    private TextView txtBoot;
+    private TextView txtStack;
+    private TextView txtMem;
+    private TextView txtEvent;
+    private TextView txtCPU;
+    private TextView txtArmed;
+    private TextView txtVolt;
+    private TextView txtAmpere;
+    private TextView txtmAh;
+    private TextView txtTimeLeft;
+    private TextView txtCapacity;
+    private TextView txtCells;
+    private TextView txtAltitude;
+    private TextView txtAltitudeAccel;
+    private TextView txtModeNum;
+    private TextView txtModeFlightMode;
+    private TextView txtFlightTime;
+    private TextView txtModeAssistedControl;
+    private TextView txtLatitude;
+    private TextView txtLongitude;
+    private TextView txtMapGPS;
+    private TextView txtMapGPSSatsInView;
+    private TextView txtVehicleName;
+    private ImageView imgBluetooth;
+    private ImageView imgUSB;
+    private ImageView imgPacketsUp;
+    private ImageView imgPacketsGood;
+    private ImageView imgPacketsBad;
+    private TextView txtObjects;
+    private TextView txtLogFilename;
+    private TextView txtLogSize;
+    private TextView txtLogObjects;
+    private TextView txtLogDuration;
+    private Spinner spnUavoSource;
+    private Spinner spnConnectionTypeSpinner;
+    private Spinner spnBluetoothPairedDevice;
+    private PidSeekBar sbrPidRateRollProportional;
+    private PidSeekBar sbrPidRatePitchProportional;
+    private PidSeekBar sbrPidRateRollIntegral;
+    private PidSeekBar sbrPidRatePitchIntegral;
+    private PidSeekBar sbrPidRateRollDerivative;
+    private PidSeekBar sbrPidRatePitchDerivative;
+    private PidSeekBar sbrPidRollProportional;
+    private PidSeekBar sbrPidPitchProportional;
+    private HashMap<String, List<String>> mListDataChild;
+    private ImageView imgPidBank;
+    private TextView txtDeviceText;
+    private ObjectsExpandableListViewAdapter mListAdapter;
+    private ExpandableListView mExpListView;
+    private List<String> mListDataHeader;
+    private int mCurrentPosMarker = 0;
     private String mCurrentStabilizationBank;
     private String mLoadedUavo = null;
     private BluetoothAdapter mBluetoothAdapter;
@@ -268,7 +269,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private UsbInterface mInterface;
     private UAVTalkDevice mUAVTalkDevice;
     private HashMap<String, UAVTalkXMLObject> mXmlObjects = null;
-    BroadcastReceiver mUsbReceiver = new BroadcastReceiver() {
+    private final BroadcastReceiver mUsbReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             Log.d("USB", action);
@@ -313,7 +314,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         }
     };
-    private Marker[] mPosHistory = new Marker[HISTORY_MARKER_NUM];
     private View mView0, mView1, mView2, mView3, mView4, mView5, mView6;
     private GoogleMap mMap;
     private MapView mMapView;
@@ -1075,7 +1075,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
     }
 
-    public void setContentView(View v, int p) {
+    private void setContentView(View v, int p) {
         if (mCurrentView != p) {
             mCurrentView = p;
             super.setContentView(v);
@@ -1446,10 +1446,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
     }
 
-    public void onPidTextViewClick(View v) {
-        //((PidTextView)v).onClick();
-    }
-
     public void onPidDownloadClick(View v) {
         if (mUAVTalkDevice != null && mUAVTalkDevice.isConnected()) {
             allowPidSliderUpdate();
@@ -1697,6 +1693,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         txtModeNum.setText(R.string.EMPTY_STRING);
         txtModeFlightMode.setText(R.string.EMPTY_STRING);
         txtModeAssistedControl.setText(R.string.EMPTY_STRING);
+    }
+
+    public void onPidTextViewClick(View view) {
     }
 
     private class SlideMenuClickListener implements ListView.OnItemClickListener {
@@ -2169,7 +2168,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     private class ConnectionThread extends Thread {
-        private MainActivity mActivity;
+        private final MainActivity mActivity;
         private boolean mIsValid = true;
 
         public ConnectionThread(MainActivity mActivity) {

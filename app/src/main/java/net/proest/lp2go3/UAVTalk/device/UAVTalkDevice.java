@@ -33,8 +33,8 @@ public abstract class UAVTalkDevice {
     public static final byte UAVTALK_CONNECTED = 0x03;
 
     private static final int MAX_HANDSHAKE_FAILURE_CYCLES = 3;
+    final MainActivity mActivity;
     protected volatile UAVTalkObjectTree mObjectTree;
-    MainActivity mActivity;
     private int mFailedHandshakes = 0;
     private FileOutputStream mLogOutputStream;
     private String mLogFileName = "OP-YYYY-MM-DD_HH-MM-SS";

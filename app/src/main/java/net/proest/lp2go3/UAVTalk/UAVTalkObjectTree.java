@@ -29,7 +29,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class UAVTalkObjectTree {
 
-    private ConcurrentHashMap<String, UAVTalkObject> objects;
+    private final ConcurrentHashMap<String, UAVTalkObject> objects;
     private HashMap<String, UAVTalkXMLObject> xmlObjects;
 
     public UAVTalkObjectTree() {
@@ -153,28 +153,21 @@ public class UAVTalkObjectTree {
                 float f = 0;
                 System.arraycopy(data, pos + element * 4, fielddata, 0, 4);
                 f = ByteBuffer.wrap(fielddata).order(ByteOrder.LITTLE_ENDIAN).getFloat();
-                //f = (float) Math.round(f * 100) / 100;
-                //retval = String.valueOf(f);
                 retval = Float.valueOf(f);
             } else if (xmlfield.mType == UAVTalkXMLObject.FIELDTYPE_ENUM) {
                 byte[] fielddata = new byte[1];
                 byte b = data[pos + element];
                 fielddata[0] = b;
                 try {
-                    //retval = xmlfield.mOptions[H.toInt(b)];
                     retval = xmlfield.mOptions[H.toInt(b)];
                 } catch (ArrayIndexOutOfBoundsException e) {
                     Log.d("AIOOBE", "" + H.toInt(b) + " " + data.length + " " + b + " " + H.bytesToHex(fielddata) + " " + H.bytesToHex(data) + " " + pos + " " + element);
-                    //Log.d("XXO", Arrays.toString(xmlfield.mOptions));
-                    //Log.d("XXE", Arrays.toString(xmlfield.mElements.toArray()));
                 }
-                //retval = b;
             } else if (xmlfield.mType == UAVTalkXMLObject.FIELDTYPE_UINT32) {
                 byte[] fielddata = new byte[4];
                 System.arraycopy(data, pos, fielddata, 0, 4);
                 int i = ByteBuffer.wrap(fielddata).order(ByteOrder.LITTLE_ENDIAN).getInt();
                 Long l = (long) i;
-                //retval = String.valueOf(l);
                 retval = l;
             } else if (xmlfield.mType == UAVTalkXMLObject.FIELDTYPE_INT32) {
                 byte[] fielddata = new byte[4];
@@ -186,13 +179,11 @@ public class UAVTalkObjectTree {
                 byte[] fielddata = new byte[1];
                 System.arraycopy(data, pos + element, fielddata, 0, 1);
                 int i = fielddata[0] & 0xff;
-                //retval = String.valueOf(i);
                 retval = i;
             } else if (xmlfield.mType == UAVTalkXMLObject.FIELDTYPE_INT8) {
                 byte[] fielddata = new byte[1];
                 System.arraycopy(data, pos, fielddata, 0, 1);
                 int i = fielddata[0];
-                //retval = String.valueOf(i);
                 retval = i;
             } else {
                 retval = "Type not implemented";

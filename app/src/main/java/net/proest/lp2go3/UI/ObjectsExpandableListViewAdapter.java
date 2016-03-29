@@ -31,10 +31,10 @@ import java.util.List;
 
 public class ObjectsExpandableListViewAdapter extends BaseExpandableListAdapter {
 
-    private Context mContext;
-    private List<String> mListDataHeader; // header titles
+    private final Context mContext;
+    private final List<String> mListDataHeader; // header titles
     // child data in format of header title, child title
-    private HashMap<String, List<String>> mListDataChild;
+    private final HashMap<String, List<String>> mListDataChild;
 
     public ObjectsExpandableListViewAdapter(Context context, List<String> listDataHeader,
                                             HashMap<String, List<String>> listChildData) {

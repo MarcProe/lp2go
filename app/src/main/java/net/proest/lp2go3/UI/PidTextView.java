@@ -31,8 +31,8 @@ import net.proest.lp2go3.R;
 
 public class PidTextView extends TextView {
 
-    GestureDetector mGestureDetector;
-    PidSeekBar mPidSeekBar;
+    private final GestureDetector mGestureDetector;
+    private PidSeekBar mPidSeekBar;
 
     public PidTextView(Context context) {
         super(context);
@@ -49,7 +49,7 @@ public class PidTextView extends TextView {
         mGestureDetector = new GestureDetector(context, new GestureListener());
     }
 
-    protected PidSeekBar getPidSeekBar() {
+    private PidSeekBar getPidSeekBar() {
         return mPidSeekBar;
     }
 
@@ -57,7 +57,7 @@ public class PidTextView extends TextView {
         this.mPidSeekBar = psb;
     }
 
-    public void showDialog() {
+    private void showDialog() {
 
         AlertDialog.Builder pidTextViewAlertDialog = new AlertDialog.Builder(this.getContext());
         pidTextViewAlertDialog.setTitle(this.mPidSeekBar.getName());

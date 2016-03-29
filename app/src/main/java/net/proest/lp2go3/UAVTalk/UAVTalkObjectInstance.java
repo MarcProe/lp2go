@@ -18,7 +18,7 @@ package net.proest.lp2go3.UAVTalk;
 
 public class UAVTalkObjectInstance {
 
-    private int mId;
+    private final int mId;
     private byte[] mData;
 
     public UAVTalkObjectInstance(int id, byte[] data) {

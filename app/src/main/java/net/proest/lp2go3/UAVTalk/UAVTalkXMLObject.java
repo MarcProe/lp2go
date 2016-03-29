@@ -37,6 +37,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+@SuppressWarnings("WeakerAccess")
 public class UAVTalkXMLObject {
 
     public static final int FIELDTYPE_INT8 = 0;
@@ -226,7 +227,7 @@ public class UAVTalkXMLObject {
         this.mId = calculateID();
     }
 
-    public static Document loadXMLFromString(String xml) throws ParserConfigurationException, IOException, SAXException {
+    private static Document loadXMLFromString(String xml) throws ParserConfigurationException, IOException, SAXException {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
         InputSource is = new InputSource(new StringReader(xml));
@@ -236,6 +237,10 @@ public class UAVTalkXMLObject {
 
     public String getName() {
         return mName;
+    }
+
+    public String getmCategory() {
+        return mCategory;
     }
 
     public Boolean isSettings() {
@@ -308,14 +313,14 @@ public class UAVTalkXMLObject {
 
     //TODO: Getter and Setter
     public class UAVTalkXMLObjectField implements Comparable<UAVTalkXMLObjectField> {
-        protected String mName;
-        protected ArrayList<String> mElements;
-        protected int mElementCount;
-        protected int mType;
-        protected int mTypelength;
-        protected String[] mOptions;
-        protected int mPos;
-        protected int mSize;
+        String mName;
+        ArrayList<String> mElements;
+        int mElementCount;
+        int mType;
+        int mTypelength;
+        String[] mOptions;
+        int mPos;
+        int mSize;
 
         public String[] getOptions() {
             return mOptions;

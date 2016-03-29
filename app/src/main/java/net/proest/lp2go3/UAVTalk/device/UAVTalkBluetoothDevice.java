@@ -45,11 +45,9 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
     private static final int STATE_NONE = 0;
     private static final int STATE_CONNECTING = 1;
     private static final int STATE_CONNECTED = 2;
-
+    private final BluetoothAdapter mBluetoothAdapter;
     //private final MainActivity mActivity;
     private WaiterThread mWaiterThread;
-
-    private BluetoothAdapter mBluetoothAdapter;
     private ConnectThread mConnectThread;
     private BluetoothDevice mDevice;
     private int mState;

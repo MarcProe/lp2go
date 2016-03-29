@@ -99,5 +99,8 @@
     <string name="DOWNLOAD_PID_FROM_FC">Download PID from FC</string>
     <string name="SAVE_PID_PERSISTENT">Save PID persistent on FC</string>
     <string name="PID_BANK">Used PID Bank</string>
+    <string name="NOT_CONNECTED">Not connected.</string>
+    <string name="SAVE_BUTTON">Save</string>
+    <string name="UPLOAD_BUTTON">Upload</string>
 </resources>
 

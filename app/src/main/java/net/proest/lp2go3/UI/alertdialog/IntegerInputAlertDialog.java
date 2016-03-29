@@ -20,6 +20,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.text.InputFilter;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -38,7 +39,8 @@ public class IntegerInputAlertDialog extends InputAlertDialog {
 
     public void show() {
         if (mUavTalkDevice == null) {
-            SingleToast.makeText(getContext(), "Not connected.", Toast.LENGTH_SHORT).show();
+            SingleToast.makeText(getContext(), getContext().getString(R.string.NOT_CONNECTED),
+                    Toast.LENGTH_SHORT).show();
             return;
         }
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext());
@@ -52,10 +54,10 @@ public class IntegerInputAlertDialog extends InputAlertDialog {
         input.setSelection(mText.length());
         input.requestFocus();
         if (mMin > 0 && mMax > 0) {
-            input.setFilters(new InputFilter[]{new InputFilterMinMax(mMin, mMax)});
+            input.setFilters(new InputFilter[]{new InputFilterMinMax(getContext(), mMin, mMax)});
         }
 
-        dialogBuilder.setPositiveButton("Save",
+        dialogBuilder.setPositiveButton(R.string.SAVE_BUTTON,
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -66,7 +68,7 @@ public class IntegerInputAlertDialog extends InputAlertDialog {
                         dialog.dismiss();
                     }
                 });
-        dialogBuilder.setNeutralButton("Upload",
+        dialogBuilder.setNeutralButton(R.string.UPLOAD_BUTTON,
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -103,6 +105,7 @@ public class IntegerInputAlertDialog extends InputAlertDialog {
                     }
                     break;
                 default:
+                    Log.e("IntegerUnputAlertDialog", "Type not implemented!");
                     data = H.toBytes(0);
                     break;
             }

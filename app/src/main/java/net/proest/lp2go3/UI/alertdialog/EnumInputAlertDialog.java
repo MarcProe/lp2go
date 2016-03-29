@@ -35,7 +35,8 @@ public class EnumInputAlertDialog extends InputAlertDialog {
 
     public void show() {
         if (mUavTalkDevice == null) {
-            SingleToast.makeText(getContext(), "Not connected.", Toast.LENGTH_SHORT).show();
+            SingleToast.makeText(getContext(), getContext().getString(R.string.NOT_CONNECTED),
+                    Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -44,7 +45,8 @@ public class EnumInputAlertDialog extends InputAlertDialog {
 
         String[] types;
         try {
-            types = mUavTalkDevice.getObjectTree().getXmlObjects().get(mObject).getFields().get(mField).getOptions();
+            types = mUavTalkDevice.getObjectTree().getXmlObjects().get(mObject).getFields()
+                    .get(mField).getOptions();
         } catch (NullPointerException e) {
             types = null;
         }
@@ -61,7 +63,7 @@ public class EnumInputAlertDialog extends InputAlertDialog {
                     current++;
                 }
             }
-        } catch (UAVTalkMissingObjectException | NumberFormatException ignored) {
+        } catch (UAVTalkMissingObjectException | NumberFormatException | NullPointerException ignored) {
             ignored.printStackTrace();
         }
 
@@ -73,7 +75,7 @@ public class EnumInputAlertDialog extends InputAlertDialog {
             }
         });
 
-        dialogBuilder.setPositiveButton("Save",
+        dialogBuilder.setPositiveButton(R.string.SAVE_BUTTON,
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -85,7 +87,7 @@ public class EnumInputAlertDialog extends InputAlertDialog {
                         dialog.dismiss();
                     }
                 });
-        dialogBuilder.setNeutralButton("Upload",
+        dialogBuilder.setNeutralButton(R.string.UPLOAD_BUTTON,
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {

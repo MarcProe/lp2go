@@ -130,7 +130,7 @@ public class PidSeekBar extends SeekBar implements SeekBar.OnSeekBarChangeListen
         return !mLockOpen;
     }
 
-    protected String getDecimalString(float v) {
+    String getDecimalString(float v) {
         DecimalFormat df = new DecimalFormat(mDecimalFormatString);
         return df.format(v);
     }
@@ -153,7 +153,7 @@ public class PidSeekBar extends SeekBar implements SeekBar.OnSeekBarChangeListen
         }
     }
 
-    protected void setProgressOverride(float p) {
+    void setProgressOverride(float p) {
         int ip = Math.round(p * this.mDenominator);
         this.setProgress(ip);
     }

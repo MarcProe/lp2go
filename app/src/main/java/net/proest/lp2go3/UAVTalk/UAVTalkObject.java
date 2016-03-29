@@ -22,9 +22,9 @@ import java.util.HashMap;
 
 public class UAVTalkObject {
 
-    private String mId;
+    private final String mId;
+    private final HashMap<Integer, UAVTalkObjectInstance> mInstances;
     private boolean mWriteBlocked = false;
-    private HashMap<Integer, UAVTalkObjectInstance> mInstances;
 
     public UAVTalkObject(String id) {
         this.mId = id;
