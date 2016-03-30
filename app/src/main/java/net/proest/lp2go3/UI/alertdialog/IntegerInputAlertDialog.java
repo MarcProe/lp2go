@@ -53,7 +53,7 @@ public class IntegerInputAlertDialog extends InputAlertDialog {
         input.setText(mText);
         input.setSelection(mText.length());
         input.requestFocus();
-        if (mMin > 0 && mMax > 0) {
+        if (mMin >= 0 && mMax >= 0) {
             input.setFilters(new InputFilter[]{new InputFilterMinMax(getContext(), mMin, mMax)});
         }
 
