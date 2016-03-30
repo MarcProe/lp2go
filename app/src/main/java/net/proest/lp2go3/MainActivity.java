@@ -105,11 +105,11 @@ import net.proest.lp2go3.UAVTalk.device.UAVTalkBluetoothDevice;
 import net.proest.lp2go3.UAVTalk.device.UAVTalkDevice;
 import net.proest.lp2go3.UAVTalk.device.UAVTalkUsbDevice;
 import net.proest.lp2go3.UI.ObjectsExpandableListViewAdapter;
-import net.proest.lp2go3.UI.PidSeekBar;
 import net.proest.lp2go3.UI.PidTextView;
 import net.proest.lp2go3.UI.SingleToast;
 import net.proest.lp2go3.UI.alertdialog.EnumInputAlertDialog;
 import net.proest.lp2go3.UI.alertdialog.IntegerInputAlertDialog;
+import net.proest.lp2go3.UI.alertdialog.PidInputAlertDialog;
 import net.proest.lp2go3.c.PID;
 import net.proest.lp2go3.slider.AboutFragment;
 import net.proest.lp2go3.slider.LogsFragment;
@@ -134,6 +134,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -230,14 +232,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private Spinner spnUavoSource;
     private Spinner spnConnectionTypeSpinner;
     private Spinner spnBluetoothPairedDevice;
-    private PidSeekBar sbrPidRateRollProportional;
-    private PidSeekBar sbrPidRatePitchProportional;
-    private PidSeekBar sbrPidRateRollIntegral;
-    private PidSeekBar sbrPidRatePitchIntegral;
-    private PidSeekBar sbrPidRateRollDerivative;
-    private PidSeekBar sbrPidRatePitchDerivative;
-    private PidSeekBar sbrPidRollProportional;
-    private PidSeekBar sbrPidPitchProportional;
+    private PidTextView txtPidRateRollProportional;
+    private PidTextView txtPidRatePitchProportional;
+    private PidTextView txtPidRateRollIntegral;
+    private PidTextView txtPidRatePitchIntegral;
+    private PidTextView txtPidRateRollDerivative;
+    private PidTextView txtPidRatePitchDerivative;
+    private PidTextView txtPidRollProportional;
+    private PidTextView txtPidPitchProportional;
+    private HashSet mPidTexts;
     private HashMap<String, List<String>> mListDataChild;
     private ImageView imgPidBank;
     private TextView txtDeviceText;
@@ -318,6 +321,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private GoogleMap mMap;
     private MapView mMapView;
     private boolean mDoReconnect = false;
+    private PidTextView txtPidRateYawProportional;
+    private PidTextView txtPidRateYawIntegral;
+    private PidTextView txtPidRateYawDerivative;
+    private PidTextView txtPidYawProportional;
+    private PidTextView txtPidRollIntegral;
+    private PidTextView txtPidPitchIntegral;
+    private PidTextView txtPidYawIntegral;
 
     static private UsbInterface findAdbInterface(UsbDevice device) {
 
@@ -832,62 +842,176 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         imgPidBank = (ImageView) findViewById(R.id.imgPidBank);
 
-            sbrPidRateRollProportional = (PidSeekBar) findViewById(R.id.sbrPidRateRollProportional);
-        sbrPidRateRollProportional.init((PidTextView) findViewById(R.id.txtPidRateRollProportional),
-                    (ImageView) findViewById(R.id.imgRateRollProportionalLock),
-                    PID.PID_RATE_ROLL_PROP_DENOM, PID.PID_RATE_ROLL_PROP_MAX,
-                PID.PID_RATE_ROLL_PROP_STEP, PID.PID_RATE_ROLL_PROP_DFS,
-                getString(R.string.PID_NAME_RRP));
+       /* TextView t = (TextView) findViewById(R.id.txtLabelPidAttiStab);
+        t.setRotation(90f);
 
-            sbrPidRatePitchProportional = (PidSeekBar) findViewById(R.id.sbrPidRatePitchProportional);
-        sbrPidRatePitchProportional.init((PidTextView) findViewById(R.id.txtPidRatePitchProportional),
-                    (ImageView) findViewById(R.id.imgRatePitchProportionalLock),
-                    PID.PID_RATE_PITCH_PROP_DENOM, PID.PID_RATE_PITCH_PROP_MAX,
-                PID.PID_RATE_PITCH_PROP_STEP, PID.PID_RATE_PITCH_PROP_DFS,
-                getString(R.string.PID_NAME_RPP));
+        LinearLayout.LayoutParams p = (LinearLayout.LayoutParams)t.getLayoutParams();
+        int w = p.height;
+        int h = p.width;
+        Log.d("WIDTH HEIGHT", "" + p.width + " " +p.height);
+        p.height = h;
+        p.width = w;
 
-            sbrPidRateRollIntegral = (PidSeekBar) findViewById(R.id.sbrPidRateRollIntegral);
-        sbrPidRateRollIntegral.init((PidTextView) findViewById(R.id.txtPidRateRollIntegral),
-                    (ImageView) findViewById(R.id.imgRateRollIntegralLock),
-                    PID.PID_RATE_ROLL_INTE_DENOM, PID.PID_RATE_ROLL_INTE_MAX,
-                PID.PID_RATE_ROLL_INTE_STEP, PID.PID_RATE_ROLL_INTE_DFS,
-                getString(R.string.PID_NAME_RRI));
+        t.setLayoutParams(p);
+        Log.d("WIDTH HEIGHT", "" + p.width + " " + p.height);
 
-            sbrPidRatePitchIntegral = (PidSeekBar) findViewById(R.id.sbrPidRatePitchIntegral);
-        sbrPidRatePitchIntegral.init((PidTextView) findViewById(R.id.txtPidRatePitchIntegral),
-                    (ImageView) findViewById(R.id.imgRatePitchIntegralLock),
-                    PID.PID_RATE_PITCH_INTE_DENOM, PID.PID_RATE_PITCH_INTE_MAX,
-                PID.PID_RATE_PITCH_INTE_STEP, PID.PID_RATE_PITCH_INTE_DFS,
-                getString(R.string.PID_NAME_RPI));
+        //t.setEllipsize(TextUtils.TruncateAt.END);
+        //t.setText("Attitude Stabilization");
+        t.setBackgroundColor(Color.BLUE);
 
-            sbrPidRollProportional = (PidSeekBar) findViewById(R.id.sbrPidRollProportional);
-        sbrPidRollProportional.init((PidTextView) findViewById(R.id.txtPidRollProportional),
-                    (ImageView) findViewById(R.id.imgRollProportionalLock),
-                    PID.PID_ROLL_PROP_DENOM, PID.PID_ROLL_PROP_MAX,
-                PID.PID_ROLL_PROP_STEP, PID.PID_ROLL_PROP_DFS,
-                getString(R.string.PID_NAME_ARP));
+        t.setPadding(-20,0,-20,0);
+*/
+        mPidTexts = new HashSet<PidTextView>();
 
-            sbrPidPitchProportional = (PidSeekBar) findViewById(R.id.sbrPidPitchProportional);
-        sbrPidPitchProportional.init((PidTextView) findViewById(R.id.txtPidPitchProportional),
-                    (ImageView) findViewById(R.id.imgPitchProportionalLock),
-                    PID.PID_PITCH_PROP_DENOM, PID.PID_PITCH_PROP_MAX,
-                PID.PID_PITCH_PROP_STEP, PID.PID_PITCH_PROP_DFS,
-                getString(R.string.PID_NAME_APP));
+        txtPidRateRollProportional = (PidTextView) findViewById(R.id.txtRateRollProportional);
+        txtPidRateRollProportional.init(
+                PID.PID_RATE_ROLL_PROP_DENOM,
+                PID.PID_RATE_ROLL_PROP_MAX,
+                PID.PID_RATE_ROLL_PROP_STEP,
+                PID.PID_RATE_ROLL_PROP_DFS,
+                getString(R.string.PID_NAME_RRP),
+                "RollRatePID", "Kp");
+        mPidTexts.add(txtPidRateRollProportional);
 
-            sbrPidRateRollDerivative = (PidSeekBar) findViewById(R.id.sbrPidRateRollDerivative);
-        sbrPidRateRollDerivative.init((PidTextView) findViewById(R.id.txtPidRateRollDerivative),
-                    (ImageView) findViewById(R.id.imgRateRollDerivativeLock),
-                    PID.PID_RATE_ROLL_DERI_DENOM, PID.PID_RATE_ROLL_DERI_MAX,
-                PID.PID_RATE_ROLL_DERI_STEP, PID.PID_RATE_ROLL_DERI_DFS,
-                getString(R.string.PID_NAME_RRD));
+        txtPidRatePitchProportional = (PidTextView) findViewById(R.id.txtRatePitchProportional);
+        txtPidRatePitchProportional.init(
+                PID.PID_RATE_PITCH_PROP_DENOM,
+                PID.PID_RATE_PITCH_PROP_MAX,
+                PID.PID_RATE_PITCH_PROP_STEP,
+                PID.PID_RATE_PITCH_PROP_DFS,
+                getString(R.string.PID_NAME_RPP),
+                "PitchRatePID", "Kp");
+        mPidTexts.add(txtPidRatePitchProportional);
 
-            sbrPidRatePitchDerivative = (PidSeekBar) findViewById(R.id.sbrPidRatePitchDerivative);
-        sbrPidRatePitchDerivative.init((PidTextView) findViewById(R.id.txtPidRatePitchDerivative),
-                    (ImageView) findViewById(R.id.imgRatePitchDerivativeLock),
-                    PID.PID_RATE_PITCH_DERI_DENOM, PID.PID_RATE_PITCH_DERI_MAX,
-                PID.PID_RATE_PITCH_DERI_STEP, PID.PID_RATE_PITCH_DERI_DFS,
-                getString(R.string.PID_NAME_RPD));
+        txtPidRateYawProportional = (PidTextView) findViewById(R.id.txtRateYawProportional);
+        txtPidRateYawProportional.init(
+                PID.PID_RATE_YAW_PROP_DENOM,
+                PID.PID_RATE_YAW_PROP_MAX,
+                PID.PID_RATE_YAW_PROP_STEP,
+                PID.PID_RATE_YAW_PROP_DFS,
+                getString(R.string.PID_NAME_RYP),
+                "YawRatePID", "Kp");
+        mPidTexts.add(txtPidRateYawProportional);
 
+        txtPidRateRollIntegral = (PidTextView) findViewById(R.id.txtRateRollIntegral);
+        txtPidRateRollIntegral.init(
+                PID.PID_RATE_ROLL_INTE_DENOM,
+                PID.PID_RATE_ROLL_INTE_MAX,
+                PID.PID_RATE_ROLL_INTE_STEP,
+                PID.PID_RATE_ROLL_INTE_DFS,
+                getString(R.string.PID_NAME_RRI),
+                "RollRatePID", "Ki");
+        mPidTexts.add(txtPidRateRollIntegral);
+
+        txtPidRatePitchIntegral = (PidTextView) findViewById(R.id.txtRatePitchIntegral);
+        txtPidRatePitchIntegral.init(
+                PID.PID_RATE_PITCH_INTE_DENOM,
+                PID.PID_RATE_PITCH_INTE_MAX,
+                PID.PID_RATE_PITCH_INTE_STEP,
+                PID.PID_RATE_PITCH_INTE_DFS,
+                getString(R.string.PID_NAME_RPI),
+                "PitchRatePID", "Ki");
+        mPidTexts.add(txtPidRatePitchIntegral);
+
+        txtPidRateYawIntegral = (PidTextView) findViewById(R.id.txtRateYawIntegral);
+        txtPidRateYawIntegral.init(
+                PID.PID_RATE_YAW_INTE_DENOM,
+                PID.PID_RATE_YAW_INTE_MAX,
+                PID.PID_RATE_YAW_INTE_STEP,
+                PID.PID_RATE_YAW_INTE_DFS,
+                getString(R.string.PID_NAME_RYI),
+                "YawRatePID", "Ki");
+        mPidTexts.add(txtPidRateYawIntegral);
+
+        txtPidRateRollDerivative = (PidTextView) findViewById(R.id.txtRateRollDerivative);
+        txtPidRateRollDerivative.init(
+                PID.PID_RATE_ROLL_DERI_DENOM,
+                PID.PID_RATE_ROLL_DERI_MAX,
+                PID.PID_RATE_ROLL_DERI_STEP,
+                PID.PID_RATE_ROLL_DERI_DFS,
+                getString(R.string.PID_NAME_RRD),
+                "RollRatePID", "Kd");
+        mPidTexts.add(txtPidRateRollDerivative);
+
+        txtPidRatePitchDerivative = (PidTextView) findViewById(R.id.txtRatePitchDerivative);
+        txtPidRatePitchDerivative.init(
+                PID.PID_RATE_PITCH_DERI_DENOM,
+                PID.PID_RATE_PITCH_DERI_MAX,
+                PID.PID_RATE_PITCH_DERI_STEP,
+                PID.PID_RATE_PITCH_DERI_DFS,
+                getString(R.string.PID_NAME_RPD),
+                "PitchRatePID", "Kd");
+        mPidTexts.add(txtPidRatePitchDerivative);
+
+        txtPidRateYawDerivative = (PidTextView) findViewById(R.id.txtRateYawDerivative);
+        txtPidRateYawDerivative.init(
+                PID.PID_RATE_YAW_DERI_DENOM,
+                PID.PID_RATE_YAW_DERI_MAX,
+                PID.PID_RATE_YAW_DERI_STEP,
+                PID.PID_RATE_YAW_DERI_DFS,
+                getString(R.string.PID_NAME_RPD),
+                "YawRatePID", "Kd");
+        mPidTexts.add(txtPidRateYawDerivative);
+
+        txtPidRollProportional = (PidTextView) findViewById(R.id.txtAttitudeRollProportional);
+        txtPidRollProportional.init(
+                PID.PID_ROLL_PROP_DENOM,
+                PID.PID_ROLL_PROP_MAX,
+                PID.PID_ROLL_PROP_STEP,
+                PID.PID_ROLL_PROP_DFS,
+                getString(R.string.PID_NAME_ARP),
+                "RollPI", "Kp");
+        mPidTexts.add(txtPidRollProportional);
+
+        txtPidPitchProportional = (PidTextView) findViewById(R.id.txtAttitudePitchProportional);
+        txtPidPitchProportional.init(
+                PID.PID_PITCH_PROP_DENOM,
+                PID.PID_PITCH_PROP_MAX,
+                PID.PID_PITCH_PROP_STEP,
+                PID.PID_PITCH_PROP_DFS,
+                getString(R.string.PID_NAME_APP),
+                "PitchPI", "Kp");
+        mPidTexts.add(txtPidPitchProportional);
+
+        txtPidYawProportional = (PidTextView) findViewById(R.id.txtAttitudeYawProportional);
+        txtPidYawProportional.init(
+                PID.PID_YAW_PROP_DENOM,
+                PID.PID_YAW_PROP_MAX,
+                PID.PID_YAW_PROP_STEP,
+                PID.PID_YAW_PROP_DFS,
+                getString(R.string.PID_NAME_AYP),
+                "YawPI", "Kp");
+        mPidTexts.add(txtPidYawProportional);
+
+        txtPidRollIntegral = (PidTextView) findViewById(R.id.txtAttitudeRollIntegral);
+        txtPidRollIntegral.init(
+                PID.PID_ROLL_INTE_DENOM,
+                PID.PID_ROLL_INTE_MAX,
+                PID.PID_ROLL_INTE_STEP,
+                PID.PID_ROLL_INTE_DFS,
+                getString(R.string.PID_NAME_ARI),
+                "RollPI", "Ki");
+        mPidTexts.add(txtPidRollIntegral);
+
+        txtPidPitchIntegral = (PidTextView) findViewById(R.id.txtAttitudePitchIntegral);
+        txtPidPitchIntegral.init(
+                PID.PID_PITCH_INTE_DENOM,
+                PID.PID_PITCH_INTE_MAX,
+                PID.PID_PITCH_INTE_STEP,
+                PID.PID_PITCH_INTE_DFS,
+                getString(R.string.PID_NAME_API),
+                "PitchPI", "Ki");
+        mPidTexts.add(txtPidPitchIntegral);
+
+        txtPidYawIntegral = (PidTextView) findViewById(R.id.txtAttitudeYawIntegral);
+        txtPidYawIntegral.init(
+                PID.PID_YAW_INTE_DENOM,
+                PID.PID_YAW_INTE_MAX,
+                PID.PID_YAW_INTE_STEP,
+                PID.PID_YAW_INTE_DFS,
+                getString(R.string.PID_NAME_AYI),
+                "YawPI", "Ki");
+        mPidTexts.add(txtPidYawIntegral);
 
     }
 
@@ -1178,6 +1302,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 fragment = new MainFragment();
                 setContentView(mView0, position);
 
+                imgBluetooth = (ImageView) findViewById(R.id.imgBluetooth);
+                imgUSB = (ImageView) findViewById(R.id.imgUSB);
+
                 break;
             case VIEW_MAP:
                 fragment = new MapFragment();
@@ -1217,8 +1344,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             case VIEW_PID:
                 fragment = new PidFragment();
                 setContentView(mView6, position);
-                //allowPidSliderUpdate();
+                //allowPidUpdate();
                 SingleToast.makeText(this, R.string.CHECK_PID_WARNING, Toast.LENGTH_SHORT).show();
+
+                imgBluetooth = (ImageView) findViewById(R.id.imgBluetooth);
+                imgUSB = (ImageView) findViewById(R.id.imgUSB);
                 break;
 
             default:
@@ -1304,7 +1434,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     public void onBatteryCapacityClick(View v) {
         new IntegerInputAlertDialog(this)
-                .withText(txtCapacity.getText().toString())
+                .withPresetText(txtCapacity.getText().toString())
                 .withTitle(getString(R.string.CAPACITY_DIALOG_TITLE))
                 .withLayout(R.layout.alert_dialog_integer_input)
                 .withUavTalkDevice(mUAVTalkDevice)
@@ -1336,7 +1466,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     public void onBatteryCellsClick(View v) {
         new IntegerInputAlertDialog(this)
-                .withText(txtCells.getText().toString())
+                .withPresetText(txtCells.getText().toString())
                 .withTitle(getString(R.string.CELLS_DIALOG_TITLE))
                 .withLayout(R.layout.alert_dialog_integer_input)
                 .withUavTalkDevice(mUAVTalkDevice)
@@ -1410,29 +1540,20 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             if (oTree != null) {
                 oTree.getObjectFromName(mCurrentStabilizationBank).setWriteBlocked(true);
 
-                byte[] buffer0 = H.reverse4bytes(H.floatToByteArray((float) sbrPidRateRollProportional.getProgress() / PID.PID_RATE_ROLL_PROP_DENOM));
-                UAVTalkDeviceHelper.updateSettingsObject(oTree, mCurrentStabilizationBank, 0, "RollRatePID", "Kp", buffer0);
+                Iterator<PidTextView> i = mPidTexts.iterator();
 
-                byte[] buffer1 = H.reverse4bytes(H.floatToByteArray((float) sbrPidRatePitchProportional.getProgress() / PID.PID_RATE_PITCH_PROP_DENOM));
-                UAVTalkDeviceHelper.updateSettingsObject(oTree, mCurrentStabilizationBank, 0, "PitchRatePID", "Kp", buffer1);
+                while (i.hasNext()) {
+                    PidTextView ptv = i.next();
+                    try {
+                        float f = Float.parseFloat(ptv.getText().toString());
 
-                byte[] buffer2 = H.reverse4bytes(H.floatToByteArray((float) sbrPidRateRollIntegral.getProgress() / PID.PID_RATE_ROLL_INTE_DENOM));
-                UAVTalkDeviceHelper.updateSettingsObject(oTree, mCurrentStabilizationBank, 0, "RollRatePID", "Ki", buffer2);
+                        byte[] buffer = H.reverse4bytes(H.floatToByteArray(f));
 
-                byte[] buffer3 = H.reverse4bytes(H.floatToByteArray((float) sbrPidRatePitchIntegral.getProgress() / PID.PID_RATE_PITCH_INTE_DENOM));
-                UAVTalkDeviceHelper.updateSettingsObject(oTree, mCurrentStabilizationBank, 0, "PitchRatePID", "Ki", buffer3);
-
-                byte[] buffer4 = H.reverse4bytes(H.floatToByteArray((float) sbrPidRollProportional.getProgress() / PID.PID_ROLL_PROP_DENOM));
-                UAVTalkDeviceHelper.updateSettingsObject(oTree, mCurrentStabilizationBank, 0, "RollPI", "Kp", buffer4);
-
-                byte[] buffer5 = H.reverse4bytes(H.floatToByteArray((float) sbrPidPitchProportional.getProgress() / PID.PID_PITCH_PROP_DENOM));
-                UAVTalkDeviceHelper.updateSettingsObject(oTree, mCurrentStabilizationBank, 0, "PitchPI", "Kp", buffer5);
-
-                byte[] buffer6 = H.reverse4bytes(H.floatToByteArray((float) sbrPidRateRollDerivative.getProgress() / PID.PID_RATE_ROLL_DERI_DENOM));
-                UAVTalkDeviceHelper.updateSettingsObject(oTree, mCurrentStabilizationBank, 0, "RollRatePID", "Kd", buffer6);
-
-                byte[] buffer7 = H.reverse4bytes(H.floatToByteArray((float) sbrPidRatePitchDerivative.getProgress() / PID.PID_RATE_PITCH_DERI_DENOM));
-                UAVTalkDeviceHelper.updateSettingsObject(oTree, mCurrentStabilizationBank, 0, "PitchRatePID", "Kd", buffer7);
+                        UAVTalkDeviceHelper.updateSettingsObject(oTree, mCurrentStabilizationBank, 0, ptv.getField(), ptv.getElement(), buffer);
+                    } catch (NumberFormatException e) {
+                        Log.e("MainActivity", "Error parsing float: " + ptv.getField() + " " + ptv.getElement());
+                    }
+                }
 
                 mUAVTalkDevice.sendSettingsObject(mCurrentStabilizationBank, 0);
 
@@ -1448,7 +1569,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     public void onPidDownloadClick(View v) {
         if (mUAVTalkDevice != null && mUAVTalkDevice.isConnected()) {
-            allowPidSliderUpdate();
+            allowPidUpdate();
             SingleToast.makeText(this, getString(R.string.PID_LOADING)
                     + getString(R.string.CHECK_PID_WARNING), Toast.LENGTH_SHORT).show();
         } else {
@@ -1456,15 +1577,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
     }
 
-    private void allowPidSliderUpdate() {
-        sbrPidRateRollProportional.setAllowUpdateFromFC(true);
-        sbrPidRatePitchProportional.setAllowUpdateFromFC(true);
-        sbrPidRateRollIntegral.setAllowUpdateFromFC(true);
-        sbrPidRatePitchIntegral.setAllowUpdateFromFC(true);
-        sbrPidRollProportional.setAllowUpdateFromFC(true);
-        sbrPidPitchProportional.setAllowUpdateFromFC(true);
-        sbrPidRateRollDerivative.setAllowUpdateFromFC(true);
-        sbrPidRatePitchDerivative.setAllowUpdateFromFC(true);
+    private void allowPidUpdate() {
+        Iterator<PidTextView> i = mPidTexts.iterator();
+
+        while (i.hasNext()) {
+            PidTextView ptv = i.next();
+            ptv.allowUpdate();
+        }
     }
 
     public void onLogShare(View v) {
@@ -1696,6 +1815,26 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     public void onPidTextViewClick(View view) {
+    }
+
+    public void onPidGridNumberClick(View v) {
+        Log.d("PID", v.toString());
+        PidTextView p = (PidTextView) v;
+        new PidInputAlertDialog(this)
+                .withStep(p.getStep())
+                .withDenominator(p.getDenom())
+                .withDecimalFormat(p.getDfs())
+                .withPidTextView(p)
+                .withValueMax(p.getMax())
+                .withPresetText(p.getText().toString())
+                .withTitle(p.getDialogTitle())
+                .withLayout(R.layout.alert_dialog_pid_grid)
+                .withUavTalkDevice(mUAVTalkDevice)
+                .withObject(mCurrentStabilizationBank)
+                .withField(p.getField())
+                .withElement(p.getElement())
+                .withFieldType(UAVTalkXMLObject.FIELDTYPE_FLOAT32)
+                .show();
     }
 
     private class SlideMenuClickListener implements ListView.OnItemClickListener {
@@ -2004,7 +2143,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
                                     mCurrentStabilizationBank = "StabilizationSettings" + bank;
 
-
                                     switch (mCurrentStabilizationBank) {
                                         case "StabilizationSettingsBank1":
                                             imgPidBank.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_filter_1_128dp));
@@ -2020,17 +2158,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                                             break;
                                     }
 
-                                    sbrPidRateRollProportional.setProgress(toFloat(getData(mCurrentStabilizationBank, "RollRatePID", "Kp")));
-                                    sbrPidRatePitchProportional.setProgress(toFloat(getData(mCurrentStabilizationBank, "PitchRatePID", "Kp")));
+                                    Iterator<PidTextView> i = mPidTexts.iterator();
 
-                                    sbrPidRateRollIntegral.setProgress(toFloat(getData(mCurrentStabilizationBank, "RollRatePID", "Ki")));
-                                    sbrPidRatePitchIntegral.setProgress(toFloat(getData(mCurrentStabilizationBank, "PitchRatePID", "Ki")));
-
-                                    sbrPidRollProportional.setProgress(toFloat(getData(mCurrentStabilizationBank, "RollPI", "Kp")));
-                                    sbrPidPitchProportional.setProgress(toFloat(getData(mCurrentStabilizationBank, "PitchPI", "Kp")));
-
-                                    sbrPidRateRollDerivative.setProgress(toFloat(getData(mCurrentStabilizationBank, "RollRatePID", "Kd")));
-                                    sbrPidRatePitchDerivative.setProgress(toFloat(getData(mCurrentStabilizationBank, "PitchRatePID", "Kd")));
+                                    while (i.hasNext()) {
+                                        PidTextView ptv = i.next();
+                                        String data = ptv.getDecimalString(toFloat(getData(mCurrentStabilizationBank, ptv.getField(), ptv.getElement())));
+                                        ptv.setText(data);
+                                    }
 
                                     break;
                                 case VIEW_ABOUT:
@@ -2039,6 +2173,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
                             }
                         } catch (NullPointerException e) {
+                            e.printStackTrace();
                             Log.d("NPE", "Nullpointer Exception in Pollthread, most likely switched Connections");
 
                         }

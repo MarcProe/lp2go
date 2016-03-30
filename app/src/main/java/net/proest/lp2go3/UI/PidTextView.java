@@ -13,108 +13,96 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package net.proest.lp2go3.UI;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.text.InputType;
+import android.graphics.Color;
 import android.util.AttributeSet;
-import android.view.GestureDetector;
-import android.view.MotionEvent;
-import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import net.proest.lp2go3.R;
+import java.text.DecimalFormat;
+
 
 public class PidTextView extends TextView {
+    private int mDenom;
+    private int mStep;
+    private int mMax;
+    private String mDecimalFormatString;
+    private String mDialogTitle;
+    private String mElement;
+    private String mField;
+    private boolean mUpdateAllowed = true;
 
-    private final GestureDetector mGestureDetector;
-    private PidSeekBar mPidSeekBar;
 
     public PidTextView(Context context) {
         super(context);
-        mGestureDetector = new GestureDetector(context, new GestureListener());
     }
 
     public PidTextView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        mGestureDetector = new GestureDetector(context, new GestureListener());
     }
 
     public PidTextView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        mGestureDetector = new GestureDetector(context, new GestureListener());
     }
 
-    private PidSeekBar getPidSeekBar() {
-        return mPidSeekBar;
+    public void init(int denominator, int max, int step, String dfs, String title, String field, String element) {
+        this.mDenom = denominator;
+        this.mStep = step;
+        this.mMax = max;
+        this.mDecimalFormatString = dfs;
+        this.mDialogTitle = title;
+        this.mElement = element;
+        this.mField = field;
     }
 
-    public void setPidSeekBar(PidSeekBar psb) {
-        this.mPidSeekBar = psb;
+    public int getDenom() {
+        return mDenom;
     }
 
-    private void showDialog() {
-
-        AlertDialog.Builder pidTextViewAlertDialog = new AlertDialog.Builder(this.getContext());
-        pidTextViewAlertDialog.setTitle(this.mPidSeekBar.getName());
-
-        final EditText input = new EditText(this.getContext());
-        input.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
-        pidTextViewAlertDialog.setView(input);
-        input.setText(this.getText());
-        final PidTextView me = this;
-
-        pidTextViewAlertDialog.setPositiveButton(R.string.OK_BUTTON,
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                        try {
-                            float parse = Float.parseFloat(input.getText().toString());
-                            String s = mPidSeekBar.getDecimalString(parse);
-                            me.setText(s);
-                            me.getPidSeekBar().setProgressOverride(parse);
-                        } catch (Exception e) {
-                            SingleToast.makeText(me.getContext(), getContext().getString(R.string.PID_COULD_NOT_PARSE), Toast.LENGTH_LONG).show();
-                        }
-
-                        dialog.dismiss();
-                        dialog.cancel();
-                    }
-                });
-
-        pidTextViewAlertDialog.setNegativeButton(R.string.CANCEL_BUTTON,
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                        dialog.dismiss();
-                    }
-                });
-        pidTextViewAlertDialog.show();
+    public int getStep() {
+        return mStep;
     }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent e) {
-        return mGestureDetector.onTouchEvent(e);
+    public int getMax() {
+        return mMax;
     }
 
-    private class GestureListener extends GestureDetector.SimpleOnGestureListener {
+    public String getDfs() {
+        return mDecimalFormatString;
+    }
 
-        @Override
-        public boolean onDown(MotionEvent e) {
-            return true;
+    public String getDialogTitle() {
+        return mDialogTitle;
+    }
+
+    public String getElement() {
+        return mElement;
+    }
+
+    public String getField() {
+        return mField;
+    }
+
+    public void allowUpdate() {
+        mUpdateAllowed = true;
+    }
+
+    public String getDecimalString(float v) {
+        DecimalFormat df = new DecimalFormat(mDecimalFormatString);
+        return df.format(v);
+    }
+
+    public void setText(String s) {
+        if (mUpdateAllowed) {
+            super.setText(s);
+            mUpdateAllowed = false;
         }
 
-        @Override
-        public boolean onDoubleTap(MotionEvent e) {
-            showDialog();
-            return true;
+        if (getText().toString().equals(s)) {
+            setTextColor(Color.argb(0xff, 0x33, 0x33, 0x33));
+        } else {
+            setTextColor(Color.argb(0xff, 0xff, 0x00, 0x00));
         }
     }
 }
-

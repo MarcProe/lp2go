@@ -28,9 +28,11 @@ public abstract class InputAlertDialog extends AlertDialog {
     UAVTalkDevice mUavTalkDevice;
     String mObject;
     String mField;
+    String mElement = "0";
     int mFieldType;
     int mMin = -1;
     int mMax = -1;
+
 
     public InputAlertDialog(Context parent) {
         super(parent);
@@ -44,6 +46,11 @@ public abstract class InputAlertDialog extends AlertDialog {
 
     public InputAlertDialog withFieldType(int fieldtype) {
         this.mFieldType = fieldtype;
+        return this;
+    }
+
+    public InputAlertDialog withElement(String element) {
+        this.mElement = element;
         return this;
     }
 
@@ -62,7 +69,7 @@ public abstract class InputAlertDialog extends AlertDialog {
         return this;
     }
 
-    public InputAlertDialog withText(String text) {
+    public InputAlertDialog withPresetText(String text) {
         this.mText = text;
         return this;
     }

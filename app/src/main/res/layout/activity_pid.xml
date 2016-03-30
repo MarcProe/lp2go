@@ -14,8 +14,7 @@
         android:orientation="vertical"
         tools:context=".MainActivity">
 
-
-        <LinearLayout
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
@@ -24,467 +23,406 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="8"
-                android:orientation="horizontal">
+                android:baselineAligned="false"
+                android:orientation="vertical">
 
                 <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/textView20"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_weight="0.5"
+                        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                    <TextView
+                        android:id="@+id/textView15"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_weight="1"
+                        android:gravity="center|center_vertical|center_horizontal"
+                        android:text="Roll"
+                        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                    <TextView
+                        android:id="@+id/textView16"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_weight="1"
+                        android:gravity="center|center_vertical|center_horizontal"
+                        android:text="Pitch"
+                        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                    <TextView
+                        android:id="@+id/textView17"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_weight="1"
+                        android:gravity="center|center_vertical|center_horizontal"
+                        android:text="Yaw"
+                        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                    <ImageView
+                        android:id="@+id/imgBluetooth"
+                        android:layout_width="30dp"
+                        android:layout_height="fill_parent"
+                        android:src="@drawable/ic_bluetooth_disabled_128dp" />
+
+                    <ImageView
+                        android:id="@+id/imgUSB"
+                        android:layout_width="30dp"
+                        android:layout_height="fill_parent"
+                        android:contentDescription="USB"
+                        android:src="@drawable/ic_usb_128dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="3"
+                    android:background="@drawable/border_top"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="9"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="1"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/textView19"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_margin="10dp"
+                                android:layout_weight="0.5"
+                                android:gravity="center|center_vertical|center_horizontal"
+                                android:text="P"
+                                android:textAppearance="?android:attr/textAppearanceSmall"
+                                android:textSize="40sp" />
+
+                            <net.proest.lp2go3.UI.PidTextView
+                                android:id="@+id/txtRateRollProportional"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_weight="1"
+                                android:gravity="center|center_vertical|center_horizontal"
+                                android:onClick="onPidGridNumberClick"
+                                android:textAppearance="?android:attr/textAppearanceLarge"
+                                android:textSize="25sp" />
+
+                            <net.proest.lp2go3.UI.PidTextView
+                                android:id="@+id/txtRatePitchProportional"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_weight="1"
+                                android:gravity="center|center_vertical|center_horizontal"
+                                android:onClick="onPidGridNumberClick"
+                                android:textAppearance="?android:attr/textAppearanceLarge"
+                                android:textSize="25sp" />
+
+                            <net.proest.lp2go3.UI.PidTextView
+                                android:id="@+id/txtRateYawProportional"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_weight="1"
+                                android:gravity="center|center_vertical|center_horizontal"
+                                android:onClick="onPidGridNumberClick"
+                                android:textAppearance="?android:attr/textAppearanceLarge"
+                                android:textSize="25sp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/border_top"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/textView23"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_margin="10dp"
+                                android:layout_weight="0.5"
+                                android:gravity="center|center_vertical|center_horizontal"
+                                android:text="I"
+                                android:textAppearance="?android:attr/textAppearanceSmall"
+                                android:textSize="40sp" />
+
+                            <net.proest.lp2go3.UI.PidTextView
+                                android:id="@+id/txtRateRollIntegral"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_weight="1"
+                                android:gravity="center|center_vertical|center_horizontal"
+                                android:onClick="onPidGridNumberClick"
+                                android:textAppearance="?android:attr/textAppearanceLarge"
+                                android:textSize="25sp" />
+
+                            <net.proest.lp2go3.UI.PidTextView
+                                android:id="@+id/txtRatePitchIntegral"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_weight="1"
+                                android:gravity="center|center_vertical|center_horizontal"
+                                android:onClick="onPidGridNumberClick"
+                                android:textAppearance="?android:attr/textAppearanceLarge"
+                                android:textSize="25sp" />
+
+                            <net.proest.lp2go3.UI.PidTextView
+                                android:id="@+id/txtRateYawIntegral"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_weight="1"
+                                android:gravity="center|center_vertical|center_horizontal"
+                                android:onClick="onPidGridNumberClick"
+                                android:textAppearance="?android:attr/textAppearanceLarge"
+                                android:textSize="25sp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/border_top"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/textView27"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_margin="10dp"
+                                android:layout_weight="0.5"
+                                android:gravity="center|center_vertical|center_horizontal"
+                                android:text="D"
+                                android:textAppearance="?android:attr/textAppearanceSmall"
+                                android:textSize="40sp" />
+
+                            <net.proest.lp2go3.UI.PidTextView
+                                android:id="@+id/txtRateRollDerivative"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_weight="1"
+                                android:gravity="center|center_vertical|center_horizontal"
+                                android:onClick="onPidGridNumberClick"
+                                android:textAppearance="?android:attr/textAppearanceLarge"
+                                android:textSize="25sp" />
+
+                            <net.proest.lp2go3.UI.PidTextView
+                                android:id="@+id/txtRatePitchDerivative"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_weight="1"
+                                android:gravity="center|center_vertical|center_horizontal"
+                                android:onClick="onPidGridNumberClick"
+                                android:textAppearance="?android:attr/textAppearanceLarge"
+                                android:textSize="25sp" />
+
+                            <net.proest.lp2go3.UI.PidTextView
+                                android:id="@+id/txtRateYawDerivative"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_weight="1"
+                                android:gravity="center|center_vertical|center_horizontal"
+                                android:onClick="onPidGridNumberClick"
+                                android:textAppearance="?android:attr/textAppearanceLarge"
+                                android:textSize="25sp" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <net.proest.lp2go3.UI.VerticalTextView
+                        android:id="@+id/textView99"
+                        android:layout_width="30dp"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:gravity="center|center_vertical|center_horizontal"
+                        android:text="(Inner Loop)"
+                        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+                    <net.proest.lp2go3.UI.VerticalTextView
+                        android:id="@+id/textView18"
+                        android:layout_width="30dp"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="5dp"
+                        android:gravity="center|center_vertical|center_horizontal"
+                        android:singleLine="false"
+                        android:text="Rate Stabilization"
+                        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
                     android:layout_weight="2"
-                    android:orientation="vertical">
+                    android:background="@drawable/border_top"
+                    android:orientation="horizontal">
 
-                    <ImageView
-                        android:id="@+id/imgRateRollProportionalLock"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_marginTop="2dp"
-                        android:layout_weight="1"
-                        android:src="@drawable/ic_lock_48dp"
-                        android:tint="@color/Critical" />
+                    <LinearLayout
+                        android:id="@+id/myLayout"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="9"
+                        android:orientation="vertical">
 
-                    <ImageView
-                        android:id="@+id/imgRatePitchProportionalLock"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        android:src="@drawable/ic_lock_48dp"
-                        android:tint="@color/Critical" />
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="1"
+                            android:orientation="horizontal">
 
-                    <ImageView
-                        android:id="@+id/imgRateRollIntegralLock"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        android:background="#dddddd"
-                        android:src="@drawable/ic_lock_48dp"
-                        android:tint="@color/Critical" />
+                            <TextView
+                                android:id="@+id/textView31"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_margin="10dp"
+                                android:layout_weight="0.5"
+                                android:gravity="center|center_vertical|center_horizontal"
+                                android:text="P"
+                                android:textAppearance="?android:attr/textAppearanceSmall"
+                                android:textSize="40sp" />
 
-                    <ImageView
-                        android:id="@+id/imgRatePitchIntegralLock"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        android:background="#dddddd"
-                        android:src="@drawable/ic_lock_48dp"
-                        android:tint="@color/Critical" />
+                            <net.proest.lp2go3.UI.PidTextView
+                                android:id="@+id/txtAttitudeRollProportional"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_weight="1"
+                                android:gravity="center|center_vertical|center_horizontal"
+                                android:onClick="onPidGridNumberClick"
+                                android:textAppearance="?android:attr/textAppearanceLarge"
+                                android:textSize="25sp" />
 
-                    <ImageView
-                        android:id="@+id/imgRollProportionalLock"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        android:src="@drawable/ic_lock_48dp"
-                        android:tint="@color/Critical" />
+                            <net.proest.lp2go3.UI.PidTextView
+                                android:id="@+id/txtAttitudePitchProportional"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_weight="1"
+                                android:gravity="center|center_vertical|center_horizontal"
+                                android:onClick="onPidGridNumberClick"
+                                android:textAppearance="?android:attr/textAppearanceLarge"
+                                android:textSize="25sp" />
 
-                    <ImageView
-                        android:id="@+id/imgPitchProportionalLock"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        android:src="@drawable/ic_lock_48dp"
-                        android:tint="@color/Critical" />
+                            <net.proest.lp2go3.UI.PidTextView
+                                android:id="@+id/txtAttitudeYawProportional"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_weight="1"
+                                android:gravity="center|center_vertical|center_horizontal"
+                                android:onClick="onPidGridNumberClick"
+                                android:textAppearance="?android:attr/textAppearanceLarge"
+                                android:textSize="25sp" />
+                        </LinearLayout>
 
-                    <ImageView
-                        android:id="@+id/imgRateRollDerivativeLock"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        android:background="#dddddd"
-                        android:src="@drawable/ic_lock_48dp"
-                        android:tint="@color/Critical" />
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/border_top"
+                            android:orientation="horizontal">
 
-                    <ImageView
-                        android:id="@+id/imgRatePitchDerivativeLock"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_marginBottom="2dp"
-                        android:layout_weight="1"
-                        android:background="#dddddd"
-                        android:src="@drawable/ic_lock_48dp"
-                        android:tint="@color/Critical" />
+                            <TextView
+                                android:id="@+id/textView35"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_margin="10dp"
+                                android:layout_weight="0.5"
+                                android:gravity="center|center_vertical|center_horizontal"
+                                android:text="I"
+                                android:textAppearance="?android:attr/textAppearanceSmall"
+                                android:textSize="40sp" />
 
+                            <net.proest.lp2go3.UI.PidTextView
+                                android:id="@+id/txtAttitudeRollIntegral"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_weight="1"
+                                android:gravity="center|center_vertical|center_horizontal"
+                                android:onClick="onPidGridNumberClick"
+                                android:textAppearance="?android:attr/textAppearanceLarge"
+                                android:textSize="25sp" />
+
+                            <net.proest.lp2go3.UI.PidTextView
+                                android:id="@+id/txtAttitudePitchIntegral"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_weight="1"
+                                android:gravity="center|center_vertical|center_horizontal"
+                                android:onClick="onPidGridNumberClick"
+                                android:textAppearance="?android:attr/textAppearanceLarge"
+                                android:textSize="25sp" />
+
+                            <net.proest.lp2go3.UI.PidTextView
+                                android:id="@+id/txtAttitudeYawIntegral"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_weight="1"
+                                android:gravity="center|center_vertical|center_horizontal"
+                                android:onClick="onPidGridNumberClick"
+                                android:textAppearance="?android:attr/textAppearanceLarge"
+                                android:textSize="25sp" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <net.proest.lp2go3.UI.VerticalTextView
+                        android:id="@+id/textView98"
+                        android:layout_width="30dp"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:gravity="center|center_vertical|center_horizontal"
+                        android:text="(Outer Loop)"
+                        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+                    <net.proest.lp2go3.UI.VerticalTextView
+                        android:id="@+id/txtLabelPidAttiStab"
+                        android:layout_width="30dp"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="5dp"
+                        android:gravity="center|center_vertical|center_horizontal"
+                        android:text="Attitude Stabilization"
+                        android:textAppearance="?android:attr/textAppearanceLarge" />
                 </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="2"
-                    android:orientation="vertical">
-
-                    <ImageView
-                        android:id="@+id/imgRateRollProportional"
-                        android:layout_width="fill_parent"
-                        android:layout_height="0dp"
-                        android:layout_marginTop="2dp"
-                        android:layout_weight="1"
-                        android:src="@drawable/ic_swap_vert_48dp" />
-
-                    <ImageView
-                        android:id="@+id/imgRatePitchProportional"
-                        android:layout_width="fill_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        android:src="@drawable/ic_swap_horiz_48dp" />
-
-                    <ImageView
-                        android:id="@+id/imgRateRollIntegral"
-                        android:layout_width="fill_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        android:background="#dddddd"
-                        android:src="@drawable/ic_swap_vert_48dp" />
-
-                    <ImageView
-                        android:id="@+id/imgRatePitchIntegral"
-                        android:layout_width="fill_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        android:background="#dddddd"
-                        android:src="@drawable/ic_swap_horiz_48dp" />
-
-                    <ImageView
-                        android:id="@+id/imgRollProportional"
-                        android:layout_width="fill_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        android:src="@drawable/ic_vertical_align_center_48dp" />
-
-                    <ImageView
-                        android:id="@+id/imgPitchProportional"
-                        android:layout_width="fill_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        android:src="@drawable/ic_horizontal_align_center_black_24px" />
-
-                    <ImageView
-                        android:id="@+id/imgRollDerivative"
-                        android:layout_width="fill_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        android:background="#dddddd"
-                        android:src="@drawable/ic_swap_vert_48dp" />
-
-                    <ImageView
-                        android:id="@+id/imgPitchDerivative"
-                        android:layout_width="fill_parent"
-                        android:layout_height="0dp"
-                        android:layout_marginBottom="2dp"
-                        android:layout_weight="1"
-                        android:background="#dddddd"
-                        android:src="@drawable/ic_swap_horiz_48dp" />
-
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical|center_horizontal"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/txtRateRollProportionalLabel"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_gravity="center"
-                        android:layout_marginTop="2dp"
-                        android:layout_weight="1"
-                        android:gravity="center_vertical|center_horizontal"
-                        android:text="P"
-                        android:textAlignment="center"
-                        android:textAppearance="?android:attr/textAppearanceLarge"
-                        android:textStyle="bold|italic" />
-
-                    <TextView
-                        android:id="@+id/txtRatePitchProportionalLabel"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_gravity="center"
-                        android:layout_weight="1"
-                        android:gravity="center_vertical|center_horizontal"
-                        android:text="P"
-                        android:textAlignment="center"
-                        android:textAppearance="?android:attr/textAppearanceLarge"
-                        android:textStyle="bold|italic" />
-
-                    <TextView
-                        android:id="@+id/txtRateRollIntegralLabel"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_gravity="center"
-                        android:layout_weight="1"
-                        android:background="#dddddd"
-                        android:gravity="center_vertical|center_horizontal"
-                        android:text="I"
-                        android:textAlignment="center"
-                        android:textAppearance="?android:attr/textAppearanceLarge"
-                        android:textStyle="bold|italic" />
-
-                    <TextView
-                        android:id="@+id/txtRatePitchIntegralLabel"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_gravity="center"
-                        android:layout_weight="1"
-                        android:background="#dddddd"
-                        android:gravity="center_vertical|center_horizontal"
-                        android:text="I"
-                        android:textAlignment="center"
-                        android:textAppearance="?android:attr/textAppearanceLarge"
-                        android:textStyle="bold|italic" />
-
-                    <TextView
-                        android:id="@+id/txtRollProportionalLabel"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_gravity="center"
-                        android:layout_weight="1"
-                        android:gravity="center_vertical|center_horizontal"
-                        android:text="P"
-                        android:textAlignment="center"
-                        android:textAppearance="?android:attr/textAppearanceLarge"
-                        android:textStyle="bold|italic" />
-
-                    <TextView
-                        android:id="@+id/txtPitchProportionalLabel"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_gravity="center"
-                        android:layout_weight="1"
-                        android:gravity="center_vertical|center_horizontal"
-                        android:text="P"
-                        android:textAlignment="center"
-                        android:textAppearance="?android:attr/textAppearanceLarge"
-                        android:textStyle="bold|italic" />
-
-                    <TextView
-                        android:id="@+id/txtRateRollDerivativeLabel"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_gravity="center"
-                        android:layout_weight="1"
-                        android:background="#dddddd"
-                        android:gravity="center_vertical|center_horizontal"
-                        android:text="D"
-                        android:textAlignment="center"
-                        android:textAppearance="?android:attr/textAppearanceLarge"
-                        android:textStyle="bold|italic" />
-
-                    <TextView
-                        android:id="@+id/txtRatePitchDerivativeLabel"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_gravity="center"
-                        android:layout_marginBottom="2px"
-                        android:layout_weight="1"
-                        android:background="#dddddd"
-                        android:gravity="center_vertical|center_horizontal"
-                        android:text="D"
-                        android:textAlignment="center"
-                        android:textAppearance="?android:attr/textAppearanceLarge"
-                        android:textStyle="bold|italic" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="18"
-                    android:orientation="vertical">
-
-                    <net.proest.lp2go3.UI.PidTextView
-                        android:id="@+id/txtPidRateRollProportional"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="0dp"
-                        android:layout_marginBottom="0dp"
-                        android:layout_marginLeft="0dp"
-                        android:layout_marginRight="0dp"
-                        android:layout_marginTop="2dp"
-                        android:onClick="onPidTextViewClick"
-                        android:text="0"
-                        android:textAlignment="center"
-                        android:textAppearance="?android:attr/textAppearanceSmall" />
-
-                    <net.proest.lp2go3.UI.PidSeekBar
-                        android:id="@+id/sbrPidRateRollProportional"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        android:max="10000"
-                        android:progress="3000" />
-
-
-                    <net.proest.lp2go3.UI.PidTextView
-                        android:id="@+id/txtPidRatePitchProportional"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="0dp"
-                        android:layout_marginBottom="0dp"
-                        android:layout_marginLeft="0dp"
-                        android:layout_marginRight="0dp"
-                        android:layout_marginTop="0dp"
-                        android:onClick="onPidTextViewClick"
-                        android:text="0"
-                        android:textAlignment="center"
-                        android:textAppearance="?android:attr/textAppearanceSmall" />
-
-                    <net.proest.lp2go3.UI.PidSeekBar
-                        android:id="@+id/sbrPidRatePitchProportional"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        android:max="10000"
-                        android:progress="3000" />
-
-
-                    <net.proest.lp2go3.UI.PidTextView
-                        android:id="@+id/txtPidRateRollIntegral"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="0dp"
-                        android:layout_marginBottom="0dp"
-                        android:layout_marginLeft="0dp"
-                        android:layout_marginRight="0dp"
-                        android:layout_marginTop="2dp"
-                        android:background="#dddddd"
-                        android:onClick="onPidTextViewClick"
-                        android:text="0"
-                        android:textAlignment="center"
-                        android:textAppearance="?android:attr/textAppearanceSmall" />
-
-                    <net.proest.lp2go3.UI.PidSeekBar
-                        android:id="@+id/sbrPidRateRollIntegral"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        android:background="#dddddd"
-                        android:max="50000"
-                        android:progress="6500" />
-
-                    <net.proest.lp2go3.UI.PidTextView
-                        android:id="@+id/txtPidRatePitchIntegral"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="0dp"
-                        android:layout_marginBottom="0dp"
-                        android:layout_marginLeft="0dp"
-                        android:layout_marginRight="0dp"
-                        android:layout_marginTop="0dp"
-                        android:background="#dddddd"
-                        android:onClick="onPidTextViewClick"
-                        android:text="0"
-                        android:textAlignment="center"
-                        android:textAppearance="?android:attr/textAppearanceSmall" />
-
-                    <net.proest.lp2go3.UI.PidSeekBar
-                        android:id="@+id/sbrPidRatePitchIntegral"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        android:background="#dddddd"
-                        android:max="50000"
-                        android:progress="6500" />
-
-
-                    <net.proest.lp2go3.UI.PidTextView
-                        android:id="@+id/txtPidRollProportional"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="0dp"
-                        android:layout_marginBottom="0dp"
-                        android:layout_marginLeft="0dp"
-                        android:layout_marginRight="0dp"
-                        android:layout_marginTop="2dp"
-                        android:onClick="onPidTextViewClick"
-                        android:text="0"
-                        android:textAlignment="center"
-                        android:textAppearance="?android:attr/textAppearanceSmall" />
-
-                    <net.proest.lp2go3.UI.PidSeekBar
-                        android:id="@+id/sbrPidRollProportional"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        android:max="5000000"
-                        android:progress="2500000" />
-
-
-                    <net.proest.lp2go3.UI.PidTextView
-                        android:id="@+id/txtPidPitchProportional"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="0dp"
-                        android:layout_marginBottom="0dp"
-                        android:layout_marginLeft="0dp"
-                        android:layout_marginRight="0dp"
-                        android:layout_marginTop="0dp"
-                        android:onClick="onPidTextViewClick"
-                        android:text="0"
-                        android:textAlignment="center"
-                        android:textAppearance="?android:attr/textAppearanceSmall" />
-
-                    <net.proest.lp2go3.UI.PidSeekBar
-                        android:id="@+id/sbrPidPitchProportional"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        android:max="5000000"
-                        android:progress="2500000" />
-
-
-                    <net.proest.lp2go3.UI.PidTextView
-                        android:id="@+id/txtPidRateRollDerivative"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="0dp"
-                        android:layout_marginBottom="0dp"
-                        android:layout_marginLeft="0dp"
-                        android:layout_marginRight="0dp"
-                        android:layout_marginTop="2dp"
-                        android:background="#dddddd"
-                        android:onClick="onPidTextViewClick"
-                        android:text="0"
-                        android:textAlignment="center"
-                        android:textAppearance="?android:attr/textAppearanceSmall" />
-
-                    <net.proest.lp2go3.UI.PidSeekBar
-                        android:id="@+id/sbrPidRateRollDerivative"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        android:background="#dddddd"
-                        android:max="1000"
-                        android:progress="50" />
-
-
-                    <net.proest.lp2go3.UI.PidTextView
-                        android:id="@+id/txtPidRatePitchDerivative"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="0dp"
-                        android:layout_marginBottom="0dp"
-                        android:layout_marginLeft="0dp"
-                        android:layout_marginRight="0dp"
-                        android:layout_marginTop="0dp"
-                        android:background="#dddddd"
-                        android:onClick="onPidTextViewClick"
-                        android:text="0"
-                        android:textAlignment="center"
-                        android:textAppearance="?android:attr/textAppearanceSmall" />
-
-                    <net.proest.lp2go3.UI.PidSeekBar
-                        android:id="@+id/sbrPidRatePitchDerivative"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        android:background="#dddddd"
-                        android:max="1000"
-                        android:progress="50" />
-
-
-                </LinearLayout>
-
 
             </LinearLayout>
 
@@ -492,6 +430,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
+                android:background="@drawable/border_top"
                 android:orientation="horizontal">
 
                 <ImageView
@@ -530,7 +469,6 @@
                     android:src="@drawable/ic_filter_none_128dp" />
 
             </LinearLayout>
-
         </LinearLayout>
 
     </LinearLayout>

@@ -80,14 +80,6 @@
     <string name="SAVED_PERSISTENT">"Saved to persistent storage. "</string>
     <string name="PID_SENT">"Sent! Numbers should turn black now. "</string>
     <string name="PID_LOADING">"Loading current PID. "</string>
-    <string name="PID_NAME_RRP">Rate Roll Proportional</string>
-    <string name="PID_NAME_RPP">Rate Pitch Proportional</string>
-    <string name="PID_NAME_RRI">Rate Roll Integral</string>
-    <string name="PID_NAME_RPI">Rate Pitch Integral</string>
-    <string name="PID_NAME_ARP">Attitude Roll Proportional</string>
-    <string name="PID_NAME_APP">Attitude Pitch Proportional</string>
-    <string name="PID_NAME_RRD">Rate Roll Derivative</string>
-    <string name="PID_NAME_RPD">Rate Pitch Derivative</string>
     <string name="PID_COULD_NOT_PARSE">Could not parse Input as PID</string>
     <string name="CONNECTION_TYPE">Connection Type</string>
     <string name="BLUETOOTH_DEVICE">Bluetooth device</string>
@@ -102,5 +94,21 @@
     <string name="NOT_CONNECTED">Not connected.</string>
     <string name="SAVE_BUTTON">Save</string>
     <string name="UPLOAD_BUTTON">Upload</string>
+    <string name="PID_NAME_RRP">Rate Roll Proportional</string>
+    <string name="PID_NAME_RPP">Rate Pitch Proportional</string>
+    <string name="PID_NAME_RYP">Rate Yaw Proportional</string>
+    <string name="PID_NAME_RRI">Rate Roll Integral</string>
+    <string name="PID_NAME_RPI">Rate Pitch Integral</string>
+    <string name="PID_NAME_RYI">Rate Yaw Integral</string>
+    <string name="PID_NAME_ARP">Attitude Roll Proportional</string>
+    <string name="PID_NAME_APP">Attitude Pitch Proportional</string>
+    <string name="PID_NAME_RRD">Rate Roll Derivative</string>
+    <string name="PID_NAME_RPD">Rate Pitch Derivative</string>
+    <string name="PID_NAME_AYP">Attitude Yaw Proportional</string>
+    <string name="PID_NAME_ARI">Attitude Roll Integral</string>
+    <string name="PID_NAME_API">Attitude Pitch Integral</string>
+    <string name="PID_NAME_AYI">Attitude Yaw Integral</string>
+
+
 </resources>
 
