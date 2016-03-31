@@ -1433,15 +1433,20 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     public void onBatteryCapacityClick(View v) {
-        new IntegerInputAlertDialog(this)
-                .withPresetText(txtCapacity.getText().toString())
-                .withTitle(getString(R.string.CAPACITY_DIALOG_TITLE))
-                .withLayout(R.layout.alert_dialog_integer_input)
-                .withUavTalkDevice(mUAVTalkDevice)
-                .withObject("FlightBatterySettings")
-                .withField("Capacity")
-                .withFieldType(UAVTalkXMLObject.FIELDTYPE_UINT32)
-                .show();
+        String moduleEnabled = mPollThread.getData("HwSettings", "OptionalModules", "Battery", true).toString();
+        if (moduleEnabled.equals("Enabled")) {
+            new IntegerInputAlertDialog(this)
+                    .withPresetText(txtCapacity.getText().toString())
+                    .withTitle(getString(R.string.CAPACITY_DIALOG_TITLE))
+                    .withLayout(R.layout.alert_dialog_integer_input)
+                    .withUavTalkDevice(mUAVTalkDevice)
+                    .withObject("FlightBatterySettings")
+                    .withField("Capacity")
+                    .withFieldType(UAVTalkXMLObject.FIELDTYPE_UINT32)
+                    .show();
+        } else {
+            SingleToast.makeText(this, "Battery Module not enabled", Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void onAltitudeClick(View V) {
@@ -1465,16 +1470,21 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     public void onBatteryCellsClick(View v) {
-        new IntegerInputAlertDialog(this)
-                .withPresetText(txtCells.getText().toString())
-                .withTitle(getString(R.string.CELLS_DIALOG_TITLE))
-                .withLayout(R.layout.alert_dialog_integer_input)
-                .withUavTalkDevice(mUAVTalkDevice)
-                .withObject("FlightBatterySettings")
-                .withField("NbCells")
-                .withFieldType(UAVTalkXMLObject.FIELDTYPE_UINT8)
-                .withMinMax(1, 254)
-                .show();
+        String moduleEnabled = mPollThread.getData("HwSettings", "OptionalModules", "Battery", true).toString();
+        if (moduleEnabled.equals("Enabled")) {
+            new IntegerInputAlertDialog(this)
+                    .withPresetText(txtCells.getText().toString())
+                    .withTitle(getString(R.string.CELLS_DIALOG_TITLE))
+                    .withLayout(R.layout.alert_dialog_integer_input)
+                    .withUavTalkDevice(mUAVTalkDevice)
+                    .withObject("FlightBatterySettings")
+                    .withField("NbCells")
+                    .withFieldType(UAVTalkXMLObject.FIELDTYPE_UINT8)
+                    .withMinMax(1, 254)
+                    .show();
+        } else {
+            SingleToast.makeText(this, "Battery Module not enabled", Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void onFusionAlgoClick(View v) {
@@ -1710,12 +1720,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         batteryCellsDialogBuilder.setNegativeButton(R.string.CANCEL_BUTTON,
                 new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-                dialog.dismiss();
-            }
-        });
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                        dialog.dismiss();
+                    }
+                });
         return batteryCellsDialogBuilder;
     }
 
@@ -2207,6 +2217,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     mUAVTalkDevice.requestObject("FlightBatteryState");
                     mUAVTalkDevice.requestObject("FlightBatterySettings");
                     mUAVTalkDevice.requestObject("BaroSensor");
+                    mUAVTalkDevice.requestObject("HwSettings");
                     mUAVTalkDevice.requestObject("VelocityState");
                     mUAVTalkDevice.requestObject("ManualControlCommand");
                     mUAVTalkDevice.requestObject("StabilizationSettings");
@@ -2256,6 +2267,18 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             } catch (NumberFormatException e) {
                 return "";
             }
+        }
+
+        private Object getData(String objectname, String fieldname, String elementName, boolean request) {
+            try {
+                if (request) {
+                    mUAVTalkDevice.requestObject(objectname);
+                }
+                return getData(objectname, fieldname, elementName);
+            } catch (NullPointerException e) {
+                //e.printStackTrace();
+            }
+            return "";
         }
 
         private Object getData(String objectname, String fieldname, boolean request) {
