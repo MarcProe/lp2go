@@ -2059,7 +2059,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
                                     String flightModeSwitchPosition = getData("ManualControlCommand", "FlightModeSwitchPosition", true).toString();
 
-                                    setText(mActivity.txtModeNum, flightModeSwitchPosition);
+                                    try {   //FlightMode in GCS is 1...n, so add "1" to be user friendly
+                                        setText(mActivity.txtModeNum, String.valueOf(Integer.parseInt(flightModeSwitchPosition) + 1));
+                                    } catch (NumberFormatException e) {
+                                        Log.e("MainActivity", "Could not parse numeric Flightmode: " + flightModeSwitchPosition);
+                                    }
+
                                     setText(mActivity.txtModeFlightMode, getData("FlightStatus", "FlightMode", true).toString());
                                     setText(mActivity.txtModeAssistedControl, getData("FlightStatus", "FlightModeAssist", true).toString());
                                     break;
