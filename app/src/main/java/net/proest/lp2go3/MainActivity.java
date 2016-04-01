@@ -842,25 +842,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         imgPidBank = (ImageView) findViewById(R.id.imgPidBank);
 
-       /* TextView t = (TextView) findViewById(R.id.txtLabelPidAttiStab);
-        t.setRotation(90f);
-
-        LinearLayout.LayoutParams p = (LinearLayout.LayoutParams)t.getLayoutParams();
-        int w = p.height;
-        int h = p.width;
-        Log.d("WIDTH HEIGHT", "" + p.width + " " +p.height);
-        p.height = h;
-        p.width = w;
-
-        t.setLayoutParams(p);
-        Log.d("WIDTH HEIGHT", "" + p.width + " " + p.height);
-
-        //t.setEllipsize(TextUtils.TruncateAt.END);
-        //t.setText("Attitude Stabilization");
-        t.setBackgroundColor(Color.BLUE);
-
-        t.setPadding(-20,0,-20,0);
-*/
         mPidTexts = new HashSet<PidTextView>();
 
         txtPidRateRollProportional = (PidTextView) findViewById(R.id.txtRateRollProportional);
