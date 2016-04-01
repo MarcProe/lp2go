@@ -619,6 +619,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             mMap = mMapView.getMap();
             if (mMap != null) {  //Map can be null if services are not available, e.g. on an amazon fire tab
                 mMap.getUiSettings().setMyLocationButtonEnabled(false);
+                mMap.getUiSettings().setZoomControlsEnabled(true);
                 mMap.setMyLocationEnabled(true);
                 MapsInitializer.initialize(this);
 
@@ -2083,7 +2084,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
                                     double distance = H.calculationByDistance(src, dst);
                                     if (distance > 0.001) {
-                                        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lng), 19);
+                                        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLng(new LatLng(lat, lng));
                                         MapsInitializer.initialize(mActivity);
                                         if (distance < 200) {
                                             mMap.animateCamera(cameraUpdate);
