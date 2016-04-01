@@ -747,10 +747,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (mBluetoothAdapter != null) {
             // Device does support Bluetooth
-
             if (!mBluetoothAdapter.isEnabled()) {
-                //Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                //startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
                 SingleToast.makeText(this, "To use Bluetooth, turn it on in your device.", Toast.LENGTH_LONG).show();
 
             } else {
