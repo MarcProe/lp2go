@@ -10,4 +10,5 @@
     <string name="SETTINGS_SERIAL_MODE">net.proest.lp2go2.serial_mode</string>
     <string name="SETTINGS_BT_MAC">net.proest.lp2go2.bt_mac</string>
     <string name="SETTINGS_BT_NAME">net.proest.lp2go2.bt_name</string>
+    <string name="SETTINGS_COLORFUL_PID">net.proest.lp2go3.colorful_pid</string>
 </resources>

@@ -75,6 +75,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
@@ -172,6 +173,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private static boolean sHasPThread = false;
     private static boolean initDone = false;
     private static int mCurrentView = 0;
+    private static boolean mColorfulPid;
     private final Marker[] mPosHistory = new Marker[HISTORY_MARKER_NUM];
     public boolean isReady = false;
     private TextView txtObjectLogTx;
@@ -232,6 +234,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private Spinner spnUavoSource;
     private Spinner spnConnectionTypeSpinner;
     private Spinner spnBluetoothPairedDevice;
+    private CheckBox cbxColorfulPid;
     private PidTextView txtPidRateRollProportional;
     private PidTextView txtPidRatePitchProportional;
     private PidTextView txtPidRateRollIntegral;
@@ -727,6 +730,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         mView3 = getLayoutInflater().inflate(R.layout.activity_settings, null);
         setContentView(mView3); //Settings
 
+        cbxColorfulPid = (CheckBox) findViewById(R.id.cbxColorfulPid);
+
         spnConnectionTypeSpinner = (Spinner) findViewById(R.id.spnConnectionTypeSpinner);
         ArrayAdapter<CharSequence> serialConnectionTypeAdapter = ArrayAdapter.createFromResource(this,
                 R.array.connections_settings, android.R.layout.simple_spinner_item);
@@ -1002,6 +1007,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         mSerialModeUsed = sharedPref.getInt(getString(R.string.SETTINGS_SERIAL_MODE), 0);
         mBluetoothDeviceUsed = sharedPref.getString(getString(R.string.SETTINGS_BT_NAME), null);
         mLoadedUavo = sharedPref.getString(getString(R.string.SETTINGS_UAVO_SOURCE), "uav-15.09");
+        mColorfulPid = sharedPref.getBoolean(getString(R.string.SETTINGS_COLORFUL_PID), false);
     }
 
     @Override
@@ -1016,6 +1022,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         mSerialModeUsed = sharedPref.getInt(getString(R.string.SETTINGS_SERIAL_MODE), 0);
         mBluetoothDeviceUsed = sharedPref.getString(getString(R.string.SETTINGS_BT_NAME), null);
         mLoadedUavo = sharedPref.getString(getString(R.string.SETTINGS_UAVO_SOURCE), "uav-15.09");
+        mColorfulPid = sharedPref.getBoolean(getString(R.string.SETTINGS_COLORFUL_PID), false);
 
         initViewPid();
         initViewAbout();
@@ -1251,10 +1258,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     SingleToast.makeText(this, "UAVO load completed", Toast.LENGTH_SHORT).show();
                 }
 
+                mColorfulPid = cbxColorfulPid.isChecked();
+
                 editor.putString(getString(R.string.SETTINGS_BT_MAC), btmac);
                 editor.putString(getString(R.string.SETTINGS_BT_NAME), btname);
                 editor.putString(getString(R.string.SETTINGS_UAVO_SOURCE), mLoadedUavo);
                 editor.putInt(getString(R.string.SETTINGS_SERIAL_MODE), mSerialModeUsed);
+                editor.putBoolean(getString(R.string.SETTINGS_COLORFUL_PID), mColorfulPid);
 
                 editor.commit();
                 mDoReconnect = true;
@@ -1328,6 +1338,23 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
                 imgBluetooth = (ImageView) findViewById(R.id.imgBluetooth);
                 imgUSB = (ImageView) findViewById(R.id.imgUSB);
+
+                if (mColorfulPid) {
+                    findViewById(R.id.lloOuterPid).setBackground(
+                            ContextCompat.getDrawable(getApplicationContext(),
+                                    R.drawable.border_top_yellow));
+                    findViewById(R.id.lloInnerPid).setBackground(
+                            ContextCompat.getDrawable(getApplicationContext(),
+                                    R.drawable.border_top_blue));
+                } else {
+                    findViewById(R.id.lloOuterPid).setBackground(
+                            ContextCompat.getDrawable(getApplicationContext(),
+                                    R.drawable.border_top));
+                    findViewById(R.id.lloInnerPid).setBackground(
+                            ContextCompat.getDrawable(getApplicationContext(),
+                                    R.drawable.border_top));
+                }
+
                 break;
 
             default:

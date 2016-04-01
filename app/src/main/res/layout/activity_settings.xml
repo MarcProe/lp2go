@@ -46,26 +46,49 @@
                 android:layout_height="match_parent"
                 android:orientation="horizontal">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
+                <TextView
+                    android:id="@+id/textView12"
+                    android:layout_width="0dp"
                     android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="@string/BLUETOOTH_DEVICE"
+                    android:textAppearance="?android:attr/textAppearanceLarge" />
+
+                <Spinner
+                    android:id="@+id/spnBluetoothPairedDevice"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:spinnerMode="dropdown" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/textView21"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="Colorful PID tuning"
+                    android:textAppearance="?android:attr/textAppearanceLarge" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
                     android:orientation="horizontal">
 
-                    <TextView
-                        android:id="@+id/textView12"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:text="@string/BLUETOOTH_DEVICE"
-                        android:textAppearance="?android:attr/textAppearanceLarge" />
-
-                    <Spinner
-                        android:id="@+id/spnBluetoothPairedDevice"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:spinnerMode="dropdown" />
-
+                    <CheckBox
+                        android:id="@+id/cbxColorfulPid"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:background="?android:attr/listChoiceIndicatorMultiple"
+                        android:button="@null"
+                        android:checked="false" />
                 </LinearLayout>
             </LinearLayout>
 
