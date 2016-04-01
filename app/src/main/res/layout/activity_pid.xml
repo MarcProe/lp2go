@@ -31,6 +31,19 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
+                    <ImageView
+                        android:id="@+id/imgBluetooth"
+                        android:layout_width="30dp"
+                        android:layout_height="fill_parent"
+                        android:src="@drawable/ic_bluetooth_disabled_128dp" />
+
+                    <ImageView
+                        android:id="@+id/imgUSB"
+                        android:layout_width="30dp"
+                        android:layout_height="fill_parent"
+                        android:contentDescription="USB"
+                        android:src="@drawable/ic_usb_128dp" />
+
                     <TextView
                         android:id="@+id/textView20"
                         android:layout_width="0dp"
@@ -76,26 +89,34 @@
                         android:text="Yaw"
                         android:textAppearance="?android:attr/textAppearanceMedium" />
 
-                    <ImageView
-                        android:id="@+id/imgBluetooth"
-                        android:layout_width="30dp"
-                        android:layout_height="fill_parent"
-                        android:src="@drawable/ic_bluetooth_disabled_128dp" />
-
-                    <ImageView
-                        android:id="@+id/imgUSB"
-                        android:layout_width="30dp"
-                        android:layout_height="fill_parent"
-                        android:contentDescription="USB"
-                        android:src="@drawable/ic_usb_128dp" />
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="3"
-                    android:background="@drawable/border_top"
+                    android:background="@drawable/border_top_blue"
                     android:orientation="horizontal">
+
+                    <net.proest.lp2go3.UI.VerticalTextView
+                        android:id="@+id/textView99"
+                        android:layout_width="30dp"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:gravity="center|center_vertical|center_horizontal|bottom"
+                        android:text="(Inner Loop)"
+                        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+                    <net.proest.lp2go3.UI.VerticalTextView
+                        android:id="@+id/textView18"
+                        android:layout_width="30dp"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="5dp"
+                        android:gravity="center|center_vertical|center_horizontal|bottom"
+                        android:singleLine="false"
+                        android:text="Rate Stabilization"
+                        android:textAppearance="?android:attr/textAppearanceLarge" />
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -262,34 +283,34 @@
                         </LinearLayout>
                     </LinearLayout>
 
-                    <net.proest.lp2go3.UI.VerticalTextView
-                        android:id="@+id/textView99"
-                        android:layout_width="30dp"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center"
-                        android:gravity="center|center_vertical|center_horizontal"
-                        android:text="(Inner Loop)"
-                        android:textAppearance="?android:attr/textAppearanceLarge" />
-
-                    <net.proest.lp2go3.UI.VerticalTextView
-                        android:id="@+id/textView18"
-                        android:layout_width="30dp"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center"
-                        android:layout_marginLeft="5dp"
-                        android:gravity="center|center_vertical|center_horizontal"
-                        android:singleLine="false"
-                        android:text="Rate Stabilization"
-                        android:textAppearance="?android:attr/textAppearanceLarge" />
-
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="2"
-                    android:background="@drawable/border_top"
+                    android:background="@drawable/border_top_yellow"
                     android:orientation="horizontal">
+
+                    <net.proest.lp2go3.UI.VerticalTextView
+                        android:id="@+id/textView98"
+                        android:layout_width="30dp"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:gravity="center|center_vertical|center_horizontal|bottom"
+                        android:singleLine="false"
+                        android:text="(Outer Loop)"
+                        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+                    <net.proest.lp2go3.UI.VerticalTextView
+                        android:id="@+id/txtLabelPidAttiStab"
+                        android:layout_width="30dp"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="5dp"
+                        android:gravity="center|center_vertical|center_horizontal|bottom"
+                        android:text="Attitude Stabilization"
+                        android:textAppearance="?android:attr/textAppearanceLarge" />
 
                     <LinearLayout
                         android:id="@+id/myLayout"
@@ -403,25 +424,6 @@
                                 android:textSize="25sp" />
                         </LinearLayout>
                     </LinearLayout>
-
-                    <net.proest.lp2go3.UI.VerticalTextView
-                        android:id="@+id/textView98"
-                        android:layout_width="30dp"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center"
-                        android:gravity="center|center_vertical|center_horizontal"
-                        android:text="(Outer Loop)"
-                        android:textAppearance="?android:attr/textAppearanceLarge" />
-
-                    <net.proest.lp2go3.UI.VerticalTextView
-                        android:id="@+id/txtLabelPidAttiStab"
-                        android:layout_width="30dp"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center"
-                        android:layout_marginLeft="5dp"
-                        android:gravity="center|center_vertical|center_horizontal"
-                        android:text="Attitude Stabilization"
-                        android:textAppearance="?android:attr/textAppearanceLarge" />
                 </LinearLayout>
 
             </LinearLayout>
