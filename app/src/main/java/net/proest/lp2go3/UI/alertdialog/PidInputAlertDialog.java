@@ -119,7 +119,7 @@ public class PidInputAlertDialog extends InputAlertDialog implements SeekBar.OnS
         seekbar.setMax(mValueMax);
         seekbar.setOnSeekBarChangeListener(this);
 
-        float fs = Float.parseFloat(mEditText.getText().toString());
+        float fs = H.stringToFloat(mEditText.getText().toString());
 
         seekbar.setProgress(Math.round(fs * mDenom));
 
@@ -148,7 +148,7 @@ public class PidInputAlertDialog extends InputAlertDialog implements SeekBar.OnS
             @Override
             public void onClick(View v) {
                 try {
-                    float f = Float.parseFloat(mEditText.getText().toString());
+                    float f = H.stringToFloat(mEditText.getText().toString());
                     f += (float) mStep / mDenom;
                     if (f > (float) mValueMax / mDenom) f = (float) mValueMax / mDenom;
                     mEditText.setText(getDecimalString(f));
@@ -163,7 +163,7 @@ public class PidInputAlertDialog extends InputAlertDialog implements SeekBar.OnS
             @Override
             public void onClick(View v) {
                 try {
-                    float f = Float.parseFloat(mEditText.getText().toString());
+                    float f = H.stringToFloat(mEditText.getText().toString());
                     f += ((float) mStep / mDenom) * 10;
                     if (f > (float) mValueMax / mDenom) f = (float) mValueMax / mDenom;
                     mEditText.setText(getDecimalString(f));
@@ -178,7 +178,7 @@ public class PidInputAlertDialog extends InputAlertDialog implements SeekBar.OnS
             @Override
             public void onClick(View v) {
                 try {
-                    float f = Float.parseFloat(mEditText.getText().toString());
+                    float f = H.stringToFloat(mEditText.getText().toString());
                     f -= (float) mStep / mDenom;
                     if (f < 0) f = 0;
                     mEditText.setText(getDecimalString(f));
@@ -193,7 +193,7 @@ public class PidInputAlertDialog extends InputAlertDialog implements SeekBar.OnS
             @Override
             public void onClick(View v) {
                 try {
-                    float f = Float.parseFloat(mEditText.getText().toString());
+                    float f = H.stringToFloat(mEditText.getText().toString());
                     f -= ((float) mStep / mDenom) * 10;
                     if (f < 0) f = 0;
                     mEditText.setText(getDecimalString(f));
@@ -210,11 +210,11 @@ public class PidInputAlertDialog extends InputAlertDialog implements SeekBar.OnS
 
             public void afterTextChanged(Editable s) {
                 try {
-                    float f = Float.parseFloat(s.toString());
+                    float f = H.stringToFloat(s.toString());
                     if (f < 0 || f > (float) mValueMax / mDenom) {
                         s.clear();
                         s.append(lastTextOk);
-                        f = Float.parseFloat(s.toString());
+                        f = H.stringToFloat(s.toString());
                     }
                     seekbar.setProgress(Math.round(f * mDenom));
                 } catch (NumberFormatException e) {
@@ -228,7 +228,7 @@ public class PidInputAlertDialog extends InputAlertDialog implements SeekBar.OnS
 
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 try {
-                    float f = Float.parseFloat(s.toString());
+                    float f = H.stringToFloat(s.toString());
                     if (f >= 0 && f <= (float) mValueMax / mDenom) {
                         lastTextOk = s.toString();
                     } else {

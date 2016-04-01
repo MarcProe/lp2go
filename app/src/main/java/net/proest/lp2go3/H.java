@@ -20,8 +20,11 @@ import com.google.android.gms.maps.model.LatLng;
 
 import java.math.BigDecimal;
 import java.nio.ByteBuffer;
+import java.text.NumberFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 public class H {
@@ -226,5 +229,23 @@ public class H {
 
     public static byte[] floatToByteArray(float value) {
         return ByteBuffer.allocate(4).putFloat(value).array();
+    }
+
+    public static double stringToDouble(String s) {
+        try {
+            return NumberFormat.getInstance(Locale.getDefault()).parse(s).doubleValue();
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return 0.0d;
+        }
+    }
+
+    public static float stringToFloat(String s) {
+        try {
+            return NumberFormat.getInstance(Locale.getDefault()).parse(s).floatValue();
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return 0.0f;
+        }
     }
 }
