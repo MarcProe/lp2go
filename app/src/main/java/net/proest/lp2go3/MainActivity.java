@@ -138,6 +138,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -156,18 +157,19 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private static final String ACTION_USB_PERMISSION = "net.proest.lp2go3.USB_PERMISSION";
     private static final String OFFSET_VELOCITY_DOWN = "net.proest.lp2go3.VelocityState-Down";
     private static final String OFFSET_BAROSENSOR_ALTITUDE = "net.proest.lp2go3.BaroSensor-Altitude";
+
     private static final int VIEW_MAIN = 0;
     private static final int VIEW_MAP = 1;
     private static final int VIEW_OBJECTS = 2;
-    private static final int VIEW_SETTINGS = 3;
+    private static final int VIEW_PID = 3;
     private static final int VIEW_LOGS = 4;
-    private static final int VIEW_ABOUT = 5;
-    private static final int VIEW_PID = 6;
-    private static final int CALLBACK_FILEPICKER = 3456;
+    private static final int VIEW_SETTINGS = 5;
+    private static final int VIEW_ABOUT = 6;
 
+    private static final int NUM_OF_VIEWS = 7;
+    private static final int CALLBACK_FILEPICKER = 3456;
     private static final int POLL_WAIT_TIME = 500;
     private static final int POLL_SECOND_FACTOR = 1000 / POLL_WAIT_TIME;
-
     private static final boolean LOCAL_LOGD = true;
     private final static int HISTORY_MARKER_NUM = 5;
     private static boolean sHasPThread = false;
@@ -176,6 +178,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private static boolean mColorfulPid;
     private final Marker[] mPosHistory = new Marker[HISTORY_MARKER_NUM];
     public boolean isReady = false;
+    private Map<Integer, View> mViews;// mView0, mView1, mView2, mView3, mView4, mView5, mView6;
     private TextView txtObjectLogTx;
     private TextView txtObjectLogRxGood;
     private TextView txtObjectLogRxBad;
@@ -264,7 +267,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private ActionBarDrawerToggle mDrawerToggle;
     private CharSequence mDrawerTitle;
     private CharSequence mTitle;
-    private String[] mNavMenuTitles;
+    //private String[] mNavMenuTitles;
     private HashMap<String, Object> mOffset;
     private PollThread mPollThread = null;
     private ConnectionThread mConnectionThread = null;
@@ -320,7 +323,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         }
     };
-    private View mView0, mView1, mView2, mView3, mView4, mView5, mView6;
+
     private GoogleMap mMap;
     private MapView mMapView;
     private boolean mDoReconnect = false;
@@ -416,7 +419,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     private void initSlider(Bundle savedInstanceState) {
         mTitle = mDrawerTitle = getTitle();
-        mNavMenuTitles = getResources().getStringArray(R.array.nav_drawer_items);
         TypedArray navMenuIcons = getResources()
                 .obtainTypedArray(R.array.nav_drawer_icons);
 
@@ -424,13 +426,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         mDrawerList = (ListView) findViewById(R.id.list_slidermenu);
         ArrayList<NavDrawerItem> navDrawerItems = new ArrayList<NavDrawerItem>();
 
-        navDrawerItems.add(new NavDrawerItem(mNavMenuTitles[0], navMenuIcons.getResourceId(0, -1)));
-        navDrawerItems.add(new NavDrawerItem(mNavMenuTitles[1], navMenuIcons.getResourceId(1, -1)));
-        navDrawerItems.add(new NavDrawerItem(mNavMenuTitles[2], navMenuIcons.getResourceId(2, -1)));
-        navDrawerItems.add(new NavDrawerItem(mNavMenuTitles[3], navMenuIcons.getResourceId(3, -1)));
-        navDrawerItems.add(new NavDrawerItem(mNavMenuTitles[4], navMenuIcons.getResourceId(4, -1)));
-        navDrawerItems.add(new NavDrawerItem(mNavMenuTitles[5], navMenuIcons.getResourceId(5, -1)));
-        navDrawerItems.add(new NavDrawerItem(mNavMenuTitles[6], navMenuIcons.getResourceId(6, -1)));
+        navDrawerItems.add(new NavDrawerItem(getString(R.string.menu_main), R.drawable.ic_notifications_on_24dp));
+        navDrawerItems.add(new NavDrawerItem(getString(R.string.menu_map), R.drawable.ic_public_24dp));
+        navDrawerItems.add(new NavDrawerItem(getString(R.string.menu_objects), R.drawable.ic_now_widgets_24dp));
+        navDrawerItems.add(new NavDrawerItem(getString(R.string.menu_pid), R.drawable.ic_tune_128dp));
+        navDrawerItems.add(new NavDrawerItem(getString(R.string.menu_logs), R.drawable.ic_rate_review_24dp));
+        navDrawerItems.add(new NavDrawerItem(getString(R.string.menu_settings), R.drawable.ic_settings_24dp));
+        navDrawerItems.add(new NavDrawerItem(getString(R.string.menu_about), R.drawable.ic_info_outline_24dp));
+
 
         navMenuIcons.recycle();
         NavDrawerListAdapter drawListAdapter = new NavDrawerListAdapter(getApplicationContext(),
@@ -520,8 +523,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     private void initViewMain(Bundle savedInstanceState) {
-        mView0 = getLayoutInflater().inflate(R.layout.activity_main, null);
-        setContentView(mView0);  //Main
+        mViews.put(VIEW_MAIN, getLayoutInflater().inflate(R.layout.activity_main, null));
+        setContentView(mViews.get(VIEW_MAIN));  //Main
 
         initSlider(savedInstanceState);
 
@@ -613,8 +616,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     private void initViewMap(Bundle savedInstanceState) {
-        mView1 = getLayoutInflater().inflate(R.layout.activity_map, null);
-        setContentView(mView1); //Map
+        mViews.put(VIEW_MAP, getLayoutInflater().inflate(R.layout.activity_map, null));
+        setContentView(mViews.get(VIEW_MAP)); //Map
         {
             mMapView = (MapView) findViewById(R.id.map);
             mMapView.onCreate(savedInstanceState);
@@ -643,8 +646,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     private void initViewObjects() {
-        mView2 = getLayoutInflater().inflate(R.layout.activity_objects, null);
-        setContentView(mView2); //Objects
+        mViews.put(VIEW_OBJECTS, getLayoutInflater().inflate(R.layout.activity_objects, null));
+        setContentView(mViews.get(VIEW_OBJECTS)); //Objects
 
         txtObjects = new EditText(this); //(EditText) findViewById(R.id.etxObjects);
         mExpListView = (ExpandableListView) findViewById(R.id.elvObjects);
@@ -727,8 +730,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     private void initViewSettings() {
-        mView3 = getLayoutInflater().inflate(R.layout.activity_settings, null);
-        setContentView(mView3); //Settings
+        mViews.put(VIEW_SETTINGS, getLayoutInflater().inflate(R.layout.activity_settings, null));
+        setContentView(mViews.get(VIEW_SETTINGS)); //Settings
 
         cbxColorfulPid = (CheckBox) findViewById(R.id.cbxColorfulPid);
 
@@ -809,8 +812,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     private void initViewLogs() {
-        mView4 = getLayoutInflater().inflate(R.layout.activity_logs, null);
-        setContentView(mView4); //Logs
+        mViews.put(VIEW_LOGS, getLayoutInflater().inflate(R.layout.activity_logs, null));
+        setContentView(mViews.get(VIEW_LOGS)); //Logs
         {
             txtLogFilename = (TextView) findViewById(R.id.txtLogFilename);
             txtLogSize = (TextView) findViewById(R.id.txtLogSize);
@@ -820,8 +823,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     private void initViewAbout() {
-        mView5 = getLayoutInflater().inflate(R.layout.activity_about, null);
-        setContentView(mView5);  //About
+        mViews.put(VIEW_ABOUT, getLayoutInflater().inflate(R.layout.activity_about, null));
+        setContentView(mViews.get(VIEW_ABOUT));  //About
         {
             PackageInfo pInfo = null;
             try {
@@ -840,8 +843,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     private void initViewPid() {
-        mView6 = getLayoutInflater().inflate(R.layout.activity_pid, null);
-        setContentView(mView6);
+        mViews.put(VIEW_PID, getLayoutInflater().inflate(R.layout.activity_pid, null));
+        setContentView(mViews.get(VIEW_PID));
 
         imgPidBank = (ImageView) findViewById(R.id.imgPidBank);
 
@@ -1023,6 +1026,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         mBluetoothDeviceUsed = sharedPref.getString(getString(R.string.SETTINGS_BT_NAME), null);
         mLoadedUavo = sharedPref.getString(getString(R.string.SETTINGS_UAVO_SOURCE), "uav-15.09");
         mColorfulPid = sharedPref.getBoolean(getString(R.string.SETTINGS_COLORFUL_PID), false);
+
+        mViews = new HashMap<>(NUM_OF_VIEWS);
 
         initViewPid();
         initViewAbout();
@@ -1284,31 +1289,39 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 break;
         }
 
+        String menuTitle = "";
+
         //init new view
         switch (position) {
             case VIEW_MAIN:
                 initViewMain(null);
                 fragment = new MainFragment();
-                setContentView(mView0, position);
+                setContentView(mViews.get(VIEW_MAIN), position);
 
                 imgBluetooth = (ImageView) findViewById(R.id.imgBluetooth);
                 imgUSB = (ImageView) findViewById(R.id.imgUSB);
 
+                menuTitle = getString(R.string.menu_main);
+
                 break;
             case VIEW_MAP:
                 fragment = new MapFragment();
-                setContentView(mView1, position);
+                setContentView(mViews.get(VIEW_MAP), position);
                 mMapView.onResume();  //(re)activate the Map
+
+                menuTitle = getString(R.string.menu_map);
 
                 break;
             case VIEW_OBJECTS:
                 fragment = new ObjectsFragment();
-                setContentView(mView2, position);
+                setContentView(mViews.get(VIEW_OBJECTS), position);
+
+                menuTitle = getString(R.string.menu_objects);
 
                 break;
             case VIEW_SETTINGS:
                 fragment = new SettingsFragment();
-                setContentView(mView3, position);
+                setContentView(mViews.get(VIEW_SETTINGS), position);
 
                 if (mSerialModeUsed == SERIAL_NONE) {
                     SingleToast.makeText(this, getString(R.string.PLEASE_SET_A)
@@ -1318,21 +1331,27 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                             + getString(R.string.BT_DEVICE), Toast.LENGTH_LONG).show();
                 }
 
+                menuTitle = getString(R.string.menu_settings);
+
                 break;
             case VIEW_LOGS:
                 fragment = new LogsFragment();
-                setContentView(mView4, position);
+                setContentView(mViews.get(VIEW_LOGS), position);
+
+                menuTitle = getString(R.string.menu_logs);
 
                 break;
             case VIEW_ABOUT:
                 fragment = new AboutFragment();
-                setContentView(mView5, position);
+                setContentView(mViews.get(VIEW_ABOUT), position);
+
+                menuTitle = getString(R.string.menu_about);
 
                 break;
 
             case VIEW_PID:
                 fragment = new PidFragment();
-                setContentView(mView6, position);
+                setContentView(mViews.get(VIEW_PID), position);
                 //allowPidUpdate();
                 SingleToast.makeText(this, R.string.CHECK_PID_WARNING, Toast.LENGTH_SHORT).show();
 
@@ -1355,6 +1374,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                                     R.drawable.border_top));
                 }
 
+                menuTitle = getString(R.string.menu_pid);
+
                 break;
 
             default:
@@ -1372,7 +1393,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
             mDrawerList.setItemChecked(position, true);
             mDrawerList.setSelection(position);
-            setTitle(mNavMenuTitles[position]);
+            setTitle(menuTitle);
             mDrawerLayout.closeDrawer(mDrawerList);
         }
     }

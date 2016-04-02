@@ -28,15 +28,15 @@
     <string name="DEVICE_NAME_NONE"><![CDATA[<none>]]></string>
 
     <!-- Nav Drawer Menu Items -->
-    <string-array name="nav_drawer_items">
-        <item>Main</item>
-        <item>Map</item>
-        <item>Objects</item>
-        <item>Settings</item>
-        <item>Logs</item>
-        <item>About</item>
-        <item>PID Tuning</item>
-    </string-array>
+
+    <string name="menu_main">Main</string>
+    <string name="menu_map">Map</string>
+    <string name="menu_objects">Objects</string>
+    <string name="menu_settings">Settings</string>
+    <string name="menu_logs">Logs</string>
+    <string name="menu_about">About</string>
+    <string name="menu_pid">PID Tuning</string>
+
 
     <!-- Nav Drawer List Item Icons -->
     <!-- Keep them in order as the titles are in -->
