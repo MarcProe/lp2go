@@ -231,15 +231,6 @@ public class H {
         return ByteBuffer.allocate(4).putFloat(value).array();
     }
 
-    public static double stringToDouble(String s) {
-        try {
-            return NumberFormat.getInstance(Locale.getDefault()).parse(s).doubleValue();
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return 0.0d;
-        }
-    }
-
     public static float stringToFloat(String s) {
         try {
             return NumberFormat.getInstance(Locale.getDefault()).parse(s).floatValue();
