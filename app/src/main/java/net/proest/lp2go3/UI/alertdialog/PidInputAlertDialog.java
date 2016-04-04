@@ -20,7 +20,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.SeekBar;
@@ -31,6 +30,7 @@ import net.proest.lp2go3.R;
 import net.proest.lp2go3.UAVTalk.UAVTalkXMLObject;
 import net.proest.lp2go3.UI.PidTextView;
 import net.proest.lp2go3.UI.SingleToast;
+import net.proest.lp2go3.VisualLog;
 
 import java.text.DecimalFormat;
 
@@ -154,7 +154,7 @@ public class PidInputAlertDialog extends InputAlertDialog implements SeekBar.OnS
                     mEditText.setText(getDecimalString(f));
                     seekbar.setProgress(Math.round(f * mDenom));
                 } catch (NumberFormatException e) {
-                    Log.w("PidInputAlertDialog", "NPE Forward");
+                    VisualLog.w("PidInputAlertDialog", "NPE Forward");
                 }
             }
         });
@@ -169,7 +169,7 @@ public class PidInputAlertDialog extends InputAlertDialog implements SeekBar.OnS
                     mEditText.setText(getDecimalString(f));
                     seekbar.setProgress(Math.round(f * mDenom));
                 } catch (NumberFormatException e) {
-                    Log.w("PidInputAlertDialog", "NPE Fast Forward");
+                    VisualLog.w("PidInputAlertDialog", "NPE Fast Forward");
                 }
             }
         });
@@ -184,7 +184,7 @@ public class PidInputAlertDialog extends InputAlertDialog implements SeekBar.OnS
                     mEditText.setText(getDecimalString(f));
                     seekbar.setProgress(Math.round(f * mDenom));
                 } catch (NumberFormatException e) {
-                    Log.w("PidInputAlertDialog", "NPE Backward");
+                    VisualLog.w("PidInputAlertDialog", "NPE Backward");
                 }
             }
         });
@@ -199,7 +199,7 @@ public class PidInputAlertDialog extends InputAlertDialog implements SeekBar.OnS
                     mEditText.setText(getDecimalString(f));
                     seekbar.setProgress(Math.round(f * mDenom));
                 } catch (NumberFormatException e) {
-                    Log.w("PidInputAlertDialog", "NPE Fast Backward");
+                    VisualLog.w("PidInputAlertDialog", "NPE Fast Backward");
                 }
             }
         });
@@ -218,7 +218,7 @@ public class PidInputAlertDialog extends InputAlertDialog implements SeekBar.OnS
                     }
                     seekbar.setProgress(Math.round(f * mDenom));
                 } catch (NumberFormatException e) {
-                    Log.w("PidInputAlertDialog", "Edit Text Listener");
+                    VisualLog.w("PidInputAlertDialog", "Edit Text Listener");
                 }
             }
 
@@ -237,7 +237,7 @@ public class PidInputAlertDialog extends InputAlertDialog implements SeekBar.OnS
                                 Toast.LENGTH_SHORT).show();
                     }
                 } catch (NumberFormatException e) {
-                    Log.w("PidInputAertDialog", "onTextChanged");
+                    VisualLog.w("PidInputAertDialog", "onTextChanged");
                 }
 
             }
@@ -264,7 +264,7 @@ public class PidInputAlertDialog extends InputAlertDialog implements SeekBar.OnS
                     }
                     break;
                 default:
-                    Log.e("PidUnputAlertDialog", "Type not implemented!");
+                    VisualLog.e("PidUnputAlertDialog", "Type not implemented!");
                     data = H.toBytes(0);
                     break;
             }

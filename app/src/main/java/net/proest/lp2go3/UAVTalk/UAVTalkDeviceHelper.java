@@ -16,7 +16,7 @@
 
 package net.proest.lp2go3.UAVTalk;
 
-import android.util.Log;
+import net.proest.lp2go3.VisualLog;
 
 public class UAVTalkDeviceHelper {
 
@@ -34,7 +34,7 @@ public class UAVTalkDeviceHelper {
                     oTree.getElementIndex(objectName, fieldName, elementName),
                     newFieldData);
         } catch (NullPointerException e) {
-            Log.e(TAG, e.getMessage());
+            VisualLog.e(TAG, e.getMessage());
             return new byte[0];
         }
     }

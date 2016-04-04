@@ -41,7 +41,6 @@ import android.hardware.usb.UsbDeviceConnection;
 import android.hardware.usb.UsbEndpoint;
 import android.hardware.usb.UsbInterface;
 import android.hardware.usb.UsbRequest;
-import android.util.Log;
 
 import net.proest.lp2go3.H;
 import net.proest.lp2go3.MainActivity;
@@ -51,6 +50,7 @@ import net.proest.lp2go3.UAVTalk.UAVTalkObject;
 import net.proest.lp2go3.UAVTalk.UAVTalkObjectInstance;
 import net.proest.lp2go3.UAVTalk.UAVTalkObjectTree;
 import net.proest.lp2go3.UAVTalk.UAVTalkXMLObject;
+import net.proest.lp2go3.VisualLog;
 
 import java.nio.ByteBuffer;
 import java.util.HashMap;
@@ -63,7 +63,6 @@ public class UAVTalkUsbDevice extends UAVTalkDevice {
     private final WaiterThread mWaiterThread = new WaiterThread();
     private UsbRequest mOutRequest = null;
     private boolean connected = false;
-
 
     public UAVTalkUsbDevice(MainActivity activity, UsbDeviceConnection connection,
                             UsbInterface intf, HashMap<String, UAVTalkXMLObject> xmlObjects) {
@@ -313,26 +312,26 @@ public class UAVTalkUsbDevice extends UAVTalkDevice {
                             break;
                         case 0x21:
                             //handle request message, nobody should request from LP2Go (so we don't implement this)
-                            Log.e("UAVTalk", "Received Object Request, but won't send any");
+                            VisualLog.e("UAVTalk", "Received Object Request, but won't send any.");
                             break;
                         case 0x22:
                             //handle object with ACK REQ, means send ACK
-                            Log.d("UAVTalk", "Received Object with ACK Request for " + myObj.getId() + ":" + H.bytesToHex(cM.getData()));
+                            VisualLog.d("UAVTalk", "Received Object with ACK Request for " + myObj.getId() + ":" + H.bytesToHex(cM.getData()));
                             sendAck(myObj.getId(), myIns.getId());
 
                             break;
                         case 0x23:
                             //handle received ACK, e.g. save in Object that it has been acknowledged
-                            Log.w("UAVTalk", "Received ACK Object for " + myObj.getId() + ". Which is nice.");
+                            VisualLog.w("UAVTalk", "Received ACK Object for " + myObj.getId());
                             break;
                         case 0x24:
                             //handle NACK, e.g. show warning
                             mActivity.incRxObjectsBad();
-                            Log.w("UAVTalk", "Received NACK Object for " + myObj.getId() + ". Which is bad.");
+                            VisualLog.w("UAVTalk", "Received NACK Object for " + myObj.getId());
                             break;
                         default:
                             mActivity.incRxObjectsBad();
-                            Log.w("UAVTalk", "Received bad Object Type " + (cM.getType() & 0xff));
+                            VisualLog.w("UAVTalk", "Received bad Object Type " + (cM.getType() & 0xff));
                             continue;
                     }
 

@@ -47,10 +47,6 @@ public class UAVTalkMessage {
 
             this.mInstanceId = ib1 << 8 | ib2;
 
-           /* if(mType == 0x23) {
-                Log.d("MSG", "NACK");
-            }*/
-
         } else {
             throw new UnsupportedOperationException("Bad Message, < 12 bytes");
         }

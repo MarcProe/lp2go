@@ -20,7 +20,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.text.InputFilter;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -30,6 +29,7 @@ import net.proest.lp2go3.R;
 import net.proest.lp2go3.UAVTalk.UAVTalkXMLObject;
 import net.proest.lp2go3.UI.InputFilterMinMax;
 import net.proest.lp2go3.UI.SingleToast;
+import net.proest.lp2go3.VisualLog;
 
 public class IntegerInputAlertDialog extends InputAlertDialog {
 
@@ -105,7 +105,7 @@ public class IntegerInputAlertDialog extends InputAlertDialog {
                     }
                     break;
                 default:
-                    Log.e("IntegerUnputAlertDialog", "Type not implemented!");
+                    VisualLog.e("IntegerUnputAlertDialog", "Type not implemented!");
                     data = H.toBytes(0);
                     break;
             }

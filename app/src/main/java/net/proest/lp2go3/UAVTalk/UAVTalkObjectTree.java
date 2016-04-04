@@ -16,9 +16,8 @@
 
 package net.proest.lp2go3.UAVTalk;
 
-import android.util.Log;
-
 import net.proest.lp2go3.H;
+import net.proest.lp2go3.VisualLog;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -70,7 +69,7 @@ public class UAVTalkObjectTree {
         String oID = xmlObjects.get(name).getId();
         UAVTalkObject obj = objects.get(oID);
         if (obj == null) {
-            Log.d("OFN", "CREATED NEW OBJECT! " + name + " " + oID);
+            VisualLog.d("OFN", "CREATED NEW OBJECT! " + name + " " + oID);
             obj = new UAVTalkObject(oID);
         }
         return obj;
@@ -82,7 +81,7 @@ public class UAVTalkObjectTree {
                 objects.put(obj.getId(), obj);
             }
         } catch (NullPointerException e) {
-            Log.w("WAR", "objects not initialized");
+            VisualLog.w("WAR", "objects not initialized");
         }
     }
 
@@ -161,7 +160,7 @@ public class UAVTalkObjectTree {
                 try {
                     retval = xmlfield.mOptions[H.toInt(b)];
                 } catch (ArrayIndexOutOfBoundsException e) {
-                    Log.d("AIOOBE", "" + H.toInt(b) + " " + data.length + " " + b + " " + H.bytesToHex(fielddata) + " " + H.bytesToHex(data) + " " + pos + " " + element);
+                    VisualLog.d("AIOOBE", "" + H.toInt(b) + " " + data.length + " " + b + " " + H.bytesToHex(fielddata) + " " + H.bytesToHex(data) + " " + pos + " " + element);
                 }
             } else if (xmlfield.mType == UAVTalkXMLObject.FIELDTYPE_UINT32) {
                 byte[] fielddata = new byte[4];

@@ -36,6 +36,7 @@
     <string name="menu_logs">Logs</string>
     <string name="menu_about">About</string>
     <string name="menu_pid">PID Tuning</string>
+    <string name="menu_debug">Debug</string>
 
 
     <!-- Nav Drawer List Item Icons -->
@@ -48,6 +49,7 @@
         <item>@drawable/ic_rate_review_24dp</item>
         <item>@drawable/ic_info_outline_24dp</item>
         <item>@drawable/ic_tune_24dp</item>
+        <item>@drawable/ic_cancel_128dp</item>
     </array>
 
     <!-- Content Description -->
@@ -108,6 +110,8 @@
     <string name="PID_NAME_ARI">Attitude Roll Integral</string>
     <string name="PID_NAME_API">Attitude Pitch Integral</string>
     <string name="PID_NAME_AYI">Attitude Yaw Integral</string>
+    <string name="MIME_APPLICATION_TEXT">text/plain</string>
+    <string name="SHARE_DEBUG_LOG_TITLE">Share Debug Log</string>
 
 
 </resources>

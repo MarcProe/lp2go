@@ -69,7 +69,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -113,6 +112,7 @@ import net.proest.lp2go3.UI.alertdialog.IntegerInputAlertDialog;
 import net.proest.lp2go3.UI.alertdialog.PidInputAlertDialog;
 import net.proest.lp2go3.c.PID;
 import net.proest.lp2go3.slider.AboutFragment;
+import net.proest.lp2go3.slider.DebugFragment;
 import net.proest.lp2go3.slider.LogsFragment;
 import net.proest.lp2go3.slider.MainFragment;
 import net.proest.lp2go3.slider.MapFragment;
@@ -165,8 +165,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private static final int VIEW_LOGS = 4;
     private static final int VIEW_SETTINGS = 5;
     private static final int VIEW_ABOUT = 6;
+    private static final int VIEW_DEBUG = 7;
 
-    private static final int NUM_OF_VIEWS = 7;
+    private static final int NUM_OF_VIEWS = 8;
     private static final int CALLBACK_FILEPICKER = 3456;
     private static final int POLL_WAIT_TIME = 500;
     private static final int POLL_SECOND_FACTOR = 1000 / POLL_WAIT_TIME;
@@ -281,12 +282,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private final BroadcastReceiver mUsbReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            Log.d("USB", action);
+            VisualLog.d("USB", action);
 
             if (mSerialModeUsed == SERIAL_USB && UsbManager.ACTION_USB_DEVICE_ATTACHED.equals(action)) {
                 UsbDevice device = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
 
-                Log.d("USB", device.getVendorId() + "-" + device.getProductId() + "-" + device.getDeviceClass()
+                VisualLog.d("USB", device.getVendorId() + "-" + device.getProductId() + "-" + device.getDeviceClass()
                         + " " + device.getDeviceSubclass() + " " + device.getDeviceProtocol());
 
                 if (device.getDeviceClass() == UsbConstants.USB_CLASS_MISC) {
@@ -317,7 +318,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                             }
                         }
                     } else {
-                        Log.d("DBG", "permission denied for device " + mDevice);
+                        VisualLog.d("DBG", "permission denied for device " + mDevice);
                     }
                 }
             }
@@ -334,6 +335,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private PidTextView txtPidRollIntegral;
     private PidTextView txtPidPitchIntegral;
     private PidTextView txtPidYawIntegral;
+    private TextView txtDebugLog;
 
     static private UsbInterface findAdbInterface(UsbDevice device) {
 
@@ -375,20 +377,20 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     private void copyAssets() {
 
-        Log.d("STARTING", "CopyAssets");
+        VisualLog.d("STARTING", "CopyAssets");
         AssetManager assetManager = getAssets();
         String[] files = null;
         try {
             files = assetManager.list(UAVO_INTERNAL_PATH);
         } catch (IOException e) {
-            Log.e("tag", "Failed to get asset file list.", e);
+            VisualLog.e("tag", "Failed to get asset file list.", e);
         }
         if (files != null) {
             for (String filename : files) {
                 try {
                     copyFile(assetManager.open(UAVO_INTERNAL_PATH + File.separator + filename), filename);
                 } catch (IOException e) {
-                    Log.e("tag", "Failed to copy asset file: " + filename, e);
+                    VisualLog.e("tag", "Failed to copy asset file: " + filename, e);
                 }
             }
         }
@@ -396,7 +398,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     private void copyFile(InputStream source, String relativeFilename) throws IOException {
 
-        Log.d("COPY", "Copy " + relativeFilename);
+        VisualLog.d("COPY", "Copy " + relativeFilename);
 
         FileOutputStream out = openFileOutput(UAVO_INTERNAL_PATH + "-" + relativeFilename, Context.MODE_PRIVATE);
         //File outFile = new File(out, Filename);
@@ -433,6 +435,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         navDrawerItems.add(new NavDrawerItem(getString(R.string.menu_logs), R.drawable.ic_rate_review_24dp));
         navDrawerItems.add(new NavDrawerItem(getString(R.string.menu_settings), R.drawable.ic_settings_24dp));
         navDrawerItems.add(new NavDrawerItem(getString(R.string.menu_about), R.drawable.ic_info_outline_24dp));
+        navDrawerItems.add(new NavDrawerItem(getString(R.string.menu_debug), R.drawable.ic_cancel_128dp));
 
 
         navMenuIcons.recycle();
@@ -665,19 +668,19 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     if (obj != null) {
                         for (UAVTalkObjectInstance ins : obj.getInstances().values()) {
                             fields.add("" + ins.getId());
-                            //Log.d("INS", "ADDED");
+                            //VisualLog.d("INS", "ADDED");
                         }
-                        //Log.d("OBJ", obj.getId());
+                        //VisualLog.d("OBJ", obj.getId());
                     } else {
-                        //Log.d("OBJ", "NULL");
+                        //VisualLog.d("OBJ", "NULL");
                         mUAVTalkDevice.requestObject(mListDataHeader.get(groupPosition));
                     }
                 } else {
-                    //Log.d("DEV_TREE", "NULL");
+                    //VisualLog.d("DEV_TREE", "NULL");
                 }
                 /*)
                 for (UAVTalkXMLObject.UAVTalkXMLObjectField xmlfield : xmlobj.getFields().values()) {
-                    Log.d("FLD", xmlfield.toString());
+                    VisualLog.d("FLD", xmlfield.toString());
                     fields.add(xmlfield.toString());
                 }
                 */
@@ -708,12 +711,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 int i = 0;
                 for (UAVTalkXMLObject xmlobj : mXmlObjects.values()) {
                     mListDataHeader.add(xmlobj.getName());
-                    //Log.d("OBJ", xmlobj.getName());
+                    //VisualLog.d("OBJ", xmlobj.getName());
 
                     List<String> fields = new ArrayList<String>();
                     /*
                     for (UAVTalkXMLObject.UAVTalkXMLObjectField xmlfield : xmlobj.getFields().values()) {
-                        Log.d("FLD", xmlfield.toString());
+                        VisualLog.d("FLD", xmlfield.toString());
                         fields.add(xmlfield.toString());
                     }
                     */
@@ -774,7 +777,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         }
                         btpd++;
                         if (LOCAL_LOGD)
-                            Log.d("BTE", device.getName() + " " + device.getAddress());
+                            VisualLog.d("BTE", device.getName() + " " + device.getAddress());
                     }
                 }
             }
@@ -800,7 +803,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 Matcher m = p.matcher(file.toString());
                 boolean b = m.matches();
                 if (b) {
-                    Log.d("FILELIST", file.toString());
+                    VisualLog.d("FILELIST", file.toString());
                     uavoSourceAdapter.add(m.group(1));
                     if (m.group(1).equals(mLoadedUavo)) {
                         spnUavoSource.setSelection(i);
@@ -819,6 +822,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             txtLogSize = (TextView) findViewById(R.id.txtLogSize);
             txtLogObjects = (TextView) findViewById(R.id.txtLogObjects);
             txtLogDuration = (TextView) findViewById(R.id.txtLogDuration);
+        }
+    }
+
+    private void initViewDebug() {
+        mViews.put(VIEW_DEBUG, getLayoutInflater().inflate(R.layout.activity_debug, null));
+        setContentView(mViews.get(VIEW_DEBUG)); //Logs
+        {
+            txtDebugLog = (TextView) findViewById(R.id.txtDebugLog);
+            VisualLog.setDebugLogTextView(txtDebugLog);
         }
     }
 
@@ -1016,8 +1028,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        VisualLog.setActivity(this);
 
-        Log.d("INIT", "" + initDone);
+        mViews = new HashMap<>(NUM_OF_VIEWS);
+        initViewDebug();
+
+        VisualLog.d("INIT", "" + initDone);
 
         copyAssets();
 
@@ -1027,8 +1043,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         mLoadedUavo = sharedPref.getString(getString(R.string.SETTINGS_UAVO_SOURCE), "uav-15.09");
         mColorfulPid = sharedPref.getBoolean(getString(R.string.SETTINGS_COLORFUL_PID), false);
 
-        mViews = new HashMap<>(NUM_OF_VIEWS);
 
+        //debug view is initialized above
         initViewPid();
         initViewAbout();
         initViewLogs();
@@ -1050,7 +1066,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     }
                 });
             } catch (RuntimeException e) {
-                Log.d("RTE", "Toast not successful");
+                VisualLog.d("RTE", "Toast not successful");
             }
         }
 
@@ -1135,7 +1151,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         displayView(mCurrentView);
 
-        Log.d("onStart", "onStart");
+        VisualLog.d("onStart", "onStart");
     }
 
     @Override
@@ -1164,7 +1180,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         setUsbInterface(null, null);
         mPermissionIntent = null;
 
-        Log.d("onStop", "onStop");
+        VisualLog.d("onStop", "onStop");
 
         super.onStop();
     }
@@ -1257,7 +1273,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
                 if (spnUavoSource.getSelectedItem() != null && !spnUavoSource.getSelectedItem().toString().equals(mLoadedUavo)) {
                     mLoadedUavo = spnUavoSource.getSelectedItem().toString();
-                    Log.d("UAVSource", mLoadedUavo + "  " + mLoadedUavo);
+                    VisualLog.d("UAVSource", mLoadedUavo + "  " + mLoadedUavo);
 
                     loadXmlObjects(true);
                     SingleToast.makeText(this, "UAVO load completed", Toast.LENGTH_SHORT).show();
@@ -1285,6 +1301,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             case VIEW_PID:
                 break;
 
+            case VIEW_DEBUG:
+                break;
             default:
                 break;
         }
@@ -1377,7 +1395,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 menuTitle = getString(R.string.menu_pid);
 
                 break;
-
+            case VIEW_DEBUG:
+                fragment = new DebugFragment();
+                setContentView(mViews.get(VIEW_DEBUG), position);
+                break;
             default:
                 break;
         }
@@ -1388,7 +1409,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 fragmentManager.beginTransaction().replace(R.id.frame_container, fragment).commit();
             } catch (IllegalStateException e) {
                 //Maybe there's no need to fix, because we don't really replace the fragment here
-                Log.e("FIXME", "After wakeup in different orientation, this happens.");
+                VisualLog.e("FIXME", "After wakeup in different orientation, this happens.");
             }
 
             mDrawerList.setItemChecked(position, true);
@@ -1411,12 +1432,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 Uri uri = Uri.parse(filePath);
                 String strFileName = uri.getLastPathSegment();
                 copyFile(in, strFileName);
-                Log.d("FNF", "FNF");
+                VisualLog.d("FNF", "FNF");
             } catch (FileNotFoundException e) {
-                Log.d("FNF", "FNF");
+                VisualLog.d("FNF", "FNF");
                 SingleToast.makeText(this, filePath + " not found", Toast.LENGTH_LONG).show();
             } catch (IOException e) {
-                Log.d("IOE", "IOE");
+                VisualLog.d("IOE", "IOE");
                 SingleToast.makeText(this, "Cannot open " + filePath, Toast.LENGTH_LONG).show();
             }
 
@@ -1482,7 +1503,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     .getData("BaroSensor", "Altitude"));
             txtAltitude.setText(R.string.EMPTY_STRING);
         } catch (UAVTalkMissingObjectException | NullPointerException e) {
-            Log.i("INFO", "UAVO is missing");
+            VisualLog.i("INFO", "UAVO is missing");
         }
     }
 
@@ -1492,7 +1513,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     .getData("VelocityState", "Down"));
             txtAltitudeAccel.setText(R.string.EMPTY_STRING);
         } catch (UAVTalkMissingObjectException | NullPointerException e) {
-            Log.i("INFO", "UAVO is missing");
+            VisualLog.i("INFO", "UAVO is missing");
         }
     }
 
@@ -1549,7 +1570,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         try {
             mUAVTalkDevice.setLogging(true);
         } catch (NullPointerException e) {
-            Log.i("INFO", "Device is null");
+            VisualLog.i("INFO", "Device is null");
         }
     }
 
@@ -1557,7 +1578,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         try {
             mUAVTalkDevice.setLogging(false);
         } catch (NullPointerException e) {
-            Log.i("INFO", "Device is null");
+            VisualLog.i("INFO", "Device is null");
         }
     }
 
@@ -1582,13 +1603,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 while (i.hasNext()) {
                     PidTextView ptv = i.next();
                     try {
-                        float f = Float.parseFloat(ptv.getText().toString());
+                        float f = H.stringToFloat(ptv.getText().toString());
 
                         byte[] buffer = H.reverse4bytes(H.floatToByteArray(f));
 
                         UAVTalkDeviceHelper.updateSettingsObject(oTree, mCurrentStabilizationBank, 0, ptv.getField(), ptv.getElement(), buffer);
                     } catch (NumberFormatException e) {
-                        Log.e("MainActivity", "Error parsing float: " + ptv.getField() + " " + ptv.getElement());
+                        VisualLog.e("MainActivity", "Error parsing float: " + ptv.getField() + " " + ptv.getElement() + " " + ptv.getText().toString());
                     }
                 }
 
@@ -1639,6 +1660,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 FileProvider.getUriForFile(this, "net.proest.lp2go3.logfileprovider", logFile);
 
         share.putExtra(Intent.EXTRA_STREAM, contentUri);
+        startActivity(Intent.createChooser(share, getString(R.string.SHARE_LOG_TITLE)));
+    }
+
+    public void onDebugLogShare(View v) {
+        Intent share = new Intent(Intent.ACTION_SEND);
+
+        share.setType(getString(R.string.MIME_APPLICATION_TEXT));
+        share.putExtra(Intent.EXTRA_TEXT, txtDebugLog.getText().toString());
         startActivity(Intent.createChooser(share, getString(R.string.SHARE_LOG_TITLE)));
     }
 
@@ -1855,7 +1884,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     public void onPidGridNumberClick(View v) {
-        Log.d("PID", v.toString());
+        VisualLog.d("PID", v.toString());
         PidTextView p = (PidTextView) v;
         new PidInputAlertDialog(this)
                 .withStep(p.getStep())
@@ -2099,7 +2128,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                                     try {   //FlightMode in GCS is 1...n, so add "1" to be user friendly
                                         setText(mActivity.txtModeNum, String.valueOf(Integer.parseInt(flightModeSwitchPosition) + 1));
                                     } catch (NumberFormatException e) {
-                                        Log.e("MainActivity", "Could not parse numeric Flightmode: " + flightModeSwitchPosition);
+                                        VisualLog.e("MainActivity", "Could not parse numeric Flightmode: " + flightModeSwitchPosition);
                                     }
 
                                     setText(mActivity.txtModeFlightMode, getData("FlightStatus", "FlightMode", true).toString());
@@ -2216,7 +2245,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                             }
                         } catch (NullPointerException e) {
                             e.printStackTrace();
-                            Log.d("NPE", "Nullpointer Exception in Pollthread, most likely switched Connections");
+                            VisualLog.d("NPE", "Nullpointer Exception in Pollthread, most likely switched Connections");
 
                         }
                     }
@@ -2254,7 +2283,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
                 }
             } catch (NullPointerException e) {
-                Log.e("ERR", "UAVTalkdevice is null. Reconnecting?");
+                VisualLog.e("ERR", "UAVTalkdevice is null. Reconnecting?");
             }
         }
 
@@ -2288,7 +2317,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         private String getFloatOffsetData(String obj, String field, String soffset) {
             try {
-                Float f1 = Float.parseFloat(getData(obj, field).toString());
+                Float f1 = H.stringToFloat(getData(obj, field).toString());
                 Float f2 = (Float) mOffset.get(soffset);
                 return String.valueOf(H.round(f1 - f2, 2));
             } catch (NumberFormatException e) {
@@ -2347,7 +2376,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     e2.printStackTrace();
                 }
             } catch (NullPointerException e3) {
-                Log.e("ERR", "Object Tree not loaded yet.");
+                VisualLog.e("ERR", "Object Tree not loaded yet.");
             }
             if (o != null) {
                 return o;

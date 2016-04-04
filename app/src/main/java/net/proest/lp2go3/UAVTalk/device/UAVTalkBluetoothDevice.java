@@ -21,7 +21,6 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 
 import net.proest.lp2go3.H;
 import net.proest.lp2go3.MainActivity;
@@ -32,6 +31,7 @@ import net.proest.lp2go3.UAVTalk.UAVTalkObject;
 import net.proest.lp2go3.UAVTalk.UAVTalkObjectInstance;
 import net.proest.lp2go3.UAVTalk.UAVTalkObjectTree;
 import net.proest.lp2go3.UAVTalk.UAVTalkXMLObject;
+import net.proest.lp2go3.VisualLog;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -122,7 +122,7 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
     @Override
     public boolean sendAck(String objectId, int instance) {
         byte[] send = mObjectTree.getObjectFromID(objectId).toMessage((byte) 0x23, instance, true);
-        Log.d("SEND", "" + H.bytesToHex(send));
+        VisualLog.d("SEND", "" + H.bytesToHex(send));
         if (send != null) {
             writeByteArray(Arrays.copyOfRange(send, 0, send.length));
             return true;
@@ -240,7 +240,7 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
                 mmSocket = mmDevice.createRfcommSocketToServiceRecord(UUID.fromString("00001101-0000-1000-8000-00805F9B34FB"));
                 mmSocket.connect();
             } catch (IOException e) {
-                Log.e("BT", "Default BT  Connection failed, trying fallback.");
+                VisualLog.e("BT", "Default BT  Connection failed, trying fallback.");
                 try {
                     // This is a workaround that reportedly helps on some older devices like HTC Desire, where using
                     // the standard createRfcommSocketToServiceRecord() method always causes connect() to fail.
@@ -248,12 +248,12 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
                     mmSocket = (BluetoothSocket) mmDevice.getClass().getMethod("createRfcommSocket", new Class[]{int.class}).invoke(mmDevice, 1);
                     mmSocket.connect();
                 } catch (IOException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e1) {
-                    Log.e("BT", "Fallback BT  Connection failed, trying again.");
+                    VisualLog.e("BT", "Fallback BT  Connection failed, trying again.");
                     connectionFailed();
                     try {
                         mmSocket.close();
                     } catch (IOException e2) {
-                        e2.printStackTrace();
+                        VisualLog.e(e2);
                     } catch (NullPointerException e3) {
                         return;
                     }
@@ -280,7 +280,7 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
                     mmSocket.close();
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                VisualLog.e(e);
             }
         }
     }
@@ -301,7 +301,7 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
                 tmpIn = socket.getInputStream();
                 tmpOut = socket.getOutputStream();
             } catch (IOException e) {
-                //e.printStackTrace();
+                //VisualLog.e(e);
             }
 
             mmInStream = tmpIn;
@@ -341,11 +341,11 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
                             break;
                         case 0x21:
                             //handle request message, nobody should request from LP2Go (so we don't implement this)
-                            Log.e("UAVTalk", "Received Object Request, but won't send any");
+                            VisualLog.e("UAVTalk", "Received Object Request, but won't send any");
                             break;
                         case 0x22:
                             //handle object with ACK REQ, means send ACK
-                            Log.d("UAVTalk", "Received Object with ACK Request");
+                            VisualLog.d("UAVTalk", "Received Object with ACK Request");
                             break;
                         case 0x23:
                             //handle received ACK, e.g. save in Object that it has been acknowledged
@@ -353,11 +353,11 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
                         case 0x24:
                             //handle NACK, e.g. show warning
                             mActivity.incRxObjectsBad();
-                            Log.w("UAVTalk", "Received NACK Object");
+                            VisualLog.w("UAVTalk", "Received NACK Object");
                             break;
                         default:
                             mActivity.incRxObjectsBad();
-                            Log.w("UAVTalk", "Received bad Object Type " + H.bytesToHex(msgtypebuffer));
+                            VisualLog.w("UAVTalk", "Received bad Object Type " + H.bytesToHex(msgtypebuffer));
                             continue;
                     }
 
@@ -418,16 +418,16 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
                             log(bmsg);
                         }
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        VisualLog.e(e);
                     }
 
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    VisualLog.e(e);
                     if (mmInStream != null) {
                         try {
                             mmInStream.close();
                         } catch (IOException e1) {
-                            e1.printStackTrace();
+                            VisualLog.e(e1);
                         }
                     }
                     connectionLost();
@@ -445,7 +445,7 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
                 try {
                     Thread.sleep(100);
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    VisualLog.e(e);
                 }
 
                 byte[] readmore = new byte[dlen - read];
@@ -454,8 +454,8 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
                 try {
                     System.arraycopy(readmore, 0, buffer, dlen - pos, readmore.length);
                 } catch (ArrayIndexOutOfBoundsException e) {
-                    e.printStackTrace();
-                    Log.e("BLUETOOTH", "Bad Packet, should not happen.");
+                    VisualLog.e(e);
+                    VisualLog.e("BLUETOOTH", "Bad Packet, should not happen.");
                     return new byte[0];
                 }
             }
@@ -467,7 +467,7 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
                 mActivity.incTxObjects();
                 mmOutStream.write(buffer);
             } catch (IOException e) {
-                Log.e("ERR", "Error while writing to BT Stack");
+                VisualLog.e("ERR", "Error while writing to BT Stack");
             }
         }
 
@@ -476,7 +476,7 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
             try {
                 mmSocket.close();
             } catch (IOException e) {
-                e.printStackTrace();
+                VisualLog.e(e);
             }
         }
     }
