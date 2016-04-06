@@ -2,13 +2,13 @@ language: android
 jdk:
 - openjdk7
 - oraclejdk7
-- oraclejdk8
+#- oraclejdk8
 android:
   components:
   - platform-tools
   - tools
   - build-tools-23.0.2
-  - addroid 23
+  - android-23
   - android-16
   - extra
 script:
