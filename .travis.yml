@@ -5,21 +5,24 @@ jdk:
 - oraclejdk8
 android:
   components:
+  - platform-tools
+  - tools
   - build-tools-23.0.2
+  - addroid 23
   - android-16
   - extra
 script:
-- "./gradlew build check"
+#- "./gradlew build check"
 before_install:
 #- openssl aes-256-cbc -K $encrypted_69044bd0f1e4_key -iv $encrypted_69044bd0f1e4_iv
 #  -in release.keystore.enc -out release.keystore -d
-deploy:
-  provider: alpha_flavor_Release
+#deploy:
+#  provider: alpha_flavor_Release
   #api_key:
   #  secure: XXX
-  file: app/build/outputs/apk/app-release.apk
-  skip_cleanup: true
-  on:
-    repo: MarcProe/lp2go
-    tags: true
-    jdk: oraclejdk8
+#  file: app/build/outputs/apk/app-release.apk
+#  skip_cleanup: true
+#  on:
+#    repo: MarcProe/lp2go
+#    tags: true
+#    jdk: oraclejdk8
