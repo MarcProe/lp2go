@@ -235,7 +235,6 @@ public class H {
         try {
             return NumberFormat.getInstance(Locale.getDefault()).parse(s).floatValue();
         } catch (ParseException e) {
-            e.printStackTrace();
             return 0.0f;
         }
     }
