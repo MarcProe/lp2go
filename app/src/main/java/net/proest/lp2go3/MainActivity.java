@@ -1913,6 +1913,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private class PollThread extends Thread {
 
         boolean blink = true;
+        int request = 0;
         private MainActivity mActivity;
         private UAVTalkObjectTree mObjectTree;
         private boolean mIsValid = true;
@@ -2033,7 +2034,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     continue;  //nothing yet to show, or not connected
                 }
 
-                requestObjects();
+                if (request++ % 10 == 0) { //FIXME: is it needed to get the settings every 10 seconds?
+                    requestObjects();
+                    request = 0;
+                }
 
                 mActivity.runOnUiThread(new Runnable() {
                     @Override
@@ -2263,7 +2267,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         private void requestObjects() {
             try {
-                if (mUAVTalkDevice != null && mSerialModeUsed == SERIAL_BLUETOOTH) {
+                if (mUAVTalkDevice != null) {
                     mUAVTalkDevice.requestObject("SystemAlarms");
                     mUAVTalkDevice.requestObject("PathStatus");
                     mUAVTalkDevice.requestObject("GPSSatellites");
