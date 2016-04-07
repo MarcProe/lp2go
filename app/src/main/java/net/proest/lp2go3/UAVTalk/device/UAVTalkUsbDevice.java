@@ -53,7 +53,9 @@ import net.proest.lp2go3.UAVTalk.UAVTalkXMLObject;
 import net.proest.lp2go3.VisualLog;
 
 import java.nio.ByteBuffer;
+import java.util.ArrayDeque;
 import java.util.HashMap;
+import java.util.Queue;
 
 public class UAVTalkUsbDevice extends UAVTalkDevice {
 
@@ -61,6 +63,7 @@ public class UAVTalkUsbDevice extends UAVTalkDevice {
     private final UsbEndpoint mEndpointOut;
     private final UsbEndpoint mEndpointIn;
     private final WaiterThread mWaiterThread = new WaiterThread();
+    Queue<Byte> queue;
     private UsbRequest mOutRequest = null;
     private boolean connected = false;
 
@@ -196,28 +199,6 @@ public class UAVTalkUsbDevice extends UAVTalkDevice {
         return retval;
     }
 
-    /*
-        @Override
-        protected boolean writeByteArray(byte[] bytes) {
-            int psize = mEndpointOut.getMaxPacketSize() - 2;
-            int toWrite = bytes.length;
-
-            while (toWrite > 0) {
-                int sendlen = toWrite - psize > 0 ? psize : toWrite;
-                byte[] buffer = new byte[sendlen + 2];
-
-                System.arraycopy(bytes, bytes.length - toWrite, buffer, 2, sendlen);
-                buffer[0] = (byte) 0x02;//report id, is always 2. Period.
-                buffer[1] = (byte) ((sendlen) & 0xff);//bytes to send, which is packet.size()-2
-
-                mDeviceConnection.bulkTransfer(mEndpointOut, buffer, buffer.length, 1000);
-
-                toWrite -= sendlen;
-            }
-
-            return true;
-        }
-    */
     @Override
     public boolean sendSettingsObject(String objectName, int instance, String fieldName, int element, byte[] newFieldData, final boolean block) {
         if (block) mObjectTree.getObjectFromName(objectName).setWriteBlocked(true);
@@ -229,6 +210,14 @@ public class UAVTalkUsbDevice extends UAVTalkDevice {
         return true;
     }
 
+    private byte[] bufferRead(int len) {
+        byte[] retval = new byte[len];
+        for (int i = 0; i < len; i++) {
+            retval[i] = queue.remove();
+        }
+        return retval;
+    }
+
     private class WaiterThread extends Thread {
 
         public boolean mStop;
@@ -238,8 +227,23 @@ public class UAVTalkUsbDevice extends UAVTalkDevice {
         }
 
         public void run() {
-            byte[] bytes;
+
+            queue = new ArrayDeque<Byte>();
+
+            byte[] syncbuffer = new byte[1];
+            byte[] msgtypebuffer = new byte[1];
+            byte[] lenbuffer = new byte[2];
+            byte[] oidbuffer = new byte[4];
+            byte[] iidbuffer = new byte[2];
+            byte[] databuffer;
+            byte[] crcbuffer = new byte[1];
+
+            mActivity.setRxObjectsGood(0);
+            mActivity.setRxObjectsBad(0);
+            mActivity.setTxObjects(0);
+
             while (true) {
+
                 if (mStop) {
                     try {
                         Thread.sleep(200);
@@ -250,95 +254,98 @@ public class UAVTalkUsbDevice extends UAVTalkDevice {
                 }
 
                 byte[] buffer = new byte[mEndpointIn.getMaxPacketSize()];
+                while (queue.size() < 350) {
+                    mDeviceConnection.bulkTransfer(mEndpointIn, buffer, buffer.length, 1000);
+                    for (int i = 2; i < (buffer[1] & 0xff) + 2; i++) {
+                        queue.add(buffer[i]);
+                    }
+                }
 
-                int result = mDeviceConnection.bulkTransfer(mEndpointIn, buffer, buffer.length, 1000);
+                syncbuffer[0] = 0x00;
+                while (syncbuffer[0] != 0x3c) {
+                    syncbuffer = bufferRead(1);
+                }
 
-                if (result > 0 && mActivity.isReady && buffer.length > 3 && buffer[2] == 0x3C) {
+                msgtypebuffer = bufferRead(msgtypebuffer.length);
 
-                    bytes = buffer;
-
-                    UAVTalkMessage cM = new UAVTalkMessage(bytes, 2);
-                    if (cM.getLength() > 266) {
+                switch (msgtypebuffer[0]) {
+                    case 0x20:
+                        //handle default package, nothing to do
+                        break;
+                    case 0x21:
+                        //handle request message, nobody should request from LP2Go (so we don't implement this)
+                        VisualLog.e("UAVTalk", "Received Object Request, but won't send any");
+                        break;
+                    case 0x22:
+                        //handle object with ACK REQ, means send ACK
+                        VisualLog.d("UAVTalk", "Received Object with ACK Request");
+                        break;
+                    case 0x23:
+                        //handle received ACK, e.g. save in Object that it has been acknowledged
+                        break;
+                    case 0x24:
+                        //handle NACK, e.g. show warning
                         mActivity.incRxObjectsBad();
+                        VisualLog.w("UAVTalk", "Received NACK Object");
+                        break;
+                    default:
+                        mActivity.incRxObjectsBad();
+                        VisualLog.w("UAVTalk", "Received bad Object Type " + H.bytesToHex(msgtypebuffer));
                         continue;
-                    }
+                }
 
-                    //TODO: crappy code...
-                    if (cM.getLength() > mEndpointIn.getMaxPacketSize()) {
-                        byte[] bigbuffer = new byte[mEndpointIn.getMaxPacketSize() * 2];
-                        System.arraycopy(bytes, 0, bigbuffer, 0, mEndpointIn.getMaxPacketSize());
-                        mDeviceConnection.bulkTransfer(mEndpointIn, buffer, buffer.length, 1000);
-                        System.arraycopy(buffer, 2, bigbuffer, mEndpointIn.getMaxPacketSize(), mEndpointIn.getMaxPacketSize() - 2);
-                        bytes = bigbuffer;
-                        cM = new UAVTalkMessage(bytes, 2);
-                    }
+                lenbuffer = bufferRead(lenbuffer.length);
 
-                    if (cM.getLength() > mEndpointIn.getMaxPacketSize() * 2) {
-                        byte[] bigbuffer = new byte[mEndpointIn.getMaxPacketSize() * 3];
-                        System.arraycopy(bytes, 0, bigbuffer, 0, mEndpointIn.getMaxPacketSize());
-                        mDeviceConnection.bulkTransfer(mEndpointIn, buffer, buffer.length, 1000);
-                        System.arraycopy(buffer, 2, bigbuffer, mEndpointIn.getMaxPacketSize(), mEndpointIn.getMaxPacketSize() - 2);
-                        bytes = bigbuffer;
-                        cM = new UAVTalkMessage(bytes, 2);
-                    }
+                int lb1 = lenbuffer[1] & 0x000000ff;
+                int lb2 = lenbuffer[0] & 0x000000ff;
+                int len = lb1 << 8 | lb2;
 
-                    if (cM.getLength() > mEndpointIn.getMaxPacketSize() * 3) {
-                        byte[] bigbuffer = new byte[mEndpointIn.getMaxPacketSize() * 4];
-                        System.arraycopy(bytes, 0, bigbuffer, 0, mEndpointIn.getMaxPacketSize());
-                        mDeviceConnection.bulkTransfer(mEndpointIn, buffer, buffer.length, 1000);
-                        System.arraycopy(buffer, 2, bigbuffer, mEndpointIn.getMaxPacketSize(), mEndpointIn.getMaxPacketSize() - 2);
-                        bytes = bigbuffer;
-                        cM = new UAVTalkMessage(bytes, 2);
-                    }
+                if (len > 266 || len < 10) {
+                    mActivity.incRxObjectsBad();
+                    continue; // maximum possible packet size
+                }
 
+                oidbuffer = bufferRead(oidbuffer.length);
+                iidbuffer = bufferRead(iidbuffer.length);
+                databuffer = bufferRead(len - 10);
+                crcbuffer = bufferRead(crcbuffer.length);
+
+                byte[] bmsg = H.concatArray(syncbuffer, msgtypebuffer);
+                bmsg = H.concatArray(bmsg, lenbuffer);
+                bmsg = H.concatArray(bmsg, oidbuffer);
+                bmsg = H.concatArray(bmsg, iidbuffer);
+                bmsg = H.concatArray(bmsg, databuffer);
+                int crc = H.crc8(bmsg, 0, bmsg.length);
+                bmsg = H.concatArray(bmsg, crcbuffer);
+
+                if ((((int) crcbuffer[0] & 0xff) == (crc & 0xff))) {
                     mActivity.incRxObjectsGood();
+                } else {
+                    mActivity.incRxObjectsBad();
+                    VisualLog.d("USB", "Bad CRC");
+                    continue;
+                }
 
-                    UAVTalkObject myObj = mObjectTree.getObjectFromID(H.intToHex(cM.getObjectId()));
+                try {
+                    UAVTalkMessage msg = new UAVTalkMessage(bmsg, 0);
+                    UAVTalkObject myObj = mObjectTree.getObjectFromID(H.intToHex(msg.getObjectId()));
                     UAVTalkObjectInstance myIns;
 
                     try {
-                        myIns = myObj.getInstance(cM.getInstanceId());
-                        myIns.setData(cM.getData());
+                        myIns = myObj.getInstance(msg.getInstanceId());
+                        myIns.setData(msg.getData());
                         myObj.setInstance(myIns);
                     } catch (Exception e) {
-                        myIns = new UAVTalkObjectInstance(cM.getInstanceId(), cM.getData());
+                        myIns = new UAVTalkObjectInstance(msg.getInstanceId(), msg.getData());
                         myObj.setInstance(myIns);
                     }
+
                     mObjectTree.updateObject(myObj);
-
-                    switch (cM.getType()) {
-                        case 0x20:
-                            //handle default package, nothing to do
-                            break;
-                        case 0x21:
-                            //handle request message, nobody should request from LP2Go (so we don't implement this)
-                            VisualLog.e("UAVTalk", "Received Object Request, but won't send any.");
-                            break;
-                        case 0x22:
-                            //handle object with ACK REQ, means send ACK
-                            VisualLog.d("UAVTalk", "Received Object with ACK Request for " + myObj.getId() + ":" + H.bytesToHex(cM.getData()));
-                            sendAck(myObj.getId(), myIns.getId());
-
-                            break;
-                        case 0x23:
-                            //handle received ACK, e.g. save in Object that it has been acknowledged
-                            VisualLog.w("UAVTalk", "Received ACK Object for " + myObj.getId());
-                            break;
-                        case 0x24:
-                            //handle NACK, e.g. show warning
-                            mActivity.incRxObjectsBad();
-                            VisualLog.w("UAVTalk", "Received NACK Object for " + myObj.getId());
-                            break;
-                        default:
-                            mActivity.incRxObjectsBad();
-                            VisualLog.w("UAVTalk", "Received bad Object Type " + (cM.getType() & 0xff));
-                            continue;
-                    }
-
                     if (isLogging()) {
-                        //TODO: CHECK IF CRC IS IN bytes!
-                        log(bytes);
+                        log(bmsg);
                     }
+                } catch (Exception e) {
+                    VisualLog.e(e);
                 }
             }
         }
