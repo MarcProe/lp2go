@@ -38,6 +38,12 @@ public class VisualLog {
         printToDebug(tag, msg);
     }
 
+    static public final void d(String tag, String msg, Throwable tr) {
+        Log.e(tag, msg, tr);
+        printToDebug(tag, msg);
+        printToDebug(tr.getClass().getSimpleName(), Log.getStackTraceString(tr));
+    }
+
     static public final void w(String tag, String msg) {
         Log.w(tag, msg);
         printToDebug(tag, msg);
