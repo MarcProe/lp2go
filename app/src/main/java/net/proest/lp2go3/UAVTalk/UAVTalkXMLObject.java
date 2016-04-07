@@ -239,7 +239,7 @@ public class UAVTalkXMLObject {
         return mName;
     }
 
-    public String getmCategory() {
+    public String getCategory() {
         return mCategory;
     }
 
