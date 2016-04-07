@@ -26,5 +26,6 @@ before_install:
 #    repo: MarcProe/lp2go
 #    tags: true
 #    jdk: oraclejdk8
-
-
+env:
+  global:
+    MALLOC_ARENA_MAX=2
