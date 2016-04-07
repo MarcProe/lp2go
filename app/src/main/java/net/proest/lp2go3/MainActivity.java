@@ -247,7 +247,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private PidTextView txtPidRatePitchDerivative;
     private PidTextView txtPidRollProportional;
     private PidTextView txtPidPitchProportional;
-    private HashSet mPidTexts;
+    private HashSet<PidTextView> mPidTexts;
     private HashMap<String, List<String>> mListDataChild;
     private ImageView imgPidBank;
     private TextView txtDeviceText;
