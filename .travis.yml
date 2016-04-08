@@ -13,7 +13,7 @@ android:
   - extra
 script:
 #- "./gradlew build check"
-- "./gradlew assemblealpha_flavor_Debug connectedCheckalpha_flavor_Debug"
+- "./gradlew assemblealpha_flavor_Debug"
 before_install:
 #- openssl aes-256-cbc -K $encrypted_69044bd0f1e4_key -iv $encrypted_69044bd0f1e4_iv
 #  -in release.keystore.enc -out release.keystore -d
