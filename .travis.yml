@@ -15,9 +15,10 @@ android:
   - extra
 
 script:
-- "./gradlew assemblealpha_flavor_Debug assemblealpha_flavor_Release --info"
+- "./gradlew assemblealpha_flavor_Debug assemblealpha_flavor_Release"
 
 before_install:
+- "git clone https://bitbucket.org/librepilot/librepilot.git && cd librepilot && git checkout next && cd .. && make all_sdk_install && make uavobjects"
 
 sudo: required
 env:
