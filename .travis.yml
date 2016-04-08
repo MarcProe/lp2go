@@ -18,8 +18,9 @@ script:
 - "./gradlew assemblealpha_flavor_Debug assemblealpha_flavor_Release"
 
 before_install:
+- "chmod +x uavo.sh"
 - "zip -h"
-- "git clone https://bitbucket.org/librepilot/librepilot.git && cd librepilot && git checkout next && make uavobjects && ./build/uavobjgenerator/uavobjgenerator -java shared/uavobjectdefinition . && cd .."
+- "./uavo.sh"
 
 sudo: required
 env:
