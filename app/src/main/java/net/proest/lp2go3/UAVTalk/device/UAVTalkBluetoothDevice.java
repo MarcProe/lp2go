@@ -166,6 +166,9 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
         UAVTalkXMLObject xmlObj = mObjectTree.getXmlObjects().get(objectName);
         if (xmlObj == null) return false;
 
+        if (nackedObjects.contains(xmlObj.getId()))
+            return false;  //if it was already nacked, don't try to get it again
+
         byte[] send = UAVTalkObject.getReqMsg((byte) 0x21, xmlObj.getId(), instance);
 
         writeByteArray(send);
@@ -308,6 +311,37 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
             mmOutStream = tmpOut;
         }
 
+        private boolean handleMessageType(byte msgType, UAVTalkObject obj) {
+            switch (msgType) {
+                case 0x20:
+                    //handle default package, nothing to do
+                    break;
+                case 0x21:
+                    //handle request message, nobody should request from LP2Go (so we don't implement this)
+                    VisualLog.e("UAVTalk", "Received Object Request, but won't send any");
+                    break;
+                case 0x22:
+                    //handle object with ACK REQ, means send ACK
+                    VisualLog.d("UAVTalk", "Received Object with ACK Request");
+                    break;
+                case 0x23:
+                    //handle received ACK, e.g. save in Object that it has been acknowledged
+                    break;
+                case 0x24:
+                    //handle NACK, show warning and add to request blacklist
+                    nackedObjects.add(obj.getId());
+                    mActivity.incRxObjectsBad();
+                    VisualLog.w("UAVTalk", "Received NACK Object");
+                    break;
+                default:
+                    mActivity.incRxObjectsBad();
+                    byte[] b = new byte[1];
+                    b[0] = msgType;
+                    VisualLog.w("UAVTalk", "Received bad Object Type " + H.bytesToHex(b));
+                    return false;
+            }
+            return true;
+        }
         public void run() {
 
             byte[] seekbuffer = new byte[1];
@@ -334,32 +368,6 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
                     syncbuffer[2] = 0x3c;
 
                     msgtypebuffer = bufferRead(msgtypebuffer.length);
-
-                    switch (msgtypebuffer[0]) {
-                        case 0x20:
-                            //handle default package, nothing to do
-                            break;
-                        case 0x21:
-                            //handle request message, nobody should request from LP2Go (so we don't implement this)
-                            VisualLog.e("UAVTalk", "Received Object Request, but won't send any");
-                            break;
-                        case 0x22:
-                            //handle object with ACK REQ, means send ACK
-                            VisualLog.d("UAVTalk", "Received Object with ACK Request");
-                            break;
-                        case 0x23:
-                            //handle received ACK, e.g. save in Object that it has been acknowledged
-                            break;
-                        case 0x24:
-                            //handle NACK, e.g. show warning
-                            mActivity.incRxObjectsBad();
-                            VisualLog.w("UAVTalk", "Received NACK Object");
-                            break;
-                        default:
-                            mActivity.incRxObjectsBad();
-                            VisualLog.w("UAVTalk", "Received bad Object Type " + H.bytesToHex(msgtypebuffer));
-                            continue;
-                    }
 
                     lenbuffer = bufferRead(lenbuffer.length);
 
@@ -413,9 +421,11 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
                             myObj.setInstance(myIns);
                         }
 
-                        mObjectTree.updateObject(myObj);
-                        if (isLogging()) {
-                            log(bmsg);
+                        if (handleMessageType(msgtypebuffer[0], myObj)) {
+                            mObjectTree.updateObject(myObj);
+                            if (isLogging()) {
+                                log(bmsg);
+                            }
                         }
                     } catch (Exception e) {
                         VisualLog.e(e);

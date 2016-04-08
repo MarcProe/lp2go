@@ -25,6 +25,8 @@ import net.proest.lp2go3.UAVTalk.UAVTalkObjectTree;
 
 import java.io.FileOutputStream;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 public abstract class UAVTalkDevice {
     public static final byte UAVTALK_DISCONNECTED = 0x00;
@@ -33,6 +35,7 @@ public abstract class UAVTalkDevice {
     public static final byte UAVTALK_CONNECTED = 0x03;
 
     private static final int MAX_HANDSHAKE_FAILURE_CYCLES = 3;
+    public final Set<String> nackedObjects = new HashSet<>();
     final MainActivity mActivity;
     protected volatile UAVTalkObjectTree mObjectTree;
     private int mFailedHandshakes = 0;
@@ -44,6 +47,7 @@ public abstract class UAVTalkDevice {
     private long mLogBytesLoggedOPL = 0;
     private long mLogObjectsLogged = 0;
     private int mUavTalkConnectionState = 0x00;
+
     public UAVTalkDevice(MainActivity mActivity) throws IllegalStateException {
         this.mActivity = mActivity;
     }
