@@ -4,6 +4,10 @@ git clone https://bitbucket.org/librepilot/librepilot.git
 cd librepilot
 git checkout next
 make uavobjects
-./build/uavobjgenerator/uavobjgenerator -java shared/uavobjectdefinition .
+mkdir makeobjects
+cd makeobjects
+zip -j -5 next.zip ../shared/uavobjectdefinition/*.xml
+../build/uavobjgenerator/uavobjgenerator -java ../shared/uavobjectdefinition ..
+../build/uavobjgenerator/uavobjgenerator
 ls -al
 cd ..

@@ -19,7 +19,6 @@ script:
 
 before_install:
 - "chmod +x uavo.sh"
-- "zip -h"
 - "./uavo.sh"
 
 sudo: required
