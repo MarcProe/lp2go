@@ -101,7 +101,7 @@ public class FcUsbDevice extends FcDevice {
     @Override
     public void stop() {
         synchronized (mWaiterThread) {
-            mWaiterThread.stop();
+            mWaiterThread.stopThread();
         }
         this.connected = false;
     }

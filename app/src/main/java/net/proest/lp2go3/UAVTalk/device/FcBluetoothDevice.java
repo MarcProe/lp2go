@@ -83,7 +83,7 @@ public class FcBluetoothDevice extends FcDevice {
     private synchronized void connect(android.bluetooth.BluetoothDevice device) {
         if (mState == STATE_NONE) {
             if (mWaiterThread != null) {
-                mWaiterThread.stop();
+                mWaiterThread.stopThread();
                 mWaiterThread = null;
             }
 
@@ -196,7 +196,7 @@ public class FcBluetoothDevice extends FcDevice {
         }
 
         if (mWaiterThread != null) {
-            mWaiterThread.stop();
+            mWaiterThread.stopThread();
             mWaiterThread = null;
         }
 
