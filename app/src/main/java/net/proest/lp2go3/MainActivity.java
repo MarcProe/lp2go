@@ -146,93 +146,105 @@ import java.util.zip.ZipInputStream;
 import javax.xml.parsers.ParserConfigurationException;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+    protected static final int SERIAL_USB = 1;
+    protected static final int SERIAL_BLUETOOTH = 2;
+    protected static final String OFFSET_VELOCITY_DOWN = "net.proest.lp2go3.VelocityState-Down";
+    protected static final String OFFSET_BAROSENSOR_ALTITUDE = "net.proest.lp2go3.BaroSensor-Altitude";
+    protected static final int VIEW_MAIN = 0;
+    protected static final int VIEW_MAP = 1;
+    protected static final int VIEW_OBJECTS = 2;
+    protected static final int VIEW_PID = 3;
+    protected static final int VIEW_LOGS = 4;
+    protected static final int VIEW_SETTINGS = 5;
+    protected static final int VIEW_ABOUT = 6;
+    protected static final int VIEW_DEBUG = 7;
+    protected static final int POLL_WAIT_TIME = 500;
+    protected static final int POLL_SECOND_FACTOR = 1000 / POLL_WAIT_TIME;
+    protected final static int HISTORY_MARKER_NUM = 5;
     private static final String UAVO_INTERNAL_PATH = "uavo";
     private static final int ICON_OPAQUE = 255;
     private static final int ICON_TRANSPARENT = 64;
     private static final int SERIAL_NONE = 0;
-    private static final int SERIAL_USB = 1;
-    private static final int SERIAL_BLUETOOTH = 2;
     private static final String ACTION_USB_PERMISSION = "net.proest.lp2go3.USB_PERMISSION";
-    private static final String OFFSET_VELOCITY_DOWN = "net.proest.lp2go3.VelocityState-Down";
-    private static final String OFFSET_BAROSENSOR_ALTITUDE = "net.proest.lp2go3.BaroSensor-Altitude";
-
-    private static final int VIEW_MAIN = 0;
-    private static final int VIEW_MAP = 1;
-    private static final int VIEW_OBJECTS = 2;
-    private static final int VIEW_PID = 3;
-    private static final int VIEW_LOGS = 4;
-    private static final int VIEW_SETTINGS = 5;
-    private static final int VIEW_ABOUT = 6;
-    private static final int VIEW_DEBUG = 7;
-
     private static final int NUM_OF_VIEWS = 8;
     private static final int CALLBACK_FILEPICKER = 3456;
-    private static final int POLL_WAIT_TIME = 500;
-    private static final int POLL_SECOND_FACTOR = 1000 / POLL_WAIT_TIME;
     private static final boolean LOCAL_LOGD = true;
-    private final static int HISTORY_MARKER_NUM = 5;
-    private static boolean sHasPThread = false;
+    protected static int mCurrentView = 0;
+    private static boolean mHasPThread = false;
     private static boolean initDone = false;
-    private static int mCurrentView = 0;
     private static boolean mColorfulPid;
-    private final Marker[] mPosHistory = new Marker[HISTORY_MARKER_NUM];
+    protected final Marker[] mPosHistory = new Marker[HISTORY_MARKER_NUM];
     public boolean isReady = false;
+    protected TextView txtObjectLogTx;
+    protected TextView txtObjectLogRxGood;
+    protected TextView txtObjectLogRxBad;
+    protected TextView txtAtti;
+    protected TextView txtPlan;
+    protected TextView txtStab;
+    protected TextView txtPath;
+    protected TextView txtGPS;
+    protected TextView txtGPSSatsInView;
+    protected TextView txtSensor;
+    protected TextView txtAirspd;
+    protected TextView txtMag;
+    protected TextView txtInput;
+    protected TextView txtOutput;
+    protected TextView txtI2C;
+    protected TextView txtTelemetry;
+    protected TextView txtFlightTelemetry;
+    protected TextView txtGCSTelemetry;
+    protected TextView txtFusionAlgorithm;
+    protected TextView txtBatt;
+    protected TextView txtTime;
+    protected TextView txtConfig;
+    protected TextView txtBoot;
+    protected TextView txtStack;
+    protected TextView txtMem;
+    protected TextView txtEvent;
+    protected TextView txtCPU;
+    protected TextView txtArmed;
+    protected TextView txtVolt;
+    protected TextView txtAmpere;
+    protected TextView txtmAh;
+    protected TextView txtTimeLeft;
+    protected TextView txtCapacity;
+    protected TextView txtCells;
+    protected TextView txtAltitude;
+    protected TextView txtAltitudeAccel;
+    protected TextView txtModeNum;
+    protected TextView txtModeFlightMode;
+    protected TextView txtFlightTime;
+    protected TextView txtModeAssistedControl;
+    protected TextView txtLatitude;
+    protected TextView txtLongitude;
+    protected TextView txtMapGPS;
+    protected TextView txtMapGPSSatsInView;
+    protected TextView txtVehicleName;
+    protected ImageView imgBluetooth;
+    protected ImageView imgUSB;
+    protected ImageView imgPacketsUp;
+    protected ImageView imgPacketsGood;
+    protected ImageView imgPacketsBad;
+    protected TextView txtObjects;
+    protected TextView txtLogFilename;
+    protected TextView txtLogSize;
+    protected TextView txtLogObjects;
+    protected TextView txtLogDuration;
+    protected HashSet<PidTextView> mPidTexts;
+    protected ImageView imgPidBank;
+    protected int mCurrentPosMarker = 0;
+    protected String mCurrentStabilizationBank;
+    protected String mLoadedUavo = null;
+    protected long mTxObjects;
+    protected long mRxObjectsGood;
+    protected long mRxObjectsBad;
+    protected int mSerialModeUsed = -1;
+    //private String[] mNavMenuTitles;
+    protected HashMap<String, Object> mOffset;
+    protected FcDevice mFcDevice;
+    protected GoogleMap mMap;
+    protected boolean mDoReconnect = false;
     private Map<Integer, View> mViews;// mView0, mView1, mView2, mView3, mView4, mView5, mView6;
-    private TextView txtObjectLogTx;
-    private TextView txtObjectLogRxGood;
-    private TextView txtObjectLogRxBad;
-    private TextView txtAtti;
-    private TextView txtPlan;
-    private TextView txtStab;
-    private TextView txtPath;
-    private TextView txtGPS;
-    private TextView txtGPSSatsInView;
-    private TextView txtSensor;
-    private TextView txtAirspd;
-    private TextView txtMag;
-    private TextView txtInput;
-    private TextView txtOutput;
-    private TextView txtI2C;
-    private TextView txtTelemetry;
-    private TextView txtFlightTelemetry;
-    private TextView txtGCSTelemetry;
-    private TextView txtFusionAlgorithm;
-    private TextView txtBatt;
-    private TextView txtTime;
-    private TextView txtConfig;
-    private TextView txtBoot;
-    private TextView txtStack;
-    private TextView txtMem;
-    private TextView txtEvent;
-    private TextView txtCPU;
-    private TextView txtArmed;
-    private TextView txtVolt;
-    private TextView txtAmpere;
-    private TextView txtmAh;
-    private TextView txtTimeLeft;
-    private TextView txtCapacity;
-    private TextView txtCells;
-    private TextView txtAltitude;
-    private TextView txtAltitudeAccel;
-    private TextView txtModeNum;
-    private TextView txtModeFlightMode;
-    private TextView txtFlightTime;
-    private TextView txtModeAssistedControl;
-    private TextView txtLatitude;
-    private TextView txtLongitude;
-    private TextView txtMapGPS;
-    private TextView txtMapGPSSatsInView;
-    private TextView txtVehicleName;
-    private ImageView imgBluetooth;
-    private ImageView imgUSB;
-    private ImageView imgPacketsUp;
-    private ImageView imgPacketsGood;
-    private ImageView imgPacketsBad;
-    private TextView txtObjects;
-    private TextView txtLogFilename;
-    private TextView txtLogSize;
-    private TextView txtLogObjects;
-    private TextView txtLogDuration;
     private Spinner spnUavoSource;
     private Spinner spnConnectionTypeSpinner;
     private Spinner spnBluetoothPairedDevice;
@@ -245,29 +257,18 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private PidTextView txtPidRatePitchDerivative;
     private PidTextView txtPidRollProportional;
     private PidTextView txtPidPitchProportional;
-    private HashSet<PidTextView> mPidTexts;
     private HashMap<String, List<String>> mListDataChild;
-    private ImageView imgPidBank;
     private TextView txtDeviceText;
     private ObjectsExpandableListViewAdapter mListAdapter;
     private ExpandableListView mExpListView;
     private List<String> mListDataHeader;
-    private int mCurrentPosMarker = 0;
-    private String mCurrentStabilizationBank;
-    private String mLoadedUavo = null;
     private BluetoothAdapter mBluetoothAdapter;
-    private long mTxObjects;
-    private long mRxObjectsGood;
-    private long mRxObjectsBad;
-    private int mSerialModeUsed = -1;
     private String mBluetoothDeviceUsed = null;
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
     private CharSequence mDrawerTitle;
     private CharSequence mTitle;
-    //private String[] mNavMenuTitles;
-    private HashMap<String, Object> mOffset;
     private PollThread mPollThread = null;
     private ConnectionThread mConnectionThread = null;
     private UsbManager mUsbManager = null;
@@ -275,7 +276,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private UsbDeviceConnection mDeviceConnection;
     private PendingIntent mPermissionIntent = null;
     private UsbInterface mInterface;
-    private FcDevice mFcDevice;
     private HashMap<String, UAVTalkXMLObject> mXmlObjects = null;
     private final BroadcastReceiver mUsbReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
@@ -322,10 +322,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         }
     };
-
-    private GoogleMap mMap;
     private MapView mMapView;
-    private boolean mDoReconnect = false;
     private PidTextView txtPidRateYawProportional;
     private PidTextView txtPidRateYawIntegral;
     private PidTextView txtPidRateYawDerivative;
@@ -334,6 +331,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private PidTextView txtPidPitchIntegral;
     private PidTextView txtPidYawIntegral;
     private TextView txtDebugLog;
+
+    public static boolean hasPThread() {
+        return mHasPThread;
+    }
+
+    public static void hasPThread(boolean mHasPThread) {
+        MainActivity.mHasPThread = mHasPThread;
+    }
 
     static private UsbInterface findAdbInterface(android.hardware.usb.UsbDevice device) {
 
@@ -1072,7 +1077,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     }
 
-    private boolean loadXmlObjects(boolean overwrite) {
+    protected boolean loadXmlObjects(boolean overwrite) {
 
         if (mXmlObjects == null || (overwrite && mLoadedUavo != null)) {
             mXmlObjects = new HashMap<String, UAVTalkXMLObject>();
@@ -1165,7 +1170,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         if (mConnectionThread != null) {
             mConnectionThread.setInvalid();
             mConnectionThread = null;
-            sHasPThread = false;
+            MainActivity.mHasPThread = false;
         }
 
         mSerialModeUsed = SERIAL_NONE;
@@ -1188,7 +1193,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         super.onDestroy();
     }
 
-    private void connectUSB() {
+    protected void connectUSB() {
         if (mSerialModeUsed == SERIAL_USB) {
             for (android.hardware.usb.UsbDevice device : mUsbManager.getDeviceList().values()) {
                 if (device.getDeviceClass() == UsbConstants.USB_CLASS_MISC) {
@@ -1198,7 +1203,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
     }
 
-    private void connectBluetooth() {
+    protected void connectBluetooth() {
         if (mSerialModeUsed == SERIAL_BLUETOOTH) {
             setBluetoothInterface();
         }
@@ -1829,7 +1834,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     }
 
-    private void resetMainView() {
+    protected void resetMainView() {
         txtDeviceText.setText(R.string.EMPTY_STRING);
         txtAtti.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.rounded_corner_uninitialised));
         txtStab.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.rounded_corner_uninitialised));
@@ -1905,579 +1910,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             displayView(position);
-        }
-    }
-
-    private class PollThread extends Thread {
-
-        boolean blink = true;
-        int request = 0;
-        private MainActivity mActivity;
-        private UAVTalkObjectTree mObjectTree;
-        private boolean mIsValid = true;
-
-        public PollThread(MainActivity mActivity) {
-            this.setName("LP2GoPollThread");
-            if (sHasPThread) throw new IllegalStateException("double mPollThread");
-            sHasPThread = true;
-            this.mActivity = mActivity;
-        }
-
-        public void setObjectTree(UAVTalkObjectTree mObjectTree) {
-            this.mObjectTree = mObjectTree;
-        }
-
-        private void setText(TextView t, String text) {
-            if (text != null) {
-                t.setText(text);
-            }
-        }
-
-        private void setTextBGColor(TextView t, String color) {
-            if (color == null || color.equals(getString(R.string.EMPTY_STRING))) {
-                return;
-            }
-            switch (color) {
-                case "OK":
-                case "None":
-                case "Connected":
-                    t.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.rounded_corner_ok));
-                    break;
-                case "Warning":
-                case "HandshakeReq":
-                case "HandshakeAck":
-                    t.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.rounded_corner_warning));
-                    break;
-                case "Error":
-                    t.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.rounded_corner_error));
-                    break;
-                case "Critical":
-                case "RebootRequired":
-                case "Disconnected":
-                    t.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.rounded_corner_critical));
-                    break;
-                case "Uninitialised":
-                    t.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.rounded_corner_uninitialised));
-                    break;
-                case "InProgress":
-                    t.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.rounded_corner_inprogress));
-                    break;
-                case "Completed":
-                    t.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.rounded_corner_completed));
-                    break;
-            }
-        }
-
-        public void setInvalid() {
-            mIsValid = false;
-        }
-
-        public void run() {
-            while (mIsValid) {
-                blink = !blink;
-                try {
-                    Thread.sleep(POLL_WAIT_TIME);
-                } catch (InterruptedException ignored) {
-                }
-
-                mActivity.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (mSerialModeUsed == SERIAL_BLUETOOTH) {
-                            imgUSB.setColorFilter(Color.argb(0xff, 0x00, 0x00, 0x00));
-                            if (mFcDevice != null && mFcDevice.isConnected()) {
-                                imgBluetooth.setColorFilter(Color.argb(0xff, 0x00, 0x80, 0x00));
-                                imgBluetooth.setImageDrawable(
-                                        ContextCompat.getDrawable(getApplicationContext(),
-                                                R.drawable.ic_bluetooth_connected_128dp));
-
-                            } else if (mFcDevice != null && mFcDevice.isConnecting()) {
-                                if (blink) {
-                                    imgBluetooth.setColorFilter(Color.argb(0xff, 0xff, 0x66, 0x00));
-                                    imgBluetooth.setImageDrawable(
-                                            ContextCompat.getDrawable(getApplicationContext(),
-                                                    R.drawable.ic_bluetooth_128dp));
-                                } else {
-                                    imgBluetooth.setColorFilter(Color.argb(0xff, 0xff, 0x66, 0x00));
-                                    imgBluetooth.setImageDrawable(
-                                            ContextCompat.getDrawable(getApplicationContext(),
-                                                    R.drawable.ic_bluetooth_connected_128dp));
-                                }
-                            } else {
-                                imgBluetooth.setColorFilter(Color.argb(0xff, 0xd4, 0x00, 0x00));
-                                imgBluetooth.setImageDrawable(
-                                        ContextCompat.getDrawable(getApplicationContext(),
-                                                R.drawable.ic_bluetooth_disabled_128dp));
-                            }
-                        } else if (mSerialModeUsed == SERIAL_USB) {
-                            imgBluetooth.setColorFilter(Color.argb(0xff, 0x00, 0x00, 0x00));
-                            if (mFcDevice != null && mFcDevice.isConnected()) {
-                                imgUSB.setColorFilter(Color.argb(0xff, 0x00, 0x80, 0x00));
-
-                            } else if (mFcDevice != null && mFcDevice.isConnecting()) {
-                                if (blink) {
-                                    imgUSB.setColorFilter(Color.argb(0xff, 0xff, 0x66, 0x00));
-                                } else {
-                                    imgUSB.setColorFilter(Color.argb(0xff, 0xff, 0x88, 0x00));
-                                }
-                            } else {
-                                imgUSB.setColorFilter(Color.argb(0xff, 0xd4, 0x00, 0x00));
-                            }
-                        }
-                    }
-                });
-
-                if (this.mObjectTree == null || mFcDevice == null
-                        || !mFcDevice.isConnected()) {
-                    continue;  //nothing yet to show, or not connected
-                }
-
-                if (request++ % 10 == 0) { //FIXME: is it needed to get the settings every 10 seconds?
-                    requestObjects();
-                    request = 0;
-                }
-
-                mActivity.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-
-                        try {
-                            switch (mCurrentView) {
-                                case VIEW_MAIN:
-
-                                    txtObjectLogTx.setText(
-                                            H.k(String.valueOf(mTxObjects * POLL_SECOND_FACTOR)));
-                                    txtObjectLogRxGood.setText(
-                                            H.k(String.valueOf(mRxObjectsGood * POLL_SECOND_FACTOR)));
-                                    txtObjectLogRxBad.setText(
-                                            H.k(String.valueOf(mRxObjectsBad * POLL_SECOND_FACTOR)));
-
-                                    if (blink) {
-                                        if (mRxObjectsGood > 0)
-                                            imgPacketsGood.setColorFilter(
-                                                    Color.argb(0xff, 0x00, 0x88, 0x00));
-                                        if (mRxObjectsBad > 0)
-                                            imgPacketsBad.setColorFilter(
-                                                    Color.argb(0xff, 0x88, 0x00, 0x00));
-                                        if (mTxObjects > 0)
-                                            imgPacketsUp.setColorFilter(
-                                                    Color.argb(0xff, 0x00, 0x00, 0x88));
-                                    } else {
-                                        if (mRxObjectsGood > 0)
-                                            imgPacketsGood.setColorFilter(
-                                                    Color.argb(0xff, 0x00, 0x00, 0x00));
-                                        if (mRxObjectsBad > 0)
-                                            imgPacketsBad.setColorFilter(
-                                                    Color.argb(0xff, 0x00, 0x00, 0x00));
-                                        if (mTxObjects > 0)
-                                            imgPacketsUp.setColorFilter(
-                                                    Color.argb(0xff, 0x00, 0x00, 0x00));
-                                    }
-
-                                    setTxObjects(0);
-                                    setRxObjectsBad(0);
-                                    setRxObjectsGood(0);
-
-                                    setText(mActivity.txtVehicleName, getVehicleNameData());
-
-                                    setTextBGColor(mActivity.txtAtti, getData("SystemAlarms", "Alarm", "Attitude").toString());
-                                    setTextBGColor(mActivity.txtStab, getData("SystemAlarms", "Alarm", "Stabilization").toString());
-                                    setTextBGColor(mActivity.txtPath, getData("PathStatus", "Status").toString());
-                                    setTextBGColor(mActivity.txtPlan, getData("SystemAlarms", "Alarm", "PathPlan").toString());
-
-                                    setText(mActivity.txtGPSSatsInView, getData("GPSSatellites", "SatsInView").toString());
-                                    setTextBGColor(mActivity.txtGPS, getData("SystemAlarms", "Alarm", "GPS").toString());
-                                    setTextBGColor(mActivity.txtSensor, getData("SystemAlarms", "Alarm", "Sensors").toString());
-                                    setTextBGColor(mActivity.txtAirspd, getData("SystemAlarms", "Alarm", "Airspeed").toString());
-                                    setTextBGColor(mActivity.txtMag, getData("SystemAlarms", "Alarm", "Magnetometer").toString());
-
-                                    setTextBGColor(mActivity.txtInput, getData("SystemAlarms", "Alarm", "Receiver").toString());
-                                    setTextBGColor(mActivity.txtOutput, getData("SystemAlarms", "Alarm", "Actuator").toString());
-                                    setTextBGColor(mActivity.txtI2C, getData("SystemAlarms", "Alarm", "I2C").toString());
-                                    setTextBGColor(mActivity.txtTelemetry, getData("SystemAlarms", "Alarm", "Telemetry").toString());
-
-                                    setTextBGColor(mActivity.txtFlightTelemetry, getData("FlightTelemetryStats", "Status").toString());
-                                    setTextBGColor(mActivity.txtGCSTelemetry, getData("GCSTelemetryStats", "Status").toString());
-                                    setText(mActivity.txtFusionAlgorithm, getData("RevoSettings", "FusionAlgorithm").toString());
-
-                                    setTextBGColor(mActivity.txtBatt, getData("SystemAlarms", "Alarm", "Battery").toString());
-                                    setTextBGColor(mActivity.txtTime, getData("SystemAlarms", "Alarm", "FlightTime").toString());
-                                    setTextBGColor(mActivity.txtConfig, getData("SystemAlarms", "ExtendedAlarmStatus", "SystemConfiguration").toString());
-
-                                    setTextBGColor(mActivity.txtBoot, getData("SystemAlarms", "Alarm", "BootFault").toString());
-                                    setTextBGColor(mActivity.txtMem, getData("SystemAlarms", "Alarm", "OutOfMemory").toString());
-                                    setTextBGColor(mActivity.txtStack, getData("SystemAlarms", "Alarm", "StackOverflow").toString());
-                                    setTextBGColor(mActivity.txtEvent, getData("SystemAlarms", "Alarm", "EventSystem").toString());
-                                    setTextBGColor(mActivity.txtCPU, getData("SystemAlarms", "Alarm", "CPUOverload").toString());
-
-                                    setText(mActivity.txtArmed, getData("FlightStatus", "Armed").toString());
-
-                                    setText(mActivity.txtFlightTime, H.getDateFromMilliSeconds(getData("SystemStats", "FlightTime").toString()));
-
-                                    setText(mActivity.txtVolt, getData("FlightBatteryState", "Voltage").toString());
-                                    setText(mActivity.txtAmpere, getData("FlightBatteryState", "Current").toString());
-                                    setText(mActivity.txtmAh, getData("FlightBatteryState", "ConsumedEnergy").toString());
-                                    setText(mActivity.txtTimeLeft, H.getDateFromSeconds(getData("FlightBatteryState", "EstimatedFlightTime").toString()));
-
-                                    setText(mActivity.txtCapacity, getData("FlightBatterySettings", "Capacity").toString());
-                                    setText(mActivity.txtCells, getData("FlightBatterySettings", "NbCells").toString());
-
-                                    setText(mActivity.txtAltitude, getFloatOffsetData("BaroSensor", "Altitude", OFFSET_BAROSENSOR_ALTITUDE));
-                                    setText(mActivity.txtAltitudeAccel, getFloatOffsetData("VelocityState", "Down", OFFSET_VELOCITY_DOWN));
-
-                                    String flightModeSwitchPosition = getData("ManualControlCommand", "FlightModeSwitchPosition", true).toString();
-
-                                    try {   //FlightMode in GCS is 1...n, so add "1" to be user friendly
-                                        setText(mActivity.txtModeNum, String.valueOf(Integer.parseInt(flightModeSwitchPosition) + 1));
-                                    } catch (NumberFormatException e) {
-                                        VisualLog.e("MainActivity", "Could not parse numeric Flightmode: " + flightModeSwitchPosition);
-                                    }
-
-                                    setText(mActivity.txtModeFlightMode, getData("FlightStatus", "FlightMode", true).toString());
-                                    setText(mActivity.txtModeAssistedControl, getData("FlightStatus", "FlightModeAssist", true).toString());
-                                    break;
-                                case VIEW_MAP:
-
-                                    if (mSerialModeUsed == SERIAL_BLUETOOTH) {
-                                        mFcDevice.requestObject("GPSSatellites");
-                                        mFcDevice.requestObject("SystemAlarms");
-                                        mFcDevice.requestObject("GPSPositionSensor");
-                                    }
-
-                                    setText(mActivity.txtMapGPSSatsInView, getData("GPSSatellites", "SatsInView").toString());
-                                    setTextBGColor(mActivity.txtMapGPS, getData("SystemAlarms", "Alarm", "GPS").toString());
-                                    float deg = 0;
-                                    try {
-                                        deg = (Float) getData("GPSPositionSensor", "Heading");
-                                    } catch (Exception ignored) {
-                                    }
-
-                                    Float lat = getGPSCoordinates("GPSPositionSensor", "Latitude");
-                                    Float lng = getGPSCoordinates("GPSPositionSensor", "Longitude");
-
-                                    setText(mActivity.txtLatitude, lat.toString());
-                                    setText(mActivity.txtLongitude, lng.toString());
-
-                                    LatLng src = mMap.getCameraPosition().target;
-                                    LatLng dst = new LatLng(lat, lng);
-
-                                    double distance = H.calculationByDistance(src, dst);
-                                    if (distance > 0.001) {
-                                        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLng(new LatLng(lat, lng));
-                                        MapsInitializer.initialize(mActivity);
-                                        if (distance < 200) {
-                                            mMap.animateCamera(cameraUpdate);
-                                        } else {
-                                            mMap.moveCamera(cameraUpdate);
-                                        }
-
-                                        mPosHistory[mCurrentPosMarker] = mMap.addMarker(new MarkerOptions()
-                                                        .position(new LatLng(lat, lng))
-                                                        .title("Librepilot")
-                                                        .snippet("LP rules")
-                                                        .flat(true)
-                                                        .anchor(0.5f, 0.5f)
-                                                        .rotation(deg)
-                                        );
-
-                                        mCurrentPosMarker++;
-                                        if (mCurrentPosMarker >= HISTORY_MARKER_NUM) {
-                                            mCurrentPosMarker = 0;
-                                        }
-                                        if (mPosHistory[mCurrentPosMarker] != null) {
-                                            mPosHistory[mCurrentPosMarker].remove();
-                                        }
-                                    }
-                                    break;
-                                case VIEW_OBJECTS:
-                                    try {
-                                        txtObjects.setText(mFcDevice.getObjectTree().toString());
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }
-                                    break;
-                                case VIEW_LOGS:
-                                    if (mFcDevice.isLogging()) {
-                                        try {
-                                            txtLogFilename.setText(mFcDevice.getLogFileName());
-                                            double lUAV = Math.round(mFcDevice.getLogBytesLoggedUAV() / 102.4) / 10.;
-                                            double lOPL = Math.round(mFcDevice.getLogBytesLoggedOPL() / 102.4) / 10.;
-                                            txtLogSize.setText(String.valueOf(lUAV) + getString(R.string.TAB) + "(" + String.valueOf(lOPL) + ") KB");
-                                            txtLogObjects.setText(String.valueOf(mFcDevice.getLogObjectsLogged()));
-                                            txtLogDuration.setText(String.valueOf((System.currentTimeMillis() - mFcDevice.getLogStartTimeStamp()) / 1000) + " s");
-                                        } catch (Exception ignored) {
-                                        }
-                                    }
-                                    break;
-                                case VIEW_PID:
-
-                                    String fmode = getData("ManualControlCommand", "FlightModeSwitchPosition").toString();
-                                    String bank = getData("StabilizationSettings", "FlightModeMap", fmode).toString();
-
-                                    mCurrentStabilizationBank = "StabilizationSettings" + bank;
-
-                                    switch (mCurrentStabilizationBank) {
-                                        case "StabilizationSettingsBank1":
-                                            imgPidBank.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_filter_1_128dp));
-                                            break;
-                                        case "StabilizationSettingsBank2":
-                                            imgPidBank.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_filter_2_128dp));
-                                            break;
-                                        case "StabilizationSettingsBank3":
-                                            imgPidBank.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_filter_3_128dp));
-                                            break;
-                                        default:
-                                            imgPidBank.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_filter_none_128dp));
-                                            break;
-                                    }
-
-                                    Iterator<PidTextView> i = mPidTexts.iterator();
-
-                                    while (i.hasNext()) {
-                                        PidTextView ptv = i.next();
-                                        String data = ptv.getDecimalString(toFloat(getData(mCurrentStabilizationBank, ptv.getField(), ptv.getElement())));
-                                        ptv.setText(data);
-                                    }
-
-                                    break;
-                                case VIEW_ABOUT:
-
-                                    break;
-
-                            }
-                        } catch (NullPointerException e) {
-                            e.printStackTrace();
-                            VisualLog.d("NPE", "Nullpointer Exception in Pollthread, most likely switched Connections");
-
-                        }
-                    }
-                });
-            }
-        }
-
-        private Float toFloat(Object o) {
-            try {
-                return (Float) o;
-            } catch (ClassCastException e) {
-                return .0f;
-            }
-        }
-
-        private void requestObjects() {
-            try {
-                if (mFcDevice != null) {
-                    mFcDevice.requestObject("SystemAlarms");
-                    mFcDevice.requestObject("PathStatus");
-                    mFcDevice.requestObject("GPSSatellites");
-                    mFcDevice.requestObject("FlightTelemetryStats");
-                    mFcDevice.requestObject("GCSTelemetryStats");
-                    mFcDevice.requestObject("FlightStatus");
-                    mFcDevice.requestObject("FlightBatteryState");
-                    mFcDevice.requestObject("FlightBatterySettings");
-                    mFcDevice.requestObject("BaroSensor");
-                    mFcDevice.requestObject("HwSettings");
-                    mFcDevice.requestObject("VelocityState");
-                    mFcDevice.requestObject("ManualControlCommand");
-                    mFcDevice.requestObject("StabilizationSettings");
-                    mFcDevice.requestObject("StabilizationSettingsBank1");
-                    mFcDevice.requestObject("StabilizationSettingsBank2");
-                    mFcDevice.requestObject("StabilizationSettingsBank3");
-
-                }
-            } catch (NullPointerException e) {
-                VisualLog.e("ERR", "UAVTalkdevice is null. Reconnecting?");
-            }
-        }
-
-        private String getVehicleNameData() {
-            char[] b = new char[20];
-            try {
-                for (int i = 0; i < 20; i++) {
-                    String str = mObjectTree.getData("SystemSettings", 0, "VehicleName", i)
-                            .toString();
-                    b[i] = (char) Byte.parseByte(str);
-
-                }
-            } catch (UAVTalkMissingObjectException | NumberFormatException e) {
-                try {
-                    mFcDevice.requestObject("SystemSettings");
-                } catch (NullPointerException e2) {
-                    e2.printStackTrace();
-                }
-            }
-            return new String(b);
-        }
-
-        private Float getGPSCoordinates(String object, String field) {
-            try {
-                Long l = (Long) mObjectTree.getData(object, field);
-                return ((float) l / 10000000);
-            } catch (UAVTalkMissingObjectException | NullPointerException | ClassCastException e1) {
-                return 0.0f;
-            }
-        }
-
-        private String getFloatOffsetData(String obj, String field, String soffset) {
-            try {
-                Float f1 = H.stringToFloat(getData(obj, field).toString());
-                Float f2 = (Float) mOffset.get(soffset);
-                return String.valueOf(H.round(f1 - f2, 2));
-            } catch (NumberFormatException e) {
-                return "";
-            }
-        }
-
-        private Object getData(String objectname, String fieldname, String elementName, boolean request) {
-            try {
-                if (request) {
-                    mFcDevice.requestObject(objectname);
-                }
-                return getData(objectname, fieldname, elementName);
-            } catch (NullPointerException e) {
-                //e.printStackTrace();
-            }
-            return "";
-        }
-
-        private Object getData(String objectname, String fieldname, boolean request) {
-            try {
-                if (request) {
-                    mFcDevice.requestObject(objectname);
-                }
-                return getData(objectname, fieldname);
-            } catch (NullPointerException e) {
-                //e.printStackTrace();
-            }
-            return "";
-        }
-
-        private Object getData(String objectname, String fieldname) {
-            try {
-                Object o = mObjectTree.getData(objectname, fieldname);
-                if (o != null) return o;
-            } catch (UAVTalkMissingObjectException e1) {
-                try {
-                    mFcDevice.requestObject(e1.getObjectname(), e1.getInstance());
-                } catch (NullPointerException e2) {
-                    //e2.printStackTrace();
-                }
-            } catch (NullPointerException e3) {
-                //e3.printStackTrace();
-            }
-            return "";
-        }
-
-        private Object getData(String objectname, String fieldname, String elementname) {
-            Object o = null;
-            try {
-                o = mObjectTree.getData(objectname, fieldname, elementname);
-            } catch (UAVTalkMissingObjectException e1) {
-                try {
-                    mFcDevice.requestObject(e1.getObjectname(), e1.getInstance());
-                } catch (NullPointerException e2) {
-                    e2.printStackTrace();
-                }
-            } catch (NullPointerException e3) {
-                VisualLog.e("ERR", "Object Tree not loaded yet.");
-            }
-            if (o != null) {
-                return o;
-            } else {
-                return "";
-            }
-        }
-    }
-
-    private class ConnectionThread extends Thread {
-        private final MainActivity mActivity;
-        private boolean mIsValid = true;
-
-        public ConnectionThread(MainActivity mActivity) {
-            this.setName("LP2GoConnectionThread");
-            this.mActivity = mActivity;
-        }
-
-        public void setInvalid() {
-            mIsValid = false;
-        }
-
-        @Override
-        public void run() {
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                //wakeup little prince
-            }
-
-            final long millis = System.currentTimeMillis();
-
-            boolean loaded = false;
-            if (mLoadedUavo != null) {
-                loaded = loadXmlObjects(false);
-            }
-            if (loaded) {
-                mActivity.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        final long submil = (System.currentTimeMillis() - millis);
-                        SingleToast.makeText(mActivity,
-                                "UAVO load completed in " + submil + " milliseconds",
-                                Toast.LENGTH_SHORT).show();
-
-                    }
-                });
-            }
-
-            while (mIsValid) {
-
-                if (mFcDevice != null && mFcDevice.isConnected()) {
-                    try {
-                        String status = (String) mFcDevice.getObjectTree()
-                                .getData("FlightTelemetryStats", "Status");
-                        String[] options = mFcDevice.getObjectTree().getXmlObjects()
-                                .get("FlightTelemetryStats").getFields().get("Status").getOptions();
-                        byte b = 0;
-                        for (String o : options) {
-                            if (o.equals(status)) {
-                                break;
-                            }
-                            b++;
-                        }
-                        mFcDevice.handleHandshake(b);
-                    } catch (UAVTalkMissingObjectException | NullPointerException e) {
-                        e.printStackTrace();
-                    }
-
-                }
-
-                if (mDoReconnect) {
-                    if (mFcDevice != null) mFcDevice.stop();
-                    mFcDevice = null;
-                    mDoReconnect = false;
-                    mActivity.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            mActivity.resetMainView();
-                        }
-                    });
-                }
-
-                if (mFcDevice == null
-                        || (!mFcDevice.isConnected() && !mFcDevice.isConnecting())) {
-                    switch (mSerialModeUsed) {
-                        case SERIAL_BLUETOOTH:
-                            connectBluetooth();
-                            break;
-                        case SERIAL_USB:
-                            connectUSB();
-                            break;
-                    }
-                }
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException ignored) {
-                }
-            }
         }
     }
 }
