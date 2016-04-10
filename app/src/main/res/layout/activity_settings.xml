@@ -152,6 +152,15 @@
                     android:text="@string/CLEAR_UAVO_FILE" />
             </LinearLayout>
 
+            <TextView
+                android:id="@+id/textView22"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autoLink="web"
+                android:clickable="true"
+                android:text="Download prepackaged developer UAVO on http://j.mp/lpuavo"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
             <ScrollView
                 android:id="@+id/scrollView3"
                 android:layout_width="wrap_content"
