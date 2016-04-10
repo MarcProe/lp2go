@@ -35,7 +35,7 @@ public abstract class FcDevice {
     public static final byte UAVTALK_CONNECTED = 0x03;
 
     private static final int MAX_HANDSHAKE_FAILURE_CYCLES = 3;
-    public final Set<String> nackedObjects = new HashSet<>();
+    public final Set<String> nackedObjects;
     final MainActivity mActivity;
     protected volatile UAVTalkObjectTree mObjectTree;
     private int mFailedHandshakes = 0;
@@ -50,6 +50,7 @@ public abstract class FcDevice {
 
     public FcDevice(MainActivity mActivity) throws IllegalStateException {
         this.mActivity = mActivity;
+        nackedObjects = new HashSet<>();
     }
 
     public UAVTalkObjectTree getObjectTree() {
