@@ -17,7 +17,6 @@
 package net.proest.lp2go3.UAVTalk.device;
 
 import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -26,33 +25,29 @@ import net.proest.lp2go3.H;
 import net.proest.lp2go3.MainActivity;
 import net.proest.lp2go3.R;
 import net.proest.lp2go3.UAVTalk.UAVTalkDeviceHelper;
-import net.proest.lp2go3.UAVTalk.UAVTalkMessage;
 import net.proest.lp2go3.UAVTalk.UAVTalkObject;
-import net.proest.lp2go3.UAVTalk.UAVTalkObjectInstance;
 import net.proest.lp2go3.UAVTalk.UAVTalkObjectTree;
 import net.proest.lp2go3.UAVTalk.UAVTalkXMLObject;
 import net.proest.lp2go3.VisualLog;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.UUID;
 
-public class UAVTalkBluetoothDevice extends UAVTalkDevice {
+public class FcBluetoothDevice extends FcDevice {
     private static final int STATE_NONE = 0;
     private static final int STATE_CONNECTING = 1;
     private static final int STATE_CONNECTED = 2;
     private final BluetoothAdapter mBluetoothAdapter;
     //private final MainActivity mActivity;
-    private WaiterThread mWaiterThread;
+    private FcWaiterThread mWaiterThread;
     private ConnectThread mConnectThread;
-    private BluetoothDevice mDevice;
+    private android.bluetooth.BluetoothDevice mDevice;
     private int mState;
 
-    public UAVTalkBluetoothDevice(MainActivity activity, HashMap<String, UAVTalkXMLObject> xmlObjects) {
+    public FcBluetoothDevice(MainActivity activity, HashMap<String, UAVTalkXMLObject> xmlObjects) {
         super(activity);
 
         //this.mActivity = activity;
@@ -79,10 +74,16 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
         connect(mDevice);
     }
 
-    private synchronized void connect(BluetoothDevice device) {
+    protected void connectionLost() {
+        mActivity.reconnect();
+
+        setState(STATE_NONE);
+    }
+
+    private synchronized void connect(android.bluetooth.BluetoothDevice device) {
         if (mState == STATE_NONE) {
             if (mWaiterThread != null) {
-                mWaiterThread.cancel();
+                mWaiterThread.stop();
                 mWaiterThread = null;
             }
 
@@ -92,7 +93,7 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
         }
     }
 
-    private synchronized void setState(int state) {
+    protected synchronized void setState(int state) {
         mState = state;
     }
 
@@ -109,7 +110,7 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
         }
 
         if (mWaiterThread != null) {
-            mWaiterThread.cancel();
+            mWaiterThread.stopThread();
             mWaiterThread = null;
         }
         setState(STATE_NONE);
@@ -195,11 +196,11 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
         }
 
         if (mWaiterThread != null) {
-            mWaiterThread.cancel();
+            mWaiterThread.stop();
             mWaiterThread = null;
         }
 
-        mWaiterThread = new WaiterThread(socket);
+        mWaiterThread = new FcBluetoothWaiterThread(socket, this);
         mWaiterThread.start();
 
         //toast("Connected to " + device.getName());
@@ -209,28 +210,22 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
 
     @Override
     protected boolean writeByteArray(byte[] out) {
-        WaiterThread r;
+        FcBluetoothWaiterThread r;
         synchronized (this) {
             if (mState != STATE_CONNECTED) {
                 return false;
             }
-            r = mWaiterThread;
+            r = (FcBluetoothWaiterThread) mWaiterThread;
         }
         r.write(out);
         return true;
     }
 
-    private void connectionLost() {
-        mActivity.reconnect();
-
-        setState(STATE_NONE);
-    }
-
     private class ConnectThread extends Thread {
-        private final BluetoothDevice mmDevice;
+        private final android.bluetooth.BluetoothDevice mmDevice;
         private BluetoothSocket mmSocket;
 
-        public ConnectThread(BluetoothDevice device) {
+        public ConnectThread(android.bluetooth.BluetoothDevice device) {
             mmDevice = device;
         }
 
@@ -282,209 +277,6 @@ public class UAVTalkBluetoothDevice extends UAVTalkDevice {
                 if (mmSocket != null) {
                     mmSocket.close();
                 }
-            } catch (IOException e) {
-                VisualLog.e(e);
-            }
-        }
-    }
-
-    private class WaiterThread extends Thread {
-        private final BluetoothSocket mmSocket;
-        private final InputStream mmInStream;
-        private final OutputStream mmOutStream;
-        public boolean mStop;
-
-        public WaiterThread(BluetoothSocket socket) {
-            this.setName("LP2GoDeviceBluetoothWaiterThread");
-            mmSocket = socket;
-            InputStream tmpIn = null;
-            OutputStream tmpOut = null;
-
-            try {
-                tmpIn = socket.getInputStream();
-                tmpOut = socket.getOutputStream();
-            } catch (IOException e) {
-                //VisualLog.e(e);
-            }
-
-            mmInStream = tmpIn;
-            mmOutStream = tmpOut;
-        }
-
-        private boolean handleMessageType(byte msgType, UAVTalkObject obj) {
-            switch (msgType) {
-                case 0x20:
-                    //handle default package, nothing to do
-                    break;
-                case 0x21:
-                    //handle request message, nobody should request from LP2Go (so we don't implement this)
-                    VisualLog.e("UAVTalk", "Received Object Request, but won't send any");
-                    break;
-                case 0x22:
-                    //handle object with ACK REQ, means send ACK
-                    VisualLog.d("UAVTalk", "Received Object with ACK Request");
-                    break;
-                case 0x23:
-                    //handle received ACK, e.g. save in Object that it has been acknowledged
-                    break;
-                case 0x24:
-                    //handle NACK, show warning and add to request blacklist
-                    nackedObjects.add(obj.getId());
-                    mActivity.incRxObjectsBad();
-                    VisualLog.w("UAVTalk", "Received NACK Object");
-                    break;
-                default:
-                    mActivity.incRxObjectsBad();
-                    byte[] b = new byte[1];
-                    b[0] = msgType;
-                    VisualLog.w("UAVTalk", "Received bad Object Type " + H.bytesToHex(b));
-                    return false;
-            }
-            return true;
-        }
-        public void run() {
-
-            byte[] seekbuffer = new byte[1];
-            byte[] syncbuffer = new byte[3];
-            byte[] msgtypebuffer = new byte[1];
-            byte[] lenbuffer = new byte[2];
-            byte[] oidbuffer = new byte[4];
-            byte[] iidbuffer = new byte[2];
-            byte[] databuffer;
-            byte[] crcbuffer = new byte[1];
-
-            mActivity.setRxObjectsGood(0);
-            mActivity.setRxObjectsBad(0);
-            mActivity.setTxObjects(0);
-
-
-            while (true) {
-                try {
-
-                    while (seekbuffer[0] != 0x3c) {
-                        int read = mmInStream.read(seekbuffer);
-                    }
-                    seekbuffer[0] = 0x00;
-                    syncbuffer[2] = 0x3c;
-
-                    msgtypebuffer = bufferRead(msgtypebuffer.length);
-
-                    lenbuffer = bufferRead(lenbuffer.length);
-
-                    int lb1 = lenbuffer[1] & 0x000000ff;
-                    int lb2 = lenbuffer[0] & 0x000000ff;
-                    int len = lb1 << 8 | lb2;
-
-                    if (len > 266 || len < 10) {
-                        mActivity.incRxObjectsBad();
-                        continue; // maximum possible packet size
-                    }
-
-                    oidbuffer = bufferRead(oidbuffer.length);
-                    iidbuffer = bufferRead(iidbuffer.length);
-                    databuffer = bufferRead(len - 10);
-                    crcbuffer = bufferRead(crcbuffer.length);
-
-                    if (lenbuffer.length != 2 || oidbuffer.length != 4 || iidbuffer.length != 2
-                            || databuffer.length == 0 || crcbuffer.length != 1) {
-                        mActivity.incRxObjectsBad();
-                        continue;
-                    }
-
-                    byte[] bmsg = H.concatArray(syncbuffer, msgtypebuffer);
-                    bmsg = H.concatArray(bmsg, lenbuffer);
-                    bmsg = H.concatArray(bmsg, oidbuffer);
-                    bmsg = H.concatArray(bmsg, iidbuffer);
-                    bmsg = H.concatArray(bmsg, databuffer);
-                    int crc = H.crc8(bmsg, 0, bmsg.length);
-                    bmsg = H.concatArray(bmsg, crcbuffer);
-
-
-                    if ((((int) crcbuffer[0] & 0xff) == (crc & 0xff))) {
-                        mActivity.incRxObjectsGood();
-                    } else {
-                        mActivity.incRxObjectsBad();
-                        continue;
-                    }
-
-                    try {
-                        UAVTalkMessage msg = new UAVTalkMessage(bmsg);
-                        UAVTalkObject myObj = mObjectTree.getObjectFromID(H.intToHex(msg.getObjectId()));
-                        UAVTalkObjectInstance myIns;
-
-                        try {
-                            myIns = myObj.getInstance(msg.getInstanceId());
-                            myIns.setData(msg.getData());
-                            myObj.setInstance(myIns);
-                        } catch (Exception e) {
-                            myIns = new UAVTalkObjectInstance(msg.getInstanceId(), msg.getData());
-                            myObj.setInstance(myIns);
-                        }
-
-                        if (handleMessageType(msgtypebuffer[0], myObj)) {
-                            mObjectTree.updateObject(myObj);
-                            if (isLogging()) {
-                                log(bmsg);
-                            }
-                        }
-                    } catch (Exception e) {
-                        VisualLog.e(e);
-                    }
-
-                } catch (IOException e) {
-                    VisualLog.e(e);
-                    if (mmInStream != null) {
-                        try {
-                            mmInStream.close();
-                        } catch (IOException e1) {
-                            VisualLog.e(e1);
-                        }
-                    }
-                    connectionLost();
-                    break;
-                }
-            }
-        }
-
-        private byte[] bufferRead(int dlen) throws IOException {
-            byte[] buffer = new byte[dlen];
-            int read = mmInStream.read(buffer);
-            int pos;
-
-            while (read < dlen) {
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    VisualLog.e(e);
-                }
-
-                byte[] readmore = new byte[dlen - read];
-                pos = mmInStream.read(readmore);
-                read += pos;
-                try {
-                    System.arraycopy(readmore, 0, buffer, dlen - pos, readmore.length);
-                } catch (ArrayIndexOutOfBoundsException e) {
-                    VisualLog.e(e);
-                    VisualLog.e("BLUETOOTH", "Bad Packet, should not happen.");
-                    return new byte[0];
-                }
-            }
-            return buffer;
-        }
-
-        public void write(byte[] buffer) {
-            try {
-                mActivity.incTxObjects();
-                mmOutStream.write(buffer);
-            } catch (IOException e) {
-                VisualLog.e("ERR", "Error while writing to BT Stack");
-            }
-        }
-
-        public void cancel() {
-            mStop = true;
-            try {
-                mmSocket.close();
             } catch (IOException e) {
                 VisualLog.e(e);
             }

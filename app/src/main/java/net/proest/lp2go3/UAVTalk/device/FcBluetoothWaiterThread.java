@@ -1,0 +1,212 @@
+/*
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+ * for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ */
+package net.proest.lp2go3.UAVTalk.device;
+
+import android.bluetooth.BluetoothSocket;
+
+import net.proest.lp2go3.H;
+import net.proest.lp2go3.UAVTalk.UAVTalkMessage;
+import net.proest.lp2go3.UAVTalk.UAVTalkObject;
+import net.proest.lp2go3.UAVTalk.UAVTalkObjectInstance;
+import net.proest.lp2go3.VisualLog;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
+class FcBluetoothWaiterThread extends FcWaiterThread {
+    private final BluetoothSocket mmSocket;
+    private final InputStream mmInStream;
+    private final OutputStream mmOutStream;
+    public boolean mStop;
+
+    private FcBluetoothDevice mBluetoothDevice;
+
+    public FcBluetoothWaiterThread(BluetoothSocket socket, FcDevice device) {
+        super(device);
+        mBluetoothDevice = (FcBluetoothDevice) device;
+        this.setName("LP2GoDeviceBluetoothWaiterThread");
+        mmSocket = socket;
+        InputStream tmpIn = null;
+        OutputStream tmpOut = null;
+
+        try {
+            tmpIn = socket.getInputStream();
+            tmpOut = socket.getOutputStream();
+        } catch (IOException e) {
+            //VisualLog.e(e);
+        }
+
+        mmInStream = tmpIn;
+        mmOutStream = tmpOut;
+    }
+
+    protected void stopThread() {
+        this.cancel();
+    }
+
+
+    public void run() {
+
+        byte[] seekbuffer = new byte[1];
+        byte[] syncbuffer = new byte[3];
+        byte[] msgtypebuffer = new byte[1];
+        byte[] lenbuffer = new byte[2];
+        byte[] oidbuffer = new byte[4];
+        byte[] iidbuffer = new byte[2];
+        byte[] databuffer;
+        byte[] crcbuffer = new byte[1];
+
+        mDevice.mActivity.setRxObjectsGood(0);
+        mDevice.mActivity.setRxObjectsBad(0);
+        mDevice.mActivity.setTxObjects(0);
+
+
+        while (true) {
+            try {
+
+                while (seekbuffer[0] != 0x3c) {
+                    int read = mmInStream.read(seekbuffer);
+                }
+                seekbuffer[0] = 0x00;
+                syncbuffer[2] = 0x3c;
+
+                msgtypebuffer = bufferRead(msgtypebuffer.length);
+
+                lenbuffer = bufferRead(lenbuffer.length);
+
+                int lb1 = lenbuffer[1] & 0x000000ff;
+                int lb2 = lenbuffer[0] & 0x000000ff;
+                int len = lb1 << 8 | lb2;
+
+                if (len > 266 || len < 10) {
+                    mDevice.mActivity.incRxObjectsBad();
+                    continue; // maximum possible packet size
+                }
+
+                oidbuffer = bufferRead(oidbuffer.length);
+                iidbuffer = bufferRead(iidbuffer.length);
+                databuffer = bufferRead(len - 10);
+                crcbuffer = bufferRead(crcbuffer.length);
+
+                if (lenbuffer.length != 2 || oidbuffer.length != 4 || iidbuffer.length != 2
+                        || databuffer.length == 0 || crcbuffer.length != 1) {
+                    mDevice.mActivity.incRxObjectsBad();
+                    continue;
+                }
+
+                byte[] bmsg = H.concatArray(syncbuffer, msgtypebuffer);
+                bmsg = H.concatArray(bmsg, lenbuffer);
+                bmsg = H.concatArray(bmsg, oidbuffer);
+                bmsg = H.concatArray(bmsg, iidbuffer);
+                bmsg = H.concatArray(bmsg, databuffer);
+                int crc = H.crc8(bmsg, 0, bmsg.length);
+                bmsg = H.concatArray(bmsg, crcbuffer);
+
+
+                if ((((int) crcbuffer[0] & 0xff) == (crc & 0xff))) {
+                    mDevice.mActivity.incRxObjectsGood();
+                } else {
+                    mDevice.mActivity.incRxObjectsBad();
+                    continue;
+                }
+
+                try {
+                    UAVTalkMessage msg = new UAVTalkMessage(bmsg);
+                    UAVTalkObject myObj = mDevice.mObjectTree.getObjectFromID(H.intToHex(msg.getObjectId()));
+                    UAVTalkObjectInstance myIns;
+
+                    try {
+                        myIns = myObj.getInstance(msg.getInstanceId());
+                        myIns.setData(msg.getData());
+                        myObj.setInstance(myIns);
+                    } catch (Exception e) {
+                        myIns = new UAVTalkObjectInstance(msg.getInstanceId(), msg.getData());
+                        myObj.setInstance(myIns);
+                    }
+
+                    if (handleMessageType(msgtypebuffer[0], myObj)) {
+                        mDevice.mObjectTree.updateObject(myObj);
+                        if (mDevice.isLogging()) {
+                            mDevice.log(bmsg);
+                        }
+                    }
+                } catch (Exception e) {
+                    VisualLog.e(e);
+                }
+
+            } catch (IOException e) {
+                VisualLog.e(e);
+                if (mmInStream != null) {
+                    try {
+                        mmInStream.close();
+                    } catch (IOException e1) {
+                        VisualLog.e(e1);
+                    }
+                }
+                if (mBluetoothDevice != null) {
+                    mBluetoothDevice.connectionLost();
+                }
+                break;
+            }
+        }
+    }
+
+    private byte[] bufferRead(int dlen) throws IOException {
+        byte[] buffer = new byte[dlen];
+        int read = mmInStream.read(buffer);
+        int pos;
+
+        while (read < dlen) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                VisualLog.e(e);
+            }
+
+            byte[] readmore = new byte[dlen - read];
+            pos = mmInStream.read(readmore);
+            read += pos;
+            try {
+                System.arraycopy(readmore, 0, buffer, dlen - pos, readmore.length);
+            } catch (ArrayIndexOutOfBoundsException e) {
+                VisualLog.e(e);
+                VisualLog.e("BLUETOOTH", "Bad Packet, should not happen.");
+                return new byte[0];
+            }
+        }
+        return buffer;
+    }
+
+    public void write(byte[] buffer) {
+        try {
+            mDevice.mActivity.incTxObjects();
+            mmOutStream.write(buffer);
+        } catch (IOException e) {
+            VisualLog.e("ERR", "Error while writing to BT Stack");
+        }
+    }
+
+    public void cancel() {
+        mStop = true;
+        try {
+            mmSocket.close();
+            mBluetoothDevice = null;
+        } catch (IOException e) {
+            VisualLog.e(e);
+        }
+    }
+}

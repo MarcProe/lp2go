@@ -34,7 +34,7 @@ public class EnumInputAlertDialog extends InputAlertDialog {
     }
 
     public void show() {
-        if (mUavTalkDevice == null) {
+        if (mFcDevice == null) {
             SingleToast.makeText(getContext(), getContext().getString(R.string.NOT_CONNECTED),
                     Toast.LENGTH_SHORT).show();
             return;
@@ -45,7 +45,7 @@ public class EnumInputAlertDialog extends InputAlertDialog {
 
         String[] types;
         try {
-            types = mUavTalkDevice.getObjectTree().getXmlObjects().get(mObject).getFields()
+            types = mFcDevice.getObjectTree().getXmlObjects().get(mObject).getFields()
                     .get(mField).getOptions();
         } catch (NullPointerException e) {
             types = null;
@@ -54,7 +54,7 @@ public class EnumInputAlertDialog extends InputAlertDialog {
 
         int current = 0;
         try {
-            String type = mUavTalkDevice.getObjectTree().getData(mObject, mField).toString();
+            String type = mFcDevice.getObjectTree().getData(mObject, mField).toString();
             if (type != null) {
                 for (String t : types) {
                     if (t.equals(type)) {
@@ -81,7 +81,7 @@ public class EnumInputAlertDialog extends InputAlertDialog {
                     public void onClick(DialogInterface dialog, int which) {
                         if (mChoice > 0) {
                             process(mChoice);
-                            mUavTalkDevice.savePersistent(mObject);
+                            mFcDevice.savePersistent(mObject);
                         }
 
                         dialog.dismiss();
@@ -114,8 +114,8 @@ public class EnumInputAlertDialog extends InputAlertDialog {
 
         byte[] send = new byte[1];
         send[0] = (byte) which;
-        if (mUavTalkDevice != null) {
-            mUavTalkDevice.sendSettingsObject(mObject, 0, mField, 0, send);
+        if (mFcDevice != null) {
+            mFcDevice.sendSettingsObject(mObject, 0, mField, 0, send);
             //mUAVTalkDevice.savePersistent("RevoSettings");
         }
     }

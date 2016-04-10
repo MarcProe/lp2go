@@ -19,13 +19,13 @@ package net.proest.lp2go3.UI.alertdialog;
 import android.app.AlertDialog;
 import android.content.Context;
 
-import net.proest.lp2go3.UAVTalk.device.UAVTalkDevice;
+import net.proest.lp2go3.UAVTalk.device.FcDevice;
 
 public abstract class InputAlertDialog extends AlertDialog {
     int mLayout;
     String mTitle;
     String mText;
-    UAVTalkDevice mUavTalkDevice;
+    FcDevice mFcDevice;
     String mObject;
     String mField;
     String mElement = "0";
@@ -64,8 +64,8 @@ public abstract class InputAlertDialog extends AlertDialog {
         return this;
     }
 
-    public InputAlertDialog withUavTalkDevice(UAVTalkDevice uavTalkDevice) {
-        this.mUavTalkDevice = uavTalkDevice;
+    public InputAlertDialog withUavTalkDevice(FcDevice fcDevice) {
+        this.mFcDevice = fcDevice;
         return this;
     }
 

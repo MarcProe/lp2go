@@ -28,7 +28,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-public abstract class UAVTalkDevice {
+public abstract class FcDevice {
     public static final byte UAVTALK_DISCONNECTED = 0x00;
     public static final byte UAVTALK_HANDSHAKE_REQUESTED = 0x01;
     public static final byte UAVTALK_HANDSHAKE_ACKNOWLEDGED = 0x02;
@@ -48,7 +48,7 @@ public abstract class UAVTalkDevice {
     private long mLogObjectsLogged = 0;
     private int mUavTalkConnectionState = 0x00;
 
-    public UAVTalkDevice(MainActivity mActivity) throws IllegalStateException {
+    public FcDevice(MainActivity mActivity) throws IllegalStateException {
         this.mActivity = mActivity;
     }
 

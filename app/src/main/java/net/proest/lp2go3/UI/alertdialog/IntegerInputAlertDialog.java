@@ -38,7 +38,7 @@ public class IntegerInputAlertDialog extends InputAlertDialog {
     }
 
     public void show() {
-        if (mUavTalkDevice == null) {
+        if (mFcDevice == null) {
             SingleToast.makeText(getContext(), getContext().getString(R.string.NOT_CONNECTED),
                     Toast.LENGTH_SHORT).show();
             return;
@@ -63,7 +63,7 @@ public class IntegerInputAlertDialog extends InputAlertDialog {
                     public void onClick(DialogInterface dialog, int which) {
                         process(input.getText().toString());
 
-                        mUavTalkDevice.savePersistent(mObject);
+                        mFcDevice.savePersistent(mObject);
 
                         dialog.dismiss();
                     }
@@ -114,8 +114,8 @@ public class IntegerInputAlertDialog extends InputAlertDialog {
             data = H.toBytes(0);
         }
 
-        if (mUavTalkDevice != null) {
-            mUavTalkDevice.sendSettingsObject(mObject, 0, mField, 0, data);
+        if (mFcDevice != null) {
+            mFcDevice.sendSettingsObject(mObject, 0, mField, 0, data);
         }
     }
 }
