@@ -29,7 +29,7 @@
 
     <!-- Nav Drawer Menu Items -->
 
-    <string name="menu_main">Main</string>
+    <string name="menu_main">Health</string>
     <string name="menu_map">Map</string>
     <string name="menu_objects">Objects</string>
     <string name="menu_settings">Settings</string>
