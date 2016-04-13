@@ -141,7 +141,7 @@
                             android:orientation="horizontal">
 
                             <TextView
-                                android:id="@+id/textView19"
+                                android:id="@+id/textView79"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
@@ -173,7 +173,7 @@
                             android:orientation="horizontal">
 
                             <TextView
-                                android:id="@+id/textView19"
+                                android:id="@+id/textView69"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
