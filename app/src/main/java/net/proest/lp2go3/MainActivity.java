@@ -119,6 +119,7 @@ import net.proest.lp2go3.slider.PidFragment;
 import net.proest.lp2go3.slider.SettingsFragment;
 import net.proest.lp2go3.slider.adapter.NavDrawerListAdapter;
 import net.proest.lp2go3.slider.model.NavDrawerItem;
+import net.proest.lp2go3.slider.model.VerticalPidFragment;
 
 import org.xml.sax.SAXException;
 
@@ -154,10 +155,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     protected static final int VIEW_MAP = 1;
     protected static final int VIEW_OBJECTS = 2;
     protected static final int VIEW_PID = 3;
-    protected static final int VIEW_LOGS = 4;
-    protected static final int VIEW_SETTINGS = 5;
-    protected static final int VIEW_ABOUT = 6;
-    protected static final int VIEW_DEBUG = 7;
+    protected static final int VIEW_VPID = 4;
+    protected static final int VIEW_LOGS = 5;
+    protected static final int VIEW_SETTINGS = 6;
+    protected static final int VIEW_ABOUT = 7;
+    protected static final int VIEW_DEBUG = 8;
     protected static final int POLL_WAIT_TIME = 500;
     protected static final int POLL_SECOND_FACTOR = 1000 / POLL_WAIT_TIME;
     protected final static int HISTORY_MARKER_NUM = 5;
@@ -231,6 +233,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     protected TextView txtLogObjects;
     protected TextView txtLogDuration;
     protected HashSet<PidTextView> mPidTexts;
+    protected HashSet<PidTextView> mVerticalPidTexts;
     protected ImageView imgPidBank;
     protected int mCurrentPosMarker = 0;
     protected String mCurrentStabilizationBank;
@@ -331,6 +334,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private PidTextView txtPidPitchIntegral;
     private PidTextView txtPidYawIntegral;
     private TextView txtDebugLog;
+    private PidTextView txtVerticalAltitudeProportional;
+    private PidTextView txtVerticalExponential;
+    private PidTextView txtVerticalThrustRate;
+    private PidTextView txtVerticalVelocityBeta;
+    private PidTextView txtVerticalVelocityDerivative;
+    private PidTextView txtVerticalVelocityIntegral;
+    private PidTextView txtVerticalVelocityProportional;
 
     public static boolean hasPThread() {
         return mHasPThread;
@@ -435,6 +445,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         navDrawerItems.add(new NavDrawerItem(getString(R.string.menu_map), R.drawable.ic_public_24dp));
         navDrawerItems.add(new NavDrawerItem(getString(R.string.menu_objects), R.drawable.ic_now_widgets_24dp));
         navDrawerItems.add(new NavDrawerItem(getString(R.string.menu_pid), R.drawable.ic_tune_128dp));
+        navDrawerItems.add(new NavDrawerItem(getString(R.string.menu_vpid), R.drawable.ic_vertical_align_center_black_128dp));
         navDrawerItems.add(new NavDrawerItem(getString(R.string.menu_logs), R.drawable.ic_rate_review_24dp));
         navDrawerItems.add(new NavDrawerItem(getString(R.string.menu_settings), R.drawable.ic_settings_24dp));
         navDrawerItems.add(new NavDrawerItem(getString(R.string.menu_about), R.drawable.ic_info_outline_24dp));
@@ -1017,6 +1028,85 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     }
 
+    private void initViewVerticalPid() {
+        mViews.put(VIEW_VPID, getLayoutInflater().inflate(R.layout.activity_vpid, null));
+        setContentView(mViews.get(VIEW_VPID));
+
+        mVerticalPidTexts = new HashSet<PidTextView>();
+
+        txtVerticalAltitudeProportional = (PidTextView) findViewById(R.id.txtVerticalAltitudeProportional);
+        txtVerticalAltitudeProportional.init(
+                PID.PID_VERTICAL_ALTI_PROP_DENOM,
+                PID.PID_VERTICAL_ALTI_PROP_MAX,
+                PID.PID_VERTICAL_ALTI_PROP_STEP,
+                PID.PID_VERTICAL_ALTI_PROP_DFS,
+                getString(R.string.VPID_NAME_ALP),
+                "VerticalPosP", "");
+        mVerticalPidTexts.add(txtVerticalAltitudeProportional);
+
+        txtVerticalExponential = (PidTextView) findViewById(R.id.txtVerticalExponential);
+        txtVerticalExponential.init(
+                PID.PID_VERTICAL_EXPO_DENOM,
+                PID.PID_VERTICAL_EXPO_MAX,
+                PID.PID_VERTICAL_EXPO_STEP,
+                PID.PID_VERTICAL_EXPO_DFS,
+                getString(R.string.VPID_NAME_EXP),
+                "ThrustExp", "",
+                UAVTalkXMLObject.FIELDTYPE_UINT8);
+        mVerticalPidTexts.add(txtVerticalExponential);
+
+        txtVerticalThrustRate = (PidTextView) findViewById(R.id.txtVerticalThrustRate);
+        txtVerticalThrustRate.init(
+                PID.PID_VERTICAL_THRUST_R_DENOM,
+                PID.PID_VERTICAL_THRUST_R_MAX,
+                PID.PID_VERTICAL_THRUST_R_STEP,
+                PID.PID_VERTICAL_THRUST_R_DFS,
+                getString(R.string.VPID_NAME_THR),
+                "ThrustRate", "");
+        mVerticalPidTexts.add(txtVerticalThrustRate);
+
+        txtVerticalVelocityBeta = (PidTextView) findViewById(R.id.txtVerticalVelocityBeta);
+        txtVerticalVelocityBeta.init(
+                PID.PID_VERTICAL_VELO_BETA_DENOM,
+                PID.PID_VERTICAL_VELO_BETA_MAX,
+                PID.PID_VERTICAL_VELO_BETA_STEP,
+                PID.PID_VERTICAL_VELO_BETA_DFS,
+                getString(R.string.VPID_NAME_VEB),
+                "VerticalVelPID", "Beta");
+        mVerticalPidTexts.add(txtVerticalVelocityBeta);
+
+        txtVerticalVelocityDerivative = (PidTextView) findViewById(R.id.txtVerticalVelocityDerivative);
+        txtVerticalVelocityDerivative.init(
+                PID.PID_VERTICAL_VELO_DERI_DENOM,
+                PID.PID_VERTICAL_VELO_DERI_MAX,
+                PID.PID_VERTICAL_VELO_DERI_STEP,
+                PID.PID_VERTICAL_VELO_DERI_DFS,
+                getString(R.string.VPID_NAME_VED),
+                "VerticalVelPID", "Kd");
+        mVerticalPidTexts.add(txtVerticalVelocityDerivative);
+
+        txtVerticalVelocityIntegral = (PidTextView) findViewById(R.id.txtVerticalVelocityIntegral);
+        txtVerticalVelocityIntegral.init(
+                PID.PID_VERTICAL_VELO_INTE_DENOM,
+                PID.PID_VERTICAL_VELO_INTE_MAX,
+                PID.PID_VERTICAL_VELO_INTE_STEP,
+                PID.PID_VERTICAL_VELO_INTE_DFS,
+                getString(R.string.VPID_NAME_VEI),
+                "VerticalVelPID", "Ki");
+        mVerticalPidTexts.add(txtVerticalVelocityIntegral);
+
+        txtVerticalVelocityProportional = (PidTextView) findViewById(R.id.txtVerticalVelocityProportional);
+        txtVerticalVelocityProportional.init(
+                PID.PID_VERTICAL_VELO_PROP_DENOM,
+                PID.PID_VERTICAL_VELO_PROP_MAX,
+                PID.PID_VERTICAL_VELO_PROP_STEP,
+                PID.PID_VERTICAL_VELO_PROP_DFS,
+                getString(R.string.VPID_NAME_VEP),
+                "VerticalVelPID", "Kp");
+        mVerticalPidTexts.add(txtVerticalVelocityProportional);
+
+    }
+
     @Override
     public void onRestart() {
         super.onRestart();
@@ -1049,6 +1139,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         //debug view is initialized above
         initViewPid();
+        initViewVerticalPid();
         initViewAbout();
         initViewLogs();
         initViewSettings();
@@ -1304,6 +1395,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             case VIEW_PID:
                 break;
 
+            case VIEW_VPID:
+                break;
+
             case VIEW_DEBUG:
                 break;
             default:
@@ -1398,6 +1492,36 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 menuTitle = getString(R.string.menu_pid);
 
                 break;
+
+            case VIEW_VPID:
+                fragment = new VerticalPidFragment();
+                setContentView(mViews.get(VIEW_VPID), position);
+
+                SingleToast.makeText(this, R.string.CHECK_PID_WARNING, Toast.LENGTH_SHORT).show();
+
+                imgBluetooth = (ImageView) findViewById(R.id.imgBluetooth);
+                imgUSB = (ImageView) findViewById(R.id.imgUSB);
+
+                if (mColorfulPid) {
+                    findViewById(R.id.lloStickResponse).setBackground(
+                            ContextCompat.getDrawable(getApplicationContext(),
+                                    R.drawable.border_top_yellow));
+                    findViewById(R.id.lloControlCoeff).setBackground(
+                            ContextCompat.getDrawable(getApplicationContext(),
+                                    R.drawable.border_top_blue));
+                } else {
+                    findViewById(R.id.lloStickResponse).setBackground(
+                            ContextCompat.getDrawable(getApplicationContext(),
+                                    R.drawable.border_top));
+                    findViewById(R.id.lloControlCoeff).setBackground(
+                            ContextCompat.getDrawable(getApplicationContext(),
+                                    R.drawable.border_top));
+                }
+
+                menuTitle = getString(R.string.menu_vpid);
+
+                break;
+
             case VIEW_DEBUG:
                 fragment = new DebugFragment();
                 setContentView(mViews.get(VIEW_DEBUG), position);
@@ -1585,6 +1709,80 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
     }
 
+    public void onVerticalPidSaveClick(View v) {
+        if (mFcDevice != null && mFcDevice.isConnected()) {
+            mFcDevice.savePersistent("AltitudeHoldSettings");
+            SingleToast.makeText(this, getString(R.string.SAVED_PERSISTENT)
+                    + getString(R.string.CHECK_PID_WARNING), Toast.LENGTH_SHORT).show();
+        } else {
+            SingleToast.makeText(this, R.string.SEND_FAILED, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void onVerticalPidUploadClick(View v) {
+        if (mFcDevice != null && mFcDevice.isConnected()) {
+            UAVTalkObjectTree oTree = mFcDevice.getObjectTree();
+            if (oTree != null) {
+                oTree.getObjectFromName("AltitudeHoldSettings").setWriteBlocked(true);
+
+                Iterator<PidTextView> i = mVerticalPidTexts.iterator();
+
+                while (i.hasNext()) {
+                    PidTextView ptv = i.next();
+
+                    switch (ptv.getFieldType()) {
+                        case (UAVTalkXMLObject.FIELDTYPE_FLOAT32):
+                            try {
+                                float f = H.stringToFloat(ptv.getText().toString());
+
+                                byte[] buffer = H.reverse4bytes(H.floatToByteArray(f));
+
+                                UAVTalkDeviceHelper.updateSettingsObject(oTree, "AltitudeHoldSettings", 0, ptv.getField(), ptv.getElement(), buffer);
+                            } catch (NumberFormatException e) {
+                                VisualLog.e("MainActivity", "Error parsing float (vertical): " + ptv.getField() + " " + ptv.getElement() + " " + ptv.getText().toString());
+                            }
+                            break;
+                        case (UAVTalkXMLObject.FIELDTYPE_UINT8):
+                            try {
+                                byte[] buffer = new byte[1];
+                                VisualLog.d("SDFG", ptv.getText().toString());
+                                buffer[0] = (byte) (Integer.parseInt(ptv.getText().toString()) & 0xff);
+                                UAVTalkDeviceHelper.updateSettingsObject(oTree, "AltitudeHoldSettings", 0, ptv.getField(), ptv.getElement(), buffer);
+                            } catch (NumberFormatException e) {
+                                VisualLog.e("MainActivity", "Error parsing uint8 (vertical): " + ptv.getField() + " " + ptv.getElement() + " " + ptv.getText().toString());
+                            }
+                            break;
+                        default:
+
+                            break;
+
+                    }
+
+
+                }
+
+                mFcDevice.sendSettingsObject("AltitudeHoldSettings", 0);
+
+                SingleToast.makeText(this, getString(R.string.PID_SENT)
+                        + getString(R.string.CHECK_PID_WARNING), Toast.LENGTH_SHORT).show();
+
+                oTree.getObjectFromName("AltitudeHoldSettings").setWriteBlocked(false);
+            }
+        } else {
+            SingleToast.makeText(this, R.string.SEND_FAILED, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void onVerticalPidDownloadClick(View v) {
+        if (mFcDevice != null && mFcDevice.isConnected()) {
+            allowVerticalPidUpdate();
+            SingleToast.makeText(this, getString(R.string.PID_LOADING)
+                    + getString(R.string.CHECK_PID_WARNING), Toast.LENGTH_SHORT).show();
+        } else {
+            SingleToast.makeText(this, R.string.SEND_FAILED, Toast.LENGTH_SHORT).show();
+        }
+    }
+
     public void onPidSaveClick(View v) {
         if (mFcDevice != null && mFcDevice.isConnected()) {
             mFcDevice.savePersistent(mCurrentStabilizationBank);
@@ -1640,6 +1838,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     private void allowPidUpdate() {
         Iterator<PidTextView> i = mPidTexts.iterator();
+
+        while (i.hasNext()) {
+            PidTextView ptv = i.next();
+            ptv.allowUpdate();
+        }
+    }
+
+    private void allowVerticalPidUpdate() {
+        Iterator<PidTextView> i = mVerticalPidTexts.iterator();
 
         while (i.hasNext()) {
             PidTextView ptv = i.next();
@@ -1903,6 +2110,26 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 .withField(p.getField())
                 .withElement(p.getElement())
                 .withFieldType(UAVTalkXMLObject.FIELDTYPE_FLOAT32)
+                .show();
+    }
+
+    public void onVerticalPidGridNumberClick(View v) {
+        VisualLog.d("VPID", v.toString());
+        PidTextView p = (PidTextView) v;
+        new PidInputAlertDialog(this)
+                .withStep(p.getStep())
+                .withDenominator(p.getDenom())
+                .withDecimalFormat(p.getDfs())
+                .withPidTextView(p)
+                .withValueMax(p.getMax())
+                .withPresetText(p.getText().toString())
+                .withTitle(p.getDialogTitle())
+                .withLayout(R.layout.alert_dialog_pid_grid)
+                .withUavTalkDevice(mFcDevice)
+                .withObject("AltitudeHoldSettings")
+                .withField(p.getField())
+                .withElement(p.getElement())
+                .withFieldType(p.getFieldType())
                 .show();
     }
 

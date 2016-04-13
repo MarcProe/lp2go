@@ -20,8 +20,9 @@ import android.graphics.Color;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
-import java.text.DecimalFormat;
+import net.proest.lp2go3.UAVTalk.UAVTalkXMLObject;
 
+import java.text.DecimalFormat;
 
 public class PidTextView extends TextView {
     private int mDenom;
@@ -31,6 +32,7 @@ public class PidTextView extends TextView {
     private String mDialogTitle;
     private String mElement;
     private String mField;
+    private int mFieldType;
     private boolean mUpdateAllowed = true;
 
 
@@ -46,7 +48,7 @@ public class PidTextView extends TextView {
         super(context, attrs, defStyleAttr);
     }
 
-    public void init(int denominator, int max, int step, String dfs, String title, String field, String element) {
+    public void init(int denominator, int max, int step, String dfs, String title, String field, String element, int fieldType) {
         this.mDenom = denominator;
         this.mStep = step;
         this.mMax = max;
@@ -54,6 +56,11 @@ public class PidTextView extends TextView {
         this.mDialogTitle = title;
         this.mElement = element;
         this.mField = field;
+        this.mFieldType = fieldType;
+    }
+
+    public void init(int denominator, int max, int step, String dfs, String title, String field, String element) {
+        init(denominator, max, step, dfs, title, field, element, UAVTalkXMLObject.FIELDTYPE_FLOAT32);
     }
 
     public int getDenom() {
@@ -66,6 +73,10 @@ public class PidTextView extends TextView {
 
     public int getMax() {
         return mMax;
+    }
+
+    public int getFieldType() {
+        return mFieldType;
     }
 
     public String getDfs() {

@@ -91,4 +91,39 @@ public class PID {
     public static final int PID_YAW_INTE_MAX = 500000;
     public static final String PID_YAW_INTE_DFS = "0.000";
 
+    public static final int PID_VERTICAL_ALTI_PROP_DENOM = 10000;
+    public static final int PID_VERTICAL_ALTI_PROP_STEP = 100;
+    public static final int PID_VERTICAL_ALTI_PROP_MAX = 10000;
+    public static final String PID_VERTICAL_ALTI_PROP_DFS = "0.00";
+
+    public static final int PID_VERTICAL_EXPO_DENOM = 1;
+    public static final int PID_VERTICAL_EXPO_STEP = 1;
+    public static final int PID_VERTICAL_EXPO_MAX = 255;
+    public static final String PID_VERTICAL_EXPO_DFS = "0";
+
+    public static final int PID_VERTICAL_THRUST_R_DENOM = 1;
+    public static final int PID_VERTICAL_THRUST_R_STEP = 1;
+    public static final int PID_VERTICAL_THRUST_R_MAX = 5;
+    public static final String PID_VERTICAL_THRUST_R_DFS = "0";
+
+    public static final int PID_VERTICAL_VELO_BETA_DENOM = 10000;
+    public static final int PID_VERTICAL_VELO_BETA_STEP = 100;
+    public static final int PID_VERTICAL_VELO_BETA_MAX = 10000;
+    public static final String PID_VERTICAL_VELO_BETA_DFS = "0.00";
+
+    public static final int PID_VERTICAL_VELO_DERI_DENOM = 100000;
+    public static final int PID_VERTICAL_VELO_DERI_STEP = 10;
+    public static final int PID_VERTICAL_VELO_DERI_MAX = 3000;
+    public static final String PID_VERTICAL_VELO_DERI_DFS = "0.0000";
+
+    public static final int PID_VERTICAL_VELO_INTE_DENOM = 10000;
+    public static final int PID_VERTICAL_VELO_INTE_STEP = 100;
+    public static final int PID_VERTICAL_VELO_INTE_MAX = 10000;
+    public static final String PID_VERTICAL_VELO_INTE_DFS = "0.00";
+
+    public static final int PID_VERTICAL_VELO_PROP_DENOM = 10000;
+    public static final int PID_VERTICAL_VELO_PROP_STEP = 100;
+    public static final int PID_VERTICAL_VELO_PROP_MAX = 10000;
+    public static final String PID_VERTICAL_VELO_PROP_DFS = "0.00";
+
 }

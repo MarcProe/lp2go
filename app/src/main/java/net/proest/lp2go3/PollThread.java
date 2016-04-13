@@ -27,6 +27,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import net.proest.lp2go3.UAVTalk.UAVTalkMissingObjectException;
 import net.proest.lp2go3.UAVTalk.UAVTalkObjectTree;
+import net.proest.lp2go3.UAVTalk.UAVTalkXMLObject;
 import net.proest.lp2go3.UI.PidTextView;
 
 import java.util.Iterator;
@@ -388,6 +389,36 @@ public class PollThread extends Thread {
                                 }
 
                                 break;
+
+                            case MainActivity.VIEW_VPID:
+
+                                Iterator<PidTextView> vi = mA.mVerticalPidTexts.iterator();
+
+                                while (vi.hasNext()) {
+                                    PidTextView ptv = vi.next();
+                                    //VisualLog.d("VPID", ptv.getDialogTitle() + " "  + ptv.getField() + " " + ptv.getElement() + " " + ptv.getText());
+                                    String data;
+                                    switch (ptv.getFieldType()) {
+                                        case (UAVTalkXMLObject.FIELDTYPE_FLOAT32):
+                                            data = ptv.getDecimalString(
+                                                    toFloat(getData("AltitudeHoldSettings",
+                                                            ptv.getField(), ptv.getElement())));
+                                            ptv.setText(data);
+                                            break;
+                                        case (UAVTalkXMLObject.FIELDTYPE_UINT8):
+                                            data = getData("AltitudeHoldSettings",
+                                                    ptv.getField(), ptv.getElement()).toString();
+                                            ptv.setText(data);
+                                            break;
+                                        default:
+                                            data = null;
+                                            break;
+
+                                    }
+                                }
+
+                                break;
+
                             case MainActivity.VIEW_ABOUT:
 
                                 break;
