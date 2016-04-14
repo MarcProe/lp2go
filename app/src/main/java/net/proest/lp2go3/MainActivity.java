@@ -252,14 +252,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private Spinner spnConnectionTypeSpinner;
     private Spinner spnBluetoothPairedDevice;
     private CheckBox cbxColorfulPid;
-    private PidTextView txtPidRateRollProportional;
-    private PidTextView txtPidRatePitchProportional;
-    private PidTextView txtPidRateRollIntegral;
-    private PidTextView txtPidRatePitchIntegral;
-    private PidTextView txtPidRateRollDerivative;
-    private PidTextView txtPidRatePitchDerivative;
-    private PidTextView txtPidRollProportional;
-    private PidTextView txtPidPitchProportional;
     private HashMap<String, List<String>> mListDataChild;
     private TextView txtDeviceText;
     private ObjectsExpandableListViewAdapter mListAdapter;
@@ -326,21 +318,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
     };
     private MapView mMapView;
-    private PidTextView txtPidRateYawProportional;
-    private PidTextView txtPidRateYawIntegral;
-    private PidTextView txtPidRateYawDerivative;
-    private PidTextView txtPidYawProportional;
-    private PidTextView txtPidRollIntegral;
-    private PidTextView txtPidPitchIntegral;
-    private PidTextView txtPidYawIntegral;
     private TextView txtDebugLog;
-    private PidTextView txtVerticalAltitudeProportional;
-    private PidTextView txtVerticalExponential;
-    private PidTextView txtVerticalThrustRate;
-    private PidTextView txtVerticalVelocityBeta;
-    private PidTextView txtVerticalVelocityDerivative;
-    private PidTextView txtVerticalVelocityIntegral;
-    private PidTextView txtVerticalVelocityProportional;
 
     public static boolean hasPThread() {
         return mHasPThread;
@@ -876,7 +854,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         mPidTexts = new HashSet<PidTextView>();
 
-        txtPidRateRollProportional = (PidTextView) findViewById(R.id.txtRateRollProportional);
+        PidTextView txtPidRateRollProportional = (PidTextView) findViewById(R.id.txtRateRollProportional);
         txtPidRateRollProportional.init(
                 PID.PID_RATE_ROLL_PROP_DENOM,
                 PID.PID_RATE_ROLL_PROP_MAX,
@@ -886,7 +864,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 "RollRatePID", "Kp");
         mPidTexts.add(txtPidRateRollProportional);
 
-        txtPidRatePitchProportional = (PidTextView) findViewById(R.id.txtRatePitchProportional);
+        PidTextView txtPidRatePitchProportional = (PidTextView) findViewById(R.id.txtRatePitchProportional);
         txtPidRatePitchProportional.init(
                 PID.PID_RATE_PITCH_PROP_DENOM,
                 PID.PID_RATE_PITCH_PROP_MAX,
@@ -896,7 +874,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 "PitchRatePID", "Kp");
         mPidTexts.add(txtPidRatePitchProportional);
 
-        txtPidRateYawProportional = (PidTextView) findViewById(R.id.txtRateYawProportional);
+        PidTextView txtPidRateYawProportional = (PidTextView) findViewById(R.id.txtRateYawProportional);
         txtPidRateYawProportional.init(
                 PID.PID_RATE_YAW_PROP_DENOM,
                 PID.PID_RATE_YAW_PROP_MAX,
@@ -906,7 +884,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 "YawRatePID", "Kp");
         mPidTexts.add(txtPidRateYawProportional);
 
-        txtPidRateRollIntegral = (PidTextView) findViewById(R.id.txtRateRollIntegral);
+        PidTextView txtPidRateRollIntegral = (PidTextView) findViewById(R.id.txtRateRollIntegral);
         txtPidRateRollIntegral.init(
                 PID.PID_RATE_ROLL_INTE_DENOM,
                 PID.PID_RATE_ROLL_INTE_MAX,
@@ -916,7 +894,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 "RollRatePID", "Ki");
         mPidTexts.add(txtPidRateRollIntegral);
 
-        txtPidRatePitchIntegral = (PidTextView) findViewById(R.id.txtRatePitchIntegral);
+        PidTextView txtPidRatePitchIntegral = (PidTextView) findViewById(R.id.txtRatePitchIntegral);
         txtPidRatePitchIntegral.init(
                 PID.PID_RATE_PITCH_INTE_DENOM,
                 PID.PID_RATE_PITCH_INTE_MAX,
@@ -926,7 +904,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 "PitchRatePID", "Ki");
         mPidTexts.add(txtPidRatePitchIntegral);
 
-        txtPidRateYawIntegral = (PidTextView) findViewById(R.id.txtRateYawIntegral);
+        PidTextView txtPidRateYawIntegral = (PidTextView) findViewById(R.id.txtRateYawIntegral);
         txtPidRateYawIntegral.init(
                 PID.PID_RATE_YAW_INTE_DENOM,
                 PID.PID_RATE_YAW_INTE_MAX,
@@ -936,7 +914,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 "YawRatePID", "Ki");
         mPidTexts.add(txtPidRateYawIntegral);
 
-        txtPidRateRollDerivative = (PidTextView) findViewById(R.id.txtRateRollDerivative);
+        PidTextView txtPidRateRollDerivative = (PidTextView) findViewById(R.id.txtRateRollDerivative);
         txtPidRateRollDerivative.init(
                 PID.PID_RATE_ROLL_DERI_DENOM,
                 PID.PID_RATE_ROLL_DERI_MAX,
@@ -946,7 +924,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 "RollRatePID", "Kd");
         mPidTexts.add(txtPidRateRollDerivative);
 
-        txtPidRatePitchDerivative = (PidTextView) findViewById(R.id.txtRatePitchDerivative);
+        PidTextView txtPidRatePitchDerivative = (PidTextView) findViewById(R.id.txtRatePitchDerivative);
         txtPidRatePitchDerivative.init(
                 PID.PID_RATE_PITCH_DERI_DENOM,
                 PID.PID_RATE_PITCH_DERI_MAX,
@@ -956,7 +934,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 "PitchRatePID", "Kd");
         mPidTexts.add(txtPidRatePitchDerivative);
 
-        txtPidRateYawDerivative = (PidTextView) findViewById(R.id.txtRateYawDerivative);
+        PidTextView txtPidRateYawDerivative = (PidTextView) findViewById(R.id.txtRateYawDerivative);
         txtPidRateYawDerivative.init(
                 PID.PID_RATE_YAW_DERI_DENOM,
                 PID.PID_RATE_YAW_DERI_MAX,
@@ -966,7 +944,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 "YawRatePID", "Kd");
         mPidTexts.add(txtPidRateYawDerivative);
 
-        txtPidRollProportional = (PidTextView) findViewById(R.id.txtAttitudeRollProportional);
+        PidTextView txtPidRollProportional = (PidTextView) findViewById(R.id.txtAttitudeRollProportional);
         txtPidRollProportional.init(
                 PID.PID_ROLL_PROP_DENOM,
                 PID.PID_ROLL_PROP_MAX,
@@ -976,7 +954,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 "RollPI", "Kp");
         mPidTexts.add(txtPidRollProportional);
 
-        txtPidPitchProportional = (PidTextView) findViewById(R.id.txtAttitudePitchProportional);
+        PidTextView txtPidPitchProportional = (PidTextView) findViewById(R.id.txtAttitudePitchProportional);
         txtPidPitchProportional.init(
                 PID.PID_PITCH_PROP_DENOM,
                 PID.PID_PITCH_PROP_MAX,
@@ -986,7 +964,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 "PitchPI", "Kp");
         mPidTexts.add(txtPidPitchProportional);
 
-        txtPidYawProportional = (PidTextView) findViewById(R.id.txtAttitudeYawProportional);
+        PidTextView txtPidYawProportional = (PidTextView) findViewById(R.id.txtAttitudeYawProportional);
         txtPidYawProportional.init(
                 PID.PID_YAW_PROP_DENOM,
                 PID.PID_YAW_PROP_MAX,
@@ -996,7 +974,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 "YawPI", "Kp");
         mPidTexts.add(txtPidYawProportional);
 
-        txtPidRollIntegral = (PidTextView) findViewById(R.id.txtAttitudeRollIntegral);
+        PidTextView txtPidRollIntegral = (PidTextView) findViewById(R.id.txtAttitudeRollIntegral);
         txtPidRollIntegral.init(
                 PID.PID_ROLL_INTE_DENOM,
                 PID.PID_ROLL_INTE_MAX,
@@ -1006,7 +984,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 "RollPI", "Ki");
         mPidTexts.add(txtPidRollIntegral);
 
-        txtPidPitchIntegral = (PidTextView) findViewById(R.id.txtAttitudePitchIntegral);
+        PidTextView txtPidPitchIntegral = (PidTextView) findViewById(R.id.txtAttitudePitchIntegral);
         txtPidPitchIntegral.init(
                 PID.PID_PITCH_INTE_DENOM,
                 PID.PID_PITCH_INTE_MAX,
@@ -1016,7 +994,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 "PitchPI", "Ki");
         mPidTexts.add(txtPidPitchIntegral);
 
-        txtPidYawIntegral = (PidTextView) findViewById(R.id.txtAttitudeYawIntegral);
+        PidTextView txtPidYawIntegral = (PidTextView) findViewById(R.id.txtAttitudeYawIntegral);
         txtPidYawIntegral.init(
                 PID.PID_YAW_INTE_DENOM,
                 PID.PID_YAW_INTE_MAX,
@@ -1034,7 +1012,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         mVerticalPidTexts = new HashSet<PidTextView>();
 
-        txtVerticalAltitudeProportional = (PidTextView) findViewById(R.id.txtVerticalAltitudeProportional);
+        PidTextView txtVerticalAltitudeProportional = (PidTextView) findViewById(R.id.txtVerticalAltitudeProportional);
         txtVerticalAltitudeProportional.init(
                 PID.PID_VERTICAL_ALTI_PROP_DENOM,
                 PID.PID_VERTICAL_ALTI_PROP_MAX,
@@ -1044,7 +1022,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 "VerticalPosP", "");
         mVerticalPidTexts.add(txtVerticalAltitudeProportional);
 
-        txtVerticalExponential = (PidTextView) findViewById(R.id.txtVerticalExponential);
+        PidTextView txtVerticalExponential = (PidTextView) findViewById(R.id.txtVerticalExponential);
         txtVerticalExponential.init(
                 PID.PID_VERTICAL_EXPO_DENOM,
                 PID.PID_VERTICAL_EXPO_MAX,
@@ -1055,7 +1033,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 UAVTalkXMLObject.FIELDTYPE_UINT8);
         mVerticalPidTexts.add(txtVerticalExponential);
 
-        txtVerticalThrustRate = (PidTextView) findViewById(R.id.txtVerticalThrustRate);
+        PidTextView txtVerticalThrustRate = (PidTextView) findViewById(R.id.txtVerticalThrustRate);
         txtVerticalThrustRate.init(
                 PID.PID_VERTICAL_THRUST_R_DENOM,
                 PID.PID_VERTICAL_THRUST_R_MAX,
@@ -1065,7 +1043,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 "ThrustRate", "");
         mVerticalPidTexts.add(txtVerticalThrustRate);
 
-        txtVerticalVelocityBeta = (PidTextView) findViewById(R.id.txtVerticalVelocityBeta);
+        PidTextView txtVerticalVelocityBeta = (PidTextView) findViewById(R.id.txtVerticalVelocityBeta);
         txtVerticalVelocityBeta.init(
                 PID.PID_VERTICAL_VELO_BETA_DENOM,
                 PID.PID_VERTICAL_VELO_BETA_MAX,
@@ -1075,7 +1053,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 "VerticalVelPID", "Beta");
         mVerticalPidTexts.add(txtVerticalVelocityBeta);
 
-        txtVerticalVelocityDerivative = (PidTextView) findViewById(R.id.txtVerticalVelocityDerivative);
+        PidTextView txtVerticalVelocityDerivative = (PidTextView) findViewById(R.id.txtVerticalVelocityDerivative);
         txtVerticalVelocityDerivative.init(
                 PID.PID_VERTICAL_VELO_DERI_DENOM,
                 PID.PID_VERTICAL_VELO_DERI_MAX,
@@ -1085,7 +1063,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 "VerticalVelPID", "Kd");
         mVerticalPidTexts.add(txtVerticalVelocityDerivative);
 
-        txtVerticalVelocityIntegral = (PidTextView) findViewById(R.id.txtVerticalVelocityIntegral);
+        PidTextView txtVerticalVelocityIntegral = (PidTextView) findViewById(R.id.txtVerticalVelocityIntegral);
         txtVerticalVelocityIntegral.init(
                 PID.PID_VERTICAL_VELO_INTE_DENOM,
                 PID.PID_VERTICAL_VELO_INTE_MAX,
@@ -1095,7 +1073,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 "VerticalVelPID", "Ki");
         mVerticalPidTexts.add(txtVerticalVelocityIntegral);
 
-        txtVerticalVelocityProportional = (PidTextView) findViewById(R.id.txtVerticalVelocityProportional);
+        PidTextView txtVerticalVelocityProportional = (PidTextView) findViewById(R.id.txtVerticalVelocityProportional);
         txtVerticalVelocityProportional.init(
                 PID.PID_VERTICAL_VELO_PROP_DENOM,
                 PID.PID_VERTICAL_VELO_PROP_MAX,
