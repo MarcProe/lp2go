@@ -242,12 +242,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     protected long mRxObjectsGood;
     protected long mRxObjectsBad;
     protected int mSerialModeUsed = -1;
-    //private String[] mNavMenuTitles;
     protected HashMap<String, Object> mOffset;
     protected FcDevice mFcDevice;
     protected GoogleMap mMap;
     protected boolean mDoReconnect = false;
-    private Map<Integer, View> mViews;// mView0, mView1, mView2, mView3, mView4, mView5, mView6;
+    private Map<Integer, View> mViews;
     private Spinner spnUavoSource;
     private Spinner spnConnectionTypeSpinner;
     private Spinner spnBluetoothPairedDevice;
@@ -292,7 +291,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
             } else if (mSerialModeUsed == SERIAL_USB && UsbManager.ACTION_USB_DEVICE_DETACHED.equals(action)) {
                 android.hardware.usb.UsbDevice device = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
-                if (device != null /*&& device.equals(deviceName)*/) {
+                if (device != null) {
                     setUsbInterface(null, null);
                     if (mFcDevice != null) {
                         mFcDevice.stop();
@@ -304,7 +303,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     android.hardware.usb.UsbDevice device = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
                     if (intent.getBooleanExtra(UsbManager.EXTRA_PERMISSION_GRANTED, false)) {
                         if (device != null) {
-                            //UsbDevice device = (UsbDevice)intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
                             UsbInterface intf = findAdbInterface(device);
                             if (intf != null) {
                                 setUsbInterface(device, intf);
@@ -392,10 +390,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         VisualLog.d("COPY", "Copy " + relativeFilename);
 
         FileOutputStream out = openFileOutput(UAVO_INTERNAL_PATH + "-" + relativeFilename, Context.MODE_PRIVATE);
-        //File outFile = new File(out, Filename);
 
-
-        //out = new FileOutputStream(outFile);
         copyFile(source, out);
         source.close();
         out.flush();
@@ -485,7 +480,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public boolean onPrepareOptionsMenu(Menu menu) {
         // if nav drawer is opened, hide the action items
         boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
-        //menu.findItem(R.id.action_settings).setVisible(!drawerOpen);
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -499,14 +493,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        // Sync the toggle state after onRestoreInstanceState has occurred.
         mDrawerToggle.syncState();
     }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        // Pass any configuration change to the drawer toggls
         mDrawerToggle.onConfigurationChanged(newConfig);
 
         displayView(mCurrentView);
@@ -589,13 +581,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         txtModeAssistedControl = (TextView) findViewById(R.id.txtModeAssistedControl);
         txtVehicleName = (TextView) findViewById(R.id.txtVehicleName);
 
-        //mSerialModeUsed = sharedPref.getInt(getString(R.string.SETTINGS_SERIAL_MODE), 0);
-        //mBluetoothDeviceUsed = sharedPref.getString(getString(R.string.SETTINGS_BT_NAME), null);
-
         imgBluetooth = (ImageView) findViewById(R.id.imgBluetooth);
         if (mSerialModeUsed != SERIAL_BLUETOOTH || mSerialModeUsed == SERIAL_NONE) {
-            //imgBluetooth.setVisibility(View.INVISIBLE);
-            imgBluetooth.setAlpha(ICON_TRANSPARENT);
+            imgBluetooth.setImageAlpha(ICON_TRANSPARENT);
         } else {
 
             imgBluetooth.setColorFilter(Color.argb(255, 255, 0, 0));
@@ -603,7 +591,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         imgUSB = (ImageView) findViewById(R.id.imgUSB);
         if (mSerialModeUsed != SERIAL_USB || mSerialModeUsed == SERIAL_NONE) {
-            imgUSB.setAlpha(ICON_TRANSPARENT);
+            imgUSB.setImageAlpha(ICON_TRANSPARENT);
         } else {
             imgUSB.setColorFilter(Color.argb(255, 255, 0, 0));
         }
@@ -644,7 +632,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         mViews.put(VIEW_OBJECTS, getLayoutInflater().inflate(R.layout.activity_objects, null));
         setContentView(mViews.get(VIEW_OBJECTS)); //Objects
 
-        txtObjects = new EditText(this); //(EditText) findViewById(R.id.etxObjects);
+        txtObjects = new EditText(this);
         mExpListView = (ExpandableListView) findViewById(R.id.elvObjects);
         // get the listview
         mExpListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
@@ -660,15 +648,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     if (obj != null) {
                         for (UAVTalkObjectInstance ins : obj.getInstances().values()) {
                             fields.add("" + ins.getId());
-                            //VisualLog.d("INS", "ADDED");
                         }
-                        //VisualLog.d("OBJ", obj.getId());
                     } else {
-                        //VisualLog.d("OBJ", "NULL");
                         mFcDevice.requestObject(mListDataHeader.get(groupPosition));
                     }
                 } else {
-                    //VisualLog.d("DEV_TREE", "NULL");
                 }
                 /*)
                 for (UAVTalkXMLObject.UAVTalkXMLObjectField xmlfield : xmlobj.getFields().values()) {
@@ -681,11 +665,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             //mListDataChild = new HashMap<String, List<String>>()
 
         });
-
-        // preparing list data
-        //initObjectListData();
-
-
     }
 
     /*
@@ -1114,7 +1093,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         mLoadedUavo = sharedPref.getString(getString(R.string.SETTINGS_UAVO_SOURCE), "uav-15.09");
         mColorfulPid = sharedPref.getBoolean(getString(R.string.SETTINGS_COLORFUL_PID), false);
 
-
         //debug view is initialized above
         initViewPid();
         initViewVerticalPid();
@@ -1156,7 +1134,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             String file = this.mLoadedUavo + ".zip";
             ZipInputStream zis = null;
             try {
-                //InputStream is = assets.open(UAVO_INTERNAL_PATH + File.separator + file);  //FIXME: load from files
                 InputStream is = openFileInput(UAVO_INTERNAL_PATH + "-" + file);
                 zis = new ZipInputStream(new BufferedInputStream(is));
                 ZipEntry ze;
@@ -1330,16 +1307,16 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 imgUSB.setColorFilter(Color.argb(0xff, 0xd4, 0x00, 0x00));
                 switch (mSerialModeUsed) {
                     case SERIAL_NONE:
-                        imgBluetooth.setAlpha(ICON_TRANSPARENT);
-                        imgUSB.setAlpha(ICON_TRANSPARENT);
+                        imgBluetooth.setImageAlpha(ICON_TRANSPARENT);
+                        imgUSB.setImageAlpha(ICON_TRANSPARENT);
                         break;
                     case SERIAL_USB:
-                        imgBluetooth.setAlpha(ICON_TRANSPARENT);
-                        imgUSB.setAlpha(ICON_OPAQUE);
+                        imgBluetooth.setImageAlpha(ICON_TRANSPARENT);
+                        imgUSB.setImageAlpha(ICON_OPAQUE);
                         break;
                     case SERIAL_BLUETOOTH:
-                        imgBluetooth.setAlpha(ICON_OPAQUE);
-                        imgUSB.setAlpha(ICON_TRANSPARENT);
+                        imgBluetooth.setImageAlpha(ICON_OPAQUE);
+                        imgUSB.setImageAlpha(ICON_TRANSPARENT);
                         break;
                 }
 
@@ -1445,7 +1422,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             case VIEW_PID:
                 fragment = new PidFragment();
                 setContentView(mViews.get(VIEW_PID), position);
-                //allowPidUpdate();
                 SingleToast.makeText(this, R.string.CHECK_PID_WARNING, Toast.LENGTH_SHORT).show();
 
                 imgBluetooth = (ImageView) findViewById(R.id.imgBluetooth);
@@ -1652,14 +1628,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             if (armingState.equals("Disarmed")) {
                 //initFusionAlgoDialog().show();
                 new EnumInputAlertDialog(this)
-                        //.withText(txtCells.getText().toString())
                         .withTitle("Select Fusion Algorithm")
-                                //.withLayout(R.layout.alert_dialog_integer_input)
                         .withUavTalkDevice(mFcDevice)
                         .withObject("RevoSettings")
                         .withField("FusionAlgorithm")
-                                //.withFieldType(UAVTalkXMLObject.FIELDTYPE_UINT8)
-                                //.withMinMax(1, 254)
                         .show();
             } else {
                 SingleToast.makeText(this, getString(R.string.CHANGE_FUSION_ALGO_DISARMED),
@@ -1733,10 +1705,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         default:
 
                             break;
-
                     }
-
-
                 }
 
                 mFcDevice.sendSettingsObject("AltitudeHoldSettings", 0);
@@ -1923,7 +1892,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         info.setText(R.string.GNU_WARNING);
         info.setPadding(5, 5, 5, 5);
 
-
         warnDialogBuilder.setPositiveButton(R.string.I_UNDERSTAND, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -1955,7 +1923,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 if (mFcDevice != null && bcdata.length == 1) {
                     mFcDevice.sendSettingsObject("FlightBatterySettings", 0, "NbCells", 0,
                             bcdata);
-                    //mFcDevice.savePersistent("FlightBatterySettings");
                 }
                 dialog.dismiss();
                 dialog.cancel();
@@ -1993,7 +1960,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 send[0] = (byte) which;
                 if (mFcDevice != null) {
                     mFcDevice.sendSettingsObject("RevoSettings", 0, "FusionAlgorithm", 0, send);
-                    //mFcDevice.savePersistent("RevoSettings");
                 }
             }
         });
@@ -2066,9 +2032,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         txtModeNum.setText(R.string.EMPTY_STRING);
         txtModeFlightMode.setText(R.string.EMPTY_STRING);
         txtModeAssistedControl.setText(R.string.EMPTY_STRING);
-    }
-
-    public void onPidTextViewClick(View view) {
     }
 
     public void onPidGridNumberClick(View v) {
