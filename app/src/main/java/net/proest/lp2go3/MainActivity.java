@@ -652,7 +652,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     } else {
                         mFcDevice.requestObject(mListDataHeader.get(groupPosition));
                     }
-                } else {
                 }
                 /*)
                 for (UAVTalkXMLObject.UAVTalkXMLObjectField xmlfield : xmlobj.getFields().values()) {
@@ -1156,7 +1155,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 try {
                     if (zis != null) zis.close();
                 } catch (IOException e) {
-
+                    VisualLog.e("LoadXML", "Exception on Close");
                 }
             }
             mDoReconnect = true;
@@ -1553,7 +1552,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         copyAssets();
         initUavoSpinner();
-
 
         SingleToast.makeText(this, "Files deleted", Toast.LENGTH_LONG).show();
     }

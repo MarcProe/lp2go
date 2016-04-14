@@ -26,7 +26,6 @@
                 android:orientation="horizontal">
 
                 <ImageButton
-                    android:id="@+id/imgLogStart"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -35,7 +34,6 @@
                     android:src="@drawable/ic_cloud_download_96dp" />
 
                 <ImageButton
-                    android:id="@+id/imbLogStop"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -44,7 +42,6 @@
                     android:src="@drawable/ic_cloud_done_96dp" />
 
                 <ImageButton
-                    android:id="@+id/imbLogShare"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -63,7 +60,6 @@
                     android:layout_height="match_parent">
 
                     <TextView
-                        android:id="@+id/txtLogFilenameLabel"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_column="0"
@@ -87,7 +83,6 @@
                     android:layout_height="match_parent">
 
                     <TextView
-                        android:id="@+id/txtLogSizeLabel"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_column="1"
@@ -110,7 +105,6 @@
                     android:layout_height="match_parent">
 
                     <TextView
-                        android:id="@+id/txtLogObjectsLabel"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_column="0"
@@ -133,7 +127,6 @@
                     android:layout_height="match_parent">
 
                     <TextView
-                        android:id="@+id/txtLogDurationLabel"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_column="0"

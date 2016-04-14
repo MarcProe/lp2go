@@ -136,7 +136,7 @@ public class H {
             return "";
         }
         long millis = Math.round(H.stringToFloat(ms));
-        return String.format("%02d:%02d:%02d",
+        return String.format(Locale.getDefault(), "%02d:%02d:%02d",
                 TimeUnit.MILLISECONDS.toHours(millis),
                 TimeUnit.MILLISECONDS.toMinutes(millis) -
                         TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millis)),
@@ -149,7 +149,7 @@ public class H {
             return "";
         }
         long millis = Math.round(H.stringToFloat(seconds) * 1000);
-        return String.format("%02d:%02d:%02d",
+        return String.format(Locale.getDefault(), "%02d:%02d:%02d",
                 TimeUnit.MILLISECONDS.toHours(millis),
                 TimeUnit.MILLISECONDS.toMinutes(millis) -
                         TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millis)),

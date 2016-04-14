@@ -23,8 +23,6 @@
                 layout="@layout/activity_main_inc_header"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentTop="true"
                 android:layout_marginLeft="0dp"
                 android:layout_marginTop="0dp" />
 
@@ -33,8 +31,6 @@
                 layout="@layout/activity_main_inc_health"
                 android:layout_width="fill_parent"
                 android:layout_height="match_parent"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentTop="true"
                 android:layout_marginLeft="0dp"
                 android:layout_marginTop="0dp"
                 android:layout_weight="1" />
@@ -44,8 +40,6 @@
                 layout="@layout/activity_main_inc_info"
                 android:layout_width="fill_parent"
                 android:layout_height="match_parent"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentTop="true"
                 android:layout_marginLeft="0dp"
                 android:layout_marginTop="0dp"
                 android:layout_weight="1" />

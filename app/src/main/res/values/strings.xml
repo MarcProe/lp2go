@@ -84,7 +84,6 @@
     <string name="SAVED_PERSISTENT">"Saved to persistent storage. "</string>
     <string name="PID_SENT">"Sent! Numbers should turn black now. "</string>
     <string name="PID_LOADING">"Loading current PID. "</string>
-    <string name="PID_COULD_NOT_PARSE">Could not parse Input as PID</string>
     <string name="CONNECTION_TYPE">Connection Type</string>
     <string name="BLUETOOTH_DEVICE">Bluetooth device</string>
     <string name="UAVO_SOURCE">UAVO Source</string>
@@ -113,7 +112,6 @@
     <string name="PID_NAME_API">Attitude Pitch Integral</string>
     <string name="PID_NAME_AYI">Attitude Yaw Integral</string>
     <string name="MIME_APPLICATION_TEXT">text/plain</string>
-    <string name="SHARE_DEBUG_LOG_TITLE">Share Debug Log</string>
     <string name="VPID_NAME_ALP">Vertical Altitude Proportional</string>
     <string name="VPID_NAME_EXP">Vertical Exponential</string>
     <string name="VPID_NAME_THR">Vertical Thrust Rate</string>

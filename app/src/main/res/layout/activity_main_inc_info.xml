@@ -37,7 +37,6 @@
             android:textColor="@color/dark" />
 
         <TextView
-            android:id="@+id/txtFlightTimeLabel"
             android:layout_width="0dp"
             android:layout_height="fill_parent"
             android:layout_margin="1dp"
@@ -69,7 +68,6 @@
             android:textColor="@color/dark" />
 
         <TextView
-            android:id="@+id/txtVoltLabel"
             android:layout_width="0dp"
             android:layout_height="fill_parent"
             android:layout_margin="1dp"
@@ -94,7 +92,6 @@
             android:textColor="@color/dark" />
 
         <TextView
-            android:id="@+id/txtAmpereLabel"
             android:layout_width="0dp"
             android:layout_height="fill_parent"
             android:layout_margin="1dp"
@@ -126,7 +123,6 @@
             android:textColor="@color/dark" />
 
         <TextView
-            android:id="@+id/txtmAhLabel"
             android:layout_width="0dp"
             android:layout_height="fill_parent"
             android:layout_margin="1dp"
@@ -151,7 +147,6 @@
             android:textColor="@color/dark" />
 
         <TextView
-            android:id="@+id/txtTimeLeftLabel"
             android:layout_width="0dp"
             android:layout_height="fill_parent"
             android:layout_margin="1dp"
@@ -184,7 +179,6 @@
             android:textColor="@color/dark" />
 
         <TextView
-            android:id="@+id/txtCapacityLabel"
             android:layout_width="0dp"
             android:layout_height="fill_parent"
             android:layout_margin="1dp"
@@ -211,7 +205,6 @@
             android:textColor="@color/dark" />
 
         <TextView
-            android:id="@+id/txtCellsLabel"
             android:layout_width="0dp"
             android:layout_height="fill_parent"
             android:layout_margin="1dp"
@@ -247,7 +240,6 @@
             android:textColor="@color/dark" />
 
         <TextView
-            android:id="@+id/txtAltitudeLabel"
             android:layout_width="0dp"
             android:layout_height="fill_parent"
             android:layout_margin="1dp"
@@ -273,7 +265,6 @@
             android:textColor="@color/dark" />
 
         <TextView
-            android:id="@+id/txtAltitudeAccelLabel"
             android:layout_width="0dp"
             android:layout_height="fill_parent"
             android:layout_margin="1dp"
