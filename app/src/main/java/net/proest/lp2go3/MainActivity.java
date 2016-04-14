@@ -1424,23 +1424,27 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 setContentView(mViews.get(VIEW_PID), position);
                 SingleToast.makeText(this, R.string.CHECK_PID_WARNING, Toast.LENGTH_SHORT).show();
 
-                imgBluetooth = (ImageView) findViewById(R.id.imgBluetooth);
-                imgUSB = (ImageView) findViewById(R.id.imgUSB);
+                try {
+                    imgBluetooth = (ImageView) findViewById(R.id.imgBluetooth);
+                    imgUSB = (ImageView) findViewById(R.id.imgUSB);
 
-                if (mColorfulPid) {
-                    findViewById(R.id.lloOuterPid).setBackground(
-                            ContextCompat.getDrawable(getApplicationContext(),
-                                    R.drawable.border_top_yellow));
-                    findViewById(R.id.lloInnerPid).setBackground(
-                            ContextCompat.getDrawable(getApplicationContext(),
-                                    R.drawable.border_top_blue));
-                } else {
-                    findViewById(R.id.lloOuterPid).setBackground(
-                            ContextCompat.getDrawable(getApplicationContext(),
-                                    R.drawable.border_top));
-                    findViewById(R.id.lloInnerPid).setBackground(
-                            ContextCompat.getDrawable(getApplicationContext(),
-                                    R.drawable.border_top));
+                    if (mColorfulPid) {
+                        findViewById(R.id.lloOuterPid).setBackground(
+                                ContextCompat.getDrawable(getApplicationContext(),
+                                        R.drawable.border_top_yellow));
+                        findViewById(R.id.lloInnerPid).setBackground(
+                                ContextCompat.getDrawable(getApplicationContext(),
+                                        R.drawable.border_top_blue));
+                    } else {
+                        findViewById(R.id.lloOuterPid).setBackground(
+                                ContextCompat.getDrawable(getApplicationContext(),
+                                        R.drawable.border_top));
+                        findViewById(R.id.lloInnerPid).setBackground(
+                                ContextCompat.getDrawable(getApplicationContext(),
+                                        R.drawable.border_top));
+                    }
+                } catch (NullPointerException e1) {
+                    VisualLog.d("MainActivity", "VIEW_PID", e1);
                 }
 
                 menuTitle = getString(R.string.menu_pid);
@@ -1450,26 +1454,29 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             case VIEW_VPID:
                 fragment = new VerticalPidFragment();
                 setContentView(mViews.get(VIEW_VPID), position);
-
                 SingleToast.makeText(this, R.string.CHECK_PID_WARNING, Toast.LENGTH_SHORT).show();
 
-                imgBluetooth = (ImageView) findViewById(R.id.imgBluetooth);
-                imgUSB = (ImageView) findViewById(R.id.imgUSB);
+                try {
+                    imgBluetooth = (ImageView) findViewById(R.id.imgBluetooth);
+                    imgUSB = (ImageView) findViewById(R.id.imgUSB);
 
-                if (mColorfulPid) {
-                    findViewById(R.id.lloStickResponse).setBackground(
-                            ContextCompat.getDrawable(getApplicationContext(),
-                                    R.drawable.border_top_yellow));
-                    findViewById(R.id.lloControlCoeff).setBackground(
-                            ContextCompat.getDrawable(getApplicationContext(),
-                                    R.drawable.border_top_blue));
-                } else {
-                    findViewById(R.id.lloStickResponse).setBackground(
-                            ContextCompat.getDrawable(getApplicationContext(),
-                                    R.drawable.border_top));
-                    findViewById(R.id.lloControlCoeff).setBackground(
-                            ContextCompat.getDrawable(getApplicationContext(),
-                                    R.drawable.border_top));
+                    if (mColorfulPid) {
+                        findViewById(R.id.lloStickResponse).setBackground(
+                                ContextCompat.getDrawable(getApplicationContext(),
+                                        R.drawable.border_top_yellow));
+                        findViewById(R.id.lloControlCoeff).setBackground(
+                                ContextCompat.getDrawable(getApplicationContext(),
+                                        R.drawable.border_top_blue));
+                    } else {
+                        findViewById(R.id.lloStickResponse).setBackground(
+                                ContextCompat.getDrawable(getApplicationContext(),
+                                        R.drawable.border_top));
+                        findViewById(R.id.lloControlCoeff).setBackground(
+                                ContextCompat.getDrawable(getApplicationContext(),
+                                        R.drawable.border_top));
+                    }
+                } catch (NullPointerException e2) {
+                    VisualLog.d("MainActivity", "VIEW_VPID", e2);
                 }
 
                 menuTitle = getString(R.string.menu_vpid);
