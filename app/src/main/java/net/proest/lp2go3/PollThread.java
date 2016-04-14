@@ -363,14 +363,17 @@ public class PollThread extends Thread {
                                     case "StabilizationSettingsBank1":
                                         mA.imgPidBank.setImageDrawable(ContextCompat.getDrawable(
                                                 mA.getApplicationContext(), R.drawable.ic_filter_1_128dp));
+                                        mA.mFcDevice.requestObject("StabilizationSettingsBank1");
                                         break;
                                     case "StabilizationSettingsBank2":
                                         mA.imgPidBank.setImageDrawable(ContextCompat.getDrawable(
                                                 mA.getApplicationContext(), R.drawable.ic_filter_2_128dp));
+                                        mA.mFcDevice.requestObject("StabilizationSettingsBank2");
                                         break;
                                     case "StabilizationSettingsBank3":
                                         mA.imgPidBank.setImageDrawable(ContextCompat.getDrawable(
                                                 mA.getApplicationContext(), R.drawable.ic_filter_3_128dp));
+                                        mA.mFcDevice.requestObject("StabilizationSettingsBank3");
                                         break;
                                     default:
                                         mA.imgPidBank.setImageDrawable(ContextCompat.getDrawable(
@@ -416,6 +419,7 @@ public class PollThread extends Thread {
 
                                     }
                                 }
+                                mA.mFcDevice.requestObject("AltitudeHoldSettings");
 
                                 break;
 
@@ -459,10 +463,6 @@ public class PollThread extends Thread {
                 mA.mFcDevice.requestObject("VelocityState");
                 mA.mFcDevice.requestObject("ManualControlCommand");
                 mA.mFcDevice.requestObject("StabilizationSettings");
-                mA.mFcDevice.requestObject("StabilizationSettingsBank1");
-                mA.mFcDevice.requestObject("StabilizationSettingsBank2");
-                mA.mFcDevice.requestObject("StabilizationSettingsBank3");
-
             }
         } catch (NullPointerException e) {
             VisualLog.e("ERR", "UAVTalkdevice is null. Reconnecting?");
