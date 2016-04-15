@@ -20,11 +20,8 @@ import com.google.android.gms.maps.model.LatLng;
 
 import java.math.BigDecimal;
 import java.nio.ByteBuffer;
-import java.text.NumberFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 public class H {
@@ -136,7 +133,7 @@ public class H {
             return "";
         }
         long millis = Math.round(H.stringToFloat(ms));
-        return String.format(Locale.getDefault(), "%02d:%02d:%02d",
+        return String.format("%02d:%02d:%02d",
                 TimeUnit.MILLISECONDS.toHours(millis),
                 TimeUnit.MILLISECONDS.toMinutes(millis) -
                         TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millis)),
@@ -149,12 +146,14 @@ public class H {
             return "";
         }
         long millis = Math.round(H.stringToFloat(seconds) * 1000);
-        return String.format(Locale.getDefault(), "%02d:%02d:%02d",
+        String ret = String.format("%02d:%02d:%02d",
                 TimeUnit.MILLISECONDS.toHours(millis),
                 TimeUnit.MILLISECONDS.toMinutes(millis) -
                         TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millis)),
                 TimeUnit.MILLISECONDS.toSeconds(millis) -
                         TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis)));
+        //VisualLog.d("GDFS", seconds + " " + millis + " " + ret);
+        return ret;
     }
 
     public static byte[] hexStringToByteArray(String s) {
@@ -233,8 +232,10 @@ public class H {
 
     public static float stringToFloat(String s) {
         try {
-            return NumberFormat.getInstance(Locale.getDefault()).parse(s).floatValue();
-        } catch (ParseException e) {
+            //return NumberFormat.getInstance(Locale.getDefault()).parse(s).floatValue();
+            return Float.parseFloat(s);
+        } catch (/*ParseException |*/ NumberFormatException e) {
+            e.printStackTrace();
             return 0.0f;
         }
     }

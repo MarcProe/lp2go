@@ -163,7 +163,7 @@ public class PollThread extends Thread {
                 continue;  //nothing yet to show, or not connected
             }
 
-            if (request++ % 10 == 0) { //FIXME: is it needed to get the settings every 10 seconds?
+            if (++request % 10 == 0) { //FIXME: is it needed to get the settings every 10 seconds?
                 requestObjects();
                 request = 0;
             }
@@ -229,8 +229,10 @@ public class PollThread extends Thread {
                                 setTextBGColor(mA.txtOutput, getData("SystemAlarms", "Alarm", "Actuator").toString());
                                 setTextBGColor(mA.txtI2C, getData("SystemAlarms", "Alarm", "I2C").toString());
                                 setTextBGColor(mA.txtTelemetry, getData("SystemAlarms", "Alarm", "Telemetry").toString());
+                                setText(mA.txtFusionAlgorithm, getData("SystemAlarms", "Alarm", "Telemetry").toString());
 
                                 setTextBGColor(mA.txtFlightTelemetry, getData("FlightTelemetryStats", "Status").toString());
+                                setText(mA.txtFusionAlgorithm, getData("FlightTelemetryStats", "Status").toString());
                                 setTextBGColor(mA.txtGCSTelemetry, getData("GCSTelemetryStats", "Status").toString());
                                 setText(mA.txtFusionAlgorithm, getData("RevoSettings", "FusionAlgorithm").toString());
 
@@ -269,6 +271,10 @@ public class PollThread extends Thread {
 
                                 setText(mA.txtModeFlightMode, getData("FlightStatus", "FlightMode", true).toString());
                                 setText(mA.txtModeAssistedControl, getData("FlightStatus", "FlightModeAssist", true).toString());
+
+                                mA.mFcDevice.requestObject("FlightBatteryState");
+                                mA.mFcDevice.requestObject("SystemStats");
+
                                 break;
                             case MainActivity.VIEW_MAP:
 
