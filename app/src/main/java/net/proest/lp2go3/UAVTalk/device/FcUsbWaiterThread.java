@@ -83,8 +83,12 @@ class FcUsbWaiterThread extends FcWaiterThread {
             byte[] buffer = new byte[mEndpointIn.getMaxPacketSize()];
             while (queue.size() < 350) {
                 mUsbDeviceConnection.bulkTransfer(mEndpointIn, buffer, buffer.length, 1000);
-                for (int i = 2; i < (buffer[1] & 0xff) + 2; i++) {
-                    queue.add(buffer[i]);
+                try {
+                    for (int i = 2; i < (buffer[1] & 0xff) + 2; i++) {
+                        queue.add(buffer[i]);
+                    }
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    VisualLog.e("FcUsbWaiterThread", "AIOOBE in Usb Queue filler");
                 }
             }
 
