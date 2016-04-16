@@ -86,7 +86,6 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -434,7 +433,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             ab.setDisplayHomeAsUpEnabled(true);
             ab.setHomeButtonEnabled(true);
             ab.setDisplayShowHomeEnabled(true);
-            ab.setIcon(R.mipmap.ic_launcher);
         }
 
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
@@ -618,8 +616,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 mMap.addMarker(new MarkerOptions()
                         .position(new LatLng(32.154599, -110.827369))
                         .title("Librepilot")
-                        .snippet("LP rules")
-                        .icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_launcher)));
+                        .snippet("LP rules"));
             }
             txtLatitude = (TextView) findViewById(R.id.txtLatitude);
             txtLongitude = (TextView) findViewById(R.id.txtLongitude);

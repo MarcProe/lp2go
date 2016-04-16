@@ -119,6 +119,7 @@
     <string name="VPID_NAME_VED">Vertical Velocity Derivative</string>
     <string name="VPID_NAME_VEI">Vertical Velocity Integral</string>
     <string name="VPID_NAME_VEP">Vertical Velocity Proportional</string>
+    <string name="SPACE">" "</string>
 
 
 </resources>
