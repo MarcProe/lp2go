@@ -23,6 +23,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
+                android:background="@drawable/border_top"
                 android:orientation="horizontal">
 
                 <TextView
@@ -35,14 +36,15 @@
                 <Spinner
                     android:id="@+id/spnConnectionTypeSpinner"
                     android:layout_width="0dp"
-                    android:layout_height="match_parent"
+                    android:layout_height="60dp"
                     android:layout_weight="1"
-                    android:spinnerMode="dropdown" />
+                    android:spinnerMode="dialog" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:background="@drawable/border_top"
                 android:orientation="horizontal">
 
                 <TextView
@@ -55,15 +57,16 @@
                 <Spinner
                     android:id="@+id/spnBluetoothPairedDevice"
                     android:layout_width="0dp"
-                    android:layout_height="match_parent"
+                    android:layout_height="60dp"
                     android:layout_weight="1"
-                    android:spinnerMode="dropdown" />
+                    android:spinnerMode="dialog" />
 
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:background="@drawable/border_top"
                 android:orientation="horizontal">
 
                 <TextView
@@ -92,6 +95,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:background="@drawable/border_top"
                 android:orientation="horizontal">
 
                 <LinearLayout
@@ -106,20 +110,12 @@
                         android:text="@string/UAVO_SOURCE"
                         android:textAppearance="?android:attr/textAppearanceLarge" />
 
-                    <LinearLayout
+                    <Spinner
+                        android:id="@+id/spnUavoSource"
                         android:layout_width="0dp"
-                        android:layout_height="match_parent"
+                        android:layout_height="60dp"
                         android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <Spinner
-                            android:id="@+id/spnUavoSource"
-                            android:layout_width="fill_parent"
-                            android:layout_height="0dp"
-                            android:layout_weight="1"
-                            android:spinnerMode="dropdown" />
-
-                    </LinearLayout>
+                        android:spinnerMode="dialog" />
 
                 </LinearLayout>
             </LinearLayout>
