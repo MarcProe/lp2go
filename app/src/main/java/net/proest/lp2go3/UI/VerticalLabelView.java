@@ -12,11 +12,11 @@ import android.view.View;
 import net.proest.lp2go3.R;
 
 public class VerticalLabelView extends View {
-    final static int DEFAULT_TEXT_SIZE = 15;
+    private final static int DEFAULT_TEXT_SIZE = 15;
+    private final Rect text_bounds = new Rect();
     private TextPaint mTextPaint;
     private String mText;
     private int mAscent;
-    private Rect text_bounds = new Rect();
 
     public VerticalLabelView(Context context) {
         super(context);
@@ -40,7 +40,7 @@ public class VerticalLabelView extends View {
         a.recycle();
     }
 
-    private final void initLabelView() {
+    private void initLabelView() {
         mTextPaint = new TextPaint();
         mTextPaint.setAntiAlias(true);
         mTextPaint.setTextSize(DEFAULT_TEXT_SIZE);
@@ -49,19 +49,19 @@ public class VerticalLabelView extends View {
         setPadding(3, 3, 3, 3);
     }
 
-    public void setText(String text) {
+    private void setText(String text) {
         mText = text;
         requestLayout();
         invalidate();
     }
 
-    public void setTextSize(int size) {
+    private void setTextSize(int size) {
         mTextPaint.setTextSize(size);
         requestLayout();
         invalidate();
     }
 
-    public void setTextColor(int color) {
+    private void setTextColor(int color) {
         mTextPaint.setColor(color);
         invalidate();
     }

@@ -36,12 +36,12 @@ import java.text.DecimalFormat;
 
 public class PidInputAlertDialog extends InputAlertDialog implements SeekBar.OnSeekBarChangeListener {
 
-    int mStep;
-    int mDenom;
-    int mValueMax;
-    String mDecimalFormatString;
-    EditText mEditText;
-    PidTextView mPidTextView;
+    private int mStep;
+    private int mDenom;
+    private int mValueMax;
+    private String mDecimalFormatString;
+    private EditText mEditText;
+    private PidTextView mPidTextView;
 
 
     public PidInputAlertDialog(Context parent) {
@@ -278,7 +278,7 @@ public class PidInputAlertDialog extends InputAlertDialog implements SeekBar.OnS
         }
     }
 
-    public String getDecimalString(float v) {
+    private String getDecimalString(float v) {
         DecimalFormat df = new DecimalFormat(mDecimalFormatString);
         return df.format(v);
     }

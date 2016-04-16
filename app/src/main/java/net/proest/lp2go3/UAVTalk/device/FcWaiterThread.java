@@ -19,16 +19,16 @@ import net.proest.lp2go3.H;
 import net.proest.lp2go3.UAVTalk.UAVTalkObject;
 import net.proest.lp2go3.VisualLog;
 
-public abstract class FcWaiterThread extends Thread {
-    protected final FcDevice mDevice;
+abstract class FcWaiterThread extends Thread {
+    final FcDevice mDevice;
 
-    public FcWaiterThread(FcDevice device) {
+    FcWaiterThread(FcDevice device) {
         this.mDevice = device;
     }
 
     protected abstract void stopThread();
 
-    protected boolean handleMessageType(byte msgType, UAVTalkObject obj) {
+    boolean handleMessageType(byte msgType, UAVTalkObject obj) {
         switch (msgType) {
             case 0x20:
                 //handle default package, nothing to do

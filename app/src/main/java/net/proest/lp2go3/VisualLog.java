@@ -33,38 +33,38 @@ public class VisualLog {
         VisualLog.activity = activity;
     }
 
-    static public final void d(String tag, String msg) {
+    static public void d(String tag, String msg) {
         Log.d(tag, msg);
         printToDebug(tag, msg);
     }
 
-    static public final void d(String tag, String msg, Throwable tr) {
+    static public void d(String tag, String msg, Throwable tr) {
         Log.e(tag, msg, tr);
         printToDebug(tag, msg);
         printToDebug(tr.getClass().getSimpleName(), Log.getStackTraceString(tr));
     }
 
-    static public final void w(String tag, String msg) {
+    static public void w(String tag, String msg) {
         Log.w(tag, msg);
         printToDebug(tag, msg);
     }
 
-    static public final void e(String tag, String msg) {
+    static public void e(String tag, String msg) {
         Log.e(tag, msg);
         printToDebug(tag, msg);
     }
 
-    static public final void e(String tag, String msg, Throwable tr) {
+    static public void e(String tag, String msg, Throwable tr) {
         Log.e(tag, msg, tr);
         printToDebug(tag, msg);
         printToDebug(tr.getClass().getSimpleName(), Log.getStackTraceString(tr));
     }
 
-    static public final void e(Throwable tr) {
+    static public void e(Throwable tr) {
         VisualLog.e(tr.getClass().getSimpleName(), tr.getMessage(), tr);
     }
 
-    static public final void i(String tag, String msg) {
+    static public void i(String tag, String msg) {
         Log.i(tag, msg);
         printToDebug(tag, msg);
     }

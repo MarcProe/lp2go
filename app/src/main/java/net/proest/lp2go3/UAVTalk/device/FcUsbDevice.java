@@ -53,9 +53,9 @@ import java.util.HashMap;
 
 public class FcUsbDevice extends FcDevice {
 
-    protected final UsbDeviceConnection mDeviceConnection;
-    protected final UsbEndpoint mEndpointOut;
-    protected final UsbEndpoint mEndpointIn;
+    private final UsbDeviceConnection mDeviceConnection;
+    private final UsbEndpoint mEndpointOut;
+    private final UsbEndpoint mEndpointIn;
     private final FcWaiterThread mWaiterThread;
     private UsbRequest mOutRequest = null;
     private boolean connected = false;

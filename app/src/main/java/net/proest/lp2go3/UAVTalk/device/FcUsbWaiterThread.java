@@ -29,10 +29,10 @@ import java.util.Queue;
 
 class FcUsbWaiterThread extends FcWaiterThread {
 
-    public boolean mStop;
-    protected Queue<Byte> queue;
-    protected UsbDeviceConnection mUsbDeviceConnection;
-    protected UsbEndpoint mEndpointIn;
+    private final UsbDeviceConnection mUsbDeviceConnection;
+    private final UsbEndpoint mEndpointIn;
+    private boolean mStop;
+    private Queue<Byte> queue;
 
     public FcUsbWaiterThread(FcDevice device, UsbDeviceConnection usbDeviceConnection, UsbEndpoint endpointIn) {
         super(device);

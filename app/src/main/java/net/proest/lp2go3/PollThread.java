@@ -32,10 +32,10 @@ import net.proest.lp2go3.UI.PidTextView;
 
 import java.util.Iterator;
 
-public class PollThread extends Thread {
+class PollThread extends Thread {
 
-    boolean blink = true;
-    int request = 0;
+    private boolean blink = true;
+    private int request = 0;
     private MainActivity mA;
     private UAVTalkObjectTree mObjectTree;
     private boolean mIsValid = true;
@@ -513,7 +513,7 @@ public class PollThread extends Thread {
         }
     }
 
-    protected Object getData(String objectname, String fieldname, String elementName, boolean request) {
+    Object getData(String objectname, String fieldname, String elementName, boolean request) {
         try {
             if (request) {
                 mA.mFcDevice.requestObject(objectname);

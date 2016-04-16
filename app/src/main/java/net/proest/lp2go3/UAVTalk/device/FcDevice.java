@@ -37,7 +37,7 @@ public abstract class FcDevice {
     private static final int MAX_HANDSHAKE_FAILURE_CYCLES = 3;
     public final Set<String> nackedObjects;
     final MainActivity mActivity;
-    protected volatile UAVTalkObjectTree mObjectTree;
+    volatile UAVTalkObjectTree mObjectTree;
     private int mFailedHandshakes = 0;
     private FileOutputStream mLogOutputStream;
     private String mLogFileName = "OP-YYYY-MM-DD_HH-MM-SS";
@@ -48,7 +48,7 @@ public abstract class FcDevice {
     private long mLogObjectsLogged = 0;
     private int mUavTalkConnectionState = 0x00;
 
-    public FcDevice(MainActivity mActivity) throws IllegalStateException {
+    FcDevice(MainActivity mActivity) throws IllegalStateException {
         this.mActivity = mActivity;
         nackedObjects = new HashSet<>();
     }

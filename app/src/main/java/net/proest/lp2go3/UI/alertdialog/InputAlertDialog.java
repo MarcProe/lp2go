@@ -34,7 +34,7 @@ public abstract class InputAlertDialog extends AlertDialog {
     int mMax = -1;
 
 
-    public InputAlertDialog(Context parent) {
+    InputAlertDialog(Context parent) {
         super(parent);
     }
 

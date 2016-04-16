@@ -74,7 +74,7 @@ public class FcBluetoothDevice extends FcDevice {
         connect(mDevice);
     }
 
-    protected void connectionLost() {
+    void connectionLost() {
         mActivity.reconnect();
 
         setState(STATE_NONE);
@@ -93,7 +93,7 @@ public class FcBluetoothDevice extends FcDevice {
         }
     }
 
-    protected synchronized void setState(int state) {
+    private synchronized void setState(int state) {
         mState = state;
     }
 

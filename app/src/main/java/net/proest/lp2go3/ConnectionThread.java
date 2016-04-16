@@ -20,7 +20,7 @@ import android.widget.Toast;
 import net.proest.lp2go3.UAVTalk.UAVTalkMissingObjectException;
 import net.proest.lp2go3.UI.SingleToast;
 
-public class ConnectionThread extends Thread {
+class ConnectionThread extends Thread {
     private final MainActivity mA;
     private boolean mIsValid = true;
 

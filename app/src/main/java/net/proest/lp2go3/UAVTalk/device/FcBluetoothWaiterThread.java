@@ -31,7 +31,7 @@ class FcBluetoothWaiterThread extends FcWaiterThread {
     private final BluetoothSocket mmSocket;
     private final InputStream mmInStream;
     private final OutputStream mmOutStream;
-    public boolean mStop;
+    private boolean mStop;
 
     private FcBluetoothDevice mBluetoothDevice;
 
@@ -200,7 +200,7 @@ class FcBluetoothWaiterThread extends FcWaiterThread {
         }
     }
 
-    public void cancel() {
+    private void cancel() {
         mStop = true;
         try {
             mmSocket.close();
