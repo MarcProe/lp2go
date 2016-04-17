@@ -212,7 +212,7 @@ class PollThread extends Thread {
                                 mA.setRxObjectsBad(0);
                                 mA.setRxObjectsGood(0);
 
-                                setText(mA.txtVehicleName, getVehicleNameData());
+                                setText(mA.txtVehicleName, getStringData("SystemSettings", "VehicleName", 20));
 
                                 setTextBGColor(mA.txtAtti, getData("SystemAlarms", "Alarm", "Attitude").toString());
                                 setTextBGColor(mA.txtStab, getData("SystemAlarms", "Alarm", "Stabilization").toString());
@@ -475,18 +475,18 @@ class PollThread extends Thread {
         }
     }
 
-    private String getVehicleNameData() {
-        char[] b = new char[20];
+    private String getStringData(String object, String field, int len) {
+        char[] b = new char[len];
         try {
-            for (int i = 0; i < 20; i++) {
-                String str = mObjectTree.getData("SystemSettings", 0, "VehicleName", i)
+            for (int i = 0; i < len; i++) {
+                String str = mObjectTree.getData(object, 0, field, i)
                         .toString();
                 b[i] = (char) Byte.parseByte(str);
 
             }
         } catch (UAVTalkMissingObjectException | NumberFormatException e) {
             try {
-                mA.mFcDevice.requestObject("SystemSettings");
+                mA.mFcDevice.requestObject(object);
             } catch (NullPointerException e2) {
                 e2.printStackTrace();
             }
