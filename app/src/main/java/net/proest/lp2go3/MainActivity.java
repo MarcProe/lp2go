@@ -433,6 +433,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             ab.setDisplayHomeAsUpEnabled(true);
             ab.setHomeButtonEnabled(true);
             ab.setDisplayShowHomeEnabled(true);
+            ab.setIcon(R.mipmap.ic_launcher);
         }
 
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
