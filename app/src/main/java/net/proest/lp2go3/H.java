@@ -233,6 +233,10 @@ public class H {
     }
 
     public static float stringToFloat(String s) {
+        if (s == null || s.equals("")) {
+            VisualLog.d("H", "Empty string instead of float");
+            return .0f;
+        }
         try {
             return Float.parseFloat(s);
         } catch (NumberFormatException e) {
