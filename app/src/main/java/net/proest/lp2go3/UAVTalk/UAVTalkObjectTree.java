@@ -172,8 +172,7 @@ public class UAVTalkObjectTree {
                 byte[] fielddata = new byte[4];
                 System.arraycopy(data, pos, fielddata, 0, 4);
                 int i = ByteBuffer.wrap(fielddata).order(ByteOrder.LITTLE_ENDIAN).getInt();
-                Long l = (long) i & 0xFFFFFFFFL;
-                retval = l;
+                retval = i;
             } else if (xmlfield.mType == UAVTalkXMLObject.FIELDTYPE_UINT8) {
                 byte[] fielddata = new byte[1];
                 System.arraycopy(data, pos + element, fielddata, 0, 1);

@@ -496,9 +496,10 @@ class PollThread extends Thread {
 
     private Float getGPSCoordinates(String object, String field) {
         try {
-            Long l = (Long) mObjectTree.getData(object, field);
-            return ((float) l / 10000000);
+            int i = (Integer) mObjectTree.getData(object, field);
+            return ((float) i / 10000000);
         } catch (UAVTalkMissingObjectException | NullPointerException | ClassCastException e1) {
+            VisualLog.d("GPS", "getCoord", e1);
             return 0.0f;
         }
     }
