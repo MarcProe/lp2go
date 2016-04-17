@@ -47,6 +47,7 @@ import net.proest.lp2go3.UAVTalk.UAVTalkDeviceHelper;
 import net.proest.lp2go3.UAVTalk.UAVTalkObject;
 import net.proest.lp2go3.UAVTalk.UAVTalkObjectTree;
 import net.proest.lp2go3.UAVTalk.UAVTalkXMLObject;
+import net.proest.lp2go3.VisualLog;
 
 import java.nio.ByteBuffer;
 import java.util.HashMap;
@@ -119,8 +120,10 @@ public class FcUsbDevice extends FcDevice {
             return false;
         }
 
-        if (nackedObjects.contains(xmlObj.getId()))
+        if (nackedObjects.contains(xmlObj.getId())) {
+            VisualLog.d("NACKED", xmlObj.getId());
             return false;  //if it was already nacked, don't try to get it again
+        }
 
         byte[] send = UAVTalkObject.getReqMsg((byte) 0x21, xmlObj.getId(), instance);
         mActivity.incTxObjects();

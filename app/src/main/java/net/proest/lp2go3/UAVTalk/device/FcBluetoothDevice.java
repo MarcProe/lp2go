@@ -167,8 +167,11 @@ public class FcBluetoothDevice extends FcDevice {
         UAVTalkXMLObject xmlObj = mObjectTree.getXmlObjects().get(objectName);
         if (xmlObj == null) return false;
 
-        if (nackedObjects.contains(xmlObj.getId()))
+        if (nackedObjects.contains(xmlObj.getId())) {
+            VisualLog.d("NACKED", xmlObj.getId());
             return false;  //if it was already nacked, don't try to get it again
+        }
+
 
         byte[] send = UAVTalkObject.getReqMsg((byte) 0x21, xmlObj.getId(), instance);
 
