@@ -35,20 +35,22 @@ abstract class FcWaiterThread extends Thread {
                 break;
             case 0x21:
                 //handle request message, nobody should request from LP2Go (so we don't implement this)
-                VisualLog.e("UAVTalk", "Received Object Request, but won't send any");
+                VisualLog.e("UAVTalk", "Received Object Request, but won't send any " + obj.getId());
                 break;
             case 0x22:
                 //handle object with ACK REQ, means send ACK
-                VisualLog.d("UAVTalk", "Received Object with ACK Request");
+                mDevice.sendAck(obj.getId(), 0);
+                VisualLog.d("UAVTalk", "Received Object with ACK Request " + obj.getId());
                 break;
             case 0x23:
                 //handle received ACK, e.g. save in Object that it has been acknowledged
+                VisualLog.d("UAVTalk", "Received ACK Object " + obj.getId());
                 break;
             case 0x24:
                 //handle NACK, show warning and add to request blacklist
                 mDevice.nackedObjects.add(obj.getId());
                 mDevice.mActivity.incRxObjectsBad();
-                VisualLog.w("UAVTalk", "Received NACK Object");
+                VisualLog.w("UAVTalk", "Received NACK Object " + obj.getId());
                 break;
             default:
                 mDevice.mActivity.incRxObjectsBad();

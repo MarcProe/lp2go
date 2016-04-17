@@ -191,9 +191,9 @@ public abstract class FcDevice {
     public void handleHandshake(byte flightTelemtryStatusField) {
 
         if (mFailedHandshakes > MAX_HANDSHAKE_FAILURE_CYCLES) {
-            //Log.d("Handshake", "Setting DISCONNECTED");
             mUavTalkConnectionState = UAVTALK_DISCONNECTED;
             mFailedHandshakes = 0;
+            //VisualLog.d("Handshake", "Setting DISCONNECTED " + mUavTalkConnectionState + " " + flightTelemtryStatusField);
         }
 
         if (mUavTalkConnectionState == UAVTALK_DISCONNECTED) {
@@ -202,21 +202,30 @@ public abstract class FcDevice {
             msg[0] = UAVTALK_HANDSHAKE_REQUESTED;
             sendSettingsObject("GCSTelemetryStats", 0, "Status", 0, msg);
             mUavTalkConnectionState = UAVTALK_HANDSHAKE_REQUESTED;
-            //Log.d("Handshake", "Setting REQUESTED");
+            //VisualLog.d("Handshake", "Setting REQUESTED " + mUavTalkConnectionState + " " + flightTelemtryStatusField);
         } else if (flightTelemtryStatusField == UAVTALK_HANDSHAKE_ACKNOWLEDGED && mUavTalkConnectionState == UAVTALK_HANDSHAKE_REQUESTED) {
             byte[] msg = new byte[1];
             msg[0] = UAVTALK_CONNECTED;
             sendSettingsObject("GCSTelemetryStats", 0, "Status", 0, msg);
             mUavTalkConnectionState = UAVTALK_CONNECTED;
             mFailedHandshakes++;
-            //Log.d("Handshake", "Setting CONNECTED");
+            //VisualLog.d("Handshake", "Setting CONNECTED " + mUavTalkConnectionState + " " + flightTelemtryStatusField);
         } else if (flightTelemtryStatusField == UAVTALK_CONNECTED && mUavTalkConnectionState == UAVTALK_CONNECTED) {
             //We are connected, that is good.
             mFailedHandshakes = 0;
-            //Log.d("Handshake", "We're connected. How nice.");
+            //VisualLog.d("Handshake", "We're connected. How nice. " + mUavTalkConnectionState + " " + flightTelemtryStatusField);
+        } else if (flightTelemtryStatusField == UAVTALK_CONNECTED) {
+            //the fc thinks we are connected.
+            mUavTalkConnectionState = UAVTALK_CONNECTED;
+            mFailedHandshakes = 0;
+            //VisualLog.d("Handshake", "The FC thinks we are connected." + mUavTalkConnectionState + " " + flightTelemtryStatusField);
         } else {
             mFailedHandshakes++;
-            //Log.d("Handshake", "Failed");
+            //VisualLog.d("Handshake", "Failed " + mUavTalkConnectionState + " " + flightTelemtryStatusField);
         }
+        byte[] myb = new byte[1];
+        myb[0] = (byte) mUavTalkConnectionState;
+        UAVTalkDeviceHelper.updateSettingsObject(mObjectTree, "GCSTelemetryStats", 0, "Status", 0, myb);
+        requestObject("FlightTelemetryStats");
     }
 }
