@@ -232,8 +232,10 @@ class PollThread extends Thread {
                                 setText(mA.txtFusionAlgorithm, getData("SystemAlarms", "Alarm", "Telemetry").toString());
 
                                 setTextBGColor(mA.txtFlightTelemetry, getData("FlightTelemetryStats", "Status").toString());
-                                setText(mA.txtFusionAlgorithm, getData("FlightTelemetryStats", "Status").toString());
+                                //setText(mA.txtFlightTelemetry, getData("FlightTelemetryStats", "Status").toString());
                                 setTextBGColor(mA.txtGCSTelemetry, getData("GCSTelemetryStats", "Status").toString());
+                                //setText(mA.txtGCSTelemetry, getData("GCSTelemetryStats", "Status").toString());
+
                                 setText(mA.txtFusionAlgorithm, getData("RevoSettings", "FusionAlgorithm").toString());
 
                                 setTextBGColor(mA.txtBatt, getData("SystemAlarms", "Alarm", "Battery").toString());
