@@ -234,6 +234,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     TextView txtHealthAlertDialogBatteryCells;
     TextView txtHealthAlertDialogFusionAlgorithm;
 
+    ImageView imgFlightTelemetry;
+    ImageView imgGroundTelemetry;
+
     ImageView imgBluetooth;
     ImageView imgUSB;
     ImageView imgPacketsUp;
@@ -251,7 +254,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private Spinner spnBluetoothPairedDevice;
     private CheckBox cbxColorfulPid;
     private HashMap<String, List<String>> mListDataChild;
-    private TextView txtDeviceText;
     private ObjectsExpandableListViewAdapter mListAdapter;
     private ExpandableListView mExpListView;
     private List<String> mListDataHeader;
@@ -285,9 +287,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     mUsbManager.requestPermission(device, mPermissionIntent);
                 }
 
-                txtDeviceText.setText(device.getDeviceName());
-
-
             } else if (mSerialModeUsed == SERIAL_USB && UsbManager.ACTION_USB_DEVICE_DETACHED.equals(action)) {
                 android.hardware.usb.UsbDevice device = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
                 if (device != null) {
@@ -296,7 +295,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         mFcDevice.stop();
                     }
                 }
-                txtDeviceText.setText(R.string.DEVICE_NAME_NONE);
             } else if (mSerialModeUsed == SERIAL_USB && ACTION_USB_PERMISSION.equals(action)) {
                 synchronized (this) {
                     android.hardware.usb.UsbDevice device = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
@@ -523,6 +521,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         mOffset.put(OFFSET_BAROSENSOR_ALTITUDE, .0f);
         mOffset.put(OFFSET_VELOCITY_DOWN, .0f);
 
+        imgGroundTelemetry = (ImageView) findViewById(R.id.imgGroundTelemetry);
+        imgFlightTelemetry = (ImageView) findViewById(R.id.imgFlightTelemetry);
+
         imgPacketsUp = (ImageView) findViewById(R.id.imgPacketsUp);
         imgPacketsGood = (ImageView) findViewById(R.id.imgPacketsGood);
         imgPacketsBad = (ImageView) findViewById(R.id.imgPacketsBad);
@@ -530,8 +531,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         txtObjectLogTx = (TextView) findViewById(R.id.txtObjectLogTx);
         txtObjectLogRxGood = (TextView) findViewById(R.id.txtObjectLogRxGood);
         txtObjectLogRxBad = (TextView) findViewById(R.id.txtObjectLogRxBad);
-
-        txtDeviceText = (TextView) findViewById(R.id.txtDeviceName);
 
         txtPlan = (TextView) findViewById(R.id.txtPlan);
         txtAtti = (TextView) findViewById(R.id.txtAtti);
@@ -1902,7 +1901,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     mFcDevice.getObjectTree().setXmlObjects(mXmlObjects);
 
                     mFcDevice.start();
-                    txtDeviceText.setText(device.getDeviceName());
                     return true;
                 } else {
                     connection.close();
@@ -1958,7 +1956,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     protected void resetMainView() {
-        txtDeviceText.setText(R.string.EMPTY_STRING);
         txtAtti.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.rounded_corner_uninitialised));
         txtStab.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.rounded_corner_uninitialised));
         txtPath.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.rounded_corner_uninitialised));

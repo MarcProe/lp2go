@@ -17,6 +17,7 @@ package net.proest.lp2go3;
 
 import android.graphics.Color;
 import android.support.v4.content.ContextCompat;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -55,6 +56,27 @@ class PollThread extends Thread {
         if (text != null && t != null) {
             t.setText(text);
         }
+    }
+
+    private void setImageColor(ImageView i, String color) {
+        if (color == null || color.equals("")) {
+            return;
+        }
+        switch (color) {
+            case "Connected":
+                i.setColorFilter(Color.argb(0xff, 0x00, 0x80, 0x00));
+                break;
+            case "HandshakeReq":
+                i.setColorFilter(Color.argb(0xff, 0xff, 0x80, 0x00));
+                break;
+            case "HandshakeAck":
+                i.setColorFilter(Color.argb(0xff, 0xff, 0x00, 0x80));
+                break;
+            case "Disconnected":
+                i.setColorFilter(Color.argb(0xff, 0xd4, 0x00, 0x00));
+                break;
+        }
+        VisualLog.d("GTH", color);
     }
 
     private void setTextBGColor(TextView t, String color) {
@@ -229,12 +251,9 @@ class PollThread extends Thread {
                                 setTextBGColor(mA.txtOutput, getData("SystemAlarms", "Alarm", "Actuator").toString());
                                 setTextBGColor(mA.txtI2C, getData("SystemAlarms", "Alarm", "I2C").toString());
                                 setTextBGColor(mA.txtTelemetry, getData("SystemAlarms", "Alarm", "Telemetry").toString());
-                                //setText(mA.txtFusionAlgorithm, getData("SystemAlarms", "Alarm", "Telemetry").toString());
 
-                                //setTextBGColor(mA.txtFlightTelemetry, getData("FlightTelemetryStats", "Status").toString());
-                                //setText(mA.txtFlightTelemetry, getData("FlightTelemetryStats", "Status").toString());
-                                //setTextBGColor(mA.txtGCSTelemetry, getData("GCSTelemetryStats", "Status").toString());
-                                //setText(mA.txtGCSTelemetry, getData("GCSTelemetryStats", "Status").toString());
+                                setImageColor(mA.imgFlightTelemetry, getData("FlightTelemetryStats", "Status").toString());
+                                setImageColor(mA.imgGroundTelemetry, getData("GCSTelemetryStats", "Status").toString());
 
                                 setText(mA.txtHealthAlertDialogFusionAlgorithm, getData("RevoSettings", "FusionAlgorithm").toString());
 
