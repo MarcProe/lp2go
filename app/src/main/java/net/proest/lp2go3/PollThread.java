@@ -52,7 +52,7 @@ class PollThread extends Thread {
     }
 
     private void setText(TextView t, String text) {
-        if (text != null) {
+        if (text != null && t != null) {
             t.setText(text);
         }
     }
@@ -229,14 +229,14 @@ class PollThread extends Thread {
                                 setTextBGColor(mA.txtOutput, getData("SystemAlarms", "Alarm", "Actuator").toString());
                                 setTextBGColor(mA.txtI2C, getData("SystemAlarms", "Alarm", "I2C").toString());
                                 setTextBGColor(mA.txtTelemetry, getData("SystemAlarms", "Alarm", "Telemetry").toString());
-                                setText(mA.txtFusionAlgorithm, getData("SystemAlarms", "Alarm", "Telemetry").toString());
+                                //setText(mA.txtFusionAlgorithm, getData("SystemAlarms", "Alarm", "Telemetry").toString());
 
-                                setTextBGColor(mA.txtFlightTelemetry, getData("FlightTelemetryStats", "Status").toString());
+                                //setTextBGColor(mA.txtFlightTelemetry, getData("FlightTelemetryStats", "Status").toString());
                                 //setText(mA.txtFlightTelemetry, getData("FlightTelemetryStats", "Status").toString());
-                                setTextBGColor(mA.txtGCSTelemetry, getData("GCSTelemetryStats", "Status").toString());
+                                //setTextBGColor(mA.txtGCSTelemetry, getData("GCSTelemetryStats", "Status").toString());
                                 //setText(mA.txtGCSTelemetry, getData("GCSTelemetryStats", "Status").toString());
 
-                                setText(mA.txtFusionAlgorithm, getData("RevoSettings", "FusionAlgorithm").toString());
+                                setText(mA.txtHealthAlertDialogFusionAlgorithm, getData("RevoSettings", "FusionAlgorithm").toString());
 
                                 setTextBGColor(mA.txtBatt, getData("SystemAlarms", "Alarm", "Battery").toString());
                                 setTextBGColor(mA.txtTime, getData("SystemAlarms", "Alarm", "FlightTime").toString());
@@ -257,8 +257,8 @@ class PollThread extends Thread {
                                 setText(mA.txtmAh, getData("FlightBatteryState", "ConsumedEnergy").toString());
                                 setText(mA.txtTimeLeft, H.getDateFromSeconds(getData("FlightBatteryState", "EstimatedFlightTime").toString()));
 
-                                setText(mA.txtCapacity, getData("FlightBatterySettings", "Capacity").toString());
-                                setText(mA.txtCells, getData("FlightBatterySettings", "NbCells").toString());
+                                setText(mA.txtHealthAlertDialogBatteryCapacity, getData("FlightBatterySettings", "Capacity").toString());
+                                setText(mA.txtHealthAlertDialogBatteryCells, getData("FlightBatterySettings", "NbCells").toString());
 
                                 setText(mA.txtAltitude, getFloatOffsetData("BaroSensor", "Altitude", MainActivity.OFFSET_BAROSENSOR_ALTITUDE));
                                 setText(mA.txtAltitudeAccel, getFloatOffsetData("VelocityState", "Down", MainActivity.OFFSET_VELOCITY_DOWN));

@@ -66,7 +66,7 @@ import android.support.v4.content.FileProvider;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.text.InputType;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -205,9 +205,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     TextView txtOutput;
     TextView txtI2C;
     TextView txtTelemetry;
-    TextView txtFlightTelemetry;
-    TextView txtGCSTelemetry;
-    TextView txtFusionAlgorithm;
     TextView txtBatt;
     TextView txtTime;
     TextView txtConfig;
@@ -221,8 +218,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     TextView txtAmpere;
     TextView txtmAh;
     TextView txtTimeLeft;
-    TextView txtCapacity;
-    TextView txtCells;
     TextView txtAltitude;
     TextView txtAltitudeAccel;
     TextView txtModeNum;
@@ -234,6 +229,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     TextView txtMapGPS;
     TextView txtMapGPSSatsInView;
     TextView txtVehicleName;
+
+    TextView txtHealthAlertDialogBatteryCapacity;
+    TextView txtHealthAlertDialogBatteryCells;
+    TextView txtHealthAlertDialogFusionAlgorithm;
+
     ImageView imgBluetooth;
     ImageView imgUSB;
     ImageView imgPacketsUp;
@@ -428,12 +428,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         NavDrawerListAdapter drawListAdapter = new NavDrawerListAdapter(getApplicationContext(),
                 navDrawerItems);
         mDrawerList.setAdapter(drawListAdapter);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setLogo(R.drawable.ic_toolbar_36x47dp);
+        toolbar.setNavigationIcon(R.drawable.ic_menu_black_24dp);
+        setSupportActionBar(toolbar);
         ActionBar ab = getSupportActionBar();
         if (ab != null) {
             ab.setDisplayHomeAsUpEnabled(true);
             ab.setHomeButtonEnabled(true);
             ab.setDisplayShowHomeEnabled(true);
-            ab.setIcon(R.mipmap.ic_launcher);
         }
 
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
@@ -546,9 +549,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         txtOutput = (TextView) findViewById(R.id.txtOutput);
         txtI2C = (TextView) findViewById(R.id.txtI2C);
         txtTelemetry = (TextView) findViewById(R.id.txtTelemetry);
-        txtFlightTelemetry = (TextView) findViewById(R.id.txtFlightTelemetry);
-        txtGCSTelemetry = (TextView) findViewById(R.id.txtGCSTelemetry);
-        txtFusionAlgorithm = (TextView) findViewById(R.id.txtFusionAlgorithm);
 
         txtBatt = (TextView) findViewById(R.id.txtBatt);
         txtTime = (TextView) findViewById(R.id.txtTime);
@@ -567,9 +567,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         txtAmpere = (TextView) findViewById(R.id.txtAmpere);
         txtmAh = (TextView) findViewById(R.id.txtmAh);
         txtTimeLeft = (TextView) findViewById(R.id.txtTimeLeft);
-
-        txtCapacity = (TextView) findViewById(R.id.txtCapacity);
-        txtCells = (TextView) findViewById(R.id.txtCells);
 
         txtAltitude = (TextView) findViewById(R.id.txtAltitude);
         txtAltitudeAccel = (TextView) findViewById(R.id.txtAltitudeAccel);
@@ -1564,11 +1561,46 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 .start();
     }
 
+    public void onHealthSettingsClick(View v) {
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+        dialogBuilder.setTitle("Health Settings");
+
+        final View alertView = View.inflate(this, R.layout.alert_dialog_health, null);
+        dialogBuilder.setView(alertView);
+
+        try {
+            txtHealthAlertDialogBatteryCapacity =
+                    (TextView) alertView.findViewById(R.id.txtHealthAlertDialogBatteryCapacity);
+            txtHealthAlertDialogBatteryCells =
+                    (TextView) alertView.findViewById(R.id.txtHealthAlertDialogBatteryCells);
+            txtHealthAlertDialogFusionAlgorithm =
+                    (TextView) alertView.findViewById(R.id.txtHealthAlertDialogFusionAlgorithm);
+
+            txtHealthAlertDialogBatteryCapacity.setText(mFcDevice.getObjectTree()
+                    .getData("FlightBatterySettings", "Capacity").toString());
+            txtHealthAlertDialogBatteryCells.setText(mFcDevice.getObjectTree()
+                    .getData("FlightBatterySettings", "NbCells").toString());
+            txtHealthAlertDialogFusionAlgorithm.setText(mFcDevice.getObjectTree()
+                    .getData("RevoSettings", "FusionAlgorithm").toString());
+        } catch (UAVTalkMissingObjectException e) {
+            e.printStackTrace();
+        }
+
+        dialogBuilder.setPositiveButton("Close", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        dialogBuilder.show();
+    }
+
+
     public void onBatteryCapacityClick(View v) {
         String moduleEnabled = mPollThread.getData("HwSettings", "OptionalModules", "Battery", true).toString();
         if (moduleEnabled.equals("Enabled")) {
             new IntegerInputAlertDialog(this)
-                    .withPresetText(txtCapacity.getText().toString())
+                    .withPresetText(txtHealthAlertDialogBatteryCapacity.getText().toString())
                     .withTitle(getString(R.string.CAPACITY_DIALOG_TITLE))
                     .withLayout(R.layout.alert_dialog_integer_input)
                     .withUavTalkDevice(mFcDevice)
@@ -1605,7 +1637,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         String moduleEnabled = mPollThread.getData("HwSettings", "OptionalModules", "Battery", true).toString();
         if (moduleEnabled.equals("Enabled")) {
             new IntegerInputAlertDialog(this)
-                    .withPresetText(txtCells.getText().toString())
+                    .withPresetText(txtHealthAlertDialogBatteryCells.getText().toString())
                     .withTitle(getString(R.string.CELLS_DIALOG_TITLE))
                     .withLayout(R.layout.alert_dialog_integer_input)
                     .withUavTalkDevice(mFcDevice)
@@ -1627,6 +1659,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         .getData("FlightStatus", "Armed").toString();
             } catch (UAVTalkMissingObjectException e) {
                 armingState = "";
+                mFcDevice.requestObject("FlightStatus");
             }
             if (armingState.equals("Disarmed")) {
                 //initFusionAlgoDialog().show();
@@ -1637,7 +1670,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         .withField("FusionAlgorithm")
                         .show();
             } else {
-                SingleToast.makeText(this, getString(R.string.CHANGE_FUSION_ALGO_DISARMED),
+                SingleToast.makeText(this, getString(R.string.CHANGE_FUSION_ALGO_DISARMED) + " " + armingState,
                         Toast.LENGTH_LONG).show();
             }
         } else {
@@ -1905,70 +1938,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         return warnDialogBuilder;
     }
 
-    private AlertDialog.Builder initBatteryCellsDialog() {
-        AlertDialog.Builder batteryCellsDialogBuilder = new AlertDialog.Builder(this);
-        batteryCellsDialogBuilder.setTitle(R.string.CELLS_DIALOG_TITLE);
-
-        final EditText input = new EditText(this);
-        input.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
-        batteryCellsDialogBuilder.setView(input);
-        input.setText(txtCells.getText());
-
-        batteryCellsDialogBuilder.setPositiveButton(R.string.OK_BUTTON, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                byte[] bcdata = new byte[1];
-                try {
-                    bcdata[0] = H.toBytes(Integer.parseInt(input.getText().toString()))[3]; //want the lsb
-                } catch (NumberFormatException e) {
-                    bcdata[0] = 0x00;
-                }
-                if (mFcDevice != null && bcdata.length == 1) {
-                    mFcDevice.sendSettingsObject("FlightBatterySettings", 0, "NbCells", 0,
-                            bcdata);
-                }
-                dialog.dismiss();
-                dialog.cancel();
-            }
-        });
-
-        batteryCellsDialogBuilder.setNegativeButton(R.string.CANCEL_BUTTON,
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                        dialog.dismiss();
-                    }
-                });
-        return batteryCellsDialogBuilder;
-    }
-
-    public AlertDialog.Builder initFusionAlgoDialog() {
-        AlertDialog.Builder fusionAlgoDialogBuilder = new AlertDialog.Builder(this);
-        fusionAlgoDialogBuilder.setTitle("Select Fusion Algorithm");
-
-        String[] types;
-        try {
-            types = mXmlObjects.get("RevoSettings").getFields().get("FusionAlgorithm").getOptions();
-        } catch (NullPointerException e) {
-            types = null;
-        }
-        fusionAlgoDialogBuilder.setItems(types, new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-                dialog.dismiss();
-                byte[] send = new byte[1];
-                send[0] = (byte) which;
-                if (mFcDevice != null) {
-                    mFcDevice.sendSettingsObject("RevoSettings", 0, "FusionAlgorithm", 0, send);
-                }
-            }
-        });
-        return fusionAlgoDialogBuilder;
-    }
-
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
         switch (parent.getId()) {
@@ -2006,8 +1975,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         txtI2C.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.rounded_corner_uninitialised));
         txtTelemetry.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.rounded_corner_uninitialised));
 
-        txtFlightTelemetry.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.rounded_corner_uninitialised));
-        txtGCSTelemetry.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.rounded_corner_uninitialised));
+        //txtFlightTelemetry.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.rounded_corner_uninitialised));
+        //txtGCSTelemetry.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.rounded_corner_uninitialised));
 
         txtBatt.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.rounded_corner_uninitialised));
         txtTime.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.rounded_corner_uninitialised));
@@ -2025,9 +1994,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         txtAmpere.setText(R.string.EMPTY_STRING);
         txtmAh.setText(R.string.EMPTY_STRING);
         txtTimeLeft.setText(R.string.EMPTY_STRING);
-
-        txtCapacity.setText(R.string.EMPTY_STRING);
-        txtCells.setText(R.string.EMPTY_STRING);
 
         txtAltitude.setText(R.string.EMPTY_STRING);
         txtAltitudeAccel.setText(R.string.EMPTY_STRING);

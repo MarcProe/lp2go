@@ -19,6 +19,23 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="64dp">
+
+                <ImageView
+                    android:id="@+id/toolbar_settings"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_gravity="right"
+                    android:layout_marginBottom="4dp"
+                    android:layout_marginRight="12dp"
+                    android:layout_marginTop="4dp"
+                    android:onClick="onHealthSettingsClick"
+                    android:src="@drawable/ic_build_black_32dp" />
+            </android.support.v7.widget.Toolbar>
+
             <include
                 layout="@layout/activity_main_inc_header"
                 android:layout_width="fill_parent"
