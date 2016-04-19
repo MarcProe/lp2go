@@ -76,7 +76,6 @@ class PollThread extends Thread {
                 i.setColorFilter(Color.argb(0xff, 0xd4, 0x00, 0x00));
                 break;
         }
-        VisualLog.d("GTH", color);
     }
 
     private void setTextBGColor(TextView t, String color) {
