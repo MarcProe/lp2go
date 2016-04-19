@@ -105,7 +105,7 @@ public class IntegerInputAlertDialog extends InputAlertDialog {
                     }
                     break;
                 default:
-                    VisualLog.e("IntegerUnputAlertDialog", "Type not implemented!");
+                    VisualLog.e("IntegerInputAlertDialog", "Type not implemented!");
                     data = H.toBytes(0);
                     break;
             }
