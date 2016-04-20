@@ -16,34 +16,34 @@
 package net.proest.lp2go3.c;
 
 public class PID {
-    public static final int PID_RATE_ROLL_PROP_DENOM = 100000;
-    public static final int PID_RATE_ROLL_PROP_STEP = 10;
-    public static final int PID_RATE_ROLL_PROP_MAX = 1000;
+    public static final int PID_RATE_ROLL_PROP_DENOM = 10000;
+    public static final int PID_RATE_ROLL_PROP_STEP = 1;
+    public static final int PID_RATE_ROLL_PROP_MAX = 100;
     public static final String PID_RATE_ROLL_PROP_DFS = "0.00000";
 
-    public static final int PID_RATE_PITCH_PROP_DENOM = 100000;
-    public static final int PID_RATE_PITCH_PROP_STEP = 10;
-    public static final int PID_RATE_PITCH_PROP_MAX = 1000;
+    public static final int PID_RATE_PITCH_PROP_DENOM = 10000;
+    public static final int PID_RATE_PITCH_PROP_STEP = 1;
+    public static final int PID_RATE_PITCH_PROP_MAX = 100;
     public static final String PID_RATE_PITCH_PROP_DFS = "0.00000";
 
-    public static final int PID_RATE_YAW_PROP_DENOM = 100000;
-    public static final int PID_RATE_YAW_PROP_STEP = 10;
-    public static final int PID_RATE_YAW_PROP_MAX = 1000;
+    public static final int PID_RATE_YAW_PROP_DENOM = 10000;
+    public static final int PID_RATE_YAW_PROP_STEP = 1;
+    public static final int PID_RATE_YAW_PROP_MAX = 100;
     public static final String PID_RATE_YAW_PROP_DFS = "0.00000";
 
-    public static final int PID_RATE_ROLL_INTE_DENOM = 100000;
-    public static final int PID_RATE_ROLL_INTE_STEP = 10;
-    public static final int PID_RATE_ROLL_INTE_MAX = 1000;
+    public static final int PID_RATE_ROLL_INTE_DENOM = 10000;
+    public static final int PID_RATE_ROLL_INTE_STEP = 1;
+    public static final int PID_RATE_ROLL_INTE_MAX = 100;
     public static final String PID_RATE_ROLL_INTE_DFS = "0.00000";
 
-    public static final int PID_RATE_PITCH_INTE_DENOM = 100000;
-    public static final int PID_RATE_PITCH_INTE_STEP = 10;
-    public static final int PID_RATE_PITCH_INTE_MAX = 1000;
+    public static final int PID_RATE_PITCH_INTE_DENOM = 10000;
+    public static final int PID_RATE_PITCH_INTE_STEP = 1;
+    public static final int PID_RATE_PITCH_INTE_MAX = 100;
     public static final String PID_RATE_PITCH_INTE_DFS = "0.00000";
 
-    public static final int PID_RATE_YAW_INTE_DENOM = 100000;
-    public static final int PID_RATE_YAW_INTE_STEP = 10;
-    public static final int PID_RATE_YAW_INTE_MAX = 1000;
+    public static final int PID_RATE_YAW_INTE_DENOM = 10000;
+    public static final int PID_RATE_YAW_INTE_STEP = 1;
+    public static final int PID_RATE_YAW_INTE_MAX = 100;
     public static final String PID_RATE_YAW_INTE_DFS = "0.00000";
 
     public static final int PID_RATE_ROLL_DERI_DENOM = 1000000;
@@ -61,39 +61,39 @@ public class PID {
     public static final int PID_RATE_YAW_DERI_MAX = 1000;
     public static final String PID_RATE_YAW_DERI_DFS = "0.000000";
 
-    public static final int PID_ROLL_PROP_DENOM = 100000;
-    public static final int PID_ROLL_PROP_STEP = 10000;
-    public static final int PID_ROLL_PROP_MAX = 500000;
+    public static final int PID_ROLL_PROP_DENOM = 10;
+    public static final int PID_ROLL_PROP_STEP = 1;
+    public static final int PID_ROLL_PROP_MAX = 50;
     public static final String PID_ROLL_PROP_DFS = "0.000";
 
-    public static final int PID_PITCH_PROP_DENOM = 100000;
-    public static final int PID_PITCH_PROP_STEP = 10000;
-    public static final int PID_PITCH_PROP_MAX = 500000;
+    public static final int PID_PITCH_PROP_DENOM = 10;
+    public static final int PID_PITCH_PROP_STEP = 1;
+    public static final int PID_PITCH_PROP_MAX = 50;
     public static final String PID_PITCH_PROP_DFS = "0.000";
 
-    public static final int PID_YAW_PROP_DENOM = 100000;
-    public static final int PID_YAW_PROP_STEP = 10000;
-    public static final int PID_YAW_PROP_MAX = 500000;
+    public static final int PID_YAW_PROP_DENOM = 10;
+    public static final int PID_YAW_PROP_STEP = 1;
+    public static final int PID_YAW_PROP_MAX = 50;
     public static final String PID_YAW_PROP_DFS = "0.000";
 
-    public static final int PID_ROLL_INTE_DENOM = 100000;
-    public static final int PID_ROLL_INTE_STEP = 10000;
-    public static final int PID_ROLL_INTE_MAX = 500000;
+    public static final int PID_ROLL_INTE_DENOM = 10;
+    public static final int PID_ROLL_INTE_STEP = 1;
+    public static final int PID_ROLL_INTE_MAX = 50;
     public static final String PID_ROLL_INTE_DFS = "0.000";
 
-    public static final int PID_PITCH_INTE_DENOM = 100000;
-    public static final int PID_PITCH_INTE_STEP = 10000;
-    public static final int PID_PITCH_INTE_MAX = 500000;
+    public static final int PID_PITCH_INTE_DENOM = 10;
+    public static final int PID_PITCH_INTE_STEP = 1;
+    public static final int PID_PITCH_INTE_MAX = 50;
     public static final String PID_PITCH_INTE_DFS = "0.000";
 
-    public static final int PID_YAW_INTE_DENOM = 100000;
-    public static final int PID_YAW_INTE_STEP = 10000;
-    public static final int PID_YAW_INTE_MAX = 500000;
+    public static final int PID_YAW_INTE_DENOM = 10;
+    public static final int PID_YAW_INTE_STEP = 1;
+    public static final int PID_YAW_INTE_MAX = 50;
     public static final String PID_YAW_INTE_DFS = "0.000";
 
-    public static final int PID_VERTICAL_ALTI_PROP_DENOM = 10000;
-    public static final int PID_VERTICAL_ALTI_PROP_STEP = 100;
-    public static final int PID_VERTICAL_ALTI_PROP_MAX = 10000;
+    public static final int PID_VERTICAL_ALTI_PROP_DENOM = 100;
+    public static final int PID_VERTICAL_ALTI_PROP_STEP = 1;
+    public static final int PID_VERTICAL_ALTI_PROP_MAX = 100;
     public static final String PID_VERTICAL_ALTI_PROP_DFS = "0.00";
 
     public static final int PID_VERTICAL_EXPO_DENOM = 1;
@@ -106,24 +106,24 @@ public class PID {
     public static final int PID_VERTICAL_THRUST_R_MAX = 5;
     public static final String PID_VERTICAL_THRUST_R_DFS = "0";
 
-    public static final int PID_VERTICAL_VELO_BETA_DENOM = 10000;
-    public static final int PID_VERTICAL_VELO_BETA_STEP = 100;
-    public static final int PID_VERTICAL_VELO_BETA_MAX = 10000;
+    public static final int PID_VERTICAL_VELO_BETA_DENOM = 100;
+    public static final int PID_VERTICAL_VELO_BETA_STEP = 1;
+    public static final int PID_VERTICAL_VELO_BETA_MAX = 100;
     public static final String PID_VERTICAL_VELO_BETA_DFS = "0.00";
 
-    public static final int PID_VERTICAL_VELO_DERI_DENOM = 100000;
-    public static final int PID_VERTICAL_VELO_DERI_STEP = 10;
-    public static final int PID_VERTICAL_VELO_DERI_MAX = 3000;
+    public static final int PID_VERTICAL_VELO_DERI_DENOM = 10000;
+    public static final int PID_VERTICAL_VELO_DERI_STEP = 1;
+    public static final int PID_VERTICAL_VELO_DERI_MAX = 300;
     public static final String PID_VERTICAL_VELO_DERI_DFS = "0.0000";
 
-    public static final int PID_VERTICAL_VELO_INTE_DENOM = 10000;
-    public static final int PID_VERTICAL_VELO_INTE_STEP = 100;
-    public static final int PID_VERTICAL_VELO_INTE_MAX = 10000;
+    public static final int PID_VERTICAL_VELO_INTE_DENOM = 100;
+    public static final int PID_VERTICAL_VELO_INTE_STEP = 1;
+    public static final int PID_VERTICAL_VELO_INTE_MAX = 100;
     public static final String PID_VERTICAL_VELO_INTE_DFS = "0.00";
 
-    public static final int PID_VERTICAL_VELO_PROP_DENOM = 10000;
-    public static final int PID_VERTICAL_VELO_PROP_STEP = 100;
-    public static final int PID_VERTICAL_VELO_PROP_MAX = 10000;
+    public static final int PID_VERTICAL_VELO_PROP_DENOM = 100;
+    public static final int PID_VERTICAL_VELO_PROP_STEP = 1;
+    public static final int PID_VERTICAL_VELO_PROP_MAX = 100;
     public static final String PID_VERTICAL_VELO_PROP_DFS = "0.00";
 
 }
