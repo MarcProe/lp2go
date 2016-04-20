@@ -247,7 +247,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     TextView txtLogSize;
     TextView txtLogObjects;
     TextView txtLogDuration;
-    private boolean isReady = false;
     private Map<Integer, View> mViews;
     private Spinner spnUavoSource;
     private Spinner spnConnectionTypeSpinner;
@@ -1097,8 +1096,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         initViewMain(savedInstanceState);
 
         initDone = true;
-
-        isReady = true;
 
         if (mBluetoothAdapter != null || !mBluetoothAdapter.isEnabled()) {
             try {

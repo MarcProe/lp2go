@@ -25,10 +25,8 @@
     <string name="CELLS_DIALOG_TITLE">Cells</string>
     <string name="OK_BUTTON">OK</string>
     <string name="CANCEL_BUTTON">Cancel</string>
-    <string name="DEVICE_NAME_NONE"><![CDATA[<none>]]></string>
 
     <!-- Nav Drawer Menu Items -->
-
     <string name="menu_main">Health</string>
     <string name="menu_map">Map</string>
     <string name="menu_objects">Objects</string>

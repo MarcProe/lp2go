@@ -31,7 +31,6 @@ class FcBluetoothWaiterThread extends FcWaiterThread {
     private final BluetoothSocket mmSocket;
     private final InputStream mmInStream;
     private final OutputStream mmOutStream;
-    private boolean mStop;
 
     private FcBluetoothDevice mBluetoothDevice;
 
@@ -126,7 +125,8 @@ class FcBluetoothWaiterThread extends FcWaiterThread {
 
                 try {
                     UAVTalkMessage msg = new UAVTalkMessage(bmsg);
-                    UAVTalkObject myObj = mDevice.mObjectTree.getObjectFromID(H.intToHex(msg.getObjectId()));
+                    UAVTalkObject myObj =
+                            mDevice.mObjectTree.getObjectFromID(H.intToHex(msg.getObjectId()));
                     UAVTalkObjectInstance myIns;
 
                     try {
@@ -201,7 +201,6 @@ class FcBluetoothWaiterThread extends FcWaiterThread {
     }
 
     private void cancel() {
-        mStop = true;
         try {
             mmSocket.close();
             mBluetoothDevice = null;

@@ -79,7 +79,7 @@ public class UAVTalkObject {
     }
 
     public UAVTalkObjectInstance getInstance(int id) {
-        return mInstances.get(Integer.valueOf(id));
+        return mInstances.get(id);
     }
 
     public void setInstance(UAVTalkObjectInstance instance) {

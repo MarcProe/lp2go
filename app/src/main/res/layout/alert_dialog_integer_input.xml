@@ -11,6 +11,6 @@
         android:ems="10"
         android:inputType="number"
         android:text="0"
-        android:textSize="50dp" />
+        android:textSize="50sp" />
 
 </LinearLayout>

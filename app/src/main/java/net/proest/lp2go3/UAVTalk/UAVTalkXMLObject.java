@@ -153,7 +153,7 @@ public class UAVTalkXMLObject {
                     try {
                         uavField.mOptions =
                                 (String[]) Arrays.asList(optionsString.split(XML_ATTRIBUTE_SPLITTER)).toArray();
-                    } catch (Exception ex) {
+                    } catch (Exception ignored) {
                     }
 
                     if (uavField.mOptions == null || uavField.mOptions.length == 0

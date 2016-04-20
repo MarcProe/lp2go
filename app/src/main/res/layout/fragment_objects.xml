@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:text="Objects"
-        android:textSize="16dp" />
+        android:textSize="16sp" />
 
     <ImageView
         android:layout_width="wrap_content"
