@@ -131,6 +131,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -138,6 +140,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
@@ -313,6 +317,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     };
     private MapView mMapView;
     private TextView txtDebugLog;
+    private String mUavoLongHash;
+    private String mUavoShortHash;
 
     public static boolean hasPThread() {
         return mHasPThread;
@@ -1123,24 +1129,53 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
             String file = this.mLoadedUavo + ".zip";
             ZipInputStream zis = null;
+            MessageDigest crypt = null;
+            MessageDigest cumucrypt = null;
             try {
                 InputStream is = openFileInput(UAVO_INTERNAL_PATH + "-" + file);
                 zis = new ZipInputStream(new BufferedInputStream(is));
                 ZipEntry ze;
+
+                //we need to sort the files to generate the correct hash
+                SortedMap<String, String> files = new TreeMap<String, String>();
+
                 while ((ze = zis.getNextEntry()) != null) {
-                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    byte[] buffer = new byte[1024];
-                    int count;
-                    while ((count = zis.read(buffer)) != -1) {
-                        baos.write(buffer, 0, count);
-                    }
-                    String xml = baos.toString();
-                    if (xml.length() > 0) {
-                        UAVTalkXMLObject obj = new UAVTalkXMLObject(xml);
-                        mXmlObjects.put(obj.getName(), obj);
+                    if (ze.getName().endsWith("xml")) {
+
+                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        byte[] buffer = new byte[1024];
+                        int count;
+                        while ((count = zis.read(buffer)) != -1) {
+                            baos.write(buffer, 0, count);
+                        }
+
+                        String xml = baos.toString();
+                        files.put(ze.getName(), xml);
+
+                        if (xml.length() > 0) {
+                            UAVTalkXMLObject obj = new UAVTalkXMLObject(xml);
+                            mXmlObjects.put(obj.getName(), obj);
+                        }
                     }
                 }
+
+                crypt = MessageDigest.getInstance("SHA-1");     //single files hash
+                cumucrypt = MessageDigest.getInstance("SHA-1"); //cumulative hash
+                cumucrypt.reset();
+                for (String xmle : files.values()) {             //cycle over the sorted files
+                    crypt.reset();
+                    crypt.update(xmle.getBytes());              //hash the file
+                    //update a hash over the file hash string representations (yes.)
+                    cumucrypt.update(H.bytesToHex(crypt.digest()).toLowerCase().getBytes()); //sic!
+                }
+
+                mUavoLongHash = H.bytesToHex(cumucrypt.digest()).toLowerCase();
+                mUavoShortHash = mUavoLongHash.substring(0, 8);
+                VisualLog.d("SHA1", H.bytesToHex(cumucrypt.digest()).toLowerCase());
+
             } catch (IOException | SAXException | ParserConfigurationException e) {
+                e.printStackTrace();
+            } catch (NoSuchAlgorithmException e) {
                 e.printStackTrace();
             } finally {
                 try {
