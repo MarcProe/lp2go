@@ -35,7 +35,8 @@ import java.util.Iterator;
 
 class PollThread extends Thread {
 
-    private boolean blink = true;
+    private boolean mBlink = true;
+    private int mRotObjIcon = 0;
     private int request = 0;
     private MainActivity mA;
     private UAVTalkObjectTree mObjectTree;
@@ -126,7 +127,7 @@ class PollThread extends Thread {
 
     public void run() {
         while (mIsValid) {
-            blink = !blink;
+            mBlink = !mBlink;
             try {
                 Thread.sleep(MainActivity.POLL_WAIT_TIME);
             } catch (InterruptedException ignored) {
@@ -144,7 +145,7 @@ class PollThread extends Thread {
                                             R.drawable.ic_bluetooth_connected_128dp));
 
                         } else if (mA.mFcDevice != null && mA.mFcDevice.isConnecting()) {
-                            if (blink) {
+                            if (mBlink) {
                                 mA.imgBluetooth.setColorFilter(Color.argb(0xff, 0xff, 0x66, 0x00));
                                 mA.imgBluetooth.setImageDrawable(
                                         ContextCompat.getDrawable(mA.getApplicationContext(),
@@ -167,7 +168,7 @@ class PollThread extends Thread {
                             mA.imgUSB.setColorFilter(Color.argb(0xff, 0x00, 0x80, 0x00));
 
                         } else if (mA.mFcDevice != null && mA.mFcDevice.isConnecting()) {
-                            if (blink) {
+                            if (mBlink) {
                                 mA.imgUSB.setColorFilter(Color.argb(0xff, 0xff, 0x66, 0x00));
                             } else {
                                 mA.imgUSB.setColorFilter(Color.argb(0xff, 0xff, 0x88, 0x00));
@@ -207,7 +208,7 @@ class PollThread extends Thread {
                                         H.k(String.valueOf(
                                                 mA.mRxObjectsBad * MainActivity.POLL_SECOND_FACTOR)));
 
-                                if (blink) {
+                                if (mBlink) {
                                     if (mA.mRxObjectsGood > 0)
                                         mA.imgPacketsGood.setColorFilter(
                                                 Color.argb(0xff, 0x00, 0x88, 0x00));
@@ -232,6 +233,36 @@ class PollThread extends Thread {
                                 mA.setTxObjects(0);
                                 mA.setRxObjectsBad(0);
                                 mA.setRxObjectsGood(0);
+
+                                /**
+                                 * We have 100 bytes for the whole description.
+                                 *
+                                 * Structure is:
+                                 *   4 bytes: header: "OpFw".
+                                 *   4 bytes: GIT commit tag (short version of SHA1).
+                                 *   4 bytes: Unix timestamp of compile time.
+                                 *   2 bytes: target platform. Should follow same rule as BOARD_TYPE and BOARD_REVISION in board define files.
+                                 *  26 bytes: commit tag if it is there, otherwise branch name. '-dirty' may be added if needed. Zero-padded.
+                                 *  20 bytes: SHA1 sum of the firmware.
+                                 *  20 bytes: SHA1 sum of the uavo definitions.
+                                 *  20 bytes: free for now.
+                                 *
+                                 */
+                                String fcUavoHash = H.bytesToHex(getByteData("FirmwareIAPObj", "Description", 60, 20));
+                                mA.setUavoLongHashFC(fcUavoHash.toLowerCase());
+                                if (fcUavoHash.toLowerCase().equals(mA.getUavoLongHash().toLowerCase())) {
+                                    mA.imgUavoSanity.setColorFilter(Color.argb(0xff, 0, 0x80, 0));
+                                    mA.imgUavoSanity.setRotation(0f);
+                                } else {
+                                    if (mBlink) {
+                                        mA.imgUavoSanity.setColorFilter(Color.argb(0xff, 0xd4, 0, 0));
+                                        mA.imgUavoSanity.setRotation(mRotObjIcon++ * 90.f);
+                                    } else {
+                                        mA.imgUavoSanity.setColorFilter(Color.argb(0xff, 0xd4, 0x80, 0x80));
+                                        mA.imgUavoSanity.setRotation(mRotObjIcon++ * 90.f);
+                                        if (mRotObjIcon == 4) mRotObjIcon = 0;
+                                    }
+                                }
 
                                 setText(mA.txtVehicleName, getStringData("SystemSettings", "VehicleName", 20));
 
@@ -489,10 +520,29 @@ class PollThread extends Thread {
                 mA.mFcDevice.requestObject("VelocityState");
                 mA.mFcDevice.requestObject("ManualControlCommand");
                 mA.mFcDevice.requestObject("StabilizationSettings");
+                mA.mFcDevice.requestObject("FirmwareIAPObj");
             }
         } catch (NullPointerException e) {
             VisualLog.e("ERR", "UAVTalkdevice is null. Reconnecting?");
         }
+    }
+
+    private byte[] getByteData(String object, String field, int offset, int len) {
+        byte[] b = new byte[len];
+        try {
+            for (int i = 0; i < len; i++) {
+                int j = (int) mObjectTree.getData(object, 0, field, i + offset);
+                b[i] = (byte) (j & 0xff);
+
+            }
+        } catch (UAVTalkMissingObjectException | NumberFormatException e) {
+            try {
+                mA.mFcDevice.requestObject(object);
+            } catch (NullPointerException e2) {
+                e2.printStackTrace();
+            }
+        }
+        return b;
     }
 
     private String getStringData(String object, String field, int len) {

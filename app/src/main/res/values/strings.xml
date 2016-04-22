@@ -118,7 +118,13 @@
     <string name="VPID_NAME_VEI">Vertical Velocity Integral</string>
     <string name="VPID_NAME_VEP">Vertical Velocity Proportional</string>
     <string name="SPACE">" "</string>
-
-
+    <string name="LF">\n</string>
+    <string name="UAVO_WARNING_A">Your flight controller is running a firmware that is not supported by your currently selected UAVO Source.</string>
+    <string name="UAVO_WARNING_B">Go to \'Settings\' and load and/or select the correct UAVO object file.</string>
+    <string name="UAVO_VERSION_FC">FC UAVO Version:</string>
+    <string name="UAVO_VERSION">LP2Go UAVO Version:</string>
+    <string name="NULL">null</string>
+    <string name="INFO">INFORMATION</string>
+    <string name="UAVO_VERSION_OK">UAVO Version OK.</string>
 </resources>
 

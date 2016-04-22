@@ -29,6 +29,18 @@
                 android:layout_marginTop="4dp"
                 android:onClick="onHealthSettingsClick"
                 android:src="@drawable/ic_build_black_32dp" />
+
+            <ImageView
+                android:id="@+id/imgUavoSanity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="4dp"
+                android:layout_marginLeft="12dp"
+                android:layout_marginRight="12dp"
+                android:layout_marginTop="4dp"
+                android:onClick="onObjectsSanityIndicatorClick"
+                android:src="@drawable/ic_now_widgets_32dp" />
         </android.support.v7.widget.Toolbar>
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"

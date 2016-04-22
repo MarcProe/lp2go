@@ -251,6 +251,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     TextView txtLogSize;
     TextView txtLogObjects;
     TextView txtLogDuration;
+    ImageView imgUavoSanity;
     private Map<Integer, View> mViews;
     private Spinner spnUavoSource;
     private Spinner spnConnectionTypeSpinner;
@@ -318,7 +319,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private MapView mMapView;
     private TextView txtDebugLog;
     private String mUavoLongHash;
-    private String mUavoShortHash;
+    private String mUavoLongHashFc;
 
     public static boolean hasPThread() {
         return mHasPThread;
@@ -340,6 +341,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         }
         return null;
+    }
+
+    public void setUavoLongHashFC(String uavolonghashfc) {
+        mUavoLongHashFc = uavolonghashfc;
+    }
+
+    public String getUavoLongHash() {
+        return mUavoLongHash;
     }
 
     public synchronized void setRxObjectsGood(long o) {
@@ -525,6 +534,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         mOffset = new HashMap<String, Object>();
         mOffset.put(OFFSET_BAROSENSOR_ALTITUDE, .0f);
         mOffset.put(OFFSET_VELOCITY_DOWN, .0f);
+
+        imgUavoSanity = (ImageView) findViewById(R.id.imgUavoSanity);
 
         imgGroundTelemetry = (ImageView) findViewById(R.id.imgGroundTelemetry);
         imgFlightTelemetry = (ImageView) findViewById(R.id.imgFlightTelemetry);
@@ -1170,7 +1181,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 }
 
                 mUavoLongHash = H.bytesToHex(cumucrypt.digest()).toLowerCase();
-                mUavoShortHash = mUavoLongHash.substring(0, 8);
                 VisualLog.d("SHA1", H.bytesToHex(cumucrypt.digest()).toLowerCase());
 
             } catch (IOException | SAXException | ParserConfigurationException e) {
@@ -2070,6 +2080,53 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 .withElement(p.getElement())
                 .withFieldType(p.getFieldType())
                 .show();
+    }
+
+    public void onObjectsSanityIndicatorClick(View v) {
+        showObjectSanityWarningMessage();
+    }
+
+    void showObjectSanityWarningMessage() {
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+
+        String uavoShortHash = mUavoLongHash != null && mUavoLongHash.length() > 8
+                ? mUavoLongHash.substring(0, 8) : getString(R.string.NULL);
+        String uavoShortHashFc = mUavoLongHashFc != null && mUavoLongHashFc.length() > 8
+                ? mUavoLongHashFc.substring(0, 8) : getString(R.string.NULL);
+
+        if (mUavoLongHashFc.equals(mUavoLongHash)) {
+            dialogBuilder.setTitle(R.string.INFO);
+            dialogBuilder.setMessage(
+                    getString(R.string.UAVO_VERSION_OK) + getString(R.string.LF) +
+                            getString(R.string.LF) +
+                            getString(R.string.UAVO_VERSION_FC) + getString(R.string.TAB) +
+                            getString(R.string.TAB) + getString(R.string.TAB) +
+                            getString(R.string.TAB) + uavoShortHashFc + getString(R.string.LF) +
+                            getString(R.string.UAVO_VERSION) + getString(R.string.TAB) +
+                            uavoShortHash
+            );
+        } else {
+            dialogBuilder.setTitle(R.string.WARNING);
+            dialogBuilder.setMessage(
+                    getString(R.string.UAVO_WARNING_A) + getString(R.string.LF) +
+                            getString(R.string.UAVO_WARNING_B) + getString(R.string.LF) +
+                            getString(R.string.LF) +
+                            getString(R.string.UAVO_VERSION_FC) + getString(R.string.TAB) +
+                            getString(R.string.TAB) + getString(R.string.TAB) +
+                            getString(R.string.TAB) + uavoShortHashFc + getString(R.string.LF) +
+                            getString(R.string.UAVO_VERSION) + getString(R.string.TAB) +
+                            uavoShortHash
+            );
+        }
+
+        dialogBuilder.setPositiveButton(R.string.OK_BUTTON,
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+        dialogBuilder.show();
     }
 
     private class SlideMenuClickListener implements ListView.OnItemClickListener {
