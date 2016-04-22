@@ -48,7 +48,7 @@
         android:width="30dp"
         android:text="0"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="@color/primary_material_dark" />
+        android:textColor="@color/dark" />
 
     <ImageView
         android:id="@+id/imgPacketsGood"
@@ -64,7 +64,7 @@
         android:width="30dp"
         android:text="0"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="@color/primary_material_dark" />
+        android:textColor="@color/dark" />
 
     <ImageView
         android:id="@+id/imgPacketsBad"
@@ -80,6 +80,6 @@
         android:width="30dp"
         android:text="0"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="@color/primary_material_dark" />
+        android:textColor="@color/dark" />
 
 </LinearLayout>

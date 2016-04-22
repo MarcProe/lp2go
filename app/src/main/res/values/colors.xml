@@ -16,4 +16,5 @@
     <color name="list_background_pressed">#47ADC5</color>
     <color name="menu_background">#FEB103</color>
     <color name="transparent">#00000000</color>
+    <color name="dark">#ff212121</color>
 </resources>

@@ -17,6 +17,7 @@
         android:layout_below="@id/txtLabel"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
+        android:contentDescription="@string/SHARE_LOG_TITLE"
         android:src="@drawable/ic_logs" />
 
 
