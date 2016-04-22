@@ -2,7 +2,7 @@
 <resources>
     <color name="roundframe">#ffffff</color>
 
-    <color name="dark">#333333</color>
+    <color name="dark">#ff212121</color>
     <color name="light">#eeeeee</color>
 
     <color name="Critical">#D40000</color>
@@ -16,5 +16,4 @@
     <color name="list_background_pressed">#47ADC5</color>
     <color name="menu_background">#FEB103</color>
     <color name="transparent">#00000000</color>
-    <color name="dark">#ff212121</color>
 </resources>
