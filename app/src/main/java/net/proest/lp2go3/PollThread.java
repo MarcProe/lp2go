@@ -108,7 +108,7 @@ class PollThread extends Thread {
                 break;
             case "Uninitialised":
                 t.setBackground(ContextCompat.getDrawable(mA.getApplicationContext(),
-                        R.drawable.rounded_corner_uninitialised));
+                        R.drawable.rounded_corner_unini));
                 break;
             case "InProgress":
                 t.setBackground(ContextCompat.getDrawable(mA.getApplicationContext(),

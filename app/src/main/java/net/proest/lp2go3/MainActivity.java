@@ -50,6 +50,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.hardware.usb.UsbConstants;
@@ -88,7 +89,6 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.nbsp.materialfilepicker.MaterialFilePicker;
 import com.nbsp.materialfilepicker.ui.FilePickerActivity;
 
@@ -279,20 +279,29 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private final BroadcastReceiver mUsbReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            VisualLog.d("USB", action);
+            VisualLog.d(getString(R.string.USB), action);
 
             if (mSerialModeUsed == SERIAL_USB && UsbManager.ACTION_USB_DEVICE_ATTACHED.equals(action)) {
                 android.hardware.usb.UsbDevice device = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
 
-                VisualLog.d("USB", device.getVendorId() + "-" + device.getProductId() + "-" + device.getDeviceClass()
-                        + " " + device.getDeviceSubclass() + " " + device.getDeviceProtocol());
+                VisualLog.d(getString(R.string.USB), device.getVendorId() +
+                        getString(R.string.DASH) +
+                        device.getProductId() +
+                        getString(R.string.DASH) +
+                        device.getDeviceClass() +
+                        getString(R.string.SPACE) +
+                        device.getDeviceSubclass() +
+                        getString(R.string.SPACE) +
+                        device.getDeviceProtocol());
 
                 if (device.getDeviceClass() == UsbConstants.USB_CLASS_MISC) {
                     mUsbManager.requestPermission(device, mPermissionIntent);
                 }
 
-            } else if (mSerialModeUsed == SERIAL_USB && UsbManager.ACTION_USB_DEVICE_DETACHED.equals(action)) {
-                android.hardware.usb.UsbDevice device = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
+            } else if (mSerialModeUsed == SERIAL_USB
+                    && UsbManager.ACTION_USB_DEVICE_DETACHED.equals(action)) {
+                android.hardware.usb.UsbDevice device =
+                        intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
                 if (device != null) {
                     setUsbInterface(null, null);
                     if (mFcDevice != null) {
@@ -301,7 +310,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 }
             } else if (mSerialModeUsed == SERIAL_USB && ACTION_USB_PERMISSION.equals(action)) {
                 synchronized (this) {
-                    android.hardware.usb.UsbDevice device = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
+                    android.hardware.usb.UsbDevice device =
+                            intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
                     if (intent.getBooleanExtra(UsbManager.EXTRA_PERMISSION_GRANTED, false)) {
                         if (device != null) {
                             UsbInterface intf = findAdbInterface(device);
@@ -388,7 +398,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         if (files != null) {
             for (String filename : files) {
                 try {
-                    copyFile(assetManager.open(UAVO_INTERNAL_PATH + File.separator + filename), filename);
+                    copyFile(assetManager.open(UAVO_INTERNAL_PATH +
+                            File.separator + filename), filename);
                 } catch (IOException e) {
                     VisualLog.e("tag", "Failed to copy asset file: " + filename, e);
                 }
@@ -400,7 +411,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         VisualLog.d("COPY", "Copy " + relativeFilename);
 
-        FileOutputStream out = openFileOutput(UAVO_INTERNAL_PATH + "-" + relativeFilename, Context.MODE_PRIVATE);
+        FileOutputStream out = openFileOutput(UAVO_INTERNAL_PATH +
+                getString(R.string.DASH) + relativeFilename, Context.MODE_PRIVATE);
 
         copyFile(source, out);
         source.close();
@@ -425,15 +437,24 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         mDrawerList = (ListView) findViewById(R.id.list_slidermenu);
         ArrayList<NavDrawerItem> navDrawerItems = new ArrayList<NavDrawerItem>();
 
-        navDrawerItems.add(new NavDrawerItem(getString(R.string.menu_main), R.drawable.ic_notifications_on_24dp));
-        navDrawerItems.add(new NavDrawerItem(getString(R.string.menu_map), R.drawable.ic_public_24dp));
-        navDrawerItems.add(new NavDrawerItem(getString(R.string.menu_objects), R.drawable.ic_now_widgets_24dp));
-        navDrawerItems.add(new NavDrawerItem(getString(R.string.menu_pid), R.drawable.ic_tune_128dp));
-        navDrawerItems.add(new NavDrawerItem(getString(R.string.menu_vpid), R.drawable.ic_vertical_align_center_black_128dp));
-        navDrawerItems.add(new NavDrawerItem(getString(R.string.menu_logs), R.drawable.ic_rate_review_24dp));
-        navDrawerItems.add(new NavDrawerItem(getString(R.string.menu_settings), R.drawable.ic_settings_24dp));
-        navDrawerItems.add(new NavDrawerItem(getString(R.string.menu_about), R.drawable.ic_info_outline_24dp));
-        navDrawerItems.add(new NavDrawerItem(getString(R.string.menu_debug), R.drawable.ic_cancel_128dp));
+        navDrawerItems.add(new NavDrawerItem(getString(R.string.menu_main),
+                R.drawable.ic_notifications_on_24dp));
+        navDrawerItems.add(new NavDrawerItem(getString(R.string.menu_map),
+                R.drawable.ic_public_24dp));
+        navDrawerItems.add(new NavDrawerItem(getString(R.string.menu_objects),
+                R.drawable.ic_now_widgets_24dp));
+        navDrawerItems.add(new NavDrawerItem(getString(R.string.menu_pid),
+                R.drawable.ic_tune_128dp));
+        navDrawerItems.add(new NavDrawerItem(getString(R.string.menu_vpid),
+                R.drawable.ic_vertical_align_center_black_128dp));
+        navDrawerItems.add(new NavDrawerItem(getString(R.string.menu_logs),
+                R.drawable.ic_rate_review_24dp));
+        navDrawerItems.add(new NavDrawerItem(getString(R.string.menu_settings),
+                R.drawable.ic_settings_24dp));
+        navDrawerItems.add(new NavDrawerItem(getString(R.string.menu_about),
+                R.drawable.ic_info_outline_24dp));
+        navDrawerItems.add(new NavDrawerItem(getString(R.string.menu_debug),
+                R.drawable.ic_cancel_128dp));
 
 
         navMenuIcons.recycle();
@@ -441,14 +462,16 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 navDrawerItems);
         mDrawerList.setAdapter(drawListAdapter);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setLogo(R.drawable.ic_toolbar_36x47dp);
-        toolbar.setNavigationIcon(R.drawable.ic_menu_black_24dp);
+        if (toolbar != null) {
+            toolbar.setLogo(R.drawable.ic_toolbar_36x47dp);
+            toolbar.setNavigationIcon(R.drawable.ic_menu_black_24dp);
+        }
         setSupportActionBar(toolbar);
-        ActionBar ab = getSupportActionBar();
-        if (ab != null) {
-            ab.setDisplayHomeAsUpEnabled(true);
-            ab.setHomeButtonEnabled(true);
-            ab.setDisplayShowHomeEnabled(true);
+        ActionBar actionbar = getSupportActionBar();
+        if (actionbar != null) {
+            actionbar.setDisplayHomeAsUpEnabled(true);
+            actionbar.setHomeButtonEnabled(true);
+            actionbar.setDisplayShowHomeEnabled(true);
         }
 
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
@@ -593,20 +616,19 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         txtVehicleName = (TextView) findViewById(R.id.txtVehicleName);
 
         imgBluetooth = (ImageView) findViewById(R.id.imgBluetooth);
-        if (mSerialModeUsed != SERIAL_BLUETOOTH || mSerialModeUsed == SERIAL_NONE) {
+        imgUSB = (ImageView) findViewById(R.id.imgUSB);
+
+        if (mSerialModeUsed != SERIAL_BLUETOOTH) {
             imgBluetooth.setImageAlpha(ICON_TRANSPARENT);
         } else {
-
-            imgBluetooth.setColorFilter(Color.argb(255, 255, 0, 0));
+            imgBluetooth.setColorFilter(Color.argb(0xff, 0xff, 0x0, 0x0));
         }
 
-        imgUSB = (ImageView) findViewById(R.id.imgUSB);
-        if (mSerialModeUsed != SERIAL_USB || mSerialModeUsed == SERIAL_NONE) {
+        if (mSerialModeUsed != SERIAL_USB) {
             imgUSB.setImageAlpha(ICON_TRANSPARENT);
         } else {
-            imgUSB.setColorFilter(Color.argb(255, 255, 0, 0));
+            imgUSB.setColorFilter(Color.argb(0xff, 0xff, 0x0, 0x0));
         }
-
     }
 
     private void initViewMap(Bundle savedInstanceState) {
@@ -614,10 +636,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         setContentView(mViews.get(VIEW_MAP)); //Map
         {
             mMapView = (MapView) findViewById(R.id.map);
-            mMapView.onCreate(savedInstanceState);
 
-            mMap = mMapView.getMap();
-            if (mMap != null) {  //Map can be null if services are not available, e.g. on an amazon fire tab
+            if (mMapView != null) {
+                mMapView.onCreate(savedInstanceState);
+                mMap = mMapView.getMap();
+            }
+
+            //Map can be null if services are not available, e.g. on an amazon fire tab
+            if (mMap != null) {
                 mMap.getUiSettings().setMyLocationButtonEnabled(false);
                 mMap.getUiSettings().setZoomControlsEnabled(true);
                 mMap.setMyLocationEnabled(true);
@@ -626,10 +652,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(32.154599, -110.827369), 18);
                 mMap.animateCamera(cameraUpdate);
                 mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
-                mMap.addMarker(new MarkerOptions()
-                        .position(new LatLng(32.154599, -110.827369))
-                        .title("Librepilot")
-                        .snippet("LP rules"));
             }
             txtLatitude = (TextView) findViewById(R.id.txtLatitude);
             txtLongitude = (TextView) findViewById(R.id.txtLongitude);
@@ -654,7 +676,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         Toast.LENGTH_SHORT).show();
                 List<String> fields = new ArrayList<String>();
                 if (mFcDevice != null && mFcDevice.getObjectTree() != null) {
-                    UAVTalkObject obj = mFcDevice.getObjectTree().getObjectNoCreate(mListDataHeader.get(groupPosition));
+                    UAVTalkObject obj = mFcDevice.getObjectTree()
+                            .getObjectNoCreate(mListDataHeader.get(groupPosition));
                     if (obj != null) {
                         for (UAVTalkObjectInstance ins : obj.getInstances().values()) {
                             fields.add("" + ins.getId());
@@ -664,7 +687,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     }
                 }
                 /*)
-                for (UAVTalkXMLObject.UAVTalkXMLObjectField xmlfield : xmlobj.getFields().values()) {
+               for (UAVTalkXMLObject.UAVTalkXMLObjectField xmlfield : xmlobj.getFields().values()) {
                     VisualLog.d("FLD", xmlfield.toString());
                     fields.add(xmlfield.toString());
                 }
@@ -704,7 +727,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     mListDataChild.put(mListDataHeader.get(i), fields);
                 }
 
-                mListAdapter = new ObjectsExpandableListViewAdapter(me, mListDataHeader, mListDataChild);
+                mListAdapter =
+                        new ObjectsExpandableListViewAdapter(me, mListDataHeader, mListDataChild);
 
                 // setting list adapter
                 mExpListView.setAdapter(mListAdapter);
@@ -719,10 +743,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         cbxColorfulPid = (CheckBox) findViewById(R.id.cbxColorfulPid);
 
         spnConnectionTypeSpinner = (Spinner) findViewById(R.id.spnConnectionTypeSpinner);
-        ArrayAdapter<CharSequence> serialConnectionTypeAdapter = ArrayAdapter.createFromResource(this,
+        ArrayAdapter<CharSequence> serialConnectionTypeAdapter
+                = ArrayAdapter.createFromResource(this,
                 R.array.connections_settings, android.R.layout.simple_spinner_item);
 
-        serialConnectionTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        serialConnectionTypeAdapter
+                .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         spnConnectionTypeSpinner.setAdapter(serialConnectionTypeAdapter);
         spnConnectionTypeSpinner.setOnItemSelectedListener(this);
@@ -730,8 +756,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         spnBluetoothPairedDevice = (Spinner) findViewById(R.id.spnBluetoothPairedDevice);
 
-        ArrayAdapter<CharSequence> btPairedDeviceAdapter = new ArrayAdapter<CharSequence>(this, android.R.layout.simple_spinner_item);
-        btPairedDeviceAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        ArrayAdapter<CharSequence> btPairedDeviceAdapter =
+                new ArrayAdapter<>(this, android.R.layout.simple_spinner_item);
+        btPairedDeviceAdapter.
+                setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         spnBluetoothPairedDevice.setAdapter(btPairedDeviceAdapter);
         spnBluetoothPairedDevice.setOnItemSelectedListener(this);
@@ -740,11 +768,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         if (mBluetoothAdapter != null) {
             // Device does support Bluetooth
             if (!mBluetoothAdapter.isEnabled()) {
-                SingleToast.makeText(this, "To use Bluetooth, turn it on in your device.", Toast.LENGTH_LONG).show();
+                SingleToast.makeText(this,
+                        getString(R.string.BLUETOOTH_WARNING), Toast.LENGTH_LONG).show();
 
             } else {
 
-                Set<android.bluetooth.BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
+                Set<android.bluetooth.BluetoothDevice> pairedDevices =
+                        mBluetoothAdapter.getBondedDevices();
                 // If there are paired devices
                 if (pairedDevices.size() > 0) {
                     // Loop through paired devices
@@ -767,7 +797,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     private void initUavoSpinner() {
         spnUavoSource = (Spinner) findViewById(R.id.spnUavoSource);
-        ArrayAdapter<CharSequence> uavoSourceAdapter = new ArrayAdapter<CharSequence>(this, android.R.layout.simple_spinner_item);
+        ArrayAdapter<CharSequence> uavoSourceAdapter =
+                new ArrayAdapter<>(this, android.R.layout.simple_spinner_item);
         uavoSourceAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         spnUavoSource.setAdapter(uavoSourceAdapter);
@@ -783,7 +814,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 Matcher m = p.matcher(file.toString());
                 boolean b = m.matches();
                 if (b) {
-                    VisualLog.d("FILELIST", file.toString());
                     uavoSourceAdapter.add(m.group(1));
                     if (m.group(1).equals(mLoadedUavo)) {
                         spnUavoSource.setSelection(i);
@@ -818,18 +848,36 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         mViews.put(VIEW_ABOUT, getLayoutInflater().inflate(R.layout.activity_about, null));
         setContentView(mViews.get(VIEW_ABOUT));  //About
         {
+
+            final Resources res = getResources();
             PackageInfo pInfo = null;
+
             try {
                 pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
             } catch (PackageManager.NameNotFoundException e) {
                 e.printStackTrace();
             }
 
-            ((TextView) findViewById(R.id.txtAndroidVersionRelease))
-                    .setText(getString(R.string.RUNNING_ON_ANDROID_VERSION) + Build.VERSION.RELEASE);
-            ((TextView) findViewById(R.id.txtLP2GoVersionRelease))
-                    .setText(getString(R.string.LP2GO_RELEASE) + pInfo.versionName + " " + getString(R.string.OPEN_ROUND_BRACKET_WITH_SPACE) + pInfo.versionName + getString(R.string.CLOSE_ROUND_BRACKET));
-            ((TextView) findViewById(R.id.txtLP2GoPackage)).setText(pInfo.packageName);
+            final TextView txtAndroidVersionRelease =
+                    (TextView) findViewById(R.id.txtAndroidVersionRelease);
+            final TextView txtLP2GoVersionRelease =
+                    (TextView) findViewById(R.id.txtLP2GoVersionRelease);
+            final TextView txtLP2GoPackage =
+                    (TextView) findViewById(R.id.txtLP2GoPackage);
+
+            if (txtAndroidVersionRelease != null) {
+                txtAndroidVersionRelease.setText(
+                        String.format(res.getString(R.string.RUNNING_ON_ANDROID_VERSION),
+                                Build.VERSION.RELEASE));
+            }
+            if (txtLP2GoVersionRelease != null && pInfo != null) {
+                txtLP2GoVersionRelease.setText(
+                        String.format(res.getString(R.string.LP2GO_RELEASE),
+                                pInfo.versionName, pInfo.versionCode));
+            }
+            if (txtLP2GoPackage != null && pInfo != null) {
+                txtLP2GoPackage.setText(pInfo.packageName);
+            }
         }
 
     }
@@ -842,154 +890,199 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         mPidTexts = new HashSet<PidTextView>();
 
-        PidTextView txtPidRateRollProportional = (PidTextView) findViewById(R.id.txtRateRollProportional);
-        txtPidRateRollProportional.init(
-                PID.PID_RATE_ROLL_PROP_DENOM,
-                PID.PID_RATE_ROLL_PROP_MAX,
-                PID.PID_RATE_ROLL_PROP_STEP,
-                PID.PID_RATE_ROLL_PROP_DFS,
-                getString(R.string.PID_NAME_RRP),
-                "RollRatePID", "Kp");
+        PidTextView txtPidRateRollProportional =
+                (PidTextView) findViewById(R.id.txtRateRollProportional);
+        if (txtPidRateRollProportional != null) {
+            txtPidRateRollProportional.init(
+                    PID.PID_RATE_ROLL_PROP_DENOM,
+                    PID.PID_RATE_ROLL_PROP_MAX,
+                    PID.PID_RATE_ROLL_PROP_STEP,
+                    PID.PID_RATE_ROLL_PROP_DFS,
+                    getString(R.string.PID_NAME_RRP),
+                    "RollRatePID", "Kp");
+        }
         mPidTexts.add(txtPidRateRollProportional);
 
-        PidTextView txtPidRatePitchProportional = (PidTextView) findViewById(R.id.txtRatePitchProportional);
-        txtPidRatePitchProportional.init(
-                PID.PID_RATE_PITCH_PROP_DENOM,
-                PID.PID_RATE_PITCH_PROP_MAX,
-                PID.PID_RATE_PITCH_PROP_STEP,
-                PID.PID_RATE_PITCH_PROP_DFS,
-                getString(R.string.PID_NAME_RPP),
-                "PitchRatePID", "Kp");
+        PidTextView txtPidRatePitchProportional =
+                (PidTextView) findViewById(R.id.txtRatePitchProportional);
+        if (txtPidRatePitchProportional != null) {
+            txtPidRatePitchProportional.init(
+                    PID.PID_RATE_PITCH_PROP_DENOM,
+                    PID.PID_RATE_PITCH_PROP_MAX,
+                    PID.PID_RATE_PITCH_PROP_STEP,
+                    PID.PID_RATE_PITCH_PROP_DFS,
+                    getString(R.string.PID_NAME_RPP),
+                    "PitchRatePID", "Kp");
+        }
         mPidTexts.add(txtPidRatePitchProportional);
 
-        PidTextView txtPidRateYawProportional = (PidTextView) findViewById(R.id.txtRateYawProportional);
-        txtPidRateYawProportional.init(
-                PID.PID_RATE_YAW_PROP_DENOM,
-                PID.PID_RATE_YAW_PROP_MAX,
-                PID.PID_RATE_YAW_PROP_STEP,
-                PID.PID_RATE_YAW_PROP_DFS,
-                getString(R.string.PID_NAME_RYP),
-                "YawRatePID", "Kp");
+        PidTextView txtPidRateYawProportional =
+                (PidTextView) findViewById(R.id.txtRateYawProportional);
+        if (txtPidRateYawProportional != null) {
+            txtPidRateYawProportional.init(
+                    PID.PID_RATE_YAW_PROP_DENOM,
+                    PID.PID_RATE_YAW_PROP_MAX,
+                    PID.PID_RATE_YAW_PROP_STEP,
+                    PID.PID_RATE_YAW_PROP_DFS,
+                    getString(R.string.PID_NAME_RYP),
+                    "YawRatePID", "Kp");
+        }
         mPidTexts.add(txtPidRateYawProportional);
 
-        PidTextView txtPidRateRollIntegral = (PidTextView) findViewById(R.id.txtRateRollIntegral);
-        txtPidRateRollIntegral.init(
-                PID.PID_RATE_ROLL_INTE_DENOM,
-                PID.PID_RATE_ROLL_INTE_MAX,
-                PID.PID_RATE_ROLL_INTE_STEP,
-                PID.PID_RATE_ROLL_INTE_DFS,
-                getString(R.string.PID_NAME_RRI),
-                "RollRatePID", "Ki");
+        PidTextView txtPidRateRollIntegral =
+                (PidTextView) findViewById(R.id.txtRateRollIntegral);
+        if (txtPidRateRollIntegral != null) {
+            txtPidRateRollIntegral.init(
+                    PID.PID_RATE_ROLL_INTE_DENOM,
+                    PID.PID_RATE_ROLL_INTE_MAX,
+                    PID.PID_RATE_ROLL_INTE_STEP,
+                    PID.PID_RATE_ROLL_INTE_DFS,
+                    getString(R.string.PID_NAME_RRI),
+                    "RollRatePID", "Ki");
+        }
         mPidTexts.add(txtPidRateRollIntegral);
 
-        PidTextView txtPidRatePitchIntegral = (PidTextView) findViewById(R.id.txtRatePitchIntegral);
-        txtPidRatePitchIntegral.init(
-                PID.PID_RATE_PITCH_INTE_DENOM,
-                PID.PID_RATE_PITCH_INTE_MAX,
-                PID.PID_RATE_PITCH_INTE_STEP,
-                PID.PID_RATE_PITCH_INTE_DFS,
-                getString(R.string.PID_NAME_RPI),
-                "PitchRatePID", "Ki");
+        PidTextView txtPidRatePitchIntegral =
+                (PidTextView) findViewById(R.id.txtRatePitchIntegral);
+        if (txtPidRatePitchIntegral != null) {
+            txtPidRatePitchIntegral.init(
+                    PID.PID_RATE_PITCH_INTE_DENOM,
+                    PID.PID_RATE_PITCH_INTE_MAX,
+                    PID.PID_RATE_PITCH_INTE_STEP,
+                    PID.PID_RATE_PITCH_INTE_DFS,
+                    getString(R.string.PID_NAME_RPI),
+                    "PitchRatePID", "Ki");
+        }
         mPidTexts.add(txtPidRatePitchIntegral);
 
-        PidTextView txtPidRateYawIntegral = (PidTextView) findViewById(R.id.txtRateYawIntegral);
-        txtPidRateYawIntegral.init(
-                PID.PID_RATE_YAW_INTE_DENOM,
-                PID.PID_RATE_YAW_INTE_MAX,
-                PID.PID_RATE_YAW_INTE_STEP,
-                PID.PID_RATE_YAW_INTE_DFS,
-                getString(R.string.PID_NAME_RYI),
-                "YawRatePID", "Ki");
+        PidTextView txtPidRateYawIntegral =
+                (PidTextView) findViewById(R.id.txtRateYawIntegral);
+        if (txtPidRateYawIntegral != null) {
+            txtPidRateYawIntegral.init(
+                    PID.PID_RATE_YAW_INTE_DENOM,
+                    PID.PID_RATE_YAW_INTE_MAX,
+                    PID.PID_RATE_YAW_INTE_STEP,
+                    PID.PID_RATE_YAW_INTE_DFS,
+                    getString(R.string.PID_NAME_RYI),
+                    "YawRatePID", "Ki");
+        }
         mPidTexts.add(txtPidRateYawIntegral);
 
-        PidTextView txtPidRateRollDerivative = (PidTextView) findViewById(R.id.txtRateRollDerivative);
-        txtPidRateRollDerivative.init(
-                PID.PID_RATE_ROLL_DERI_DENOM,
-                PID.PID_RATE_ROLL_DERI_MAX,
-                PID.PID_RATE_ROLL_DERI_STEP,
-                PID.PID_RATE_ROLL_DERI_DFS,
-                getString(R.string.PID_NAME_RRD),
-                "RollRatePID", "Kd");
+        PidTextView txtPidRateRollDerivative =
+                (PidTextView) findViewById(R.id.txtRateRollDerivative);
+        if (txtPidRateRollDerivative != null) {
+            txtPidRateRollDerivative.init(
+                    PID.PID_RATE_ROLL_DERI_DENOM,
+                    PID.PID_RATE_ROLL_DERI_MAX,
+                    PID.PID_RATE_ROLL_DERI_STEP,
+                    PID.PID_RATE_ROLL_DERI_DFS,
+                    getString(R.string.PID_NAME_RRD),
+                    "RollRatePID", "Kd");
+        }
         mPidTexts.add(txtPidRateRollDerivative);
 
-        PidTextView txtPidRatePitchDerivative = (PidTextView) findViewById(R.id.txtRatePitchDerivative);
-        txtPidRatePitchDerivative.init(
-                PID.PID_RATE_PITCH_DERI_DENOM,
-                PID.PID_RATE_PITCH_DERI_MAX,
-                PID.PID_RATE_PITCH_DERI_STEP,
-                PID.PID_RATE_PITCH_DERI_DFS,
-                getString(R.string.PID_NAME_RPD),
-                "PitchRatePID", "Kd");
+        PidTextView txtPidRatePitchDerivative =
+                (PidTextView) findViewById(R.id.txtRatePitchDerivative);
+        if (txtPidRatePitchDerivative != null) {
+            txtPidRatePitchDerivative.init(
+                    PID.PID_RATE_PITCH_DERI_DENOM,
+                    PID.PID_RATE_PITCH_DERI_MAX,
+                    PID.PID_RATE_PITCH_DERI_STEP,
+                    PID.PID_RATE_PITCH_DERI_DFS,
+                    getString(R.string.PID_NAME_RPD),
+                    "PitchRatePID", "Kd");
+        }
         mPidTexts.add(txtPidRatePitchDerivative);
 
-        PidTextView txtPidRateYawDerivative = (PidTextView) findViewById(R.id.txtRateYawDerivative);
-        txtPidRateYawDerivative.init(
-                PID.PID_RATE_YAW_DERI_DENOM,
-                PID.PID_RATE_YAW_DERI_MAX,
-                PID.PID_RATE_YAW_DERI_STEP,
-                PID.PID_RATE_YAW_DERI_DFS,
-                getString(R.string.PID_NAME_RPD),
-                "YawRatePID", "Kd");
+        PidTextView txtPidRateYawDerivative =
+                (PidTextView) findViewById(R.id.txtRateYawDerivative);
+        if (txtPidRateYawDerivative != null) {
+            txtPidRateYawDerivative.init(
+                    PID.PID_RATE_YAW_DERI_DENOM,
+                    PID.PID_RATE_YAW_DERI_MAX,
+                    PID.PID_RATE_YAW_DERI_STEP,
+                    PID.PID_RATE_YAW_DERI_DFS,
+                    getString(R.string.PID_NAME_RPD),
+                    "YawRatePID", "Kd");
+        }
         mPidTexts.add(txtPidRateYawDerivative);
 
-        PidTextView txtPidRollProportional = (PidTextView) findViewById(R.id.txtAttitudeRollProportional);
-        txtPidRollProportional.init(
-                PID.PID_ROLL_PROP_DENOM,
-                PID.PID_ROLL_PROP_MAX,
-                PID.PID_ROLL_PROP_STEP,
-                PID.PID_ROLL_PROP_DFS,
-                getString(R.string.PID_NAME_ARP),
-                "RollPI", "Kp");
+        PidTextView txtPidRollProportional =
+                (PidTextView) findViewById(R.id.txtAttitudeRollProportional);
+        if (txtPidRollProportional != null) {
+            txtPidRollProportional.init(
+                    PID.PID_ROLL_PROP_DENOM,
+                    PID.PID_ROLL_PROP_MAX,
+                    PID.PID_ROLL_PROP_STEP,
+                    PID.PID_ROLL_PROP_DFS,
+                    getString(R.string.PID_NAME_ARP),
+                    "RollPI", "Kp");
+        }
         mPidTexts.add(txtPidRollProportional);
 
-        PidTextView txtPidPitchProportional = (PidTextView) findViewById(R.id.txtAttitudePitchProportional);
-        txtPidPitchProportional.init(
-                PID.PID_PITCH_PROP_DENOM,
-                PID.PID_PITCH_PROP_MAX,
-                PID.PID_PITCH_PROP_STEP,
-                PID.PID_PITCH_PROP_DFS,
-                getString(R.string.PID_NAME_APP),
-                "PitchPI", "Kp");
+        PidTextView txtPidPitchProportional =
+                (PidTextView) findViewById(R.id.txtAttitudePitchProportional);
+        if (txtPidPitchProportional != null) {
+            txtPidPitchProportional.init(
+                    PID.PID_PITCH_PROP_DENOM,
+                    PID.PID_PITCH_PROP_MAX,
+                    PID.PID_PITCH_PROP_STEP,
+                    PID.PID_PITCH_PROP_DFS,
+                    getString(R.string.PID_NAME_APP),
+                    "PitchPI", "Kp");
+        }
         mPidTexts.add(txtPidPitchProportional);
 
-        PidTextView txtPidYawProportional = (PidTextView) findViewById(R.id.txtAttitudeYawProportional);
-        txtPidYawProportional.init(
-                PID.PID_YAW_PROP_DENOM,
-                PID.PID_YAW_PROP_MAX,
-                PID.PID_YAW_PROP_STEP,
-                PID.PID_YAW_PROP_DFS,
-                getString(R.string.PID_NAME_AYP),
-                "YawPI", "Kp");
+        PidTextView txtPidYawProportional =
+                (PidTextView) findViewById(R.id.txtAttitudeYawProportional);
+        if (txtPidYawProportional != null) {
+            txtPidYawProportional.init(
+                    PID.PID_YAW_PROP_DENOM,
+                    PID.PID_YAW_PROP_MAX,
+                    PID.PID_YAW_PROP_STEP,
+                    PID.PID_YAW_PROP_DFS,
+                    getString(R.string.PID_NAME_AYP),
+                    "YawPI", "Kp");
+        }
         mPidTexts.add(txtPidYawProportional);
 
-        PidTextView txtPidRollIntegral = (PidTextView) findViewById(R.id.txtAttitudeRollIntegral);
-        txtPidRollIntegral.init(
-                PID.PID_ROLL_INTE_DENOM,
-                PID.PID_ROLL_INTE_MAX,
-                PID.PID_ROLL_INTE_STEP,
-                PID.PID_ROLL_INTE_DFS,
-                getString(R.string.PID_NAME_ARI),
-                "RollPI", "Ki");
+        PidTextView txtPidRollIntegral =
+                (PidTextView) findViewById(R.id.txtAttitudeRollIntegral);
+        if (txtPidRollIntegral != null) {
+            txtPidRollIntegral.init(
+                    PID.PID_ROLL_INTE_DENOM,
+                    PID.PID_ROLL_INTE_MAX,
+                    PID.PID_ROLL_INTE_STEP,
+                    PID.PID_ROLL_INTE_DFS,
+                    getString(R.string.PID_NAME_ARI),
+                    "RollPI", "Ki");
+        }
         mPidTexts.add(txtPidRollIntegral);
 
-        PidTextView txtPidPitchIntegral = (PidTextView) findViewById(R.id.txtAttitudePitchIntegral);
-        txtPidPitchIntegral.init(
-                PID.PID_PITCH_INTE_DENOM,
-                PID.PID_PITCH_INTE_MAX,
-                PID.PID_PITCH_INTE_STEP,
-                PID.PID_PITCH_INTE_DFS,
-                getString(R.string.PID_NAME_API),
-                "PitchPI", "Ki");
+        PidTextView txtPidPitchIntegral =
+                (PidTextView) findViewById(R.id.txtAttitudePitchIntegral);
+        if (txtPidPitchIntegral != null) {
+            txtPidPitchIntegral.init(
+                    PID.PID_PITCH_INTE_DENOM,
+                    PID.PID_PITCH_INTE_MAX,
+                    PID.PID_PITCH_INTE_STEP,
+                    PID.PID_PITCH_INTE_DFS,
+                    getString(R.string.PID_NAME_API),
+                    "PitchPI", "Ki");
+        }
         mPidTexts.add(txtPidPitchIntegral);
 
-        PidTextView txtPidYawIntegral = (PidTextView) findViewById(R.id.txtAttitudeYawIntegral);
-        txtPidYawIntegral.init(
-                PID.PID_YAW_INTE_DENOM,
-                PID.PID_YAW_INTE_MAX,
-                PID.PID_YAW_INTE_STEP,
-                PID.PID_YAW_INTE_DFS,
-                getString(R.string.PID_NAME_AYI),
-                "YawPI", "Ki");
+        PidTextView txtPidYawIntegral =
+                (PidTextView) findViewById(R.id.txtAttitudeYawIntegral);
+        if (txtPidYawIntegral != null) {
+            txtPidYawIntegral.init(
+                    PID.PID_YAW_INTE_DENOM,
+                    PID.PID_YAW_INTE_MAX,
+                    PID.PID_YAW_INTE_STEP,
+                    PID.PID_YAW_INTE_DFS,
+                    getString(R.string.PID_NAME_AYI),
+                    "YawPI", "Ki");
+        }
         mPidTexts.add(txtPidYawIntegral);
 
     }
@@ -1000,77 +1093,97 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         mVerticalPidTexts = new HashSet<PidTextView>();
 
-        PidTextView txtVerticalAltitudeProportional = (PidTextView) findViewById(R.id.txtVerticalAltitudeProportional);
-        txtVerticalAltitudeProportional.init(
-                PID.PID_VERTICAL_ALTI_PROP_DENOM,
-                PID.PID_VERTICAL_ALTI_PROP_MAX,
-                PID.PID_VERTICAL_ALTI_PROP_STEP,
-                PID.PID_VERTICAL_ALTI_PROP_DFS,
-                getString(R.string.VPID_NAME_ALP),
-                "VerticalPosP", "");
+        PidTextView txtVerticalAltitudeProportional =
+                (PidTextView) findViewById(R.id.txtVerticalAltitudeProportional);
+        if (txtVerticalAltitudeProportional != null) {
+            txtVerticalAltitudeProportional.init(
+                    PID.PID_VERTICAL_ALTI_PROP_DENOM,
+                    PID.PID_VERTICAL_ALTI_PROP_MAX,
+                    PID.PID_VERTICAL_ALTI_PROP_STEP,
+                    PID.PID_VERTICAL_ALTI_PROP_DFS,
+                    getString(R.string.VPID_NAME_ALP),
+                    "VerticalPosP", "");
+        }
         mVerticalPidTexts.add(txtVerticalAltitudeProportional);
 
-        PidTextView txtVerticalExponential = (PidTextView) findViewById(R.id.txtVerticalExponential);
-        txtVerticalExponential.init(
-                PID.PID_VERTICAL_EXPO_DENOM,
-                PID.PID_VERTICAL_EXPO_MAX,
-                PID.PID_VERTICAL_EXPO_STEP,
-                PID.PID_VERTICAL_EXPO_DFS,
-                getString(R.string.VPID_NAME_EXP),
-                "ThrustExp", "",
-                UAVTalkXMLObject.FIELDTYPE_UINT8);
+        PidTextView txtVerticalExponential =
+                (PidTextView) findViewById(R.id.txtVerticalExponential);
+        if (txtVerticalExponential != null) {
+            txtVerticalExponential.init(
+                    PID.PID_VERTICAL_EXPO_DENOM,
+                    PID.PID_VERTICAL_EXPO_MAX,
+                    PID.PID_VERTICAL_EXPO_STEP,
+                    PID.PID_VERTICAL_EXPO_DFS,
+                    getString(R.string.VPID_NAME_EXP),
+                    "ThrustExp", "",
+                    UAVTalkXMLObject.FIELDTYPE_UINT8);
+        }
         mVerticalPidTexts.add(txtVerticalExponential);
 
-        PidTextView txtVerticalThrustRate = (PidTextView) findViewById(R.id.txtVerticalThrustRate);
-        txtVerticalThrustRate.init(
-                PID.PID_VERTICAL_THRUST_R_DENOM,
-                PID.PID_VERTICAL_THRUST_R_MAX,
-                PID.PID_VERTICAL_THRUST_R_STEP,
-                PID.PID_VERTICAL_THRUST_R_DFS,
-                getString(R.string.VPID_NAME_THR),
-                "ThrustRate", "");
+        PidTextView txtVerticalThrustRate =
+                (PidTextView) findViewById(R.id.txtVerticalThrustRate);
+        if (txtVerticalThrustRate != null) {
+            txtVerticalThrustRate.init(
+                    PID.PID_VERTICAL_THRUST_R_DENOM,
+                    PID.PID_VERTICAL_THRUST_R_MAX,
+                    PID.PID_VERTICAL_THRUST_R_STEP,
+                    PID.PID_VERTICAL_THRUST_R_DFS,
+                    getString(R.string.VPID_NAME_THR),
+                    "ThrustRate", "");
+        }
         mVerticalPidTexts.add(txtVerticalThrustRate);
 
-        PidTextView txtVerticalVelocityBeta = (PidTextView) findViewById(R.id.txtVerticalVelocityBeta);
-        txtVerticalVelocityBeta.init(
-                PID.PID_VERTICAL_VELO_BETA_DENOM,
-                PID.PID_VERTICAL_VELO_BETA_MAX,
-                PID.PID_VERTICAL_VELO_BETA_STEP,
-                PID.PID_VERTICAL_VELO_BETA_DFS,
-                getString(R.string.VPID_NAME_VEB),
-                "VerticalVelPID", "Beta");
+        PidTextView txtVerticalVelocityBeta =
+                (PidTextView) findViewById(R.id.txtVerticalVelocityBeta);
+        if (txtVerticalVelocityBeta != null) {
+            txtVerticalVelocityBeta.init(
+                    PID.PID_VERTICAL_VELO_BETA_DENOM,
+                    PID.PID_VERTICAL_VELO_BETA_MAX,
+                    PID.PID_VERTICAL_VELO_BETA_STEP,
+                    PID.PID_VERTICAL_VELO_BETA_DFS,
+                    getString(R.string.VPID_NAME_VEB),
+                    "VerticalVelPID", "Beta");
+        }
         mVerticalPidTexts.add(txtVerticalVelocityBeta);
 
-        PidTextView txtVerticalVelocityDerivative = (PidTextView) findViewById(R.id.txtVerticalVelocityDerivative);
-        txtVerticalVelocityDerivative.init(
-                PID.PID_VERTICAL_VELO_DERI_DENOM,
-                PID.PID_VERTICAL_VELO_DERI_MAX,
-                PID.PID_VERTICAL_VELO_DERI_STEP,
-                PID.PID_VERTICAL_VELO_DERI_DFS,
-                getString(R.string.VPID_NAME_VED),
-                "VerticalVelPID", "Kd");
+        PidTextView txtVerticalVelocityDerivative =
+                (PidTextView) findViewById(R.id.txtVerticalVelocityDerivative);
+        if (txtVerticalVelocityDerivative != null) {
+            txtVerticalVelocityDerivative.init(
+                    PID.PID_VERTICAL_VELO_DERI_DENOM,
+                    PID.PID_VERTICAL_VELO_DERI_MAX,
+                    PID.PID_VERTICAL_VELO_DERI_STEP,
+                    PID.PID_VERTICAL_VELO_DERI_DFS,
+                    getString(R.string.VPID_NAME_VED),
+                    "VerticalVelPID", "Kd");
+        }
         mVerticalPidTexts.add(txtVerticalVelocityDerivative);
 
-        PidTextView txtVerticalVelocityIntegral = (PidTextView) findViewById(R.id.txtVerticalVelocityIntegral);
-        txtVerticalVelocityIntegral.init(
-                PID.PID_VERTICAL_VELO_INTE_DENOM,
-                PID.PID_VERTICAL_VELO_INTE_MAX,
-                PID.PID_VERTICAL_VELO_INTE_STEP,
-                PID.PID_VERTICAL_VELO_INTE_DFS,
-                getString(R.string.VPID_NAME_VEI),
-                "VerticalVelPID", "Ki");
+        PidTextView txtVerticalVelocityIntegral =
+                (PidTextView) findViewById(R.id.txtVerticalVelocityIntegral);
+        if (txtVerticalVelocityIntegral != null) {
+            txtVerticalVelocityIntegral.init(
+                    PID.PID_VERTICAL_VELO_INTE_DENOM,
+                    PID.PID_VERTICAL_VELO_INTE_MAX,
+                    PID.PID_VERTICAL_VELO_INTE_STEP,
+                    PID.PID_VERTICAL_VELO_INTE_DFS,
+                    getString(R.string.VPID_NAME_VEI),
+                    "VerticalVelPID", "Ki");
+        }
         mVerticalPidTexts.add(txtVerticalVelocityIntegral);
 
-        PidTextView txtVerticalVelocityProportional = (PidTextView) findViewById(R.id.txtVerticalVelocityProportional);
-        txtVerticalVelocityProportional.init(
-                PID.PID_VERTICAL_VELO_PROP_DENOM,
-                PID.PID_VERTICAL_VELO_PROP_MAX,
-                PID.PID_VERTICAL_VELO_PROP_STEP,
-                PID.PID_VERTICAL_VELO_PROP_DFS,
-                getString(R.string.VPID_NAME_VEP),
-                "VerticalVelPID", "Kp");
+        PidTextView txtVerticalVelocityProportional =
+                (PidTextView) findViewById(R.id.txtVerticalVelocityProportional);
+        if (txtVerticalVelocityProportional != null) {
+            txtVerticalVelocityProportional.init(
+                    PID.PID_VERTICAL_VELO_PROP_DENOM,
+                    PID.PID_VERTICAL_VELO_PROP_MAX,
+                    PID.PID_VERTICAL_VELO_PROP_STEP,
+                    PID.PID_VERTICAL_VELO_PROP_DFS,
+                    getString(R.string.VPID_NAME_VEP),
+                    "VerticalVelPID", "Kp");
+        }
         mVerticalPidTexts.add(txtVerticalVelocityProportional);
-
     }
 
     @Override
@@ -1080,7 +1193,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
         mSerialModeUsed = sharedPref.getInt(getString(R.string.SETTINGS_SERIAL_MODE), 0);
         mBluetoothDeviceUsed = sharedPref.getString(getString(R.string.SETTINGS_BT_NAME), null);
-        mLoadedUavo = sharedPref.getString(getString(R.string.SETTINGS_UAVO_SOURCE), "uav-15.09");
+        mLoadedUavo = sharedPref.getString(getString(R.string.SETTINGS_UAVO_SOURCE), null);
         mColorfulPid = sharedPref.getBoolean(getString(R.string.SETTINGS_COLORFUL_PID), false);
     }
 
@@ -1092,14 +1205,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         mViews = new HashMap<>(NUM_OF_VIEWS);
         initViewDebug();
 
-        VisualLog.d("INIT", "" + initDone);
-
         copyAssets();
 
         SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
         mSerialModeUsed = sharedPref.getInt(getString(R.string.SETTINGS_SERIAL_MODE), 0);
         mBluetoothDeviceUsed = sharedPref.getString(getString(R.string.SETTINGS_BT_NAME), null);
-        mLoadedUavo = sharedPref.getString(getString(R.string.SETTINGS_UAVO_SOURCE), "uav-15.09");
+        mLoadedUavo = sharedPref.getString(getString(R.string.SETTINGS_UAVO_SOURCE), null);
         mColorfulPid = sharedPref.getBoolean(getString(R.string.SETTINGS_COLORFUL_PID), false);
 
         //debug view is initialized above
@@ -1114,19 +1225,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         initDone = true;
 
-        if (mBluetoothAdapter != null || !mBluetoothAdapter.isEnabled()) {
-            try {
-                this.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        SingleToast.makeText(getParent(), "To use Bluetooth, turn it on in your device.", Toast.LENGTH_LONG).show();
-                    }
-                });
-            } catch (RuntimeException e) {
-                VisualLog.d("RTE", "Toast not successful");
-            }
-        }
-
         initWarnDialog().show();
 
     }
@@ -1138,12 +1236,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
             AssetManager assets = getAssets();
 
-            String file = this.mLoadedUavo + ".zip";
+            String file = this.mLoadedUavo + getString(R.string.UAVO_FILE_EXTENSION);
             ZipInputStream zis = null;
             MessageDigest crypt = null;
             MessageDigest cumucrypt = null;
             try {
-                InputStream is = openFileInput(UAVO_INTERNAL_PATH + "-" + file);
+                InputStream is =
+                        openFileInput(UAVO_INTERNAL_PATH + getString(R.string.DASH) + file);
                 zis = new ZipInputStream(new BufferedInputStream(is));
                 ZipEntry ze;
 
@@ -1173,7 +1272,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 crypt = MessageDigest.getInstance("SHA-1");     //single files hash
                 cumucrypt = MessageDigest.getInstance("SHA-1"); //cumulative hash
                 cumucrypt.reset();
-                for (String xmle : files.values()) {             //cycle over the sorted files
+                for (String xmle : files.values()) {            //cycle over the sorted files
                     crypt.reset();
                     crypt.update(xmle.getBytes());              //hash the file
                     //update a hash over the file hash string representations (yes.)
@@ -1183,10 +1282,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 mUavoLongHash = H.bytesToHex(cumucrypt.digest()).toLowerCase();
                 VisualLog.d("SHA1", H.bytesToHex(cumucrypt.digest()).toLowerCase());
 
-            } catch (IOException | SAXException | ParserConfigurationException e) {
-                e.printStackTrace();
-            } catch (NoSuchAlgorithmException e) {
-                e.printStackTrace();
+            } catch (IOException | SAXException
+                    | ParserConfigurationException | NoSuchAlgorithmException e) {
+                VisualLog.e("UAVO", "UAVO Load Error", e);
             } finally {
                 try {
                     if (zis != null) zis.close();
@@ -1208,7 +1306,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         super.onStart();
 
         if (mPermissionIntent == null)
-            mPermissionIntent = PendingIntent.getBroadcast(this, 0, new Intent(ACTION_USB_PERMISSION), 0);
+            mPermissionIntent =
+                    PendingIntent.getBroadcast(this, 0, new Intent(ACTION_USB_PERMISSION), 0);
 
         mUsbManager = (UsbManager) getSystemService(Context.USB_SERVICE);
 
@@ -1263,8 +1362,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         unregisterReceiver(mUsbReceiver);
         setUsbInterface(null, null);
         mPermissionIntent = null;
-
-        VisualLog.d("onStop", "onStop");
 
         super.onStop();
     }
@@ -1324,7 +1421,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
                 String btmac = getString(R.string.EMPTY_STRING);
 
-                Set<android.bluetooth.BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
+                Set<android.bluetooth.BluetoothDevice> pairedDevices =
+                        mBluetoothAdapter.getBondedDevices();
                 // If there are paired devices
                 if (pairedDevices.size() > 0) {
                     // Loop through paired devices
@@ -1355,7 +1453,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         break;
                 }
 
-                if (spnUavoSource.getSelectedItem() != null && !spnUavoSource.getSelectedItem().toString().equals(mLoadedUavo)) {
+                if (spnUavoSource.getSelectedItem() != null
+                        && !spnUavoSource.getSelectedItem().toString().equals(mLoadedUavo)) {
                     mLoadedUavo = spnUavoSource.getSelectedItem().toString();
                     VisualLog.d("UAVSource", mLoadedUavo + "  " + mLoadedUavo);
 
@@ -1463,20 +1562,25 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     imgBluetooth = (ImageView) findViewById(R.id.imgBluetooth);
                     imgUSB = (ImageView) findViewById(R.id.imgUSB);
 
-                    if (mColorfulPid) {
-                        findViewById(R.id.lloOuterPid).setBackground(
-                                ContextCompat.getDrawable(getApplicationContext(),
-                                        R.drawable.border_top_yellow));
-                        findViewById(R.id.lloInnerPid).setBackground(
-                                ContextCompat.getDrawable(getApplicationContext(),
-                                        R.drawable.border_top_blue));
-                    } else {
-                        findViewById(R.id.lloOuterPid).setBackground(
-                                ContextCompat.getDrawable(getApplicationContext(),
-                                        R.drawable.border_top));
-                        findViewById(R.id.lloInnerPid).setBackground(
-                                ContextCompat.getDrawable(getApplicationContext(),
-                                        R.drawable.border_top));
+                    final View lloOuterPid = findViewById(R.id.lloOuterPid);
+                    final View lloInnerPid = findViewById(R.id.lloInnerPid);
+
+                    if (lloInnerPid != null && lloOuterPid != null) {
+                        if (mColorfulPid) {
+                            lloOuterPid.setBackground(
+                                    ContextCompat.getDrawable(getApplicationContext(),
+                                            R.drawable.border_top_yellow));
+                            lloInnerPid.setBackground(
+                                    ContextCompat.getDrawable(getApplicationContext(),
+                                            R.drawable.border_top_blue));
+                        } else {
+                            lloOuterPid.setBackground(
+                                    ContextCompat.getDrawable(getApplicationContext(),
+                                            R.drawable.border_top));
+                            lloInnerPid.setBackground(
+                                    ContextCompat.getDrawable(getApplicationContext(),
+                                            R.drawable.border_top));
+                        }
                     }
                 } catch (NullPointerException e1) {
                     VisualLog.d("MainActivity", "VIEW_PID", e1);
@@ -1495,20 +1599,25 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     imgBluetooth = (ImageView) findViewById(R.id.imgBluetooth);
                     imgUSB = (ImageView) findViewById(R.id.imgUSB);
 
-                    if (mColorfulPid) {
-                        findViewById(R.id.lloStickResponse).setBackground(
-                                ContextCompat.getDrawable(getApplicationContext(),
-                                        R.drawable.border_top_yellow));
-                        findViewById(R.id.lloControlCoeff).setBackground(
-                                ContextCompat.getDrawable(getApplicationContext(),
-                                        R.drawable.border_top_blue));
-                    } else {
-                        findViewById(R.id.lloStickResponse).setBackground(
-                                ContextCompat.getDrawable(getApplicationContext(),
-                                        R.drawable.border_top));
-                        findViewById(R.id.lloControlCoeff).setBackground(
-                                ContextCompat.getDrawable(getApplicationContext(),
-                                        R.drawable.border_top));
+                    final View lloStickResponse = findViewById(R.id.lloStickResponse);
+                    final View lloControllCoeff = findViewById(R.id.lloControlCoeff);
+
+                    if (lloStickResponse != null && lloControllCoeff != null) {
+                        if (mColorfulPid) {
+                            lloStickResponse.setBackground(
+                                    ContextCompat.getDrawable(getApplicationContext(),
+                                            R.drawable.border_top_yellow));
+                            lloControllCoeff.setBackground(
+                                    ContextCompat.getDrawable(getApplicationContext(),
+                                            R.drawable.border_top_blue));
+                        } else {
+                            lloStickResponse.setBackground(
+                                    ContextCompat.getDrawable(getApplicationContext(),
+                                            R.drawable.border_top));
+                            lloControllCoeff.setBackground(
+                                    ContextCompat.getDrawable(getApplicationContext(),
+                                            R.drawable.border_top));
+                        }
                     }
                 } catch (NullPointerException e2) {
                     VisualLog.d("MainActivity", "VIEW_VPID", e2);
@@ -1596,7 +1705,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         new MaterialFilePicker()
                 .withActivity(this)
                 .withRequestCode(CALLBACK_FILEPICKER)
-                .withFilter(Pattern.compile(".*\\.zip$")) // Filtering files and directories by file name using regexp
+                // Filtering files and directories by file name using regexp
+                .withFilter(Pattern.compile(".*\\.zip$"))
                 .withFilterDirectories(false) // Set directories filterable (false by default)
                 .withHiddenFiles(false) // Show hidden files and folders
                 .start();
@@ -1638,7 +1748,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 
     public void onBatteryCapacityClick(View v) {
-        String moduleEnabled = mPollThread.getData("HwSettings", "OptionalModules", "Battery", true).toString();
+        String moduleEnabled =
+                mPollThread.getData("HwSettings", "OptionalModules", "Battery", true).toString();
         if (moduleEnabled.equals("Enabled")) {
             new IntegerInputAlertDialog(this)
                     .withPresetText(txtHealthAlertDialogBatteryCapacity.getText().toString())
@@ -1675,7 +1786,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     public void onBatteryCellsClick(View v) {
-        String moduleEnabled = mPollThread.getData("HwSettings", "OptionalModules", "Battery", true).toString();
+        String moduleEnabled =
+                mPollThread.getData("HwSettings", "OptionalModules", "Battery", true).toString();
         if (moduleEnabled.equals("Enabled")) {
             new IntegerInputAlertDialog(this)
                     .withPresetText(txtHealthAlertDialogBatteryCells.getText().toString())
@@ -1711,7 +1823,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         .withField("FusionAlgorithm")
                         .show();
             } else {
-                SingleToast.makeText(this, getString(R.string.CHANGE_FUSION_ALGO_DISARMED) + " " + armingState,
+                SingleToast.makeText(this,
+                        getString(R.string.CHANGE_FUSION_ALGO_DISARMED) + " " + armingState,
                         Toast.LENGTH_LONG).show();
             }
         } else {
@@ -1764,19 +1877,28 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
                                 byte[] buffer = H.reverse4bytes(H.floatToByteArray(f));
 
-                                UAVTalkDeviceHelper.updateSettingsObject(oTree, "AltitudeHoldSettings", 0, ptv.getField(), ptv.getElement(), buffer);
+                                UAVTalkDeviceHelper.updateSettingsObject(
+                                        oTree, "AltitudeHoldSettings", 0,
+                                        ptv.getField(), ptv.getElement(), buffer);
                             } catch (NumberFormatException e) {
-                                VisualLog.e("MainActivity", "Error parsing float (vertical): " + ptv.getField() + " " + ptv.getElement() + " " + ptv.getText().toString());
+                                VisualLog.e("MainActivity",
+                                        "Error parsing float (vertical): " + ptv.getField() + " " +
+                                                ptv.getElement() + " " + ptv.getText().toString());
                             }
                             break;
                         case (UAVTalkXMLObject.FIELDTYPE_UINT8):
                             try {
                                 byte[] buffer = new byte[1];
                                 VisualLog.d("SDFG", ptv.getText().toString());
-                                buffer[0] = (byte) (Integer.parseInt(ptv.getText().toString()) & 0xff);
-                                UAVTalkDeviceHelper.updateSettingsObject(oTree, "AltitudeHoldSettings", 0, ptv.getField(), ptv.getElement(), buffer);
+                                buffer[0] =
+                                        (byte) (Integer.parseInt(ptv.getText().toString()) & 0xff);
+                                UAVTalkDeviceHelper.updateSettingsObject(
+                                        oTree, "AltitudeHoldSettings", 0, ptv.getField(),
+                                        ptv.getElement(), buffer);
                             } catch (NumberFormatException e) {
-                                VisualLog.e("MainActivity", "Error parsing uint8 (vertical): " + ptv.getField() + " " + ptv.getElement() + " " + ptv.getText().toString());
+                                VisualLog.e("MainActivity",
+                                        "Error parsing uint8 (vertical): " + ptv.getField() + " " +
+                                                ptv.getElement() + " " + ptv.getText().toString());
                             }
                             break;
                         default:
@@ -1832,9 +1954,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
                         byte[] buffer = H.reverse4bytes(H.floatToByteArray(f));
 
-                        UAVTalkDeviceHelper.updateSettingsObject(oTree, mCurrentStabilizationBank, 0, ptv.getField(), ptv.getElement(), buffer);
+                        UAVTalkDeviceHelper.updateSettingsObject(
+                                oTree, mCurrentStabilizationBank, 0, ptv.getField(),
+                                ptv.getElement(), buffer);
                     } catch (NumberFormatException e) {
-                        VisualLog.e("MainActivity", "Error parsing float: " + ptv.getField() + " " + ptv.getElement() + " " + ptv.getText().toString());
+                        VisualLog.e("MainActivity",
+                                "Error parsing float: " + ptv.getField() + " " + ptv.getElement() +
+                                        " " + ptv.getText().toString());
                     }
                 }
 
@@ -1998,34 +2124,32 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     protected void resetMainView() {
-        txtAtti.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.rounded_corner_uninitialised));
-        txtStab.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.rounded_corner_uninitialised));
-        txtPath.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.rounded_corner_uninitialised));
-        txtPlan.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.rounded_corner_uninitialised));
+        Context c = getApplicationContext();
+        txtAtti.setBackground(ContextCompat.getDrawable(c, R.drawable.rounded_corner_unini));
+        txtStab.setBackground(ContextCompat.getDrawable(c, R.drawable.rounded_corner_unini));
+        txtPath.setBackground(ContextCompat.getDrawable(c, R.drawable.rounded_corner_unini));
+        txtPlan.setBackground(ContextCompat.getDrawable(c, R.drawable.rounded_corner_unini));
 
         txtGPSSatsInView.setText(R.string.EMPTY_STRING);
-        txtGPS.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.rounded_corner_uninitialised));
-        txtSensor.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.rounded_corner_uninitialised));
-        txtAirspd.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.rounded_corner_uninitialised));
-        txtMag.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.rounded_corner_uninitialised));
+        txtGPS.setBackground(ContextCompat.getDrawable(c, R.drawable.rounded_corner_unini));
+        txtSensor.setBackground(ContextCompat.getDrawable(c, R.drawable.rounded_corner_unini));
+        txtAirspd.setBackground(ContextCompat.getDrawable(c, R.drawable.rounded_corner_unini));
+        txtMag.setBackground(ContextCompat.getDrawable(c, R.drawable.rounded_corner_unini));
 
-        txtInput.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.rounded_corner_uninitialised));
-        txtOutput.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.rounded_corner_uninitialised));
-        txtI2C.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.rounded_corner_uninitialised));
-        txtTelemetry.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.rounded_corner_uninitialised));
+        txtInput.setBackground(ContextCompat.getDrawable(c, R.drawable.rounded_corner_unini));
+        txtOutput.setBackground(ContextCompat.getDrawable(c, R.drawable.rounded_corner_unini));
+        txtI2C.setBackground(ContextCompat.getDrawable(c, R.drawable.rounded_corner_unini));
+        txtTelemetry.setBackground(ContextCompat.getDrawable(c, R.drawable.rounded_corner_unini));
 
-        //txtFlightTelemetry.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.rounded_corner_uninitialised));
-        //txtGCSTelemetry.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.rounded_corner_uninitialised));
+        txtBatt.setBackground(ContextCompat.getDrawable(c, R.drawable.rounded_corner_unini));
+        txtTime.setBackground(ContextCompat.getDrawable(c, R.drawable.rounded_corner_unini));
+        txtConfig.setBackground(ContextCompat.getDrawable(c, R.drawable.rounded_corner_unini));
 
-        txtBatt.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.rounded_corner_uninitialised));
-        txtTime.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.rounded_corner_uninitialised));
-        txtConfig.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.rounded_corner_uninitialised));
-
-        txtBoot.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.rounded_corner_uninitialised));
-        txtMem.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.rounded_corner_uninitialised));
-        txtStack.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.rounded_corner_uninitialised));
-        txtEvent.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.rounded_corner_uninitialised));
-        txtCPU.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.rounded_corner_uninitialised));
+        txtBoot.setBackground(ContextCompat.getDrawable(c, R.drawable.rounded_corner_unini));
+        txtMem.setBackground(ContextCompat.getDrawable(c, R.drawable.rounded_corner_unini));
+        txtStack.setBackground(ContextCompat.getDrawable(c, R.drawable.rounded_corner_unini));
+        txtEvent.setBackground(ContextCompat.getDrawable(c, R.drawable.rounded_corner_unini));
+        txtCPU.setBackground(ContextCompat.getDrawable(c, R.drawable.rounded_corner_unini));
 
         txtArmed.setText(R.string.EMPTY_STRING);
 
@@ -2043,7 +2167,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     public void onPidGridNumberClick(View v) {
-        VisualLog.d("PID", v.toString());
         PidTextView p = (PidTextView) v;
         new PidInputAlertDialog(this)
                 .withStep(p.getStep())
@@ -2063,7 +2186,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     public void onVerticalPidGridNumberClick(View v) {
-        VisualLog.d("VPID", v.toString());
         PidTextView p = (PidTextView) v;
         new PidInputAlertDialog(this)
                 .withStep(p.getStep())

@@ -35,7 +35,7 @@
                     android:layout_height="fill_parent"
                     android:layout_margin="1dp"
                     android:layout_weight="0.75"
-                    android:background="@drawable/rounded_corner_uninitialised"
+                    android:background="@drawable/rounded_corner_unini"
                     android:gravity="center_vertical|center_horizontal"
                     android:text="@string/GPS"
                     android:textAlignment="center"
