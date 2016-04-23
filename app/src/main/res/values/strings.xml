@@ -1,74 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="google_app_id">lp2go-1230</string>
     <string name="app_name">LP2Go Alpha</string>
-    <string name="STAB">STAB</string>
-    <string name="ATTI">ATTI</string>
-    <string name="PATH">PATH</string>
-    <string name="PLAN">PLAN</string>
-    <string name="GPS">GPS</string>
-    <string name="MAG">MAG</string>
-    <string name="INPUT">INPUT</string>
-    <string name="OUTPUT">OUTPUT</string>
-    <string name="I2C">I2C</string>
-    <string name="TELEMETRY">TELEMETRY</string>
-    <string name="BATT">BATT</string>
-    <string name="TIME">TIME</string>
-    <string name="CONFIG">CONFIG</string>
-    <string name="BOOT">BOOT</string>
-    <string name="MEM">MEM</string>
-    <string name="STACK">STACK</string>
-    <string name="EVENT">EVENT</string>
-    <string name="CPU">CPU</string>
-    <string name="SENSOR">SENSOR</string>
-    <string name="AIRSPD">AIRSPD</string>
     <string name="CAPACITY_DIALOG_TITLE">Capacity (mAh)</string>
     <string name="CELLS_DIALOG_TITLE">Cells</string>
     <string name="OK_BUTTON">OK</string>
     <string name="CANCEL_BUTTON">Cancel</string>
-
-    <!-- Nav Drawer Menu Items -->
-    <string name="menu_main">Health</string>
-    <string name="menu_map">Map</string>
-    <string name="menu_objects">Objects</string>
-    <string name="menu_settings">Settings</string>
-    <string name="menu_logs">Logs</string>
-    <string name="menu_about">About</string>
-    <string name="menu_pid">PID Tuning</string>
-    <string name="menu_vpid">Altitude Hold</string>
-    <string name="menu_debug">Debug</string>
-
-
-    <!-- Nav Drawer List Item Icons -->
-    <!-- Keep them in order as the titles are in -->
-    <array name="nav_drawer_icons">
-        <item>@drawable/ic_notifications_on_24dp</item>
-        <item>@drawable/ic_public_24dp</item>
-        <item>@drawable/ic_now_widgets_24dp</item>
-        <item>@drawable/ic_settings_24dp</item>
-        <item>@drawable/ic_rate_review_24dp</item>
-        <item>@drawable/ic_info_outline_24dp</item>
-        <item>@drawable/ic_tune_24dp</item>
-        <item>@drawable/ic_vertical_align_center_black_128dp</item>
-        <item>@drawable/ic_cancel_128dp</item>
-    </array>
+    <string name="NOT_CONNECTED">Not connected.</string>
+    <string name="SAVE_BUTTON">Save</string>
+    <string name="UPLOAD_BUTTON">Upload</string>
 
     <!-- Content Description -->
     <string name="desc_list_item_icon">Item Icon</string>
 
-    <drawable name="ic_main">@drawable/rounded_corner_ok</drawable>
-    <drawable name="ic_map">@drawable/rounded_corner_ok</drawable>
-    <drawable name="ic_objects">@drawable/rounded_corner_ok</drawable>
-    <drawable name="ic_settings">@drawable/rounded_corner_ok</drawable>
-    <drawable name="ic_logs">@drawable/rounded_corner_ok</drawable>
-    <drawable name="ic_about">@drawable/rounded_corner_ok</drawable>
-    <drawable name="ic_pid">@drawable/rounded_corner_ok</drawable>
-    <string name="RUNNING_ON_ANDROID_VERSION">"Running on Android %1$s"</string>
-    <string name="LP2GO_RELEASE">"LP2Go Release %1$s (%2$d)"</string>
-    <string name="TAB">\u0009</string>
-    <string name="EMPTY_STRING" />
+    <string name="RUNNING_ON_ANDROID_VERSION">Running on Android %1$s</string>
+    <string name="LP2GO_RELEASE">LP2Go Release %1$s (%2$d)</string>
     <string name="MIME_APPLICATION_OCTETSTREAM">application/octet-stream</string>
     <string name="SHARE_LOG_TITLE">Share Log</string>
-    <string name="PLEASE_SET_A">"Please set a "</string>
+    <string name="PLEASE_SET_A">Please set a</string>
     <string name="GNU_WARNING">This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.</string>
     <string name="I_UNDERSTAND">I UNDERSTAND!</string>
     <string name="WARNING">WARNING</string>
@@ -77,9 +25,9 @@
     <string name="BT_DEVICE">Bluetooth Device</string>
     <string name="CHECK_PID_WARNING">PLEASE CHECK PIDs WITH GCS BEFORE FLYING!</string>
     <string name="CHANGE_FUSION_ALGO_DISARMED">Change of Fusion Algorithm only allowed while disarmed</string>
-    <string name="SAVED_PERSISTENT">"Saved to persistent storage. "</string>
-    <string name="PID_SENT">"Sent! Numbers should turn black now. "</string>
-    <string name="PID_LOADING">"Loading current PID. "</string>
+    <string name="SAVED_PERSISTENT">Saved to persistent storage.</string>
+    <string name="PID_SENT">Sent! Numbers should turn black now.</string>
+    <string name="PID_LOADING">Loading current PID.</string>
     <string name="CONNECTION_TYPE">Connection Type</string>
     <string name="BLUETOOTH_DEVICE">Bluetooth device</string>
     <string name="UAVO_SOURCE">UAVO Source</string>
@@ -90,43 +38,13 @@
     <string name="DOWNLOAD_PID_FROM_FC">Download PID from FC</string>
     <string name="SAVE_PID_PERSISTENT">Save PID persistent on FC</string>
     <string name="PID_BANK">Used PID Bank</string>
-    <string name="NOT_CONNECTED">Not connected.</string>
-    <string name="SAVE_BUTTON">Save</string>
-    <string name="UPLOAD_BUTTON">Upload</string>
-    <string name="PID_NAME_RRP">Rate Roll Proportional</string>
-    <string name="PID_NAME_RPP">Rate Pitch Proportional</string>
-    <string name="PID_NAME_RYP">Rate Yaw Proportional</string>
-    <string name="PID_NAME_RRI">Rate Roll Integral</string>
-    <string name="PID_NAME_RPI">Rate Pitch Integral</string>
-    <string name="PID_NAME_RYI">Rate Yaw Integral</string>
-    <string name="PID_NAME_ARP">Attitude Roll Proportional</string>
-    <string name="PID_NAME_APP">Attitude Pitch Proportional</string>
-    <string name="PID_NAME_RRD">Rate Roll Derivative</string>
-    <string name="PID_NAME_RPD">Rate Pitch Derivative</string>
-    <string name="PID_NAME_AYP">Attitude Yaw Proportional</string>
-    <string name="PID_NAME_ARI">Attitude Roll Integral</string>
-    <string name="PID_NAME_API">Attitude Pitch Integral</string>
-    <string name="PID_NAME_AYI">Attitude Yaw Integral</string>
-    <string name="MIME_APPLICATION_TEXT">text/plain</string>
-    <string name="VPID_NAME_ALP">Vertical Altitude Proportional</string>
-    <string name="VPID_NAME_EXP">Vertical Exponential</string>
-    <string name="VPID_NAME_THR">Vertical Thrust Rate</string>
-    <string name="VPID_NAME_VEB">Vertical Velocity Beta</string>
-    <string name="VPID_NAME_VED">Vertical Velocity Derivative</string>
-    <string name="VPID_NAME_VEI">Vertical Velocity Integral</string>
-    <string name="VPID_NAME_VEP">Vertical Velocity Proportional</string>
-    <string name="SPACE">" "</string>
-    <string name="LF">\n</string>
     <string name="UAVO_WARNING_A">Your flight controller is running a firmware that is not supported by your currently selected UAVO Source.</string>
     <string name="UAVO_WARNING_B">Go to \'Settings\' and load and/or select the correct UAVO object file.</string>
     <string name="UAVO_VERSION_FC">FC UAVO Version:</string>
     <string name="UAVO_VERSION">LP2Go UAVO Version:</string>
-    <string name="NULL">null</string>
     <string name="INFO">INFORMATION</string>
     <string name="UAVO_VERSION_OK">UAVO Version OK.</string>
-    <string name="DASH">-</string>
     <string name="USB">USB</string>
     <string name="BLUETOOTH_WARNING">To use Bluetooth, turn it on in your device.</string>
-    <string name="UAVO_FILE_EXTENSION">.zip</string>
 </resources>
 

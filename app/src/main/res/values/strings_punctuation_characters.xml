@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="SPACE">" "</string>
+    <string name="LF">\n</string>
+    <string name="DASH">-</string>
+    <string name="TAB">\u0009</string>
+</resources>

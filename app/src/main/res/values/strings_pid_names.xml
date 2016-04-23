@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="PID_NAME_RRP">Rate Roll Proportional</string>
+    <string name="PID_NAME_RPP">Rate Pitch Proportional</string>
+    <string name="PID_NAME_RYP">Rate Yaw Proportional</string>
+    <string name="PID_NAME_RRI">Rate Roll Integral</string>
+    <string name="PID_NAME_RPI">Rate Pitch Integral</string>
+    <string name="PID_NAME_RYI">Rate Yaw Integral</string>
+    <string name="PID_NAME_ARP">Attitude Roll Proportional</string>
+    <string name="PID_NAME_APP">Attitude Pitch Proportional</string>
+    <string name="PID_NAME_RRD">Rate Roll Derivative</string>
+    <string name="PID_NAME_RPD">Rate Pitch Derivative</string>
+    <string name="PID_NAME_AYP">Attitude Yaw Proportional</string>
+    <string name="PID_NAME_ARI">Attitude Roll Integral</string>
+    <string name="PID_NAME_API">Attitude Pitch Integral</string>
+    <string name="PID_NAME_AYI">Attitude Yaw Integral</string>
+    <string name="VPID_NAME_ALP">Vertical Altitude Proportional</string>
+    <string name="VPID_NAME_EXP">Vertical Exponential</string>
+    <string name="VPID_NAME_THR">Vertical Thrust Rate</string>
+    <string name="VPID_NAME_VEB">Vertical Velocity Beta</string>
+    <string name="VPID_NAME_VED">Vertical Velocity Derivative</string>
+    <string name="VPID_NAME_VEI">Vertical Velocity Integral</string>
+    <string name="VPID_NAME_VEP">Vertical Velocity Proportional</string>
+</resources>
