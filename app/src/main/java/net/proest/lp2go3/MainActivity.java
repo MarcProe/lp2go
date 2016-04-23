@@ -1623,7 +1623,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     .getData("FlightBatterySettings", "NbCells").toString());
             txtHealthAlertDialogFusionAlgorithm.setText(mFcDevice.getObjectTree()
                     .getData("RevoSettings", "FusionAlgorithm").toString());
-        } catch (UAVTalkMissingObjectException e) {
+        } catch (UAVTalkMissingObjectException | NullPointerException e) {
             e.printStackTrace();
         }
 
