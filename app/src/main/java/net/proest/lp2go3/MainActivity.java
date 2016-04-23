@@ -2094,7 +2094,18 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         String uavoShortHashFc = mUavoLongHashFc != null && mUavoLongHashFc.length() > 8
                 ? mUavoLongHashFc.substring(0, 8) : getString(R.string.NULL);
 
-        if (mUavoLongHashFc.equals(mUavoLongHash)) {
+        if (uavoShortHashFc.equals(getString(R.string.NULL))) {
+            dialogBuilder.setTitle(R.string.INFO);
+            dialogBuilder.setMessage(
+                    getString(R.string.NOT_CONNECTED) + getString(R.string.LF) +
+                            getString(R.string.LF) +
+                            getString(R.string.UAVO_VERSION_FC) + getString(R.string.TAB) +
+                            getString(R.string.TAB) + getString(R.string.TAB) +
+                            getString(R.string.TAB) + uavoShortHashFc + getString(R.string.LF) +
+                            getString(R.string.UAVO_VERSION) + getString(R.string.TAB) +
+                            uavoShortHash
+            );
+        } else if (uavoShortHashFc.equals(uavoShortHash)) {
             dialogBuilder.setTitle(R.string.INFO);
             dialogBuilder.setMessage(
                     getString(R.string.UAVO_VERSION_OK) + getString(R.string.LF) +
