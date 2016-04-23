@@ -48,7 +48,9 @@ class FcUsbWaiterThread extends FcWaiterThread {
     private byte[] bufferRead(int len) {
         byte[] retval = new byte[len];
         for (int i = 0; i < len; i++) {
-            retval[i] = queue.remove();
+            if (!queue.isEmpty()) {
+                retval[i] = queue.remove();
+            }
         }
         return retval;
     }
