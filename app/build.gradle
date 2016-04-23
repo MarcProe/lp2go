@@ -7,8 +7,8 @@ android {
         minSdkVersion 16
         //noinspection OldTargetApi
         targetSdkVersion 16
-        versionName '0.2.5.29'
-        versionCode 20529
+        versionName '0.2.6.1'
+        versionCode 20601
     }
 
     buildTypes {
