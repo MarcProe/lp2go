@@ -19,13 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="64dp" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Work in progress. Only shows Object names for now."
-            android:textAppearance="?android:attr/textAppearanceSmall" />
-
-        <ExpandableListView
+        <net.proest.lp2go3.UI.ObjectsExpandableListView
             android:id="@+id/elvObjects"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />

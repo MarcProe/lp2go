@@ -33,7 +33,7 @@ import net.proest.lp2go3.VisualLog;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 public class FcBluetoothDevice extends FcDevice {
@@ -47,7 +47,7 @@ public class FcBluetoothDevice extends FcDevice {
     private android.bluetooth.BluetoothDevice mDevice;
     private int mState;
 
-    public FcBluetoothDevice(MainActivity activity, HashMap<String, UAVTalkXMLObject> xmlObjects) {
+    public FcBluetoothDevice(MainActivity activity, Map<String, UAVTalkXMLObject> xmlObjects) {
         super(activity);
 
         //this.mActivity = activity;

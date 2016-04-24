@@ -22,14 +22,14 @@ import net.proest.lp2go3.VisualLog;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class UAVTalkObjectTree {
 
     private final ConcurrentHashMap<String, UAVTalkObject> objects;
-    private HashMap<String, UAVTalkXMLObject> xmlObjects;
+    private Map<String, UAVTalkXMLObject> xmlObjects;
 
     public UAVTalkObjectTree() {
         objects = new ConcurrentHashMap<String, UAVTalkObject>();
@@ -45,11 +45,11 @@ public class UAVTalkObjectTree {
         return ret;
     }
 
-    public HashMap<String, UAVTalkXMLObject> getXmlObjects() {
+    public Map<String, UAVTalkXMLObject> getXmlObjects() {
         return xmlObjects;
     }
 
-    public void setXmlObjects(HashMap<String, UAVTalkXMLObject> xmlObjects) {
+    public void setXmlObjects(Map<String, UAVTalkXMLObject> xmlObjects) {
         this.xmlObjects = xmlObjects;
     }
 

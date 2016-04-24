@@ -50,7 +50,7 @@ import net.proest.lp2go3.UAVTalk.UAVTalkXMLObject;
 import net.proest.lp2go3.VisualLog;
 
 import java.nio.ByteBuffer;
-import java.util.HashMap;
+import java.util.Map;
 
 public class FcUsbDevice extends FcDevice {
 
@@ -62,7 +62,7 @@ public class FcUsbDevice extends FcDevice {
     private boolean connected = false;
 
     public FcUsbDevice(MainActivity activity, UsbDeviceConnection connection,
-                       UsbInterface intf, HashMap<String, UAVTalkXMLObject> xmlObjects) {
+                       UsbInterface intf, Map<String, UAVTalkXMLObject> xmlObjects) {
         super(activity);
 
         //mActivity = activity;

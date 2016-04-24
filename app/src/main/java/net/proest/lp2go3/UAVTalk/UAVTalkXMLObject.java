@@ -322,8 +322,16 @@ public class UAVTalkXMLObject {
         int mPos;
         int mSize;
 
+        public ArrayList<String> getElements() {
+            return mElements;
+        }
+
         public String[] getOptions() {
             return mOptions;
+        }
+
+        public String getName() {
+            return mName;
         }
 
         @Override

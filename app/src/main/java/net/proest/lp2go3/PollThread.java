@@ -384,6 +384,12 @@ class PollThread extends Thread {
                             case MainActivity.VIEW_OBJECTS:
                                 try {
                                     mA.txtObjects.setText(mA.mFcDevice.getObjectTree().toString());
+                                    if (mA.mExpListView.getExpandedObjectName() != null) {
+                                        UAVTalkXMLObject xmlobj =
+                                                mA.mFcDevice.getObjectTree().getXmlObjects().get(mA.mExpListView.getExpandedObjectName());
+                                        mA.mExpListView.updateExpandedGroup(xmlobj);
+                                        mA.mFcDevice.requestObject(xmlobj.getName());
+                                    }
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }

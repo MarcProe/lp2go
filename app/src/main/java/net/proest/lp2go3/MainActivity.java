@@ -75,7 +75,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -94,13 +93,12 @@ import com.nbsp.materialfilepicker.ui.FilePickerActivity;
 
 import net.proest.lp2go3.UAVTalk.UAVTalkDeviceHelper;
 import net.proest.lp2go3.UAVTalk.UAVTalkMissingObjectException;
-import net.proest.lp2go3.UAVTalk.UAVTalkObject;
-import net.proest.lp2go3.UAVTalk.UAVTalkObjectInstance;
 import net.proest.lp2go3.UAVTalk.UAVTalkObjectTree;
 import net.proest.lp2go3.UAVTalk.UAVTalkXMLObject;
 import net.proest.lp2go3.UAVTalk.device.FcBluetoothDevice;
 import net.proest.lp2go3.UAVTalk.device.FcDevice;
 import net.proest.lp2go3.UAVTalk.device.FcUsbDevice;
+import net.proest.lp2go3.UI.ObjectsExpandableListView;
 import net.proest.lp2go3.UI.ObjectsExpandableListViewAdapter;
 import net.proest.lp2go3.UI.PidTextView;
 import net.proest.lp2go3.UI.SingleToast;
@@ -179,6 +177,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private static boolean initDone = false;
     private static boolean mColorfulPid;
     final Marker[] mPosHistory = new Marker[HISTORY_MARKER_NUM];
+    public ObjectsExpandableListView mExpListView;
     protected HashSet<PidTextView> mPidTexts;
     protected HashSet<PidTextView> mVerticalPidTexts;
     protected ImageView imgPidBank;
@@ -233,14 +232,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     TextView txtMapGPS;
     TextView txtMapGPSSatsInView;
     TextView txtVehicleName;
-
     TextView txtHealthAlertDialogBatteryCapacity;
     TextView txtHealthAlertDialogBatteryCells;
     TextView txtHealthAlertDialogFusionAlgorithm;
-
     ImageView imgFlightTelemetry;
     ImageView imgGroundTelemetry;
-
     ImageView imgBluetooth;
     ImageView imgUSB;
     ImageView imgPacketsUp;
@@ -257,10 +253,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private Spinner spnConnectionTypeSpinner;
     private Spinner spnBluetoothPairedDevice;
     private CheckBox cbxColorfulPid;
-    private HashMap<String, List<String>> mListDataChild;
     private ObjectsExpandableListViewAdapter mListAdapter;
-    private ExpandableListView mExpListView;
-    private List<String> mListDataHeader;
     private BluetoothAdapter mBluetoothAdapter;
     private String mBluetoothDeviceUsed = null;
     private DrawerLayout mDrawerLayout;
@@ -275,7 +268,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private UsbDeviceConnection mDeviceConnection;
     private PendingIntent mPermissionIntent = null;
     private UsbInterface mInterface;
-    private HashMap<String, UAVTalkXMLObject> mXmlObjects = null;
+    private Map<String, UAVTalkXMLObject> mXmlObjects = null;
     private final BroadcastReceiver mUsbReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
@@ -359,6 +352,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     public String getUavoLongHash() {
         return mUavoLongHash;
+    }
+
+    public FcDevice getFcDevice() {
+        return mFcDevice;
     }
 
     public synchronized void setRxObjectsGood(long o) {
@@ -665,38 +662,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         setContentView(mViews.get(VIEW_OBJECTS)); //Objects
 
         txtObjects = new EditText(this);
-        mExpListView = (ExpandableListView) findViewById(R.id.elvObjects);
+        mExpListView = (ObjectsExpandableListView) findViewById(R.id.elvObjects);
         // get the listview
-        mExpListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
-
-            @Override
-            public void onGroupExpand(int groupPosition) {
-                Toast.makeText(getApplicationContext(),
-                        mListDataHeader.get(groupPosition) + " Expanded",
-                        Toast.LENGTH_SHORT).show();
-                List<String> fields = new ArrayList<String>();
-                if (mFcDevice != null && mFcDevice.getObjectTree() != null) {
-                    UAVTalkObject obj = mFcDevice.getObjectTree()
-                            .getObjectNoCreate(mListDataHeader.get(groupPosition));
-                    if (obj != null) {
-                        for (UAVTalkObjectInstance ins : obj.getInstances().values()) {
-                            fields.add("" + ins.getId());
-                        }
-                    } else {
-                        mFcDevice.requestObject(mListDataHeader.get(groupPosition));
-                    }
-                }
-                /*)
-               for (UAVTalkXMLObject.UAVTalkXMLObjectField xmlfield : xmlobj.getFields().values()) {
-                    VisualLog.d("FLD", xmlfield.toString());
-                    fields.add(xmlfield.toString());
-                }
-                */
-                mListDataChild.put(mListDataHeader.get(groupPosition), fields);
-            }
-            //mListDataChild = new HashMap<String, List<String>>()
-
-        });
+        mExpListView.setOnGroupExpandListener(mExpListView);
     }
 
     /*
@@ -707,31 +675,21 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         this.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                mListDataHeader = new ArrayList<String>();
-                mListDataChild = new HashMap<String, List<String>>();
+
+                mExpListView.init(new ArrayList<String>(), new HashMap<String, List<String>>());
 
                 // Adding child data
                 int i = 0;
                 for (UAVTalkXMLObject xmlobj : mXmlObjects.values()) {
-                    mListDataHeader.add(xmlobj.getName());
+                    mExpListView.getListDataHeader().add(xmlobj.getName());
                     //VisualLog.d("OBJ", xmlobj.getName());
-
-                    List<String> fields = new ArrayList<String>();
-                    /*
-                    for (UAVTalkXMLObject.UAVTalkXMLObjectField xmlfield : xmlobj.getFields().values()) {
-                        VisualLog.d("FLD", xmlfield.toString());
-                        fields.add(xmlfield.toString());
-                    }
-                    */
-
-                    mListDataChild.put(mListDataHeader.get(i), fields);
                 }
 
                 mListAdapter =
-                        new ObjectsExpandableListViewAdapter(me, mListDataHeader, mListDataChild);
+                        new ObjectsExpandableListViewAdapter(me, mExpListView.getListDataHeader(), mExpListView.getListDataChild());
 
                 // setting list adapter
-                mExpListView.setAdapter(mListAdapter);
+                mExpListView.setmAdapter(mListAdapter);
             }
         });
     }
@@ -1232,7 +1190,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     protected boolean loadXmlObjects(boolean overwrite) {
 
         if (mXmlObjects == null || (overwrite && mLoadedUavo != null)) {
-            mXmlObjects = new HashMap<String, UAVTalkXMLObject>();
+            mXmlObjects = new TreeMap<String, UAVTalkXMLObject>();
 
             AssetManager assets = getAssets();
 
