@@ -147,44 +147,78 @@ public class UAVTalkObjectTree {
 
         Object retval = null;
         if (data != null) {
-            if (xmlfield.mType == UAVTalkXMLObject.FIELDTYPE_FLOAT32) {
-                byte[] fielddata = new byte[4];
-                float f = 0;
-                System.arraycopy(data, pos + element * 4, fielddata, 0, 4);
-                f = ByteBuffer.wrap(fielddata).order(ByteOrder.LITTLE_ENDIAN).getFloat();
-                retval = f;
-            } else if (xmlfield.mType == UAVTalkXMLObject.FIELDTYPE_ENUM) {
-                byte[] fielddata = new byte[1];
-                byte b = data[pos + element];
-                fielddata[0] = b;
-                try {
-                    retval = xmlfield.mOptions[H.toInt(b)];
-                } catch (ArrayIndexOutOfBoundsException e) {
-                    VisualLog.d("AIOOBE", "" + H.toInt(b) + " " + data.length + " " + b + " " + H.bytesToHex(fielddata) + " " + H.bytesToHex(data) + " " + pos + " " + element);
+            switch (xmlfield.mType) {
+                case (UAVTalkXMLObject.FIELDTYPE_ENUM): {
+                    byte[] fielddata = new byte[1];
+                    byte b = data[pos + element];
+                    fielddata[0] = b;
+                    try {
+                        retval = xmlfield.mOptions[H.toInt(b)];
+                    } catch (ArrayIndexOutOfBoundsException e) {
+                        VisualLog.d("AIOOBE", "" + H.toInt(b) + " " + data.length + " " + b + " " +
+                                H.bytesToHex(fielddata) + " " + H.bytesToHex(data) + " " + pos +
+                                " " + element);
+                    }
+                    break;
                 }
-            } else if (xmlfield.mType == UAVTalkXMLObject.FIELDTYPE_UINT32) {
-                byte[] fielddata = new byte[4];
-                System.arraycopy(data, pos, fielddata, 0, 4);
-                int i = ByteBuffer.wrap(fielddata).order(ByteOrder.LITTLE_ENDIAN).getInt();
-                Long l = (long) i;
-                retval = l;
-            } else if (xmlfield.mType == UAVTalkXMLObject.FIELDTYPE_INT32) {
-                byte[] fielddata = new byte[4];
-                System.arraycopy(data, pos, fielddata, 0, 4);
-                int i = ByteBuffer.wrap(fielddata).order(ByteOrder.LITTLE_ENDIAN).getInt();
-                retval = i;
-            } else if (xmlfield.mType == UAVTalkXMLObject.FIELDTYPE_UINT8) {
-                byte[] fielddata = new byte[1];
-                System.arraycopy(data, pos + element, fielddata, 0, 1);
-                int i = fielddata[0] & 0xff;
-                retval = i;
-            } else if (xmlfield.mType == UAVTalkXMLObject.FIELDTYPE_INT8) {
-                byte[] fielddata = new byte[1];
-                System.arraycopy(data, pos, fielddata, 0, 1);
-                int i = fielddata[0];
-                retval = i;
-            } else {
-                retval = "Type not implemented";
+                case (UAVTalkXMLObject.FIELDTYPE_FLOAT32): {
+                    byte[] fielddata = new byte[4];
+                    float f = 0;
+                    System.arraycopy(data, pos + element * 4, fielddata, 0, 4);
+                    f = ByteBuffer.wrap(fielddata).order(ByteOrder.LITTLE_ENDIAN).getFloat();
+                    retval = f;
+                    break;
+                }
+                case (UAVTalkXMLObject.FIELDTYPE_UINT32): {
+                    byte[] fielddata = new byte[8]; //we need 8 bytes to get a long value
+                    System.arraycopy(data, pos + element * 4, fielddata, 0, 4);
+                    long l = ByteBuffer.wrap(fielddata).order(
+                            //set 4 higer bytes to zero (truncates sign)
+                            ByteOrder.LITTLE_ENDIAN).getLong() & 0xffffff;
+                    retval = l;
+                    break;
+                }
+                case (UAVTalkXMLObject.FIELDTYPE_INT32): {
+                    byte[] fielddata = new byte[4];
+                    System.arraycopy(data, pos, fielddata, 0, 4);
+                    int i = ByteBuffer.wrap(fielddata).order(ByteOrder.LITTLE_ENDIAN).getInt();
+                    retval = i;
+                    break;
+                }
+                case (UAVTalkXMLObject.FIELDTYPE_UINT16): {
+                    byte[] fielddata = new byte[4]; //we need four bytes to get an integer value
+                    System.arraycopy(data, pos + element * 2, fielddata, 0, 2);
+                    int i = ByteBuffer.wrap(fielddata).order(
+                            //set 2 higher bytes to zero (truncates sign)
+                            ByteOrder.LITTLE_ENDIAN).getInt() & 0xffff;
+                    retval = i;
+                    break;
+                }
+                case (UAVTalkXMLObject.FIELDTYPE_INT16): {
+                    byte[] fielddata = new byte[2];
+                    System.arraycopy(data, pos + element * 2, fielddata, 0, 2);
+                    int i = ByteBuffer.wrap(fielddata).order(ByteOrder.LITTLE_ENDIAN).getShort();
+                    retval = i;
+                    break;
+                }
+                case (UAVTalkXMLObject.FIELDTYPE_UINT8): {
+                    byte[] fielddata = new byte[1];
+                    System.arraycopy(data, pos + element, fielddata, 0, 1);
+                    int i = fielddata[0] & 0xff;
+                    retval = i;
+                    break;
+                }
+                case (UAVTalkXMLObject.FIELDTYPE_INT8): {
+                    byte[] fielddata = new byte[1];
+                    System.arraycopy(data, pos + element, fielddata, 0, 1);
+                    int i = fielddata[0];
+                    retval = i;
+                    break;
+                }
+                default: {
+                    retval = "Type not implemented";
+                    break;
+                }
             }
         }
         return retval;
