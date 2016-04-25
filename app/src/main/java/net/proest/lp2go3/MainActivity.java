@@ -81,6 +81,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.mikephil.charting.charts.LineChart;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -114,6 +115,7 @@ import net.proest.lp2go3.slider.MainFragment;
 import net.proest.lp2go3.slider.MapFragment;
 import net.proest.lp2go3.slider.ObjectsFragment;
 import net.proest.lp2go3.slider.PidFragment;
+import net.proest.lp2go3.slider.ScopeFragment;
 import net.proest.lp2go3.slider.SettingsFragment;
 import net.proest.lp2go3.slider.adapter.NavDrawerListAdapter;
 import net.proest.lp2go3.slider.model.NavDrawerItem;
@@ -149,6 +151,7 @@ import java.util.zip.ZipInputStream;
 import javax.xml.parsers.ParserConfigurationException;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+    public static final int VIEW_SCOPE = 9;
     protected static final int SERIAL_USB = 1;
     protected static final int SERIAL_BLUETOOTH = 2;
     protected static final String OFFSET_VELOCITY_DOWN = "net.proest.lp2go3.VelocityState-Down";
@@ -165,17 +168,16 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     protected static final int POLL_WAIT_TIME = 500;
     protected static final int POLL_SECOND_FACTOR = 1000 / POLL_WAIT_TIME;
     protected final static int HISTORY_MARKER_NUM = 5;
+    private static final int NUM_OF_VIEWS = 10;
     private static final String UAVO_INTERNAL_PATH = "uavo";
     private static final int ICON_OPAQUE = 255;
     private static final int ICON_TRANSPARENT = 64;
     private static final int SERIAL_NONE = 0;
     private static final String ACTION_USB_PERMISSION = "net.proest.lp2go3.USB_PERMISSION";
-    private static final int NUM_OF_VIEWS = 8;
     private static final int CALLBACK_FILEPICKER = 3456;
     private static final boolean LOCAL_LOGD = true;
     static int mCurrentView = 0;
     private static boolean mHasPThread = false;
-    private static boolean initDone = false;
     private static boolean mColorfulPid;
     final Marker[] mPosHistory = new Marker[HISTORY_MARKER_NUM];
     public ObjectsExpandableListView mExpListView;
@@ -249,6 +251,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     TextView txtLogObjects;
     TextView txtLogDuration;
     ImageView imgUavoSanity;
+    LineChart lchScope;
     private Map<Integer, View> mViews;
     private Spinner spnUavoSource;
     private Spinner spnConnectionTypeSpinner;
@@ -843,6 +846,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     }
 
+    private void initViewScope() {
+        mViews.put(VIEW_SCOPE, getLayoutInflater().inflate(R.layout.activity_scope, null));
+        setContentView(mViews.get(VIEW_SCOPE)); //Logs
+        {
+            lchScope = (LineChart) findViewById(R.id.scope_chart);
+            lchScope.setDrawGridBackground(false);
+        }
+    }
+
     private void initViewPid() {
         mViews.put(VIEW_PID, getLayoutInflater().inflate(R.layout.activity_pid, null));
         setContentView(mViews.get(VIEW_PID));
@@ -1168,7 +1180,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         copyAssets();
 
-        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+        final SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
         mSerialModeUsed = sharedPref.getInt(getString(R.string.SETTINGS_SERIAL_MODE), 0);
         mBluetoothDeviceUsed = sharedPref.getString(getString(R.string.SETTINGS_BT_NAME), null);
         mLoadedUavo = sharedPref.getString(getString(R.string.SETTINGS_UAVO_SOURCE), null);
@@ -1177,14 +1189,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         //debug view is initialized above
         initViewPid();
         initViewVerticalPid();
+        initViewScope();
         initViewAbout();
         initViewLogs();
         initViewSettings();
         initViewObjects();
         initViewMap(savedInstanceState);
         initViewMain(savedInstanceState);
-
-        initDone = true;
 
         initWarnDialog().show();
 
@@ -1356,7 +1367,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
     }
 
-    private void displayView(int position) {
+    public void displayView(int position) {
         Fragment fragment = null;
 
         //clean up current view
@@ -1450,6 +1461,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
             case VIEW_DEBUG:
                 break;
+
+            case VIEW_SCOPE:
+                break;
+
             default:
                 break;
         }
@@ -1592,6 +1607,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 fragment = new DebugFragment();
                 setContentView(mViews.get(VIEW_DEBUG), position);
                 break;
+
+            case VIEW_SCOPE:
+                fragment = new ScopeFragment();
+                setContentView(mViews.get(VIEW_SCOPE), position);
+                break;
+
             default:
                 break;
         }

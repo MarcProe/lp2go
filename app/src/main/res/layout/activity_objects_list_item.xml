@@ -9,9 +9,11 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:ellipsize="marquee"
         android:paddingBottom="5dp"
         android:paddingLeft="?android:attr/expandableListPreferredChildPaddingLeft"
         android:paddingTop="5dp"
+        android:singleLine="true"
         android:textSize="17sp" />
 
     <TextView
@@ -19,9 +21,16 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:ellipsize="marquee"
         android:paddingBottom="5dp"
         android:paddingLeft="?android:attr/expandableListPreferredChildPaddingLeft"
         android:paddingTop="5dp"
+        android:singleLine="true"
         android:textSize="17sp" />
+
+    <ImageView
+        android:id="@+id/imgListChildIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent" />
 
 </LinearLayout>

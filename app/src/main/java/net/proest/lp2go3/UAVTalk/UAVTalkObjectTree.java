@@ -21,7 +21,6 @@ import net.proest.lp2go3.VisualLog;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -99,9 +98,15 @@ public class UAVTalkObjectTree {
         UAVTalkXMLObject xmlobj = xmlObjects.get(objectname);
         UAVTalkXMLObject.UAVTalkXMLObjectField xmlfield = xmlobj.getFields().get(fieldname);
 
+
         retval = xmlfield.mElements.indexOf(element);
-        Arrays.toString(xmlfield.mElements.toArray());
-        //Log.d(xmlobj.getId(), Arrays.toString(xmlfield.elements.toArray()) + "~" +element+"#" +retval);
+
+        //VisualLog.d(xmlobj.getId(), Arrays.toString(xmlfield.getElements().toArray()) + "~" +element+"#" +retval);
+
+        // -1 is the return value if indexOf does not return anything
+        // that means there is only the default element
+        if (retval < 0) retval = 0;
+
         return retval;
     }
 

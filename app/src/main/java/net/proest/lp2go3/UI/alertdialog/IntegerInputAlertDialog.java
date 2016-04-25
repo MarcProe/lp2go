@@ -105,17 +105,18 @@ public class IntegerInputAlertDialog extends InputAlertDialog {
                     }
                     break;
                 default:
-                    VisualLog.e("IntegerInputAlertDialog", "Type not implemented!");
+                    VisualLog.e("IntegerInputAlertDialog", "Type not implemented! " + mFieldType);
                     data = H.toBytes(0);
                     break;
             }
 
         } catch (NumberFormatException e) {
+            e.printStackTrace();
             data = H.toBytes(0);
         }
 
         if (mFcDevice != null) {
-            mFcDevice.sendSettingsObject(mObject, 0, mField, 0, data);
+            mFcDevice.sendSettingsObject(mObject, 0, mField, mElement, data);
         }
     }
 }

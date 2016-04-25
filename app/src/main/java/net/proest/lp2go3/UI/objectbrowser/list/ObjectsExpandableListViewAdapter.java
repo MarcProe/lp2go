@@ -19,10 +19,12 @@ package net.proest.lp2go3.UI.objectbrowser.list;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import net.proest.lp2go3.R;
@@ -70,12 +72,23 @@ public class ObjectsExpandableListViewAdapter extends BaseExpandableListAdapter 
 
         TextView txtListChildLabel = (TextView) convertView.findViewById(R.id.txtListItemLabel);
         TextView txtListChildValue = (TextView) convertView.findViewById(R.id.txtListItemValue);
-        if (isInstanceHeader) {
+        ImageView imgListChildIcon = (ImageView) convertView.findViewById(R.id.imgListChildIcon);
+
+        if (childText.isInstanceHeader || childText.fieldname == null || childText.fieldname.equals("")) {
             txtListChildLabel.setBackgroundColor(Color.argb(0xff, 0x80, 0x80, 0xff));
             txtListChildValue.setBackgroundColor(Color.argb(0xff, 0x80, 0x80, 0xff));
+            imgListChildIcon.setImageResource(android.R.color.transparent);
+        } else if (childText.isSettings) {
+            txtListChildLabel.setBackgroundColor(Color.TRANSPARENT);
+            txtListChildValue.setBackgroundColor(Color.TRANSPARENT);
+            imgListChildIcon.setImageDrawable(ContextCompat.getDrawable(mContext,
+                    R.drawable.ic_create_black_48dp));
         } else {
             txtListChildLabel.setBackgroundColor(Color.TRANSPARENT);
             txtListChildValue.setBackgroundColor(Color.TRANSPARENT);
+            //imgListChildIcon.setImageDrawable(ContextCompat.getDrawable(mContext,
+            //        R.drawable.ic_timeline_black_48dp));
+            imgListChildIcon.setImageResource(android.R.color.transparent);
         }
 
         txtListChildLabel.setText(childText.getLabel());

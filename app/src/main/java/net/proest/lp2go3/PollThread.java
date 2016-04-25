@@ -490,6 +490,10 @@ class PollThread extends Thread {
 
                                 break;
 
+                            case MainActivity.VIEW_SCOPE:
+
+                                break;
+
                         }
                     } catch (NullPointerException e) {
                         e.printStackTrace();

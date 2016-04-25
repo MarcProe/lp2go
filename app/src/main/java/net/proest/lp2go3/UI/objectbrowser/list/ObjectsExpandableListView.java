@@ -23,6 +23,7 @@ import android.widget.ExpandableListView;
 import android.widget.Toast;
 
 import net.proest.lp2go3.MainActivity;
+import net.proest.lp2go3.R;
 import net.proest.lp2go3.UAVTalk.UAVTalkMissingObjectException;
 import net.proest.lp2go3.UAVTalk.UAVTalkObject;
 import net.proest.lp2go3.UAVTalk.UAVTalkObjectInstance;
@@ -30,6 +31,7 @@ import net.proest.lp2go3.UAVTalk.UAVTalkXMLObject;
 import net.proest.lp2go3.UAVTalk.device.FcDevice;
 import net.proest.lp2go3.UI.SingleToast;
 import net.proest.lp2go3.UI.alertdialog.EnumInputAlertDialog;
+import net.proest.lp2go3.UI.alertdialog.IntegerInputAlertDialog;
 import net.proest.lp2go3.VisualLog;
 
 import java.util.ArrayList;
@@ -138,13 +140,30 @@ public class ObjectsExpandableListView extends ExpandableListView implements Exp
                             .withElement(c.element)
                             .show();
                     break;
+                case UAVTalkXMLObject.FIELDTYPE_UINT8:
+                case UAVTalkXMLObject.FIELDTYPE_INT8:
+                case UAVTalkXMLObject.FIELDTYPE_UINT16:
+                case UAVTalkXMLObject.FIELDTYPE_INT16:
+                case UAVTalkXMLObject.FIELDTYPE_UINT32:
+                case UAVTalkXMLObject.FIELDTYPE_INT32:
+                    new IntegerInputAlertDialog(getContext())
+                            .withTitle(c.objectname + " " + c.fieldname + " " + c.element)
+                            .withUavTalkDevice(((MainActivity) getContext()).getFcDevice())
+                            .withLayout(R.layout.alert_dialog_integer_input)
+                            .withPresetText(c.data)
+                            .withFieldType(c.type)
+                            .withObject(c.objectname)
+                            .withField(c.fieldname)
+                            .withElement(c.element)
+                            .show();
+                    break;
                 default:
 
                     SingleToast.show(getContext(), "Type not implemented", Toast.LENGTH_SHORT);
                     break;
             }
-        } else {
-            SingleToast.show(getContext(), "Not a setting", Toast.LENGTH_SHORT);
+        } else {  //start graphing
+
         }
 
         return false;
