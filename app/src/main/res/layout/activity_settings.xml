@@ -19,154 +19,154 @@
             android:layout_width="match_parent"
             android:layout_height="64dp" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+        <ScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:background="@drawable/border_top"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:text="@string/CONNECTION_TYPE"
-                    android:textAppearance="?android:attr/textAppearanceLarge" />
-
-                <Spinner
-                    android:id="@+id/spnConnectionTypeSpinner"
-                    android:layout_width="0dp"
-                    android:layout_height="60dp"
-                    android:layout_weight="1"
-                    android:spinnerMode="dialog" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/border_top"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:text="@string/BLUETOOTH_DEVICE"
-                    android:textAppearance="?android:attr/textAppearanceLarge" />
-
-                <Spinner
-                    android:id="@+id/spnBluetoothPairedDevice"
-                    android:layout_width="0dp"
-                    android:layout_height="60dp"
-                    android:layout_weight="1"
-                    android:spinnerMode="dialog" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/border_top"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:text="Colorful PID tuning"
-                    android:textAppearance="?android:attr/textAppearanceLarge" />
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:orientation="horizontal">
-
-                    <CheckBox
-                        android:id="@+id/cbxColorfulPid"
-                        android:layout_width="60dp"
-                        android:layout_height="60dp"
-                        android:background="?android:attr/listChoiceIndicatorMultiple"
-                        android:button="@null"
-                        android:checked="false" />
-                </LinearLayout>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/border_top"
-                android:orientation="horizontal">
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:background="@drawable/border_top"
                     android:orientation="horizontal">
 
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:text="@string/UAVO_SOURCE"
+                        android:text="@string/CONNECTION_TYPE"
                         android:textAppearance="?android:attr/textAppearanceLarge" />
 
                     <Spinner
-                        android:id="@+id/spnUavoSource"
+                        android:id="@+id/spnConnectionTypeSpinner"
+                        android:layout_width="0dp"
+                        android:layout_height="60dp"
+                        android:layout_weight="1"
+                        android:spinnerMode="dialog" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/border_top"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="@string/BLUETOOTH_DEVICE"
+                        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+                    <Spinner
+                        android:id="@+id/spnBluetoothPairedDevice"
                         android:layout_width="0dp"
                         android:layout_height="60dp"
                         android:layout_weight="1"
                         android:spinnerMode="dialog" />
 
                 </LinearLayout>
-            </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/border_top"
+                    android:orientation="horizontal">
 
-                <Button
-                    style="?android:attr/buttonStyleSmall"
-                    android:layout_width="0dp"
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="Colorful PID tuning"
+                        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:orientation="horizontal">
+
+                        <CheckBox
+                            android:id="@+id/cbxColorfulPid"
+                            android:layout_width="60dp"
+                            android:layout_height="60dp"
+                            android:background="?android:attr/listChoiceIndicatorMultiple"
+                            android:button="@null"
+                            android:checked="false" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/border_top"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:text="@string/UAVO_SOURCE"
+                            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+                        <Spinner
+                            android:id="@+id/spnUavoSource"
+                            android:layout_width="0dp"
+                            android:layout_height="60dp"
+                            android:layout_weight="1"
+                            android:spinnerMode="dialog" />
+
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <Button
+                        style="?android:attr/buttonStyleSmall"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="18"
+                        android:onClick="onSelectUavObjectsSourceFileClick"
+                        android:text="@string/LOAD_UAVO_FILE" />
+
+                    <Button
+                        style="?android:attr/buttonStyleSmall"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="12"
+                        android:onClick="onClearUavObjectFilesClick"
+                        android:text="@string/CLEAR_UAVO_FILE" />
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="18"
-                    android:onClick="onSelectUavObjectsSourceFileClick"
-                    android:text="@string/LOAD_UAVO_FILE" />
-
-                <Button
-                    style="?android:attr/buttonStyleSmall"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="12"
-                    android:onClick="onClearUavObjectFilesClick"
-                    android:text="@string/CLEAR_UAVO_FILE" />
-            </LinearLayout>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:autoLink="web"
-                android:clickable="true"
-                android:text="Download prepackaged developer UAVO on http://bit.ly/1Xrw7EO"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
-
-            <ScrollView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                    android:autoLink="web"
+                    android:clickable="true"
+                    android:text="Download prepackaged developer UAVO on http://bit.ly/1Xrw7EO"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/HELP_CUSTOM_UAVO_FILES"
                     android:textAppearance="?android:attr/textAppearanceMedium" />
-            </ScrollView>
 
-        </LinearLayout>
+            </LinearLayout>
+        </ScrollView>
+
     </LinearLayout>
 
     <ListView

@@ -5,114 +5,127 @@
     android:orientation="vertical"
     android:padding="20dp">
 
-    <LinearLayout
+    <ScrollView
+        android:id="@+id/scrollView2"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:onClick="onBatteryCapacityClick"
-        android:orientation="horizontal"
-        android:padding="10dp">
-
-        <TextView
-            android:id="@+id/textView2"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:onClick="onBatteryCapacityClick"
-            android:text="Battery Capacity"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
-
+        android:layout_height="match_parent">
         <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="right"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:onClick="onBatteryCapacityClick"
-            android:orientation="horizontal">
+            android:orientation="vertical"
+            android:padding="10dp">
 
-            <TextView
-                android:id="@+id/txtHealthAlertDialogBatteryCapacity"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:numeric="integer"
                 android:onClick="onBatteryCapacityClick"
-                android:phoneNumber="false"
-                android:text="0"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textStyle="bold" />
-        </LinearLayout>
-    </LinearLayout>
+                android:orientation="horizontal"
+                android:padding="10dp">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:onClick="onBatteryCellsClick"
-        android:orientation="horizontal"
-        android:padding="10dp">
+                <TextView
+                    android:id="@+id/textView"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:onClick="onBatteryCapacityClick"
+                    android:text="Battery Capacity"
+                    android:textAppearance="?android:attr/textAppearanceLarge" />
 
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:onClick="onBatteryCellsClick"
-            android:text="Battery Cells"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="right"
+                    android:onClick="onBatteryCapacityClick"
+                    android:orientation="horizontal">
 
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="right"
-            android:onClick="onBatteryCellsClick"
-            android:orientation="horizontal">
+                    <TextView
+                        android:id="@+id/txtHealthAlertDialogBatteryCapacity"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:numeric="integer"
+                        android:onClick="onBatteryCapacityClick"
+                        android:phoneNumber="false"
+                        android:text="0"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </LinearLayout>
 
-            <TextView
-                android:id="@+id/txtHealthAlertDialogBatteryCells"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:numeric="integer"
                 android:onClick="onBatteryCellsClick"
-                android:phoneNumber="false"
-                android:text="0"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textStyle="bold" />
-        </LinearLayout>
-    </LinearLayout>
+                android:orientation="horizontal"
+                android:padding="10dp">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:onClick="onFusionAlgoClick"
-        android:orientation="horizontal"
-        android:padding="10dp">
+                <TextView
+                    android:id="@+id/textView2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:onClick="onBatteryCellsClick"
+                    android:text="Battery Cells"
+                    android:textAppearance="?android:attr/textAppearanceLarge" />
 
-        <TextView
-            android:id="@+id/textView4"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:onClick="onFusionAlgoClick"
-            android:text="Fusion Algorithm"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="right"
+                    android:onClick="onBatteryCellsClick"
+                    android:orientation="horizontal">
 
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="right"
-            android:onClick="onFusionAlgoClick"
-            android:orientation="horizontal">
+                    <TextView
+                        android:id="@+id/txtHealthAlertDialogBatteryCells"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:numeric="integer"
+                        android:onClick="onBatteryCellsClick"
+                        android:phoneNumber="false"
+                        android:text="0"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </LinearLayout>
 
-            <TextView
-                android:id="@+id/txtHealthAlertDialogFusionAlgorithm"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:onClick="onFusionAlgoClick"
-                android:phoneNumber="false"
-                android:text="-"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textStyle="bold" />
+                android:orientation="horizontal"
+                android:padding="10dp">
+
+                <TextView
+                    android:id="@+id/textView5"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:onClick="onFusionAlgoClick"
+                    android:text="Fusion Algorithm"
+                    android:textAppearance="?android:attr/textAppearanceLarge" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="right"
+                    android:onClick="onFusionAlgoClick"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/txtHealthAlertDialogFusionAlgorithm"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:onClick="onFusionAlgoClick"
+                        android:phoneNumber="false"
+                        android:text="-"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </LinearLayout>
         </LinearLayout>
-    </LinearLayout>
+    </ScrollView>
 
 </LinearLayout>
