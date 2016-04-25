@@ -36,28 +36,26 @@
 
 package net.proest.lp2go3.UI;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.widget.Toast;
 
 import net.proest.lp2go3.VisualLog;
 
-@SuppressLint("ShowToast")
 public class SingleToast {
 
     private static Toast mToast;
 
-    public static Toast makeText(Context context, String text, int duration) {
+    public static void show(Context context, String text, int duration) {
         VisualLog.i("Toast", text);
         if (mToast != null) mToast.cancel();
         mToast = Toast.makeText(context, text, duration);
-        return mToast;
+        mToast.show();
     }
 
-    public static Toast makeText(Context context, int text, int duration) {
+    public static void show(Context context, int text, int duration) {
         VisualLog.i("Toast", context.getString(text));
         if (mToast != null) mToast.cancel();
         mToast = Toast.makeText(context, text, duration);
-        return mToast;
+        mToast.show();
     }
 }

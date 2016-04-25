@@ -322,6 +322,10 @@ public class UAVTalkXMLObject {
         int mPos;
         int mSize;
 
+        public int getType() {
+            return mType;
+        }
+
         public ArrayList<String> getElements() {
             return mElements;
         }

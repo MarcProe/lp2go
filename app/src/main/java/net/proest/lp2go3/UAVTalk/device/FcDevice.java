@@ -134,6 +134,17 @@ public abstract class FcDevice {
 
     public abstract void stop();
 
+    public boolean sendSettingsObject(String objectName, int instance, String fieldName, String element, byte[] newFieldData) {
+        return sendSettingsObject(
+                objectName,
+                instance,
+                fieldName,
+                mObjectTree.getElementIndex(objectName, fieldName, element),
+                newFieldData,
+                false
+        );
+    }
+
     public boolean sendSettingsObject(String objectName, int instance, String fieldName, int element, byte[] newFieldData) {
         return sendSettingsObject(
                 objectName,

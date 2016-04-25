@@ -42,8 +42,7 @@ public class InputFilterMinMax implements InputFilter {
                 return null;
         } catch (NumberFormatException ignored) {
         }
-        SingleToast.makeText(mContext, ("" + min + " to " + max + "allowed."), Toast.LENGTH_SHORT)
-                .show();
+        SingleToast.show(mContext, ("" + min + " to " + max + "allowed."), Toast.LENGTH_SHORT);
         return "";
     }
 

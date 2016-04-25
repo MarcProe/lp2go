@@ -98,13 +98,14 @@ import net.proest.lp2go3.UAVTalk.UAVTalkXMLObject;
 import net.proest.lp2go3.UAVTalk.device.FcBluetoothDevice;
 import net.proest.lp2go3.UAVTalk.device.FcDevice;
 import net.proest.lp2go3.UAVTalk.device.FcUsbDevice;
-import net.proest.lp2go3.UI.ObjectsExpandableListView;
-import net.proest.lp2go3.UI.ObjectsExpandableListViewAdapter;
 import net.proest.lp2go3.UI.PidTextView;
 import net.proest.lp2go3.UI.SingleToast;
 import net.proest.lp2go3.UI.alertdialog.EnumInputAlertDialog;
 import net.proest.lp2go3.UI.alertdialog.IntegerInputAlertDialog;
 import net.proest.lp2go3.UI.alertdialog.PidInputAlertDialog;
+import net.proest.lp2go3.UI.objectbrowser.expandablelistview.ChildString;
+import net.proest.lp2go3.UI.objectbrowser.expandablelistview.ObjectsExpandableListView;
+import net.proest.lp2go3.UI.objectbrowser.expandablelistview.ObjectsExpandableListViewAdapter;
 import net.proest.lp2go3.c.PID;
 import net.proest.lp2go3.slider.AboutFragment;
 import net.proest.lp2go3.slider.DebugFragment;
@@ -665,6 +666,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         mExpListView = (ObjectsExpandableListView) findViewById(R.id.elvObjects);
         // get the listview
         mExpListView.setOnGroupExpandListener(mExpListView);
+        mExpListView.setOnChildClickListener(mExpListView);
     }
 
     /*
@@ -676,7 +678,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             @Override
             public void run() {
 
-                mExpListView.init(new ArrayList<String>(), new HashMap<String, List<String>>());
+                mExpListView.init(new ArrayList<String>(), new HashMap<String, List<ChildString>>());
 
                 // Adding child data
                 int i = 0;
@@ -690,6 +692,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
                 // setting list adapter
                 mExpListView.setmAdapter(mListAdapter);
+
             }
         });
     }
@@ -726,8 +729,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         if (mBluetoothAdapter != null) {
             // Device does support Bluetooth
             if (!mBluetoothAdapter.isEnabled()) {
-                SingleToast.makeText(this,
-                        getString(R.string.BLUETOOTH_WARNING), Toast.LENGTH_LONG).show();
+                SingleToast.show(this,
+                        getString(R.string.BLUETOOTH_WARNING), Toast.LENGTH_LONG);
 
             } else {
 
@@ -1417,7 +1420,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     VisualLog.d("UAVSource", mLoadedUavo + "  " + mLoadedUavo);
 
                     loadXmlObjects(true);
-                    SingleToast.makeText(this, "UAVO load completed", Toast.LENGTH_SHORT).show();
+                    SingleToast.show(this, "UAVO load completed", Toast.LENGTH_SHORT);
                 }
 
                 mColorfulPid = cbxColorfulPid.isChecked();
@@ -1486,11 +1489,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 setContentView(mViews.get(VIEW_SETTINGS), position);
 
                 if (mSerialModeUsed == SERIAL_NONE) {
-                    SingleToast.makeText(this, getString(R.string.PLEASE_SET_A)
-                            + getString(R.string.CON_TYPE), Toast.LENGTH_LONG).show();
+                    SingleToast.show(this, getString(R.string.PLEASE_SET_A)
+                            + getString(R.string.CON_TYPE), Toast.LENGTH_LONG);
                 } else if (mSerialModeUsed == SERIAL_BLUETOOTH && mBluetoothDeviceUsed == null) {
-                    SingleToast.makeText(this, getString(R.string.PLEASE_SET_A)
-                            + getString(R.string.BT_DEVICE), Toast.LENGTH_LONG).show();
+                    SingleToast.show(this, getString(R.string.PLEASE_SET_A)
+                            + getString(R.string.BT_DEVICE), Toast.LENGTH_LONG);
                 }
 
                 menuTitle = getString(R.string.menu_settings);
@@ -1514,7 +1517,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             case VIEW_PID:
                 fragment = new PidFragment();
                 setContentView(mViews.get(VIEW_PID), position);
-                SingleToast.makeText(this, R.string.CHECK_PID_WARNING, Toast.LENGTH_SHORT).show();
+                SingleToast.show(this, R.string.CHECK_PID_WARNING, Toast.LENGTH_SHORT);
 
                 try {
                     imgBluetooth = (ImageView) findViewById(R.id.imgBluetooth);
@@ -1551,7 +1554,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             case VIEW_VPID:
                 fragment = new VerticalPidFragment();
                 setContentView(mViews.get(VIEW_VPID), position);
-                SingleToast.makeText(this, R.string.CHECK_PID_WARNING, Toast.LENGTH_SHORT).show();
+                SingleToast.show(this, R.string.CHECK_PID_WARNING, Toast.LENGTH_SHORT);
 
                 try {
                     imgBluetooth = (ImageView) findViewById(R.id.imgBluetooth);
@@ -1615,7 +1618,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         if (requestCode == CALLBACK_FILEPICKER && resultCode == RESULT_OK) {
             String filePath = data.getStringExtra(FilePickerActivity.RESULT_FILE_PATH);
-            SingleToast.makeText(this, filePath, Toast.LENGTH_LONG).show();
+            SingleToast.show(this, filePath, Toast.LENGTH_LONG);
 
             try {
                 FileInputStream in = new FileInputStream(new File(filePath));
@@ -1625,10 +1628,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 VisualLog.d("FNF", "FNF");
             } catch (FileNotFoundException e) {
                 VisualLog.d("FNF", "FNF");
-                SingleToast.makeText(this, filePath + " not found", Toast.LENGTH_LONG).show();
+                SingleToast.show(this, filePath + " not found", Toast.LENGTH_LONG);
             } catch (IOException e) {
                 VisualLog.d("IOE", "IOE");
-                SingleToast.makeText(this, "Cannot open " + filePath, Toast.LENGTH_LONG).show();
+                SingleToast.show(this, "Cannot open " + filePath, Toast.LENGTH_LONG);
             }
 
             initUavoSpinner();
@@ -1656,7 +1659,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         copyAssets();
         initUavoSpinner();
 
-        SingleToast.makeText(this, "Files deleted", Toast.LENGTH_LONG).show();
+        SingleToast.show(this, "Files deleted", Toast.LENGTH_LONG);
     }
 
     public void onSelectUavObjectsSourceFileClick(View v) {
@@ -1719,7 +1722,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     .withFieldType(UAVTalkXMLObject.FIELDTYPE_UINT32)
                     .show();
         } else {
-            SingleToast.makeText(this, "Battery Module not enabled", Toast.LENGTH_SHORT).show();
+            SingleToast.show(this, "Battery Module not enabled", Toast.LENGTH_SHORT);
         }
     }
 
@@ -1758,7 +1761,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     .withMinMax(1, 254)
                     .show();
         } else {
-            SingleToast.makeText(this, "Battery Module not enabled", Toast.LENGTH_SHORT).show();
+            SingleToast.show(this, "Battery Module not enabled", Toast.LENGTH_SHORT);
         }
     }
 
@@ -1781,12 +1784,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         .withField("FusionAlgorithm")
                         .show();
             } else {
-                SingleToast.makeText(this,
+                SingleToast.show(this,
                         getString(R.string.CHANGE_FUSION_ALGO_DISARMED) + " " + armingState,
-                        Toast.LENGTH_LONG).show();
+                        Toast.LENGTH_LONG);
             }
         } else {
-            SingleToast.makeText(this, R.string.SEND_FAILED, Toast.LENGTH_SHORT).show();
+            SingleToast.show(this, R.string.SEND_FAILED, Toast.LENGTH_SHORT);
         }
 
     }
@@ -1810,10 +1813,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public void onVerticalPidSaveClick(View v) {
         if (mFcDevice != null && mFcDevice.isConnected()) {
             mFcDevice.savePersistent("AltitudeHoldSettings");
-            SingleToast.makeText(this, getString(R.string.SAVED_PERSISTENT)
-                    + getString(R.string.CHECK_PID_WARNING), Toast.LENGTH_SHORT).show();
+            SingleToast.show(this, getString(R.string.SAVED_PERSISTENT)
+                    + getString(R.string.CHECK_PID_WARNING), Toast.LENGTH_SHORT);
         } else {
-            SingleToast.makeText(this, R.string.SEND_FAILED, Toast.LENGTH_SHORT).show();
+            SingleToast.show(this, R.string.SEND_FAILED, Toast.LENGTH_SHORT);
         }
     }
 
@@ -1867,33 +1870,33 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
                 mFcDevice.sendSettingsObject("AltitudeHoldSettings", 0);
 
-                SingleToast.makeText(this, getString(R.string.PID_SENT)
-                        + getString(R.string.CHECK_PID_WARNING), Toast.LENGTH_SHORT).show();
+                SingleToast.show(this, getString(R.string.PID_SENT)
+                        + getString(R.string.CHECK_PID_WARNING), Toast.LENGTH_SHORT);
 
                 oTree.getObjectFromName("AltitudeHoldSettings").setWriteBlocked(false);
             }
         } else {
-            SingleToast.makeText(this, R.string.SEND_FAILED, Toast.LENGTH_SHORT).show();
+            SingleToast.show(this, R.string.SEND_FAILED, Toast.LENGTH_SHORT);
         }
     }
 
     public void onVerticalPidDownloadClick(View v) {
         if (mFcDevice != null && mFcDevice.isConnected()) {
             allowVerticalPidUpdate();
-            SingleToast.makeText(this, getString(R.string.PID_LOADING)
-                    + getString(R.string.CHECK_PID_WARNING), Toast.LENGTH_SHORT).show();
+            SingleToast.show(this, getString(R.string.PID_LOADING)
+                    + getString(R.string.CHECK_PID_WARNING), Toast.LENGTH_SHORT);
         } else {
-            SingleToast.makeText(this, R.string.SEND_FAILED, Toast.LENGTH_SHORT).show();
+            SingleToast.show(this, R.string.SEND_FAILED, Toast.LENGTH_SHORT);
         }
     }
 
     public void onPidSaveClick(View v) {
         if (mFcDevice != null && mFcDevice.isConnected()) {
             mFcDevice.savePersistent(mCurrentStabilizationBank);
-            SingleToast.makeText(this, getString(R.string.SAVED_PERSISTENT)
-                    + getString(R.string.CHECK_PID_WARNING), Toast.LENGTH_SHORT).show();
+            SingleToast.show(this, getString(R.string.SAVED_PERSISTENT)
+                    + getString(R.string.CHECK_PID_WARNING), Toast.LENGTH_SHORT);
         } else {
-            SingleToast.makeText(this, R.string.SEND_FAILED, Toast.LENGTH_SHORT).show();
+            SingleToast.show(this, R.string.SEND_FAILED, Toast.LENGTH_SHORT);
         }
     }
 
@@ -1924,23 +1927,23 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
                 mFcDevice.sendSettingsObject(mCurrentStabilizationBank, 0);
 
-                SingleToast.makeText(this, getString(R.string.PID_SENT)
-                        + getString(R.string.CHECK_PID_WARNING), Toast.LENGTH_SHORT).show();
+                SingleToast.show(this, getString(R.string.PID_SENT)
+                        + getString(R.string.CHECK_PID_WARNING), Toast.LENGTH_SHORT);
 
                 oTree.getObjectFromName(mCurrentStabilizationBank).setWriteBlocked(false);
             }
         } else {
-            SingleToast.makeText(this, R.string.SEND_FAILED, Toast.LENGTH_SHORT).show();
+            SingleToast.show(this, R.string.SEND_FAILED, Toast.LENGTH_SHORT);
         }
     }
 
     public void onPidDownloadClick(View v) {
         if (mFcDevice != null && mFcDevice.isConnected()) {
             allowPidUpdate();
-            SingleToast.makeText(this, getString(R.string.PID_LOADING)
-                    + getString(R.string.CHECK_PID_WARNING), Toast.LENGTH_SHORT).show();
+            SingleToast.show(this, getString(R.string.PID_LOADING)
+                    + getString(R.string.CHECK_PID_WARNING), Toast.LENGTH_SHORT);
         } else {
-            SingleToast.makeText(this, R.string.SEND_FAILED, Toast.LENGTH_SHORT).show();
+            SingleToast.show(this, R.string.SEND_FAILED, Toast.LENGTH_SHORT);
         }
     }
 

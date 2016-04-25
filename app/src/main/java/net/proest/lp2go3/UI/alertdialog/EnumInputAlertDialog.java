@@ -35,8 +35,8 @@ public class EnumInputAlertDialog extends InputAlertDialog {
 
     public void show() {
         if (mFcDevice == null) {
-            SingleToast.makeText(getContext(), getContext().getString(R.string.NOT_CONNECTED),
-                    Toast.LENGTH_SHORT).show();
+            SingleToast.show(getContext(), getContext().getString(R.string.NOT_CONNECTED),
+                    Toast.LENGTH_SHORT);
             return;
         }
 
@@ -54,7 +54,7 @@ public class EnumInputAlertDialog extends InputAlertDialog {
 
         int current = 0;
         try {
-            String type = mFcDevice.getObjectTree().getData(mObject, mField).toString();
+            String type = mFcDevice.getObjectTree().getData(mObject, 0, mField, mElement).toString();
             if (type != null) {
                 for (String t : types) {
                     if (t.equals(type)) {
@@ -115,7 +115,7 @@ public class EnumInputAlertDialog extends InputAlertDialog {
         byte[] send = new byte[1];
         send[0] = (byte) which;
         if (mFcDevice != null) {
-            mFcDevice.sendSettingsObject(mObject, 0, mField, 0, send);
+            mFcDevice.sendSettingsObject(mObject, 0, mField, mElement, send);
             //mUAVTalkDevice.savePersistent("RevoSettings");
         }
     }

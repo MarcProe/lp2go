@@ -97,8 +97,8 @@ public class PidInputAlertDialog extends InputAlertDialog implements SeekBar.OnS
 
     public void show() {
         if (mFcDevice == null) {
-            SingleToast.makeText(getContext(), getContext().getString(R.string.NOT_CONNECTED),
-                    Toast.LENGTH_SHORT).show();
+            SingleToast.show(getContext(), getContext().getString(R.string.NOT_CONNECTED),
+                    Toast.LENGTH_SHORT);
             return;
         }
 
@@ -232,9 +232,9 @@ public class PidInputAlertDialog extends InputAlertDialog implements SeekBar.OnS
                     if (f >= 0 && f <= (float) mValueMax / mDenom) {
                         lastTextOk = s.toString();
                     } else {
-                        SingleToast.makeText(getContext(),
+                        SingleToast.show(getContext(),
                                 "Values 0 - " + getDecimalString((float) mValueMax / mDenom) + " allowed.",
-                                Toast.LENGTH_SHORT).show();
+                                Toast.LENGTH_SHORT);
                     }
                 } catch (NumberFormatException e) {
                     VisualLog.w("PidInputAertDialog", "onTextChanged");

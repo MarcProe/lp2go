@@ -39,8 +39,8 @@ public class IntegerInputAlertDialog extends InputAlertDialog {
 
     public void show() {
         if (mFcDevice == null) {
-            SingleToast.makeText(getContext(), getContext().getString(R.string.NOT_CONNECTED),
-                    Toast.LENGTH_SHORT).show();
+            SingleToast.show(getContext(), getContext().getString(R.string.NOT_CONNECTED),
+                    Toast.LENGTH_SHORT);
             return;
         }
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext());

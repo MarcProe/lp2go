@@ -52,9 +52,9 @@ class ConnectionThread extends Thread {
                 @Override
                 public void run() {
                     final long submil = (System.currentTimeMillis() - millis);
-                    SingleToast.makeText(mA,
+                    SingleToast.show(mA,
                             "UAVO load completed in " + submil + " milliseconds",
-                            Toast.LENGTH_SHORT).show();
+                            Toast.LENGTH_SHORT);
 
                 }
             });
