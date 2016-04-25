@@ -20,6 +20,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.text.InputFilter;
+import android.text.InputType;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -50,6 +51,29 @@ public class IntegerInputAlertDialog extends InputAlertDialog {
         dialogBuilder.setView(alertView);
 
         final EditText input = (EditText) alertView.findViewById(R.id.etxInput);
+
+        switch (mFieldType) {
+            case UAVTalkXMLObject.FIELDTYPE_ENUM:
+                throw new UnsupportedOperationException();
+                //break;
+            case UAVTalkXMLObject.FIELDTYPE_UINT8:
+            case UAVTalkXMLObject.FIELDTYPE_UINT16:
+            case UAVTalkXMLObject.FIELDTYPE_UINT32:
+                input.setInputType(InputType.TYPE_CLASS_NUMBER);
+                break;
+            case UAVTalkXMLObject.FIELDTYPE_INT8:
+            case UAVTalkXMLObject.FIELDTYPE_INT16:
+            case UAVTalkXMLObject.FIELDTYPE_INT32:
+                input.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_SIGNED);
+                break;
+            case UAVTalkXMLObject.FIELDTYPE_FLOAT32:
+                input.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+                break;
+            default:
+
+                SingleToast.show(getContext(), "Type not implemented", Toast.LENGTH_SHORT);
+                break;
+        }
         input.setText(mText);
         input.setSelection(mText.length());
         input.requestFocus();
@@ -101,12 +125,13 @@ public class IntegerInputAlertDialog extends InputAlertDialog {
                     if (data.length == 4) {
                         data = H.reverse4bytes(data);
                     } else {
-                        data = H.toBytes(0);
+                        data = new byte[0];
                     }
                     break;
                 default:
-                    VisualLog.e("IntegerInputAlertDialog", "Type not implemented! " + mFieldType);
-                    data = H.toBytes(0);
+                    SingleToast.show(getContext(), "Type not yet implemented!", Toast.LENGTH_SHORT);
+                    VisualLog.e("IntegerInputAlertDialog", "Type not implemented! " + mFieldType + " " + input);
+                    data = new byte[0];
                     break;
             }
 
@@ -115,7 +140,7 @@ public class IntegerInputAlertDialog extends InputAlertDialog {
             data = H.toBytes(0);
         }
 
-        if (mFcDevice != null) {
+        if (mFcDevice != null && data.length > 0) {
             mFcDevice.sendSettingsObject(mObject, 0, mField, mElement, data);
         }
     }

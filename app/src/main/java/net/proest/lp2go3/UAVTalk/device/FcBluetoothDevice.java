@@ -249,7 +249,7 @@ public class FcBluetoothDevice extends FcDevice {
                     mmSocket = (BluetoothSocket) mmDevice.getClass().getMethod("createRfcommSocket", new Class[]{int.class}).invoke(mmDevice, 1);
                     mmSocket.connect();
                 } catch (IOException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e1) {
-                    VisualLog.e("BT", "Fallback BT  Connection failed, trying again.");
+                    VisualLog.e("BT", "Fallback BT  Connection failed, trying again.", e);
                     connectionFailed();
                     try {
                         mmSocket.close();

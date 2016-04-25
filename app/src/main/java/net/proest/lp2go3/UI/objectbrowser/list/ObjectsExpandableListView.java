@@ -140,6 +140,7 @@ public class ObjectsExpandableListView extends ExpandableListView implements Exp
                             .withElement(c.element)
                             .show();
                     break;
+                case UAVTalkXMLObject.FIELDTYPE_FLOAT32:
                 case UAVTalkXMLObject.FIELDTYPE_UINT8:
                 case UAVTalkXMLObject.FIELDTYPE_INT8:
                 case UAVTalkXMLObject.FIELDTYPE_UINT16:
@@ -158,7 +159,6 @@ public class ObjectsExpandableListView extends ExpandableListView implements Exp
                             .show();
                     break;
                 default:
-
                     SingleToast.show(getContext(), "Type not implemented", Toast.LENGTH_SHORT);
                     break;
             }
