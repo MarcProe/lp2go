@@ -68,14 +68,18 @@ public class ObjectsExpandableListViewAdapter extends BaseExpandableListAdapter 
             convertView = infalInflater.inflate(R.layout.activity_objects_list_item, null);
         }
 
-        TextView txtListChild = (TextView) convertView.findViewById(R.id.lblListItem);
+        TextView txtListChildLabel = (TextView) convertView.findViewById(R.id.txtListItemLabel);
+        TextView txtListChildValue = (TextView) convertView.findViewById(R.id.txtListItemValue);
         if (isInstanceHeader) {
-            txtListChild.setBackgroundColor(Color.argb(0xff, 0x80, 0x80, 0xff));
+            txtListChildLabel.setBackgroundColor(Color.argb(0xff, 0x80, 0x80, 0xff));
+            txtListChildValue.setBackgroundColor(Color.argb(0xff, 0x80, 0x80, 0xff));
         } else {
-            txtListChild.setBackgroundColor(Color.TRANSPARENT);
+            txtListChildLabel.setBackgroundColor(Color.TRANSPARENT);
+            txtListChildValue.setBackgroundColor(Color.TRANSPARENT);
         }
 
-        txtListChild.setText(childText.toString());
+        txtListChildLabel.setText(childText.getLabel());
+        txtListChildValue.setText(childText.getValue());
         return convertView;
     }
 

@@ -43,7 +43,7 @@ public class ChildString {
         } else {
             element = "-" + element;
         }
-        message = fieldname + " " + element + " = " + data;
+        message = fieldname + " " + element;
     }
 
     public ChildString(String message) {
@@ -57,6 +57,14 @@ public class ChildString {
         isSettings = false;
         this.instance = instance;
         this.message = "Instance: " + instance;
+    }
+
+    public String getLabel() {
+        return message;
+    }
+
+    public String getValue() {
+        return data;
     }
 
     @Override
