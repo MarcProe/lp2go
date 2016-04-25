@@ -19,7 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="64dp" />
 
-        <net.proest.lp2go3.UI.objectbrowser.expandablelistview.ObjectsExpandableListView
+        <net.proest.lp2go3.UI.objectbrowser.list.ObjectsExpandableListView
             android:id="@+id/elvObjects"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
