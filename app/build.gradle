@@ -66,4 +66,5 @@ dependencies {
     compile 'com.google.android.gms:play-services:8.4.0'
     compile 'com.github.Triggertrap:SeekArc:v1.1'
     compile 'com.nbsp:library:1.08'
+    compile 'com.github.PhilJay:MPAndroidChart:v2.2.4'
 }

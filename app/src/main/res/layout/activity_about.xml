@@ -178,6 +178,16 @@
                     android:text="Material File Picker (https://github.com/nbsp-team/MaterialFilePicker) is licensed under the GNU GENERAL PUBLIC LICENSE Version 2."
                     android:textAlignment="center"
                     android:textAppearance="?android:attr/textAppearanceLarge" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_margin="5dp"
+                    android:autoLink="web"
+                    android:text="MPAndroidChart (https://github.com/PhilJay/MPAndroidChart) is licensed under the Apache License, Version 2."
+                    android:textAlignment="center"
+                    android:textAppearance="?android:attr/textAppearanceLarge" />
             </LinearLayout>
         </ScrollView>
 
