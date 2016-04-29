@@ -28,6 +28,10 @@ import java.util.concurrent.TimeUnit;
 
 public class H {
 
+    public final static String S = "."; //seperator
+    public final static String RS = "\\."; //regex reperator
+    public final static String NS = ","; //not seperatoir
+
     private final static char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
 
     //from Utils.Crc
@@ -98,6 +102,15 @@ public class H {
         return ret;
     }
 
+    public static byte[] toReversedBytes(short s) {
+        byte[] result = new byte[2];
+
+        result[1] = (byte) (s >> 8);
+        result[0] = (byte) (s /*>> 0*/);
+
+        return result;
+    }
+
     public static byte[] toBytes(int i) {
         byte[] result = new byte[4];
 
@@ -105,6 +118,17 @@ public class H {
         result[1] = (byte) (i >> 16);
         result[2] = (byte) (i >> 8);
         result[3] = (byte) (i /*>> 0*/);
+
+        return result;
+    }
+
+    public static byte[] toReversedBytes(int i) {
+        byte[] result = new byte[4];
+
+        result[3] = (byte) (i >> 24);
+        result[2] = (byte) (i >> 16);
+        result[1] = (byte) (i >> 8);
+        result[1] = (byte) (i /*>> 0*/);
 
         return result;
     }

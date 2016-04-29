@@ -20,6 +20,7 @@ import android.graphics.Color;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
+import net.proest.lp2go3.H;
 import net.proest.lp2go3.UAVTalk.UAVTalkXMLObject;
 
 import java.text.DecimalFormat;
@@ -101,7 +102,12 @@ public class PidTextView extends TextView {
 
     public String getDecimalString(float v) {
         DecimalFormat df = new DecimalFormat(mDecimalFormatString);
-        return df.format(v);
+        return df.format(v).replace(H.NS, H.S);
+    }
+
+    public synchronized void setTextOverride(String s) {
+        allowUpdate();
+        setText(s);
     }
 
     public void setText(String s) {

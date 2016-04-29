@@ -102,7 +102,7 @@ import net.proest.lp2go3.UAVTalk.device.FcUsbDevice;
 import net.proest.lp2go3.UI.PidTextView;
 import net.proest.lp2go3.UI.SingleToast;
 import net.proest.lp2go3.UI.alertdialog.EnumInputAlertDialog;
-import net.proest.lp2go3.UI.alertdialog.IntegerInputAlertDialog;
+import net.proest.lp2go3.UI.alertdialog.NumberInputAlertDialog;
 import net.proest.lp2go3.UI.alertdialog.PidInputAlertDialog;
 import net.proest.lp2go3.UI.objectbrowser.list.ChildString;
 import net.proest.lp2go3.UI.objectbrowser.list.ObjectsExpandableListView;
@@ -1733,7 +1733,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         String moduleEnabled =
                 mPollThread.getData("HwSettings", "OptionalModules", "Battery", true).toString();
         if (moduleEnabled.equals("Enabled")) {
-            new IntegerInputAlertDialog(this)
+            new NumberInputAlertDialog(this)
                     .withPresetText(txtHealthAlertDialogBatteryCapacity.getText().toString())
                     .withTitle(getString(R.string.CAPACITY_DIALOG_TITLE))
                     .withLayout(R.layout.alert_dialog_integer_input)
@@ -1771,7 +1771,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         String moduleEnabled =
                 mPollThread.getData("HwSettings", "OptionalModules", "Battery", true).toString();
         if (moduleEnabled.equals("Enabled")) {
-            new IntegerInputAlertDialog(this)
+            new NumberInputAlertDialog(this)
                     .withPresetText(txtHealthAlertDialogBatteryCells.getText().toString())
                     .withTitle(getString(R.string.CELLS_DIALOG_TITLE))
                     .withLayout(R.layout.alert_dialog_integer_input)

@@ -30,8 +30,8 @@ public abstract class InputAlertDialog extends AlertDialog {
     String mField;
     String mElement = "0";
     int mFieldType;
-    int mMin = -1;
-    int mMax = -1;
+    long mMin = -1;
+    long mMax = -1;
 
     InputAlertDialog(Context parent) {
         super(parent);

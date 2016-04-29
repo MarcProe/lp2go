@@ -33,16 +33,18 @@ import net.proest.lp2go3.UI.SingleToast;
 import net.proest.lp2go3.VisualLog;
 
 import java.text.DecimalFormat;
+import java.util.regex.Pattern;
 
-public class PidInputAlertDialog extends InputAlertDialog implements SeekBar.OnSeekBarChangeListener {
+public class PidInputAlertDialog extends InputAlertDialog
+        implements SeekBar.OnSeekBarChangeListener, TextWatcher {
 
+    private static String str;
     private int mStep;
     private int mDenom;
     private int mValueMax;
     private String mDecimalFormatString;
     private EditText mEditText;
     private PidTextView mPidTextView;
-
 
     public PidInputAlertDialog(Context parent) {
         super(parent);
@@ -56,7 +58,8 @@ public class PidInputAlertDialog extends InputAlertDialog implements SeekBar.OnS
             if (p % mStep != 0) {
                 p = p - p % mStep;
             }
-            mEditText.setText(getDecimalString(p / (float) mDenom));
+            String fText = getDecimalString(p / (float) mDenom);
+            mEditText.setText(fText);
         }
     }
 
@@ -109,8 +112,20 @@ public class PidInputAlertDialog extends InputAlertDialog implements SeekBar.OnS
         dialogBuilder.setView(alertView);
 
         mEditText = (EditText) alertView.findViewById(R.id.etxInput);
-        mEditText.setText(mText);
-        mEditText.setSelection(mText.length());
+
+        String fText;
+        fText = (new DecimalFormat(mDecimalFormatString)).format(H.stringToFloat(mText));
+
+        if (mFieldType == UAVTalkXMLObject.FIELDTYPE_FLOAT32) {
+            mEditText.addTextChangedListener(this);
+            fText = fText.replace(H.NS, H.S);
+        } else {
+            fText = mText;
+        }
+
+        mEditText.setText(fText);
+        mEditText.setSelection(fText.length());
+
         mEditText.requestFocus();
         //input.setFilters(new InputFilter[]{new InputFilterMinMax(getContext(), 0, (float)mValueMax/mDenom)});
 
@@ -127,9 +142,18 @@ public class PidInputAlertDialog extends InputAlertDialog implements SeekBar.OnS
                 new OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        //process(input.getText().toString());
-                        mPidTextView.setText(mEditText.getText());
-                        //mFcDevice.savePersistent(mObject);
+
+                        String fText;
+
+                        if (mFieldType == UAVTalkXMLObject.FIELDTYPE_FLOAT32) {
+                            fText = (new DecimalFormat(mDecimalFormatString)).format(
+                                    H.stringToFloat(mEditText.getText().toString()));
+                            fText = fText.replace(H.NS, H.S);
+                        } else {
+                            fText = mEditText.getText().toString();
+                        }
+
+                        mPidTextView.setTextOverride(fText);
 
                         dialog.dismiss();
                     }
@@ -280,6 +304,24 @@ public class PidInputAlertDialog extends InputAlertDialog implements SeekBar.OnS
 
     private String getDecimalString(float v) {
         DecimalFormat df = new DecimalFormat(mDecimalFormatString);
-        return df.format(v);
+        return df.format(v).replace(H.NS, H.S);
+    }
+
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        str = s.toString();
+    }
+
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+    }
+
+    @Override
+    public void afterTextChanged(Editable s) {//there are two of these now... bad!
+        String ls = s.toString();
+        if (ls.length() > 0 && !Pattern.matches("^\\d*" + H.RS + "?\\d*$", ls)) {
+            s.replace(0, s.length(), str);
+        }
     }
 }

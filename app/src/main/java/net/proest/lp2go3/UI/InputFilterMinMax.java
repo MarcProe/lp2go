@@ -23,11 +23,11 @@ import android.widget.Toast;
 
 public class InputFilterMinMax implements InputFilter {
 
-    private final int min;
-    private final int max;
+    private final long min;
+    private final long max;
     private final Context mContext;
 
-    public InputFilterMinMax(Context context, int min, int max) {
+    public InputFilterMinMax(Context context, long min, long max) {
         this.min = min;
         this.max = max;
         this.mContext = context;
@@ -37,7 +37,7 @@ public class InputFilterMinMax implements InputFilter {
     public CharSequence filter(CharSequence source, int start, int end, Spanned dest,
                                int dstart, int dend) {
         try {
-            int input = Integer.parseInt(dest.toString() + source.toString());
+            long input = Long.parseLong(dest.toString() + source.toString());
             if (isInRange(min, max, input))
                 return null;
         } catch (NumberFormatException ignored) {
@@ -46,7 +46,7 @@ public class InputFilterMinMax implements InputFilter {
         return "";
     }
 
-    private boolean isInRange(int a, int b, int c) {
+    private boolean isInRange(long a, long b, long c) {
         return b > a ? c >= a && c <= b : c >= b && c <= a;
     }
 }

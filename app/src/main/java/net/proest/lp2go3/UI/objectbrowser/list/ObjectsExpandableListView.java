@@ -31,7 +31,7 @@ import net.proest.lp2go3.UAVTalk.UAVTalkXMLObject;
 import net.proest.lp2go3.UAVTalk.device.FcDevice;
 import net.proest.lp2go3.UI.SingleToast;
 import net.proest.lp2go3.UI.alertdialog.EnumInputAlertDialog;
-import net.proest.lp2go3.UI.alertdialog.IntegerInputAlertDialog;
+import net.proest.lp2go3.UI.alertdialog.NumberInputAlertDialog;
 import net.proest.lp2go3.VisualLog;
 
 import java.util.ArrayList;
@@ -147,7 +147,7 @@ public class ObjectsExpandableListView extends ExpandableListView implements Exp
                 case UAVTalkXMLObject.FIELDTYPE_INT16:
                 case UAVTalkXMLObject.FIELDTYPE_UINT32:
                 case UAVTalkXMLObject.FIELDTYPE_INT32:
-                    new IntegerInputAlertDialog(getContext())
+                    new NumberInputAlertDialog(getContext())
                             .withTitle(c.objectname + " " + c.fieldname + " " + c.element)
                             .withUavTalkDevice(((MainActivity) getContext()).getFcDevice())
                             .withLayout(R.layout.alert_dialog_integer_input)

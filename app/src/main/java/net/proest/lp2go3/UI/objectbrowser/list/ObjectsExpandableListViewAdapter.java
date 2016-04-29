@@ -27,8 +27,11 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import net.proest.lp2go3.H;
 import net.proest.lp2go3.R;
+import net.proest.lp2go3.UAVTalk.UAVTalkXMLObject;
 
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.List;
 
@@ -91,8 +94,15 @@ public class ObjectsExpandableListViewAdapter extends BaseExpandableListAdapter 
             imgListChildIcon.setImageResource(android.R.color.transparent);
         }
 
+        String fText;
+        if (childText.type == UAVTalkXMLObject.FIELDTYPE_FLOAT32) {
+            fText = (new DecimalFormat("##########.#######")).format(H.stringToFloat(childText.getValue()));
+        } else {
+            fText = childText.getValue();
+        }
+
         txtListChildLabel.setText(childText.getLabel());
-        txtListChildValue.setText(childText.getValue());
+        txtListChildValue.setText(fText);
         return convertView;
     }
 
