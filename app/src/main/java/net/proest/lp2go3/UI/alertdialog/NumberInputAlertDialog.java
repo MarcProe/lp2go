@@ -81,7 +81,7 @@ public class NumberInputAlertDialog extends InputAlertDialog implements TextWatc
                 break;
             case UAVTalkXMLObject.FIELDTYPE_UINT32:
                 min = 0;
-                max = 4294967295l;
+                max = 4294967295L;
                 input.setInputType(InputType.TYPE_CLASS_NUMBER);
                 break;
             case UAVTalkXMLObject.FIELDTYPE_INT8:
