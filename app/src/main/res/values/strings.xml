@@ -46,5 +46,9 @@
     <string name="UAVO_VERSION_OK">UAVO Version OK.</string>
     <string name="USB">USB</string>
     <string name="BLUETOOTH_WARNING">To use Bluetooth, turn it on in your device.</string>
+    <string name="EXIT">Exit</string>
+    <string name="ARE_YOU_SURE_YOU_WANT_TO_CLOSE">Are you sure you want to close Lp2Go?</string>
+    <string name="YES">Yes</string>
+    <string name="NO">No</string>
 </resources>
 
