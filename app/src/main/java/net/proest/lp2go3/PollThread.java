@@ -545,7 +545,9 @@ class PollThread extends Thread {
                 b[i] = (byte) (j & 0xff);
 
             }
-        } catch (UAVTalkMissingObjectException | NumberFormatException e) {
+        } catch (UAVTalkMissingObjectException | NumberFormatException | ClassCastException e) {
+            VisualLog.e("Pollthread", "getByteData", e);
+
             try {
                 mA.mFcDevice.requestObject(object);
             } catch (NullPointerException e2) {
