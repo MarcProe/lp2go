@@ -119,9 +119,9 @@ import net.proest.lp2go3.slider.ObjectsFragment;
 import net.proest.lp2go3.slider.PidFragment;
 import net.proest.lp2go3.slider.ScopeFragment;
 import net.proest.lp2go3.slider.SettingsFragment;
+import net.proest.lp2go3.slider.VerticalPidFragment;
 import net.proest.lp2go3.slider.adapter.NavDrawerListAdapter;
 import net.proest.lp2go3.slider.model.NavDrawerItem;
-import net.proest.lp2go3.slider.model.VerticalPidFragment;
 
 import org.xml.sax.SAXException;
 
