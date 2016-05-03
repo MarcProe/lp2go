@@ -707,6 +707,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         setContentView(mViews.get(VIEW_SETTINGS)); //Settings
 
         cbxColorfulPid = (CheckBox) findViewById(R.id.cbxColorfulPid);
+        cbxColorfulPid.setChecked(mColorfulPid);
 
         spnConnectionTypeSpinner = (Spinner) findViewById(R.id.spnConnectionTypeSpinner);
         ArrayAdapter<CharSequence> serialConnectionTypeAdapter
