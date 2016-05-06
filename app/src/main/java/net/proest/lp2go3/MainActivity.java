@@ -154,134 +154,139 @@ import javax.xml.parsers.ParserConfigurationException;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     public static final int VIEW_SCOPE = 9;
-    protected static final int SERIAL_USB = 1;
-    protected static final int SERIAL_BLUETOOTH = 2;
+    protected final static int HISTORY_MARKER_NUM = 5;
+    protected static final String OFFSET_BAROSENSOR_ALTITUDE =
+            "net.proest.lp2go3.BaroSensor-Altitude";
     protected static final String OFFSET_VELOCITY_DOWN = "net.proest.lp2go3.VelocityState-Down";
-    protected static final String OFFSET_BAROSENSOR_ALTITUDE = "net.proest.lp2go3.BaroSensor-Altitude";
+    protected static final int POLL_WAIT_TIME = 500;
+    protected static final int POLL_SECOND_FACTOR = 1000 / POLL_WAIT_TIME;
+    protected static final int SERIAL_BLUETOOTH = 2;
+    protected static final int SERIAL_USB = 1;
+    protected static final int VIEW_ABOUT = 7;
+    protected static final int VIEW_DEBUG = 8;
+    protected static final int VIEW_LOGS = 5;
     protected static final int VIEW_MAIN = 0;
     protected static final int VIEW_MAP = 1;
     protected static final int VIEW_OBJECTS = 2;
     protected static final int VIEW_PID = 3;
-    protected static final int VIEW_VPID = 4;
-    protected static final int VIEW_LOGS = 5;
     protected static final int VIEW_SETTINGS = 6;
-    protected static final int VIEW_ABOUT = 7;
-    protected static final int VIEW_DEBUG = 8;
-    protected static final int POLL_WAIT_TIME = 500;
-    protected static final int POLL_SECOND_FACTOR = 1000 / POLL_WAIT_TIME;
-    protected final static int HISTORY_MARKER_NUM = 5;
-    private static final int NUM_OF_VIEWS = 10;
-    private static final String UAVO_INTERNAL_PATH = "uavo";
-    private static final int ICON_OPAQUE = 255;
-    private static final int ICON_TRANSPARENT = 64;
-    private static final int SERIAL_NONE = 0;
+    protected static final int VIEW_VPID = 4;
     private static final String ACTION_USB_PERMISSION = "net.proest.lp2go3.USB_PERMISSION";
     private static final int CALLBACK_FILEPICKER = 3456;
+    private static final int ICON_OPAQUE = 255;
+    private static final int ICON_TRANSPARENT = 64;
     private static final boolean LOCAL_LOGD = true;
+    private static final int NUM_OF_VIEWS = 10;
+    private static final int SERIAL_NONE = 0;
+    private static final String UAVO_INTERNAL_PATH = "uavo";
     static int mCurrentView = 0;
-    private static boolean mHasPThread = false;
     private static boolean mColorfulPid;
+    private static boolean mHasPThread = false;
     final Marker[] mPosHistory = new Marker[HISTORY_MARKER_NUM];
     public ObjectsExpandableListView mExpListView;
-    protected HashSet<PidTextView> mPidTexts;
-    protected HashSet<PidTextView> mVerticalPidTexts;
     protected ImageView imgPidBank;
     protected int mCurrentPosMarker = 0;
     protected String mCurrentStabilizationBank;
-    protected String mLoadedUavo = null;
-    protected long mTxObjects;
-    protected long mRxObjectsGood;
-    protected long mRxObjectsBad;
-    protected int mSerialModeUsed = -1;
-    protected HashMap<String, Object> mOffset;
-    protected FcDevice mFcDevice;
-    protected GoogleMap mMap;
     protected boolean mDoReconnect = false;
-    TextView txtObjectLogTx;
-    TextView txtObjectLogRxGood;
-    TextView txtObjectLogRxBad;
-    TextView txtAtti;
-    TextView txtPlan;
-    TextView txtStab;
-    TextView txtPath;
-    TextView txtGPS;
-    TextView txtGPSSatsInView;
-    TextView txtSensor;
+    protected FcDevice mFcDevice;
+    protected String mLoadedUavo = null;
+    protected GoogleMap mMap;
+    protected HashMap<String, Object> mOffset;
+    protected HashSet<PidTextView> mPidTexts;
+    protected long mRxObjectsBad;
+    protected long mRxObjectsGood;
+    protected int mSerialModeUsed = -1;
+    protected long mTxObjects;
+    protected HashSet<PidTextView> mVerticalPidTexts;
+    ImageView imgFlightTelemetry;
+    ImageView imgGroundTelemetry;
+    ImageView imgPacketsBad;
+    ImageView imgPacketsGood;
+    ImageView imgPacketsUp;
+    ImageView imgSerial;
+    ImageView imgToolbarSettings;
+    ImageView imgUavoSanity;
+    LineChart lchScope;
     TextView txtAirspd;
-    TextView txtMag;
-    TextView txtInput;
-    TextView txtOutput;
-    TextView txtI2C;
-    TextView txtTelemetry;
-    TextView txtBatt;
-    TextView txtTime;
-    TextView txtConfig;
-    TextView txtBoot;
-    TextView txtStack;
-    TextView txtMem;
-    TextView txtEvent;
-    TextView txtCPU;
-    TextView txtArmed;
-    TextView txtVolt;
-    TextView txtAmpere;
-    TextView txtmAh;
-    TextView txtTimeLeft;
     TextView txtAltitude;
     TextView txtAltitudeAccel;
-    TextView txtModeNum;
-    TextView txtModeFlightMode;
+    TextView txtAmpere;
+    TextView txtArmed;
+    TextView txtAtti;
+    TextView txtBatt;
+    TextView txtBoot;
+    TextView txtCPU;
+    TextView txtConfig;
+    TextView txtEvent;
     TextView txtFlightTime;
-    TextView txtModeAssistedControl;
-    TextView txtLatitude;
-    TextView txtLongitude;
-    TextView txtMapGPS;
-    TextView txtMapGPSSatsInView;
-    TextView txtVehicleName;
+    TextView txtGPS;
+    TextView txtGPSSatsInView;
     TextView txtHealthAlertDialogBatteryCapacity;
     TextView txtHealthAlertDialogBatteryCells;
     TextView txtHealthAlertDialogFusionAlgorithm;
-    ImageView imgFlightTelemetry;
-    ImageView imgGroundTelemetry;
-    ImageView imgSerial;
-    ImageView imgToolbarSettings;
-    ImageView imgPacketsUp;
-    ImageView imgPacketsGood;
-    ImageView imgPacketsBad;
-    TextView txtObjects;
-    TextView txtLogFilename;
-    TextView txtLogSize;
-    TextView txtLogObjects;
+    TextView txtI2C;
+    TextView txtInput;
+    TextView txtLatitude;
     TextView txtLogDuration;
-    ImageView imgUavoSanity;
-    LineChart lchScope;
-    private Map<Integer, View> mViews;
-    private Spinner spnUavoSource;
-    private Spinner spnConnectionTypeSpinner;
-    private Spinner spnBluetoothPairedDevice;
+    TextView txtLogFilename;
+    TextView txtLogObjects;
+    TextView txtLogSize;
+    TextView txtLongitude;
+    TextView txtMag;
+    TextView txtMapGPS;
+    TextView txtMapGPSSatsInView;
+    TextView txtMem;
+    TextView txtModeAssistedControl;
+    TextView txtModeFlightMode;
+    TextView txtModeNum;
+    TextView txtObjectLogRxBad;
+    TextView txtObjectLogRxGood;
+    TextView txtObjectLogTx;
+    TextView txtObjects;
+    TextView txtOutput;
+    TextView txtPath;
+    TextView txtPlan;
+    TextView txtSensor;
+    TextView txtStab;
+    TextView txtStack;
+    TextView txtTelemetry;
+    TextView txtTime;
+    TextView txtTimeLeft;
+    TextView txtVehicleName;
+    TextView txtVolt;
+    TextView txtmAh;
     private CheckBox cbxColorfulPid;
-    private ObjectsExpandableListViewAdapter mListAdapter;
+    private CheckBox cbxColorfulVPid;
     private BluetoothAdapter mBluetoothAdapter;
     private String mBluetoothDeviceUsed = null;
-    private DrawerLayout mDrawerLayout;
-    private ListView mDrawerList;
-    private ActionBarDrawerToggle mDrawerToggle;
-    private CharSequence mDrawerTitle;
-    private CharSequence mTitle;
-    private PollThread mPollThread = null;
+    private boolean mColorfulVPid;
     private ConnectionThread mConnectionThread = null;
-    private UsbManager mUsbManager = null;
     private android.hardware.usb.UsbDevice mDevice;
     private UsbDeviceConnection mDeviceConnection;
-    private PendingIntent mPermissionIntent = null;
+    private DrawerLayout mDrawerLayout;
+    private ListView mDrawerList;
+    private CharSequence mDrawerTitle;
+    private ActionBarDrawerToggle mDrawerToggle;
     private UsbInterface mInterface;
+    private ObjectsExpandableListViewAdapter mListAdapter;
+    private MapView mMapView;
+    private PendingIntent mPermissionIntent = null;
+    private PollThread mPollThread = null;
+    private CharSequence mTitle;
+    private String mUavoLongHash;
+    private String mUavoLongHashFc;
+    private UsbManager mUsbManager = null;
+    private Map<Integer, View> mViews;
     private Map<String, UAVTalkXMLObject> mXmlObjects = null;
     private final BroadcastReceiver mUsbReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             VisualLog.d(getString(R.string.USB), action);
 
-            if (mSerialModeUsed == SERIAL_USB && UsbManager.ACTION_USB_DEVICE_ATTACHED.equals(action)) {
-                android.hardware.usb.UsbDevice device = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
+            if (mSerialModeUsed == SERIAL_USB &&
+                    UsbManager.ACTION_USB_DEVICE_ATTACHED.equals(action)) {
+                android.hardware.usb.UsbDevice device =
+                        intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
 
                 VisualLog.d(getString(R.string.USB), device.getVendorId() +
                         getString(R.string.DASH) +
@@ -325,10 +330,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         }
     };
-    private MapView mMapView;
+    private Spinner spnBluetoothPairedDevice;
+    private Spinner spnConnectionTypeSpinner;
+    private Spinner spnUavoSource;
     private TextView txtDebugLog;
-    private String mUavoLongHash;
-    private String mUavoLongHashFc;
 
     public static boolean hasPThread() {
         return mHasPThread;
@@ -480,13 +485,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
                 R.drawable.ic_drawer, R.string.app_name, R.string.app_name) {
 
-            public void onDrawerClosed(View view) {
-                getSupportActionBar().setTitle(mTitle);
+            public void onDrawerOpened(View drawerView) {
+                getSupportActionBar().setTitle(mDrawerTitle);
                 invalidateOptionsMenu();
             }
 
-            public void onDrawerOpened(View drawerView) {
-                getSupportActionBar().setTitle(mDrawerTitle);
+            public void onDrawerClosed(View view) {
+                getSupportActionBar().setTitle(mTitle);
                 invalidateOptionsMenu();
             }
         };
@@ -494,56 +499,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         mDrawerList.setOnItemClickListener(new SlideMenuClickListener());
     }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        //getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // toggle nav drawer on selecting action bar app icon/title
-        if (mDrawerToggle.onOptionsItemSelected(item)) {
-            return true;
-        }
-        // Handle action bar actions click
-        switch (item.getItemId()) {
-            //case R.id.action_settings:
-            //   return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        // if nav drawer is opened, hide the action items
-        boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
-        return super.onPrepareOptionsMenu(menu);
-    }
-
-    @Override
-    public void setTitle(CharSequence title) {
-        mTitle = title;
-        ActionBar ab = getSupportActionBar();
-        if (ab != null) getSupportActionBar().setTitle(mTitle);
-    }
-
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        mDrawerToggle.syncState();
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        mDrawerToggle.onConfigurationChanged(newConfig);
-
-        displayView(mCurrentView);
-    }
-
 
     public void reconnect() {
         mDoReconnect = true;
@@ -647,7 +602,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 mMap.setMyLocationEnabled(true);
                 MapsInitializer.initialize(this);
 
-                CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(32.154599, -110.827369), 18);
+                CameraUpdate cameraUpdate =
+                        CameraUpdateFactory.newLatLngZoom(new LatLng(32.154599, -110.827369), 18);
                 mMap.animateCamera(cameraUpdate);
                 mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
             }
@@ -678,7 +634,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             @Override
             public void run() {
 
-                mExpListView.init(new ArrayList<String>(), new HashMap<String, List<ChildString>>());
+                mExpListView
+                        .init(new ArrayList<String>(), new HashMap<String, List<ChildString>>());
 
                 // Adding child data
                 int i = 0;
@@ -688,7 +645,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 }
 
                 mListAdapter =
-                        new ObjectsExpandableListViewAdapter(me, mExpListView.getListDataHeader(), mExpListView.getListDataChild());
+                        new ObjectsExpandableListViewAdapter(me, mExpListView.getListDataHeader(),
+                                mExpListView.getListDataChild());
 
                 // setting list adapter
                 mExpListView.setmAdapter(mListAdapter);
@@ -703,6 +661,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         cbxColorfulPid = (CheckBox) findViewById(R.id.cbxColorfulPid);
         cbxColorfulPid.setChecked(mColorfulPid);
+
+        cbxColorfulVPid = (CheckBox) findViewById(R.id.cbxColorfulVPid);
+        cbxColorfulVPid.setChecked(mColorfulPid);
 
         spnConnectionTypeSpinner = (Spinner) findViewById(R.id.spnConnectionTypeSpinner);
         ArrayAdapter<CharSequence> serialConnectionTypeAdapter
@@ -748,8 +709,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                             spnBluetoothPairedDevice.setSelection(btpd);
                         }
                         btpd++;
-                        if (LOCAL_LOGD)
+                        if (LOCAL_LOGD) {
                             VisualLog.d("BTE", device.getName() + " " + device.getAddress());
+                        }
                     }
                 }
             }
@@ -1169,6 +1131,43 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        //getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        // if nav drawer is opened, hide the action items
+        boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // toggle nav drawer on selecting action bar app icon/title
+        if (mDrawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+        // Handle action bar actions click
+        switch (item.getItemId()) {
+            //case R.id.action_settings:
+            //   return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public void setTitle(CharSequence title) {
+        mTitle = title;
+        ActionBar ab = getSupportActionBar();
+        if (ab != null) {
+            getSupportActionBar().setTitle(mTitle);
+        }
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         VisualLog.setActivity(this);
@@ -1183,6 +1182,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         mBluetoothDeviceUsed = sharedPref.getString(getString(R.string.SETTINGS_BT_NAME), null);
         mLoadedUavo = sharedPref.getString(getString(R.string.SETTINGS_UAVO_SOURCE), null);
         mColorfulPid = sharedPref.getBoolean(getString(R.string.SETTINGS_COLORFUL_PID), false);
+        mColorfulVPid = sharedPref.getBoolean(getString(R.string.SETTINGS_COLORFUL_VPID), false);
 
         //debug view is initialized above
         initViewPid();
@@ -1197,6 +1197,58 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         initWarnDialog().show();
 
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        mDrawerToggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        mDrawerToggle.onConfigurationChanged(newConfig);
+
+        displayView(mCurrentView);
+    }
+
+    @Override
+    protected void onStop() {
+
+        if (mFcDevice != null) {
+            mFcDevice.setLogging(false);
+        }
+
+        if (mPollThread != null) {
+            mPollThread.setInvalid();
+            mPollThread = null;
+        }
+
+        if (mConnectionThread != null) {
+            mConnectionThread.setInvalid();
+            mConnectionThread = null;
+            MainActivity.mHasPThread = false;
+        }
+
+        mSerialModeUsed = SERIAL_NONE;
+        mDoReconnect = true;
+
+        if (mFcDevice != null) {
+            mFcDevice.stop();
+        }
+        mFcDevice = null;
+
+        unregisterReceiver(mUsbReceiver);
+        setUsbInterface(null, null);
+        mPermissionIntent = null;
+
+        super.onStop();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
     }
 
     protected boolean loadXmlObjects(boolean overwrite) {
@@ -1257,7 +1309,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 VisualLog.e("UAVO", "UAVO Load Error", e);
             } finally {
                 try {
-                    if (zis != null) zis.close();
+                    if (zis != null) {
+                        zis.close();
+                    }
                 } catch (IOException e) {
                     VisualLog.e("LoadXML", "Exception on Close");
                 }
@@ -1269,76 +1323,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             return true;
         }
         return false;
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        if (mPermissionIntent == null)
-            mPermissionIntent =
-                    PendingIntent.getBroadcast(this, 0, new Intent(ACTION_USB_PERMISSION), 0);
-
-        mUsbManager = (UsbManager) getSystemService(Context.USB_SERVICE);
-
-        // listen for new usb devices
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
-        filter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
-        filter.addAction(ACTION_USB_PERMISSION);
-
-        registerReceiver(mUsbReceiver, filter);
-
-        if (Looper.myLooper() == null) Looper.prepare();
-
-        if (mPollThread == null) {
-            mPollThread = new PollThread(this);
-            mPollThread.start();
-        }
-        if (mConnectionThread == null) {
-            mConnectionThread = new ConnectionThread(this);
-            mConnectionThread.start();
-        }
-
-        mDoReconnect = true;
-
-        displayView(mCurrentView);
-
-        VisualLog.d("onStart", "onStart");
-    }
-
-    @Override
-    protected void onStop() {
-
-        if (mFcDevice != null) mFcDevice.setLogging(false);
-
-        if (mPollThread != null) {
-            mPollThread.setInvalid();
-            mPollThread = null;
-        }
-
-        if (mConnectionThread != null) {
-            mConnectionThread.setInvalid();
-            mConnectionThread = null;
-            MainActivity.mHasPThread = false;
-        }
-
-        mSerialModeUsed = SERIAL_NONE;
-        mDoReconnect = true;
-
-        if (mFcDevice != null) mFcDevice.stop();
-        mFcDevice = null;
-
-        unregisterReceiver(mUsbReceiver);
-        setUsbInterface(null, null);
-        mPermissionIntent = null;
-
-        super.onStop();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
     }
 
     protected void connectUSB() {
@@ -1435,6 +1419,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 editor.putString(getString(R.string.SETTINGS_UAVO_SOURCE), mLoadedUavo);
                 editor.putInt(getString(R.string.SETTINGS_SERIAL_MODE), mSerialModeUsed);
                 editor.putBoolean(getString(R.string.SETTINGS_COLORFUL_PID), mColorfulPid);
+                editor.putBoolean(getString(R.string.SETTINGS_COLORFUL_VPID), mColorfulVPid);
 
                 editor.commit();
                 mDoReconnect = true;
@@ -1576,7 +1561,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     final View lloControllCoeff = findViewById(R.id.lloControlCoeff);
 
                     if (lloStickResponse != null && lloControllCoeff != null) {
-                        if (mColorfulPid) {
+                        if (mColorfulVPid) {
                             lloStickResponse.setBackground(
                                     ContextCompat.getDrawable(getApplicationContext(),
                                             R.drawable.border_top_yellow));
@@ -1649,39 +1634,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_MENU) {
-            if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
-                mDrawerLayout.closeDrawer(GravityCompat.START);
-            } else {
-                mDrawerLayout.openDrawer(GravityCompat.START);
-            }
-            return true;
-        }
-        return super.onKeyDown(keyCode, event);
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (mCurrentView == VIEW_MAIN) {
-            new AlertDialog.Builder(this)
-                    .setIcon(R.drawable.ic_warning_black_24dp)
-                    .setMessage(R.string.ARE_YOU_SURE_YOU_WANT_TO_CLOSE)
-                    .setTitle(R.string.EXIT)
-                    .setPositiveButton(R.string.YES, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            finish();
-                        }
-                    })
-                    .setNegativeButton(R.string.NO, null)
-                    .show();
-        } else {
-            displayView(VIEW_MAIN);
-        }
-    }
-
-    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
@@ -1707,6 +1659,78 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mCurrentView == VIEW_MAIN) {
+            new AlertDialog.Builder(this)
+                    .setIcon(R.drawable.ic_warning_black_24dp)
+                    .setMessage(R.string.ARE_YOU_SURE_YOU_WANT_TO_CLOSE)
+                    .setTitle(R.string.EXIT)
+                    .setPositiveButton(R.string.YES, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            finish();
+                        }
+                    })
+                    .setNegativeButton(R.string.NO, null)
+                    .show();
+        } else {
+            displayView(VIEW_MAIN);
+        }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_MENU) {
+            if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+                mDrawerLayout.closeDrawer(GravityCompat.START);
+            } else {
+                mDrawerLayout.openDrawer(GravityCompat.START);
+            }
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        if (mPermissionIntent == null) {
+            mPermissionIntent =
+                    PendingIntent.getBroadcast(this, 0, new Intent(ACTION_USB_PERMISSION), 0);
+        }
+
+        mUsbManager = (UsbManager) getSystemService(Context.USB_SERVICE);
+
+        // listen for new usb devices
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
+        filter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
+        filter.addAction(ACTION_USB_PERMISSION);
+
+        registerReceiver(mUsbReceiver, filter);
+
+        if (Looper.myLooper() == null) {
+            Looper.prepare();
+        }
+
+        if (mPollThread == null) {
+            mPollThread = new PollThread(this);
+            mPollThread.start();
+        }
+        if (mConnectionThread == null) {
+            mConnectionThread = new ConnectionThread(this);
+            mConnectionThread.start();
+        }
+
+        mDoReconnect = true;
+
+        displayView(mCurrentView);
+
+        VisualLog.d("onStart", "onStart");
     }
 
     public void onClearUavObjectFilesClick(View v) {
@@ -1753,11 +1777,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
                 try {
                     txtHealthAlertDialogBatteryCapacity =
-                            (TextView) alertView.findViewById(R.id.txtHealthAlertDialogBatteryCapacity);
+                            (TextView) alertView
+                                    .findViewById(R.id.txtHealthAlertDialogBatteryCapacity);
                     txtHealthAlertDialogBatteryCells =
-                            (TextView) alertView.findViewById(R.id.txtHealthAlertDialogBatteryCells);
+                            (TextView) alertView
+                                    .findViewById(R.id.txtHealthAlertDialogBatteryCells);
                     txtHealthAlertDialogFusionAlgorithm =
-                            (TextView) alertView.findViewById(R.id.txtHealthAlertDialogFusionAlgorithm);
+                            (TextView) alertView
+                                    .findViewById(R.id.txtHealthAlertDialogFusionAlgorithm);
 
                     txtHealthAlertDialogBatteryCapacity.setText(mFcDevice.getObjectTree()
                             .getData("FlightBatterySettings", "Capacity").toString());
@@ -2129,13 +2156,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         info.setText(R.string.GNU_WARNING);
         info.setPadding(5, 5, 5, 5);
 
-        warnDialogBuilder.setPositiveButton(R.string.I_UNDERSTAND, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-                dialog.cancel();
-            }
-        });
+        warnDialogBuilder
+                .setPositiveButton(R.string.I_UNDERSTAND, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        dialog.cancel();
+                    }
+                });
         return warnDialogBuilder;
     }
 

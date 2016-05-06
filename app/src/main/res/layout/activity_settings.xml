@@ -108,6 +108,35 @@
                     android:background="@drawable/border_top"
                     android:orientation="horizontal">
 
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="Colorful VPID tuning"
+                        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:orientation="horizontal">
+
+                        <CheckBox
+                            android:id="@+id/cbxColorfulVPid"
+                            android:layout_width="60dp"
+                            android:layout_height="60dp"
+                            android:background="?android:attr/listChoiceIndicatorMultiple"
+                            android:button="@null"
+                            android:checked="false" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/border_top"
+                    android:orientation="horizontal">
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
