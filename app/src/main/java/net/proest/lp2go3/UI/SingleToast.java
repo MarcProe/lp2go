@@ -47,14 +47,18 @@ public class SingleToast {
 
     public static void show(Context context, String text, int duration) {
         VisualLog.i("Toast", text);
-        if (mToast != null) mToast.cancel();
+        if (mToast != null) {
+            mToast.cancel();
+        }
         mToast = Toast.makeText(context, text, duration);
         mToast.show();
     }
 
     public static void show(Context context, int text, int duration) {
         VisualLog.i("Toast", context.getString(text));
-        if (mToast != null) mToast.cancel();
+        if (mToast != null) {
+            mToast.cancel();
+        }
         mToast = Toast.makeText(context, text, duration);
         mToast.show();
     }

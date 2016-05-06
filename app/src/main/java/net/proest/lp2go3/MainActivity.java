@@ -357,36 +357,40 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         return null;
     }
 
-    public void setUavoLongHashFC(String uavolonghashfc) {
-        mUavoLongHashFc = uavolonghashfc;
+    public FcDevice getFcDevice() {
+        return mFcDevice;
     }
 
     public String getUavoLongHash() {
         return mUavoLongHash;
     }
 
-    public FcDevice getFcDevice() {
-        return mFcDevice;
-    }
-
-    public synchronized void setRxObjectsGood(long o) {
-        this.mRxObjectsGood = o;
-    }
-
-    public synchronized void incRxObjectsGood() {
-        this.mRxObjectsGood++;
+    public void setPollThreadObjectTree(UAVTalkObjectTree oTree) {
+        mPollThread.setObjectTree(oTree);
     }
 
     public synchronized void setRxObjectsBad(long o) {
         this.mRxObjectsBad = o;
     }
 
-    public synchronized void incRxObjectsBad() {
-        this.mRxObjectsBad++;
+    public synchronized void setRxObjectsGood(long o) {
+        this.mRxObjectsGood = o;
     }
 
     public synchronized void setTxObjects(long o) {
         this.mTxObjects = o;
+    }
+
+    public void setUavoLongHashFC(String uavolonghashfc) {
+        mUavoLongHashFc = uavolonghashfc;
+    }
+
+    public synchronized void incRxObjectsGood() {
+        this.mRxObjectsGood++;
+    }
+
+    public synchronized void incRxObjectsBad() {
+        this.mRxObjectsBad++;
     }
 
     public synchronized void incTxObjects() {
@@ -1808,7 +1812,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
     }
 
-
     public void onBatteryCapacityClick(View v) {
         String moduleEnabled =
                 mPollThread.getData("HwSettings", "OptionalModules", "Battery", true).toString();
@@ -2091,10 +2094,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         share.setType(getString(R.string.MIME_APPLICATION_TEXT));
         share.putExtra(Intent.EXTRA_TEXT, txtDebugLog.getText().toString());
         startActivity(Intent.createChooser(share, getString(R.string.SHARE_LOG_TITLE)));
-    }
-
-    public void setPollThreadObjectTree(UAVTalkObjectTree oTree) {
-        mPollThread.setObjectTree(oTree);
     }
 
     private boolean setBluetoothInterface() {

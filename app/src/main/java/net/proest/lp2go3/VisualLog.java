@@ -22,16 +22,8 @@ import android.widget.TextView;
 
 public class VisualLog {
 
-    private static TextView txtDebugLog;
     private static Activity activity;
-
-    public static void setDebugLogTextView(TextView txtDebugLog) {
-        VisualLog.txtDebugLog = txtDebugLog;
-    }
-
-    public static void setActivity(Activity activity) {
-        VisualLog.activity = activity;
-    }
+    private static TextView txtDebugLog;
 
     static public void d(String tag, String msg) {
         Log.d(tag, msg);
@@ -78,5 +70,13 @@ public class VisualLog {
                 }
             }
         });
+    }
+
+    public static void setActivity(Activity activity) {
+        VisualLog.activity = activity;
+    }
+
+    public static void setDebugLogTextView(TextView txtDebugLog) {
+        VisualLog.txtDebugLog = txtDebugLog;
     }
 }

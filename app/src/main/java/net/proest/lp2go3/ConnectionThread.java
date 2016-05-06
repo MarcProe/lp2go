@@ -83,7 +83,9 @@ class ConnectionThread extends Thread {
             }
 
             if (mA.mDoReconnect) {
-                if (mA.mFcDevice != null) mA.mFcDevice.stop();
+                if (mA.mFcDevice != null) {
+                    mA.mFcDevice.stop();
+                }
                 mA.mFcDevice = null;
                 mA.mDoReconnect = false;
                 mA.runOnUiThread(new Runnable() {

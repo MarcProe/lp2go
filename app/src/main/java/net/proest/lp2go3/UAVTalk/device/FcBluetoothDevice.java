@@ -37,15 +37,14 @@ import java.util.Map;
 import java.util.UUID;
 
 public class FcBluetoothDevice extends FcDevice {
-    private static final int STATE_NONE = 0;
-    private static final int STATE_CONNECTING = 1;
     private static final int STATE_CONNECTED = 2;
+    private static final int STATE_CONNECTING = 1;
+    private static final int STATE_NONE = 0;
     private final BluetoothAdapter mBluetoothAdapter;
-    //private final MainActivity mActivity;
-    private FcWaiterThread mWaiterThread;
     private ConnectThread mConnectThread;
     private android.bluetooth.BluetoothDevice mDevice;
     private int mState;
+    private FcWaiterThread mWaiterThread;
 
     public FcBluetoothDevice(MainActivity activity, Map<String, UAVTalkXMLObject> xmlObjects) {
         super(activity);
@@ -66,7 +65,9 @@ public class FcBluetoothDevice extends FcDevice {
         SharedPreferences sharedPref = mActivity.getPreferences(Context.MODE_PRIVATE);
 
 
-        String mDeviceAddress = sharedPref.getString(mActivity.getString(R.string.SETTINGS_BT_MAC), "").toUpperCase().replace('-', ':');
+        String mDeviceAddress =
+                sharedPref.getString(mActivity.getString(R.string.SETTINGS_BT_MAC), "")
+                        .toUpperCase().replace('-', ':');
         //String reg1 = "^([0-9A-F]{2}[:]){5}([0-9A-F]{2})$";
         if (mDeviceAddress.matches("^([0-9A-F]{2}[:-]){5}([0-9A-F]{2})$")) {
             mDevice = mBluetoothAdapter.getRemoteDevice(mDeviceAddress);
@@ -74,27 +75,14 @@ public class FcBluetoothDevice extends FcDevice {
         connect(mDevice);
     }
 
-    void connectionLost() {
-        mActivity.reconnect();
-
-        setState(STATE_NONE);
+    @Override
+    public boolean isConnected() {
+        return mState == STATE_CONNECTED;
     }
 
-    private synchronized void connect(android.bluetooth.BluetoothDevice device) {
-        if (mState == STATE_NONE) {
-            if (mWaiterThread != null) {
-                mWaiterThread.stopThread();
-                mWaiterThread = null;
-            }
-
-            mConnectThread = new ConnectThread(device);
-            mConnectThread.start();
-            setState(STATE_CONNECTING);
-        }
-    }
-
-    private synchronized void setState(int state) {
-        mState = state;
+    @Override
+    public boolean isConnecting() {
+        return mState != STATE_NONE;
     }
 
     @Override
@@ -116,8 +104,17 @@ public class FcBluetoothDevice extends FcDevice {
         setState(STATE_NONE);
     }
 
-    private void connectionFailed() {
-        setState(STATE_NONE);
+    @Override
+    protected boolean writeByteArray(byte[] out) {
+        FcBluetoothWaiterThread r;
+        synchronized (this) {
+            if (mState != STATE_CONNECTED) {
+                return false;
+            }
+            r = (FcBluetoothWaiterThread) mWaiterThread;
+        }
+        r.write(out);
+        return true;
     }
 
     @Override
@@ -135,7 +132,8 @@ public class FcBluetoothDevice extends FcDevice {
 
     @Override
     public boolean sendSettingsObject(String objectName, int instance) {
-        byte[] send = mObjectTree.getObjectFromName(objectName).toMessage((byte) 0x22, instance, false);
+        byte[] send =
+                mObjectTree.getObjectFromName(objectName).toMessage((byte) 0x22, instance, false);
         if (send != null) {
             writeByteArray(Arrays.copyOfRange(send, 0, send.length));
             requestObject(objectName, instance);
@@ -146,14 +144,21 @@ public class FcBluetoothDevice extends FcDevice {
     }
 
     @Override
-    public boolean sendSettingsObject(String objectName, int instance, String fieldName, int element, byte[] newFieldData, final boolean block) {
+    public boolean sendSettingsObject(String objectName, int instance, String fieldName,
+                                      int element, byte[] newFieldData, final boolean block) {
         boolean retval;
-        if (block) mObjectTree.getObjectFromName(objectName).setWriteBlocked(true);
-        UAVTalkDeviceHelper.updateSettingsObject(mObjectTree, objectName, instance, fieldName, element, newFieldData);
+        if (block) {
+            mObjectTree.getObjectFromName(objectName).setWriteBlocked(true);
+        }
+        UAVTalkDeviceHelper
+                .updateSettingsObject(mObjectTree, objectName, instance, fieldName, element,
+                        newFieldData);
 
         retval = sendSettingsObject(objectName, instance);
 
-        if (block) mObjectTree.getObjectFromName(objectName).setWriteBlocked(false);
+        if (block) {
+            mObjectTree.getObjectFromName(objectName).setWriteBlocked(false);
+        }
         return retval;
     }
 
@@ -165,7 +170,9 @@ public class FcBluetoothDevice extends FcDevice {
     @Override
     public boolean requestObject(String objectName, int instance) {
         UAVTalkXMLObject xmlObj = mObjectTree.getXmlObjects().get(objectName);
-        if (xmlObj == null) return false;
+        if (xmlObj == null) {
+            return false;
+        }
 
         if (nackedObjects.contains(xmlObj.getId())) {
             VisualLog.d("NACKED", xmlObj.getId());
@@ -180,19 +187,35 @@ public class FcBluetoothDevice extends FcDevice {
         return true;
     }
 
-    @Override
-    public boolean isConnected() {
-        return mState == STATE_CONNECTED;
+    private synchronized void setState(int state) {
+        mState = state;
     }
 
+    void connectionLost() {
+        mActivity.reconnect();
 
-    @Override
-    public boolean isConnecting() {
-        return mState != STATE_NONE;
+        setState(STATE_NONE);
     }
 
+    private synchronized void connect(android.bluetooth.BluetoothDevice device) {
+        if (mState == STATE_NONE) {
+            if (mWaiterThread != null) {
+                mWaiterThread.stopThread();
+                mWaiterThread = null;
+            }
 
-    private synchronized void connected(BluetoothSocket socket) {  //this is only called when we weren't connected before
+            mConnectThread = new ConnectThread(device);
+            mConnectThread.start();
+            setState(STATE_CONNECTING);
+        }
+    }
+
+    private void connectionFailed() {
+        setState(STATE_NONE);
+    }
+
+    private synchronized void connected(
+            BluetoothSocket socket) {  //this is only called when we weren't connected before
         if (mConnectThread != null) {
             mConnectThread.cancel();
             mConnectThread = null;
@@ -211,19 +234,6 @@ public class FcBluetoothDevice extends FcDevice {
         setState(STATE_CONNECTED);
     }
 
-    @Override
-    protected boolean writeByteArray(byte[] out) {
-        FcBluetoothWaiterThread r;
-        synchronized (this) {
-            if (mState != STATE_CONNECTED) {
-                return false;
-            }
-            r = (FcBluetoothWaiterThread) mWaiterThread;
-        }
-        r.write(out);
-        return true;
-    }
-
     private class ConnectThread extends Thread {
         private final android.bluetooth.BluetoothDevice mmDevice;
         private BluetoothSocket mmSocket;
@@ -238,7 +248,8 @@ public class FcBluetoothDevice extends FcDevice {
             mBluetoothAdapter.cancelDiscovery();
 
             try {
-                mmSocket = mmDevice.createRfcommSocketToServiceRecord(UUID.fromString("00001101-0000-1000-8000-00805F9B34FB"));
+                mmSocket = mmDevice.createRfcommSocketToServiceRecord(
+                        UUID.fromString("00001101-0000-1000-8000-00805F9B34FB"));
                 mmSocket.connect();
             } catch (IOException e) {
                 VisualLog.e("BT", "Default BT  Connection failed, trying fallback.");
@@ -246,7 +257,9 @@ public class FcBluetoothDevice extends FcDevice {
                     // This is a workaround that reportedly helps on some older devices like HTC Desire, where using
                     // the standard createRfcommSocketToServiceRecord() method always causes connect() to fail.
                     //Method method = mmDevice.getClass().getMethod("createRfcommSocket", new Class[]{int.class});
-                    mmSocket = (BluetoothSocket) mmDevice.getClass().getMethod("createRfcommSocket", new Class[]{int.class}).invoke(mmDevice, 1);
+                    mmSocket = (BluetoothSocket) mmDevice.getClass()
+                            .getMethod("createRfcommSocket", new Class[]{int.class})
+                            .invoke(mmDevice, 1);
                     mmSocket.connect();
                 } catch (IOException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e1) {
                     VisualLog.e("BT", "Fallback BT  Connection failed, trying again.", e);

@@ -28,19 +28,13 @@ public class VerticalTextView extends TextView {
     public VerticalTextView(Context context, AttributeSet attrs) {
         super(context, attrs);
         final int gravity = getGravity();
-        if (Gravity.isVertical(gravity) && (gravity & Gravity.VERTICAL_GRAVITY_MASK) == Gravity.BOTTOM) {
+        if (Gravity.isVertical(gravity) &&
+                (gravity & Gravity.VERTICAL_GRAVITY_MASK) == Gravity.BOTTOM) {
             setGravity((gravity & Gravity.HORIZONTAL_GRAVITY_MASK) | Gravity.TOP);
             topDown = false;
         } else {
             topDown = true;
         }
-    }
-
-    @SuppressWarnings("SuspiciousNameCombination")
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(heightMeasureSpec, widthMeasureSpec);
-        setMeasuredDimension(getMeasuredHeight(), getMeasuredWidth());
     }
 
     @Override
@@ -66,5 +60,12 @@ public class VerticalTextView extends TextView {
 
         canvas.restore();
 
+    }
+
+    @SuppressWarnings("SuspiciousNameCombination")
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(heightMeasureSpec, widthMeasureSpec);
+        setMeasuredDimension(getMeasuredHeight(), getMeasuredWidth());
     }
 }

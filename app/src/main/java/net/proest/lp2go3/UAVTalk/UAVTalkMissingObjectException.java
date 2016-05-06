@@ -17,17 +17,9 @@
 package net.proest.lp2go3.UAVTalk;
 
 public class UAVTalkMissingObjectException extends Exception {
-    private String mObjectName;
     private int mInstance;
     private boolean mIsSettings;
-
-    public boolean isSettings() {
-        return mIsSettings;
-    }
-
-    public void setIsSettings(boolean isSettings) {
-        this.mIsSettings = isSettings;
-    }
+    private String mObjectName;
 
     public int getInstance() {
         return mInstance;
@@ -43,5 +35,13 @@ public class UAVTalkMissingObjectException extends Exception {
 
     public void setObjectname(String objectname) {
         this.mObjectName = objectname;
+    }
+
+    public boolean isSettings() {
+        return mIsSettings;
+    }
+
+    public void setIsSettings(boolean isSettings) {
+        this.mIsSettings = isSettings;
     }
 }

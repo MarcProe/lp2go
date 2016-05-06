@@ -38,12 +38,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class ObjectsExpandableListView extends ExpandableListView implements ExpandableListView.OnGroupExpandListener, ExpandableListView.OnChildClickListener {
-    private List<String> mListDataHeader;
-    private HashMap<String, List<ChildString>> mListDataChild;
-    private int mGroupPosition;
-    private String mExpandedObjectName;
+public class ObjectsExpandableListView extends ExpandableListView
+        implements ExpandableListView.OnGroupExpandListener,
+        ExpandableListView.OnChildClickListener {
     private ObjectsExpandableListViewAdapter mAdapter;
+    private String mExpandedObjectName;
+    private int mGroupPosition;
+    private HashMap<String, List<ChildString>> mListDataChild;
+    private List<String> mListDataHeader;
 
     public ObjectsExpandableListView(Context context) {
         super(context);
@@ -57,24 +59,25 @@ public class ObjectsExpandableListView extends ExpandableListView implements Exp
         super(context, attrs, defStyleAttr);
     }
 
-    public void setmAdapter(ObjectsExpandableListViewAdapter mAdapter) {
-        super.setAdapter(mAdapter);
-        this.mAdapter = mAdapter;
-    }
-
     public String getExpandedObjectName() {
         return mExpandedObjectName;
-    }
-
-    public List<String> getListDataHeader() {
-        return mListDataHeader;
     }
 
     public HashMap<String, List<ChildString>> getListDataChild() {
         return mListDataChild;
     }
 
-    public void init(List<String> listDataHeader, HashMap<String, List<ChildString>> listDataChild) {
+    public List<String> getListDataHeader() {
+        return mListDataHeader;
+    }
+
+    public void setmAdapter(ObjectsExpandableListViewAdapter mAdapter) {
+        super.setAdapter(mAdapter);
+        this.mAdapter = mAdapter;
+    }
+
+    public void init(List<String> listDataHeader,
+                     HashMap<String, List<ChildString>> listDataChild) {
         mListDataHeader = listDataHeader;
         mListDataChild = listDataChild;
     }
@@ -90,7 +93,9 @@ public class ObjectsExpandableListView extends ExpandableListView implements Exp
     }
 
     public void updateExpandedGroup(UAVTalkXMLObject xmlobj) {
-        if (xmlobj == null) return;
+        if (xmlobj == null) {
+            return;
+        }
         List<ChildString> fields = new ArrayList<>();
         try {
 
@@ -100,11 +105,16 @@ public class ObjectsExpandableListView extends ExpandableListView implements Exp
             for (UAVTalkObjectInstance inst : obj.getInstances().values()) {
                 if (inst != null) {
                     fields.add(new ChildString(inst.getId()));
-                    for (UAVTalkXMLObject.UAVTalkXMLObjectField xmlfield : xmlobj.getFields().values()) {
+                    for (UAVTalkXMLObject.UAVTalkXMLObjectField xmlfield : xmlobj.getFields()
+                            .values()) {
                         for (String element : xmlfield.getElements()) {
                             try {
-                                String data = fcdevice.getObjectTree().getData(xmlobj.getName(), inst.getId(), xmlfield.getName(), element).toString();
-                                fields.add(new ChildString(xmlobj.getName(), inst.getId(), xmlfield.getName(), element, data, xmlfield.getType(), xmlobj.isSettings()));
+                                String data = fcdevice.getObjectTree()
+                                        .getData(xmlobj.getName(), inst.getId(), xmlfield.getName(),
+                                                element).toString();
+                                fields.add(new ChildString(xmlobj.getName(), inst.getId(),
+                                        xmlfield.getName(), element, data, xmlfield.getType(),
+                                        xmlobj.isSettings()));
                             } catch (UAVTalkMissingObjectException e) {
                                 fields.add(new ChildString(e.getMessage()));
                             }
@@ -121,7 +131,8 @@ public class ObjectsExpandableListView extends ExpandableListView implements Exp
     }
 
     @Override
-    public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
+    public boolean onChildClick(ExpandableListView parent, View v, int groupPosition,
+                                int childPosition, long id) {
         ObjectsExpandableListView extParent = (ObjectsExpandableListView) parent;
 
         String objectname = extParent.getListDataHeader().get(groupPosition);

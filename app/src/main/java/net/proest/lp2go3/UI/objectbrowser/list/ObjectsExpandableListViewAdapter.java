@@ -38,9 +38,9 @@ import java.util.List;
 public class ObjectsExpandableListViewAdapter extends BaseExpandableListAdapter {
 
     private final Context mContext;
-    private final List<String> mListDataHeader; // header titles
     // child data in format of header title, child title
     private final HashMap<String, List<ChildString>> mListDataChild;
+    private final List<String> mListDataHeader; // header titles
 
     public ObjectsExpandableListViewAdapter(Context context, List<String> listDataHeader,
                                             HashMap<String, List<ChildString>> listChildData) {
@@ -50,60 +50,8 @@ public class ObjectsExpandableListViewAdapter extends BaseExpandableListAdapter 
     }
 
     @Override
-    public Object getChild(int groupPosition, int childPosititon) {
-        return this.mListDataChild.get(this.mListDataHeader.get(groupPosition))
-                .get(childPosititon);
-    }
-
-    @Override
-    public long getChildId(int groupPosition, int childPosition) {
-        return childPosition;
-    }
-
-    @Override
-    public View getChildView(int groupPosition, final int childPosition,
-                             boolean isLastChild, View convertView, ViewGroup parent) {
-
-        final ChildString childText = (ChildString) getChild(groupPosition, childPosition);
-        boolean isInstanceHeader = childText.isInstanceHeader;
-
-        if (convertView == null) {
-            LayoutInflater infalInflater = (LayoutInflater) this.mContext
-                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = infalInflater.inflate(R.layout.activity_objects_list_item, null);
-        }
-
-        TextView txtListChildLabel = (TextView) convertView.findViewById(R.id.txtListItemLabel);
-        TextView txtListChildValue = (TextView) convertView.findViewById(R.id.txtListItemValue);
-        ImageView imgListChildIcon = (ImageView) convertView.findViewById(R.id.imgListChildIcon);
-
-        if (childText.isInstanceHeader || childText.fieldname == null || childText.fieldname.equals("")) {
-            txtListChildLabel.setBackgroundColor(Color.argb(0xff, 0x80, 0x80, 0xff));
-            txtListChildValue.setBackgroundColor(Color.argb(0xff, 0x80, 0x80, 0xff));
-            imgListChildIcon.setImageResource(android.R.color.transparent);
-        } else if (childText.isSettings) {
-            txtListChildLabel.setBackgroundColor(Color.TRANSPARENT);
-            txtListChildValue.setBackgroundColor(Color.TRANSPARENT);
-            imgListChildIcon.setImageDrawable(ContextCompat.getDrawable(mContext,
-                    R.drawable.ic_create_black_48dp));
-        } else {
-            txtListChildLabel.setBackgroundColor(Color.TRANSPARENT);
-            txtListChildValue.setBackgroundColor(Color.TRANSPARENT);
-            //imgListChildIcon.setImageDrawable(ContextCompat.getDrawable(mContext,
-            //        R.drawable.ic_timeline_black_48dp));
-            imgListChildIcon.setImageResource(android.R.color.transparent);
-        }
-
-        String fText;
-        if (childText.type == UAVTalkXMLObject.FIELDTYPE_FLOAT32) {
-            fText = (new DecimalFormat("##########.#######")).format(H.stringToFloat(childText.getValue()));
-        } else {
-            fText = childText.getValue();
-        }
-
-        txtListChildLabel.setText(childText.getLabel());
-        txtListChildValue.setText(fText);
-        return convertView;
+    public int getGroupCount() {
+        return this.mListDataHeader.size();
     }
 
     @Override
@@ -121,13 +69,24 @@ public class ObjectsExpandableListViewAdapter extends BaseExpandableListAdapter 
     }
 
     @Override
-    public int getGroupCount() {
-        return this.mListDataHeader.size();
+    public Object getChild(int groupPosition, int childPosititon) {
+        return this.mListDataChild.get(this.mListDataHeader.get(groupPosition))
+                .get(childPosititon);
     }
 
     @Override
     public long getGroupId(int groupPosition) {
         return groupPosition;
+    }
+
+    @Override
+    public long getChildId(int groupPosition, int childPosition) {
+        return childPosition;
+    }
+
+    @Override
+    public boolean hasStableIds() {
+        return false;
     }
 
     @Override
@@ -148,8 +107,51 @@ public class ObjectsExpandableListViewAdapter extends BaseExpandableListAdapter 
     }
 
     @Override
-    public boolean hasStableIds() {
-        return false;
+    public View getChildView(int groupPosition, final int childPosition,
+                             boolean isLastChild, View convertView, ViewGroup parent) {
+
+        final ChildString childText = (ChildString) getChild(groupPosition, childPosition);
+        boolean isInstanceHeader = childText.isInstanceHeader;
+
+        if (convertView == null) {
+            LayoutInflater infalInflater = (LayoutInflater) this.mContext
+                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            convertView = infalInflater.inflate(R.layout.activity_objects_list_item, null);
+        }
+
+        TextView txtListChildLabel = (TextView) convertView.findViewById(R.id.txtListItemLabel);
+        TextView txtListChildValue = (TextView) convertView.findViewById(R.id.txtListItemValue);
+        ImageView imgListChildIcon = (ImageView) convertView.findViewById(R.id.imgListChildIcon);
+
+        if (childText.isInstanceHeader || childText.fieldname == null ||
+                childText.fieldname.equals("")) {
+            txtListChildLabel.setBackgroundColor(Color.argb(0xff, 0x80, 0x80, 0xff));
+            txtListChildValue.setBackgroundColor(Color.argb(0xff, 0x80, 0x80, 0xff));
+            imgListChildIcon.setImageResource(android.R.color.transparent);
+        } else if (childText.isSettings) {
+            txtListChildLabel.setBackgroundColor(Color.TRANSPARENT);
+            txtListChildValue.setBackgroundColor(Color.TRANSPARENT);
+            imgListChildIcon.setImageDrawable(ContextCompat.getDrawable(mContext,
+                    R.drawable.ic_create_black_48dp));
+        } else {
+            txtListChildLabel.setBackgroundColor(Color.TRANSPARENT);
+            txtListChildValue.setBackgroundColor(Color.TRANSPARENT);
+            //imgListChildIcon.setImageDrawable(ContextCompat.getDrawable(mContext,
+            //        R.drawable.ic_timeline_black_48dp));
+            imgListChildIcon.setImageResource(android.R.color.transparent);
+        }
+
+        String fText;
+        if (childText.type == UAVTalkXMLObject.FIELDTYPE_FLOAT32) {
+            fText = (new DecimalFormat("##########.#######"))
+                    .format(H.stringToFloat(childText.getValue()));
+        } else {
+            fText = childText.getValue();
+        }
+
+        txtListChildLabel.setText(childText.getLabel());
+        txtListChildValue.setText(fText);
+        return convertView;
     }
 
     @Override

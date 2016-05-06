@@ -14,9 +14,9 @@ import net.proest.lp2go3.R;
 public class VerticalLabelView extends View {
     private final static int DEFAULT_TEXT_SIZE = 15;
     private final Rect text_bounds = new Rect();
-    private TextPaint mTextPaint;
-    private String mText;
     private int mAscent;
+    private String mText;
+    private TextPaint mTextPaint;
 
     public VerticalLabelView(Context context) {
         super(context);
@@ -30,33 +30,22 @@ public class VerticalLabelView extends View {
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.VerticalLabelView);
 
         CharSequence s = a.getString(R.styleable.VerticalLabelView_text);
-        if (s != null) setText(s.toString());
+        if (s != null) {
+            setText(s.toString());
+        }
 
         setTextColor(a.getColor(R.styleable.VerticalLabelView_textColor, 0xFF000000));
 
         int textSize = a.getDimensionPixelOffset(R.styleable.VerticalLabelView_textSize, 0);
-        if (textSize > 0) setTextSize(textSize);
+        if (textSize > 0) {
+            setTextSize(textSize);
+        }
 
         a.recycle();
     }
 
-    private void initLabelView() {
-        mTextPaint = new TextPaint();
-        mTextPaint.setAntiAlias(true);
-        mTextPaint.setTextSize(DEFAULT_TEXT_SIZE);
-        mTextPaint.setColor(0xFF000000);
-        mTextPaint.setTextAlign(Paint.Align.CENTER);
-        setPadding(3, 3, 3, 3);
-    }
-
     private void setText(String text) {
         mText = text;
-        requestLayout();
-        invalidate();
-    }
-
-    private void setTextSize(int size) {
-        mTextPaint.setTextSize(size);
         requestLayout();
         invalidate();
     }
@@ -66,13 +55,19 @@ public class VerticalLabelView extends View {
         invalidate();
     }
 
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    private void setTextSize(int size) {
+        mTextPaint.setTextSize(size);
+        requestLayout();
+        invalidate();
+    }
 
-        mTextPaint.getTextBounds(mText, 0, mText.length(), text_bounds);
-        setMeasuredDimension(
-                measureWidth(widthMeasureSpec),
-                measureHeight(heightMeasureSpec));
+    private void initLabelView() {
+        mTextPaint = new TextPaint();
+        mTextPaint.setAntiAlias(true);
+        mTextPaint.setTextSize(DEFAULT_TEXT_SIZE);
+        mTextPaint.setColor(0xFF000000);
+        mTextPaint.setTextAlign(Paint.Align.CENTER);
+        setPadding(3, 3, 3, 3);
     }
 
     private int measureWidth(int measureSpec) {
@@ -126,5 +121,14 @@ public class VerticalLabelView extends View {
         canvas.translate(text_horizontally_centered_origin_y, text_horizontally_centered_origin_x);
         canvas.rotate(-90);
         canvas.drawText(mText, 0, 0, mTextPaint);
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+
+        mTextPaint.getTextBounds(mText, 0, mText.length(), text_bounds);
+        setMeasuredDimension(
+                measureWidth(widthMeasureSpec),
+                measureHeight(heightMeasureSpec));
     }
 }

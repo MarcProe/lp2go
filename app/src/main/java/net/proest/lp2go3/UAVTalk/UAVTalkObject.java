@@ -58,6 +58,10 @@ public class UAVTalkObject {
         return retval;
     }
 
+    public String getId() {
+        return mId;
+    }
+
     public HashMap<Integer, UAVTalkObjectInstance> getInstances() {
         return mInstances;
     }
@@ -70,20 +74,16 @@ public class UAVTalkObject {
         this.mWriteBlocked = mWriteBlocked;
     }
 
-    public String toString() {
-        return mId;
+    public void setInstance(UAVTalkObjectInstance instance) {
+        mInstances.put(instance.getId(), instance);
     }
 
-    public String getId() {
+    public String toString() {
         return mId;
     }
 
     public UAVTalkObjectInstance getInstance(int id) {
         return mInstances.get(id);
-    }
-
-    public void setInstance(UAVTalkObjectInstance instance) {
-        mInstances.put(instance.getId(), instance);
     }
 
     public byte[] toMessage(byte type, int instance, boolean asAck) {

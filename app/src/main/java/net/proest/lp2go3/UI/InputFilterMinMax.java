@@ -23,9 +23,9 @@ import android.widget.Toast;
 
 public class InputFilterMinMax implements InputFilter {
 
-    private final long min;
-    private final long max;
     private final Context mContext;
+    private final long max;
+    private final long min;
 
     public InputFilterMinMax(Context context, long min, long max) {
         this.min = min;
@@ -38,8 +38,9 @@ public class InputFilterMinMax implements InputFilter {
                                int dstart, int dend) {
         try {
             long input = Long.parseLong(dest.toString() + source.toString());
-            if (isInRange(min, max, input))
+            if (isInRange(min, max, input)) {
                 return null;
+            }
         } catch (NumberFormatException ignored) {
         }
         SingleToast.show(mContext, ("" + min + " to " + max + "allowed."), Toast.LENGTH_SHORT);

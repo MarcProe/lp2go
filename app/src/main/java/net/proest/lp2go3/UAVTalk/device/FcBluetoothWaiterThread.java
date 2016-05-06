@@ -28,10 +28,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 class FcBluetoothWaiterThread extends FcWaiterThread {
-    private final BluetoothSocket mmSocket;
     private final InputStream mmInStream;
     private final OutputStream mmOutStream;
-
+    private final BluetoothSocket mmSocket;
     private FcBluetoothDevice mBluetoothDevice;
 
     public FcBluetoothWaiterThread(BluetoothSocket socket, FcDevice device) {

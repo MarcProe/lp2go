@@ -9,10 +9,10 @@ import java.util.List;
  * Created by Marcus on 25.04.2016.
  */
 public class ObjectLineDataSet extends LineDataSet {
-    private String mObjectName;
-    private int mInstance;
-    private String mFieldname;
     private String mElement;
+    private String mFieldname;
+    private int mInstance;
+    private String mObjectName;
 
     public ObjectLineDataSet(List<Entry> yVals, String label) {
         super(yVals, label);

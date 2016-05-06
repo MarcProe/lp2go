@@ -17,18 +17,19 @@
 package net.proest.lp2go3.UI.objectbrowser.list;
 
 public class ChildString {
-    protected String objectname;
+    protected String data;
+    protected String element;
     protected String fieldname;
     protected int instance;
-    protected String element;
-    protected String data;
     protected boolean isInstanceHeader;
     protected boolean isSettings;
+    protected String objectname;
     protected int type;
 
     private String message;
 
-    public ChildString(String objectname, int instance, String fieldname, String element, String data, int type, boolean isSettings) {
+    public ChildString(String objectname, int instance, String fieldname, String element,
+                       String data, int type, boolean isSettings) {
         this.objectname = objectname;
         this.fieldname = fieldname;
         this.instance = instance;

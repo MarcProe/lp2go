@@ -29,12 +29,13 @@ import java.util.Queue;
 
 class FcUsbWaiterThread extends FcWaiterThread {
 
-    private final UsbDeviceConnection mUsbDeviceConnection;
     private final UsbEndpoint mEndpointIn;
+    private final UsbDeviceConnection mUsbDeviceConnection;
     private boolean mStop;
     private Queue<Byte> queue;
 
-    public FcUsbWaiterThread(FcDevice device, UsbDeviceConnection usbDeviceConnection, UsbEndpoint endpointIn) {
+    public FcUsbWaiterThread(FcDevice device, UsbDeviceConnection usbDeviceConnection,
+                             UsbEndpoint endpointIn) {
         super(device);
         this.mUsbDeviceConnection = usbDeviceConnection;
         this.mEndpointIn = endpointIn;
@@ -135,7 +136,8 @@ class FcUsbWaiterThread extends FcWaiterThread {
 
             try {
                 UAVTalkMessage msg = new UAVTalkMessage(bmsg, 0);
-                UAVTalkObject myObj = mDevice.mObjectTree.getObjectFromID(H.intToHex(msg.getObjectId()));
+                UAVTalkObject myObj =
+                        mDevice.mObjectTree.getObjectFromID(H.intToHex(msg.getObjectId()));
                 UAVTalkObjectInstance myIns;
 
                 try {

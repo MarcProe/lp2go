@@ -34,6 +34,14 @@ public class UAVTalkObjectTree {
         objects = new ConcurrentHashMap<String, UAVTalkObject>();
     }
 
+    public Map<String, UAVTalkXMLObject> getXmlObjects() {
+        return xmlObjects;
+    }
+
+    public void setXmlObjects(Map<String, UAVTalkXMLObject> xmlObjects) {
+        this.xmlObjects = xmlObjects;
+    }
+
     public String toString() {
         String ret = "";
         Iterator<String> i = xmlObjects.keySet().iterator();
@@ -42,14 +50,6 @@ public class UAVTalkObjectTree {
             ret += xmlObjects.get(key).getId() + " " + key + "\r\n";
         }
         return ret;
-    }
-
-    public Map<String, UAVTalkXMLObject> getXmlObjects() {
-        return xmlObjects;
-    }
-
-    public void setXmlObjects(Map<String, UAVTalkXMLObject> xmlObjects) {
-        this.xmlObjects = xmlObjects;
     }
 
     public UAVTalkObject getObjectNoCreate(String name) {
@@ -76,7 +76,8 @@ public class UAVTalkObjectTree {
 
     public void updateObject(UAVTalkObject obj) {
         try {
-            if (objects.get(obj.getId()) == null || !objects.get(obj.getId()).isWriteBlocked()) { //FIXME: This is maybe expensive
+            if (objects.get(obj.getId()) == null ||
+                    !objects.get(obj.getId()).isWriteBlocked()) { //FIXME: This is maybe expensive
                 objects.put(obj.getId(), obj);
             }
         } catch (NullPointerException e) {
@@ -105,27 +106,36 @@ public class UAVTalkObjectTree {
 
         // -1 is the return value if indexOf does not return anything
         // that means there is only the default element
-        if (retval < 0) retval = 0;
+        if (retval < 0) {
+            retval = 0;
+        }
 
         return retval;
     }
 
-    public Object getData(String objectname, String fieldname) throws UAVTalkMissingObjectException {
+    public Object getData(String objectname, String fieldname)
+            throws UAVTalkMissingObjectException {
         return getData(objectname, 0, fieldname, 0);
     }
 
-    public Object getData(String objectname, String fieldname, String element) throws UAVTalkMissingObjectException {
+    public Object getData(String objectname, String fieldname, String element)
+            throws UAVTalkMissingObjectException {
         return getData(objectname, 0, fieldname, element);
     }
 
-    public Object getData(String objectname, int instance, String fieldname, String elementname) throws UAVTalkMissingObjectException {
-        return getData(objectname, instance, fieldname, getElementIndex(objectname, fieldname, elementname));
+    public Object getData(String objectname, int instance, String fieldname, String elementname)
+            throws UAVTalkMissingObjectException {
+        return getData(objectname, instance, fieldname,
+                getElementIndex(objectname, fieldname, elementname));
     }
 
 
-    public Object getData(String objectname, int instance, String fieldname, int element) throws UAVTalkMissingObjectException {
+    public Object getData(String objectname, int instance, String fieldname, int element)
+            throws UAVTalkMissingObjectException {
         UAVTalkXMLObject xmlobj = xmlObjects.get(objectname);
-        if (xmlobj == null) return "";
+        if (xmlobj == null) {
+            return "";
+        }
         UAVTalkXMLObject.UAVTalkXMLObjectField xmlfield = xmlobj.getFields().get(fieldname);
 
         UAVTalkObject obj = getObjectNoCreate(objectname);

@@ -35,16 +35,18 @@ import java.util.Iterator;
 
 class PollThread extends Thread {
 
+    private MainActivity mA;
     private boolean mBlink = true;
+    private boolean mIsValid = true;
+    private UAVTalkObjectTree mObjectTree;
     private int mRotObjIcon = 0;
     private int request = 0;
-    private MainActivity mA;
-    private UAVTalkObjectTree mObjectTree;
-    private boolean mIsValid = true;
 
     public PollThread(MainActivity activity) {
         this.setName("LP2GoPollThread");
-        if (MainActivity.hasPThread()) throw new IllegalStateException("double mPollThread");
+        if (MainActivity.hasPThread()) {
+            throw new IllegalStateException("double mPollThread");
+        }
         MainActivity.hasPThread(true);
         this.mA = activity;
     }
@@ -214,7 +216,8 @@ class PollThread extends Thread {
  *  20 bytes: free for now.
  *
  */
-                        String fcUavoHash = H.bytesToHex(getByteData("FirmwareIAPObj", "Description", 60, 20));
+                        String fcUavoHash =
+                                H.bytesToHex(getByteData("FirmwareIAPObj", "Description", 60, 20));
                         mA.setUavoLongHashFC(fcUavoHash.toLowerCase());
                         if (fcUavoHash.toLowerCase().equals(mA.getUavoLongHash().toLowerCase())) {
                             mA.imgUavoSanity.setColorFilter(Color.argb(0xff, 0, 0x80, 0));
@@ -226,7 +229,9 @@ class PollThread extends Thread {
                             } else {
                                 mA.imgUavoSanity.setColorFilter(Color.argb(0xff, 0xd4, 0x80, 0x80));
                                 mA.imgUavoSanity.setRotation(mRotObjIcon++ * 90.f);
-                                if (mRotObjIcon == 4) mRotObjIcon = 0;
+                                if (mRotObjIcon == 4) {
+                                    mRotObjIcon = 0;
+                                }
                             }
                         }
 
@@ -250,86 +255,138 @@ class PollThread extends Thread {
                                                 MainActivity.POLL_SECOND_FACTOR)));
 
                                 if (mBlink) {
-                                    if (mA.mRxObjectsGood > 0)
+                                    if (mA.mRxObjectsGood > 0) {
                                         mA.imgPacketsGood.setColorFilter(
                                                 Color.argb(0xff, 0x00, 0x88, 0x00));
-                                    if (mA.mRxObjectsBad > 0)
+                                    }
+                                    if (mA.mRxObjectsBad > 0) {
                                         mA.imgPacketsBad.setColorFilter(
                                                 Color.argb(0xff, 0x88, 0x00, 0x00));
-                                    if (mA.mTxObjects > 0)
+                                    }
+                                    if (mA.mTxObjects > 0) {
                                         mA.imgPacketsUp.setColorFilter(
                                                 Color.argb(0xff, 0x00, 0x00, 0x88));
+                                    }
                                 } else {
-                                    if (mA.mRxObjectsGood > 0)
+                                    if (mA.mRxObjectsGood > 0) {
                                         mA.imgPacketsGood.setColorFilter(
                                                 Color.argb(0xff, 0x00, 0x00, 0x00));
-                                    if (mA.mRxObjectsBad > 0)
+                                    }
+                                    if (mA.mRxObjectsBad > 0) {
                                         mA.imgPacketsBad.setColorFilter(
                                                 Color.argb(0xff, 0x00, 0x00, 0x00));
-                                    if (mA.mTxObjects > 0)
+                                    }
+                                    if (mA.mTxObjects > 0) {
                                         mA.imgPacketsUp.setColorFilter(
                                                 Color.argb(0xff, 0x00, 0x00, 0x00));
+                                    }
                                 }
 
                                 mA.setTxObjects(0);
                                 mA.setRxObjectsBad(0);
                                 mA.setRxObjectsGood(0);
 
-                                setText(mA.txtVehicleName, getStringData("SystemSettings", "VehicleName", 20));
+                                setText(mA.txtVehicleName,
+                                        getStringData("SystemSettings", "VehicleName", 20));
 
-                                setTextBGColor(mA.txtAtti, getData("SystemAlarms", "Alarm", "Attitude").toString());
-                                setTextBGColor(mA.txtStab, getData("SystemAlarms", "Alarm", "Stabilization").toString());
-                                setTextBGColor(mA.txtPath, getData("PathStatus", "Status").toString());
-                                setTextBGColor(mA.txtPlan, getData("SystemAlarms", "Alarm", "PathPlan").toString());
+                                setTextBGColor(mA.txtAtti,
+                                        getData("SystemAlarms", "Alarm", "Attitude").toString());
+                                setTextBGColor(mA.txtStab,
+                                        getData("SystemAlarms", "Alarm", "Stabilization")
+                                                .toString());
+                                setTextBGColor(mA.txtPath,
+                                        getData("PathStatus", "Status").toString());
+                                setTextBGColor(mA.txtPlan,
+                                        getData("SystemAlarms", "Alarm", "PathPlan").toString());
 
-                                setText(mA.txtGPSSatsInView, getData("GPSSatellites", "SatsInView").toString());
-                                setTextBGColor(mA.txtGPS, getData("SystemAlarms", "Alarm", "GPS").toString());
-                                setTextBGColor(mA.txtSensor, getData("SystemAlarms", "Alarm", "Sensors").toString());
-                                setTextBGColor(mA.txtAirspd, getData("SystemAlarms", "Alarm", "Airspeed").toString());
-                                setTextBGColor(mA.txtMag, getData("SystemAlarms", "Alarm", "Magnetometer").toString());
+                                setText(mA.txtGPSSatsInView,
+                                        getData("GPSSatellites", "SatsInView").toString());
+                                setTextBGColor(mA.txtGPS,
+                                        getData("SystemAlarms", "Alarm", "GPS").toString());
+                                setTextBGColor(mA.txtSensor,
+                                        getData("SystemAlarms", "Alarm", "Sensors").toString());
+                                setTextBGColor(mA.txtAirspd,
+                                        getData("SystemAlarms", "Alarm", "Airspeed").toString());
+                                setTextBGColor(mA.txtMag,
+                                        getData("SystemAlarms", "Alarm", "Magnetometer")
+                                                .toString());
 
-                                setTextBGColor(mA.txtInput, getData("SystemAlarms", "Alarm", "Receiver").toString());
-                                setTextBGColor(mA.txtOutput, getData("SystemAlarms", "Alarm", "Actuator").toString());
-                                setTextBGColor(mA.txtI2C, getData("SystemAlarms", "Alarm", "I2C").toString());
-                                setTextBGColor(mA.txtTelemetry, getData("SystemAlarms", "Alarm", "Telemetry").toString());
+                                setTextBGColor(mA.txtInput,
+                                        getData("SystemAlarms", "Alarm", "Receiver").toString());
+                                setTextBGColor(mA.txtOutput,
+                                        getData("SystemAlarms", "Alarm", "Actuator").toString());
+                                setTextBGColor(mA.txtI2C,
+                                        getData("SystemAlarms", "Alarm", "I2C").toString());
+                                setTextBGColor(mA.txtTelemetry,
+                                        getData("SystemAlarms", "Alarm", "Telemetry").toString());
 
-                                setText(mA.txtHealthAlertDialogFusionAlgorithm, getData("RevoSettings", "FusionAlgorithm").toString());
+                                setText(mA.txtHealthAlertDialogFusionAlgorithm,
+                                        getData("RevoSettings", "FusionAlgorithm").toString());
 
-                                setTextBGColor(mA.txtBatt, getData("SystemAlarms", "Alarm", "Battery").toString());
-                                setTextBGColor(mA.txtTime, getData("SystemAlarms", "Alarm", "FlightTime").toString());
-                                setTextBGColor(mA.txtConfig, getData("SystemAlarms", "ExtendedAlarmStatus", "SystemConfiguration").toString());
+                                setTextBGColor(mA.txtBatt,
+                                        getData("SystemAlarms", "Alarm", "Battery").toString());
+                                setTextBGColor(mA.txtTime,
+                                        getData("SystemAlarms", "Alarm", "FlightTime").toString());
+                                setTextBGColor(mA.txtConfig,
+                                        getData("SystemAlarms", "ExtendedAlarmStatus",
+                                                "SystemConfiguration").toString());
 
-                                setTextBGColor(mA.txtBoot, getData("SystemAlarms", "Alarm", "BootFault").toString());
-                                setTextBGColor(mA.txtMem, getData("SystemAlarms", "Alarm", "OutOfMemory").toString());
-                                setTextBGColor(mA.txtStack, getData("SystemAlarms", "Alarm", "StackOverflow").toString());
-                                setTextBGColor(mA.txtEvent, getData("SystemAlarms", "Alarm", "EventSystem").toString());
-                                setTextBGColor(mA.txtCPU, getData("SystemAlarms", "Alarm", "CPUOverload").toString());
+                                setTextBGColor(mA.txtBoot,
+                                        getData("SystemAlarms", "Alarm", "BootFault").toString());
+                                setTextBGColor(mA.txtMem,
+                                        getData("SystemAlarms", "Alarm", "OutOfMemory").toString());
+                                setTextBGColor(mA.txtStack,
+                                        getData("SystemAlarms", "Alarm", "StackOverflow")
+                                                .toString());
+                                setTextBGColor(mA.txtEvent,
+                                        getData("SystemAlarms", "Alarm", "EventSystem").toString());
+                                setTextBGColor(mA.txtCPU,
+                                        getData("SystemAlarms", "Alarm", "CPUOverload").toString());
 
                                 setText(mA.txtArmed, getData("FlightStatus", "Armed").toString());
 
-                                setText(mA.txtFlightTime, H.getDateFromMilliSeconds(getData("SystemStats", "FlightTime").toString()));
+                                setText(mA.txtFlightTime, H.getDateFromMilliSeconds(
+                                        getData("SystemStats", "FlightTime").toString()));
 
-                                setText(mA.txtVolt, getData("FlightBatteryState", "Voltage").toString());
-                                setText(mA.txtAmpere, getData("FlightBatteryState", "Current").toString());
-                                setText(mA.txtmAh, getData("FlightBatteryState", "ConsumedEnergy").toString());
-                                setText(mA.txtTimeLeft, H.getDateFromSeconds(getData("FlightBatteryState", "EstimatedFlightTime").toString()));
+                                setText(mA.txtVolt,
+                                        getData("FlightBatteryState", "Voltage").toString());
+                                setText(mA.txtAmpere,
+                                        getData("FlightBatteryState", "Current").toString());
+                                setText(mA.txtmAh,
+                                        getData("FlightBatteryState", "ConsumedEnergy").toString());
+                                setText(mA.txtTimeLeft, H.getDateFromSeconds(
+                                        getData("FlightBatteryState", "EstimatedFlightTime")
+                                                .toString()));
 
-                                setText(mA.txtHealthAlertDialogBatteryCapacity, getData("FlightBatterySettings", "Capacity").toString());
-                                setText(mA.txtHealthAlertDialogBatteryCells, getData("FlightBatterySettings", "NbCells").toString());
+                                setText(mA.txtHealthAlertDialogBatteryCapacity,
+                                        getData("FlightBatterySettings", "Capacity").toString());
+                                setText(mA.txtHealthAlertDialogBatteryCells,
+                                        getData("FlightBatterySettings", "NbCells").toString());
 
-                                setText(mA.txtAltitude, getFloatOffsetData("BaroSensor", "Altitude", MainActivity.OFFSET_BAROSENSOR_ALTITUDE));
-                                setText(mA.txtAltitudeAccel, getFloatOffsetData("VelocityState", "Down", MainActivity.OFFSET_VELOCITY_DOWN));
+                                setText(mA.txtAltitude, getFloatOffsetData("BaroSensor", "Altitude",
+                                        MainActivity.OFFSET_BAROSENSOR_ALTITUDE));
+                                setText(mA.txtAltitudeAccel,
+                                        getFloatOffsetData("VelocityState", "Down",
+                                                MainActivity.OFFSET_VELOCITY_DOWN));
 
-                                String flightModeSwitchPosition = getData("ManualControlCommand", "FlightModeSwitchPosition", true).toString();
+                                String flightModeSwitchPosition =
+                                        getData("ManualControlCommand", "FlightModeSwitchPosition",
+                                                true).toString();
 
                                 try {   //FlightMode in GCS is 1...n, so add "1" to be user friendly
-                                    setText(mA.txtModeNum, String.valueOf(Integer.parseInt(flightModeSwitchPosition) + 1));
+                                    setText(mA.txtModeNum, String.valueOf(
+                                            Integer.parseInt(flightModeSwitchPosition) + 1));
                                 } catch (NumberFormatException e) {
-                                    VisualLog.e("MainActivity", "Could not parse numeric Flightmode: " + flightModeSwitchPosition);
+                                    VisualLog.e("MainActivity",
+                                            "Could not parse numeric Flightmode: " +
+                                                    flightModeSwitchPosition);
                                 }
 
-                                setText(mA.txtModeFlightMode, getData("FlightStatus", "FlightMode", true).toString());
-                                setText(mA.txtModeAssistedControl, getData("FlightStatus", "FlightModeAssist", true).toString());
+                                setText(mA.txtModeFlightMode,
+                                        getData("FlightStatus", "FlightMode", true).toString());
+                                setText(mA.txtModeAssistedControl,
+                                        getData("FlightStatus", "FlightModeAssist", true)
+                                                .toString());
 
                                 mA.mFcDevice.requestObject("FlightBatteryState");
                                 mA.mFcDevice.requestObject("SystemStats");
@@ -343,8 +400,10 @@ class PollThread extends Thread {
                                     mA.mFcDevice.requestObject("GPSPositionSensor");
                                 }
 
-                                setText(mA.txtMapGPSSatsInView, getData("GPSSatellites", "SatsInView").toString());
-                                setTextBGColor(mA.txtMapGPS, getData("SystemAlarms", "Alarm", "GPS").toString());
+                                setText(mA.txtMapGPSSatsInView,
+                                        getData("GPSSatellites", "SatsInView").toString());
+                                setTextBGColor(mA.txtMapGPS,
+                                        getData("SystemAlarms", "Alarm", "GPS").toString());
                                 float deg = 0;
                                 try {
                                     deg = (Float) getData("GPSPositionSensor", "Heading");
@@ -362,7 +421,8 @@ class PollThread extends Thread {
 
                                 double distance = H.calculationByDistance(src, dst);
                                 if (distance > 0.001) {
-                                    CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLng(new LatLng(lat, lng));
+                                    CameraUpdate cameraUpdate =
+                                            CameraUpdateFactory.newLatLng(new LatLng(lat, lng));
                                     MapsInitializer.initialize(mA);
                                     if (distance < 200) {
                                         mA.mMap.animateCamera(cameraUpdate);
@@ -394,7 +454,9 @@ class PollThread extends Thread {
                                     mA.txtObjects.setText(mA.mFcDevice.getObjectTree().toString());
                                     if (mA.mExpListView.getExpandedObjectName() != null) {
                                         UAVTalkXMLObject xmlobj =
-                                                mA.mFcDevice.getObjectTree().getXmlObjects().get(mA.mExpListView.getExpandedObjectName());
+                                                mA.mFcDevice.getObjectTree().getXmlObjects()
+                                                        .get(mA.mExpListView
+                                                                .getExpandedObjectName());
                                         mA.mExpListView.updateExpandedGroup(xmlobj);
                                         mA.mFcDevice.requestObject(xmlobj.getName());
                                     }
@@ -425,30 +487,38 @@ class PollThread extends Thread {
                                 break;
                             case MainActivity.VIEW_PID:
 
-                                String fmode = getData("ManualControlCommand", "FlightModeSwitchPosition").toString();
-                                String bank = getData("StabilizationSettings", "FlightModeMap", fmode).toString();
+                                String fmode =
+                                        getData("ManualControlCommand", "FlightModeSwitchPosition")
+                                                .toString();
+                                String bank =
+                                        getData("StabilizationSettings", "FlightModeMap", fmode)
+                                                .toString();
 
                                 mA.mCurrentStabilizationBank = "StabilizationSettings" + bank;
 
                                 switch (mA.mCurrentStabilizationBank) {
                                     case "StabilizationSettingsBank1":
                                         mA.imgPidBank.setImageDrawable(ContextCompat.getDrawable(
-                                                mA.getApplicationContext(), R.drawable.ic_filter_1_128dp));
+                                                mA.getApplicationContext(),
+                                                R.drawable.ic_filter_1_128dp));
                                         mA.mFcDevice.requestObject("StabilizationSettingsBank1");
                                         break;
                                     case "StabilizationSettingsBank2":
                                         mA.imgPidBank.setImageDrawable(ContextCompat.getDrawable(
-                                                mA.getApplicationContext(), R.drawable.ic_filter_2_128dp));
+                                                mA.getApplicationContext(),
+                                                R.drawable.ic_filter_2_128dp));
                                         mA.mFcDevice.requestObject("StabilizationSettingsBank2");
                                         break;
                                     case "StabilizationSettingsBank3":
                                         mA.imgPidBank.setImageDrawable(ContextCompat.getDrawable(
-                                                mA.getApplicationContext(), R.drawable.ic_filter_3_128dp));
+                                                mA.getApplicationContext(),
+                                                R.drawable.ic_filter_3_128dp));
                                         mA.mFcDevice.requestObject("StabilizationSettingsBank3");
                                         break;
                                     default:
                                         mA.imgPidBank.setImageDrawable(ContextCompat.getDrawable(
-                                                mA.getApplicationContext(), R.drawable.ic_filter_none_128dp));
+                                                mA.getApplicationContext(),
+                                                R.drawable.ic_filter_none_128dp));
                                         break;
                                 }
 
@@ -631,7 +701,9 @@ class PollThread extends Thread {
     private Object getData(String objectname, String fieldname) {
         try {
             Object o = mObjectTree.getData(objectname, fieldname);
-            if (o != null) return o;
+            if (o != null) {
+                return o;
+            }
         } catch (UAVTalkMissingObjectException e1) {
             try {
                 mA.mFcDevice.requestObject(e1.getObjectname(), e1.getInstance());

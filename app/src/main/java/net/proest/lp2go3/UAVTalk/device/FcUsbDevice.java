@@ -55,11 +55,11 @@ import java.util.Map;
 public class FcUsbDevice extends FcDevice {
 
     private final UsbDeviceConnection mDeviceConnection;
-    private final UsbEndpoint mEndpointOut;
     private final UsbEndpoint mEndpointIn;
+    private final UsbEndpoint mEndpointOut;
     private final FcWaiterThread mWaiterThread;
-    private UsbRequest mOutRequest = null;
     private boolean connected = false;
+    private UsbRequest mOutRequest = null;
 
     public FcUsbDevice(MainActivity activity, UsbDeviceConnection connection,
                        UsbInterface intf, Map<String, UAVTalkXMLObject> xmlObjects) {
@@ -94,6 +94,16 @@ public class FcUsbDevice extends FcDevice {
     }
 
     @Override
+    public boolean isConnected() {
+        return this.connected;
+    }
+
+    @Override
+    public boolean isConnecting() {
+        return this.connected;
+    }
+
+    @Override
     public void start() {
         this.connected = true;
         mWaiterThread.start();
@@ -108,38 +118,30 @@ public class FcUsbDevice extends FcDevice {
     }
 
     @Override
-    public boolean requestObject(String objectName) {
-        return requestObject(objectName, 0);
-    }
+    protected boolean writeByteArray(byte[] bytes) {
+        boolean retval = false;
+        int psize = mEndpointOut.getMaxPacketSize() - 2;
+        int toWrite = bytes.length;
 
-    @Override
-    public boolean requestObject(String objectName, int instance) {
-        UAVTalkXMLObject xmlObj = mObjectTree.getXmlObjects().get(objectName);
+        while (toWrite > 0) {
+            int sendlen = toWrite - psize > 0 ? psize : toWrite;
+            byte[] buffer = new byte[sendlen + 2];
 
-        if (xmlObj == null) {
-            return false;
+            System.arraycopy(bytes, bytes.length - toWrite, buffer, 2, sendlen);
+            buffer[0] = (byte) 0x02;//report id, is always 2. Period.
+            buffer[1] = (byte) ((sendlen) & 0xff);//bytes to send, which is packet.size()-2
+
+            if (mOutRequest == null) {
+                mOutRequest = new UsbRequest();
+                mOutRequest.initialize(mDeviceConnection, mEndpointOut);
+            }
+
+            retval = mOutRequest.queue(ByteBuffer.wrap(buffer), buffer.length);
+
+            toWrite -= sendlen;
         }
 
-        if (nackedObjects.contains(xmlObj.getId())) {
-            VisualLog.d("NACKED", xmlObj.getId());
-            return false;  //if it was already nacked, don't try to get it again
-        }
-
-        byte[] send = UAVTalkObject.getReqMsg((byte) 0x21, xmlObj.getId(), instance);
-        mActivity.incTxObjects();
-        writeByteArray(send);
-
-        return true;
-    }
-
-    @Override
-    public boolean isConnected() {
-        return this.connected;
-    }
-
-    @Override
-    public boolean isConnecting() {
-        return this.connected;
+        return retval;
     }
 
     @Override
@@ -174,40 +176,45 @@ public class FcUsbDevice extends FcDevice {
     }
 
     @Override
-    protected boolean writeByteArray(byte[] bytes) {
-        boolean retval = false;
-        int psize = mEndpointOut.getMaxPacketSize() - 2;
-        int toWrite = bytes.length;
-
-        while (toWrite > 0) {
-            int sendlen = toWrite - psize > 0 ? psize : toWrite;
-            byte[] buffer = new byte[sendlen + 2];
-
-            System.arraycopy(bytes, bytes.length - toWrite, buffer, 2, sendlen);
-            buffer[0] = (byte) 0x02;//report id, is always 2. Period.
-            buffer[1] = (byte) ((sendlen) & 0xff);//bytes to send, which is packet.size()-2
-
-            if (mOutRequest == null) {
-                mOutRequest = new UsbRequest();
-                mOutRequest.initialize(mDeviceConnection, mEndpointOut);
-            }
-
-            retval = mOutRequest.queue(ByteBuffer.wrap(buffer), buffer.length);
-
-            toWrite -= sendlen;
+    public boolean sendSettingsObject(String objectName, int instance, String fieldName,
+                                      int element, byte[] newFieldData, final boolean block) {
+        if (block) {
+            mObjectTree.getObjectFromName(objectName).setWriteBlocked(true);
         }
-
-        return retval;
-    }
-
-    @Override
-    public boolean sendSettingsObject(String objectName, int instance, String fieldName, int element, byte[] newFieldData, final boolean block) {
-        if (block) mObjectTree.getObjectFromName(objectName).setWriteBlocked(true);
-        UAVTalkDeviceHelper.updateSettingsObject(mObjectTree, objectName, instance, fieldName, element, newFieldData);
+        UAVTalkDeviceHelper
+                .updateSettingsObject(mObjectTree, objectName, instance, fieldName, element,
+                        newFieldData);
 
         sendSettingsObject(objectName, instance);
 
-        if (block) mObjectTree.getObjectFromName(objectName).setWriteBlocked(false);
+        if (block) {
+            mObjectTree.getObjectFromName(objectName).setWriteBlocked(false);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean requestObject(String objectName) {
+        return requestObject(objectName, 0);
+    }
+
+    @Override
+    public boolean requestObject(String objectName, int instance) {
+        UAVTalkXMLObject xmlObj = mObjectTree.getXmlObjects().get(objectName);
+
+        if (xmlObj == null) {
+            return false;
+        }
+
+        if (nackedObjects.contains(xmlObj.getId())) {
+            VisualLog.d("NACKED", xmlObj.getId());
+            return false;  //if it was already nacked, don't try to get it again
+        }
+
+        byte[] send = UAVTalkObject.getReqMsg((byte) 0x21, xmlObj.getId(), instance);
+        mActivity.incTxObjects();
+        writeByteArray(send);
+
         return true;
     }
 

@@ -22,16 +22,16 @@ import android.content.Context;
 import net.proest.lp2go3.UAVTalk.device.FcDevice;
 
 public abstract class InputAlertDialog extends AlertDialog {
-    int mLayout;
-    String mTitle;
-    String mText;
-    FcDevice mFcDevice;
-    String mObject;
-    String mField;
     String mElement = "0";
+    FcDevice mFcDevice;
+    String mField;
     int mFieldType;
-    long mMin = -1;
+    int mLayout;
     long mMax = -1;
+    long mMin = -1;
+    String mObject;
+    String mText;
+    String mTitle;
 
     InputAlertDialog(Context parent) {
         super(parent);

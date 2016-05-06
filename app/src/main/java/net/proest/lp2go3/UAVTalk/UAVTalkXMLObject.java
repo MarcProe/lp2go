@@ -40,51 +40,51 @@ import javax.xml.parsers.ParserConfigurationException;
 @SuppressWarnings("WeakerAccess")
 public class UAVTalkXMLObject {
 
-    public static final int FIELDTYPE_INT8 = 0;
-    public static final int FIELDTYPE_INT16 = 1;
-    public static final int FIELDTYPE_INT32 = 2;
-    public static final int FIELDTYPE_UINT8 = 3;
-    public static final int FIELDTYPE_UINT16 = 4;
-    public static final int FIELDTYPE_UINT32 = 5;
-    public static final int FIELDTYPE_FLOAT32 = 6;
-    public static final int FIELDTYPE_ENUM = 7;
-    public static final String FIELDNAME_INT8 = "int8";
+    public static final String FIELDNAME_ENUM = "enum";
+    public static final String FIELDNAME_FLOAT32 = "float";
     public static final String FIELDNAME_INT16 = "int16";
     public static final String FIELDNAME_INT32 = "int32";
-    public static final String FIELDNAME_UINT8 = "uint8";
+    public static final String FIELDNAME_INT8 = "int8";
     public static final String FIELDNAME_UINT16 = "uint16";
     public static final String FIELDNAME_UINT32 = "uint32";
-    public static final String FIELDNAME_FLOAT32 = "float";
-    public static final String FIELDNAME_ENUM = "enum";
-    private static final String XML_TAG_OBJECT = "object";
-    private static final String XML_TAG_FIELD = "field";
-    private static final String XML_TAG_OPTIONS = "options";
-    private static final String XML_TAG_ELEMENTNAMES = "elementnames";
-    private static final String XML_ATT_NAME = "name";
-    private static final String XML_ATT_CATEGORY = "category";
-    private static final String XML_ATT_SINGLEINSTANCE = "singleinstance";
-    private static final String XML_ATT_SETTINGS = "settings";
-    private static final String XML_ATT_CLONEOF = "cloneof";
-    private static final String XML_ATT_TYPE = "type";
-    private static final String XML_ATT_ELEMENTS = "elements";
-    private static final String XML_ATT_ELEMENTNAMES = "elementnames";
-    private static final String XML_ATT_OPTIONS = "options";
-    private static final String XML_TRUE = "true";
-    final private static String REPLACE_OPTION_NODES = "\\r\\n|\\r|\\n| |\\t";
+    public static final String FIELDNAME_UINT8 = "uint8";
+    public static final int FIELDTYPE_ENUM = 7;
+    public static final int FIELDTYPE_FLOAT32 = 6;
+    public static final int FIELDTYPE_INT16 = 1;
+    public static final int FIELDTYPE_INT32 = 2;
+    public static final int FIELDTYPE_INT8 = 0;
+    public static final int FIELDTYPE_UINT16 = 4;
+    public static final int FIELDTYPE_UINT32 = 5;
+    public static final int FIELDTYPE_UINT8 = 3;
     final private static String REPLACE_ELEMENT_NODES = "\\r\\n|\\r|\\n| |\\t";
+    final private static String REPLACE_OPTION_NODES = "\\r\\n|\\r|\\n| |\\t";
     final private static String XML_ATTRIBUTE_SPLITTER = "\\s*,\\s*";
-
+    private static final String XML_ATT_CATEGORY = "category";
+    private static final String XML_ATT_CLONEOF = "cloneof";
+    private static final String XML_ATT_ELEMENTNAMES = "elementnames";
+    private static final String XML_ATT_ELEMENTS = "elements";
+    private static final String XML_ATT_NAME = "name";
+    private static final String XML_ATT_OPTIONS = "options";
+    private static final String XML_ATT_SETTINGS = "settings";
+    private static final String XML_ATT_SINGLEINSTANCE = "singleinstance";
+    private static final String XML_ATT_TYPE = "type";
+    private static final String XML_TAG_ELEMENTNAMES = "elementnames";
+    private static final String XML_TAG_FIELD = "field";
+    private static final String XML_TAG_OBJECT = "object";
+    private static final String XML_TAG_OPTIONS = "options";
+    private static final String XML_TRUE = "true";
     private final boolean DBG = 1 == 0;
-    private String mName;
     private String mCategory;
-    private Boolean mIsSettings;
-    private Boolean mIsSingleInst;
-    private int mId;
+    private UAVTalkXMLObjectField[] mFieldArray;
     private int[] mFieldLengths;
     private HashMap<String, UAVTalkXMLObjectField> mFields;
-    private UAVTalkXMLObjectField[] mFieldArray;
+    private int mId;
+    private Boolean mIsSettings;
+    private Boolean mIsSingleInst;
+    private String mName;
 
-    public UAVTalkXMLObject(String xml) throws IOException, SAXException, ParserConfigurationException {
+    public UAVTalkXMLObject(String xml)
+            throws IOException, SAXException, ParserConfigurationException {
         //TODO: Make this final
         HashMap<String, Integer> fieldNames = new HashMap<String, Integer>();
         fieldNames.put(FIELDNAME_INT8, FIELDTYPE_INT8);
@@ -132,7 +132,8 @@ public class UAVTalkXMLObject {
                 String elementString = f.getAttribute(XML_ATT_ELEMENTNAMES);
 
                 uavField.mElements =
-                        new ArrayList<String>(Arrays.asList(elementString.split(XML_ATTRIBUTE_SPLITTER)));
+                        new ArrayList<String>(
+                                Arrays.asList(elementString.split(XML_ATTRIBUTE_SPLITTER)));
 
                 String elementCountString = f.getAttribute(XML_ATT_ELEMENTS);
 
@@ -152,12 +153,15 @@ public class UAVTalkXMLObject {
                     String optionsString = f.getAttribute(XML_ATT_OPTIONS);
                     try {
                         uavField.mOptions =
-                                (String[]) Arrays.asList(optionsString.split(XML_ATTRIBUTE_SPLITTER)).toArray();
+                                (String[]) Arrays
+                                        .asList(optionsString.split(XML_ATTRIBUTE_SPLITTER))
+                                        .toArray();
                     } catch (Exception ignored) {
                     }
 
                     if (uavField.mOptions == null || uavField.mOptions.length == 0
-                            || ((uavField.mOptions.length == 1) && (uavField.mOptions[0].equals("")))) {
+                            || ((uavField.mOptions.length == 1) &&
+                            (uavField.mOptions[0].equals("")))) {
                         if (f.getElementsByTagName(XML_TAG_OPTIONS).getLength() > 0) {
                             NodeList optionnodes =
                                     f.getElementsByTagName(XML_TAG_OPTIONS).item(0).getChildNodes();
@@ -165,7 +169,8 @@ public class UAVTalkXMLObject {
                             ArrayList<String> options = new ArrayList<String>();
                             for (int j = 0; j < optionnodes.getLength(); j++) {
                                 String content =
-                                        optionnodes.item(j).getTextContent().replaceAll(REPLACE_OPTION_NODES, "");
+                                        optionnodes.item(j).getTextContent()
+                                                .replaceAll(REPLACE_OPTION_NODES, "");
                                 if (content != null && content != "") {
                                     options.add(content);
                                 }
@@ -176,11 +181,13 @@ public class UAVTalkXMLObject {
                 }
 
                 if (f.getElementsByTagName(XML_TAG_ELEMENTNAMES).getLength() > 0) {
-                    NodeList elementnodes = f.getElementsByTagName(XML_TAG_ELEMENTNAMES).item(0).getChildNodes();
+                    NodeList elementnodes =
+                            f.getElementsByTagName(XML_TAG_ELEMENTNAMES).item(0).getChildNodes();
 
                     uavField.mElements = new ArrayList<String>();
                     for (int j = 0; j < elementnodes.getLength(); j++) {
-                        String content = elementnodes.item(j).getTextContent().replaceAll(REPLACE_ELEMENT_NODES, "");
+                        String content = elementnodes.item(j).getTextContent()
+                                .replaceAll(REPLACE_ELEMENT_NODES, "");
                         if (content != null && !content.equals("")) {
                             uavField.mElements.add(content);
                         }
@@ -200,7 +207,8 @@ public class UAVTalkXMLObject {
                 mFieldLengths[x] = 2 * uavField.mElementCount;
                 uavField.mSize = 2 * uavField.mElementCount;
                 uavField.mTypelength = 2;
-            } else if (uavField.mType == FIELDTYPE_INT32 || uavField.mType == FIELDTYPE_UINT32 || uavField.mType == FIELDTYPE_FLOAT32) {
+            } else if (uavField.mType == FIELDTYPE_INT32 || uavField.mType == FIELDTYPE_UINT32 ||
+                    uavField.mType == FIELDTYPE_FLOAT32) {
                 mFieldLengths[x] = 4 * uavField.mElementCount;
                 uavField.mSize = 4 * uavField.mElementCount;
                 uavField.mTypelength = 4;
@@ -227,52 +235,68 @@ public class UAVTalkXMLObject {
         this.mId = calculateID();
     }
 
-    private static Document loadXMLFromString(String xml) throws ParserConfigurationException, IOException, SAXException {
+    private static Document loadXMLFromString(String xml)
+            throws ParserConfigurationException, IOException, SAXException {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
         InputSource is = new InputSource(new StringReader(xml));
         return builder.parse(is);
     }
 
-
-    public String getName() {
-        return mName;
-    }
-
     public String getCategory() {
         return mCategory;
-    }
-
-    public Boolean isSettings() {
-        return mIsSettings;
-    }
-
-    public String getId() {
-        return H.bytesToHex(H.toBytes(mId));
     }
 
     public HashMap<String, UAVTalkXMLObjectField> getFields() {
         return mFields;
     }
 
+    public String getId() {
+        return H.bytesToHex(H.toBytes(mId));
+    }
+
+    public int getLength() {
+        int retval = 0;
+        for (int i : mFieldLengths) {
+            retval += i;
+        }
+        return retval;
+    }
+
+    public String getName() {
+        return mName;
+    }
+
+    public Boolean isSettings() {
+        return mIsSettings;
+    }
+
     private int calculateID() {
         // Hash object name
-        if (DBG) VisualLog.d("HASH", " ");
-        if (DBG) VisualLog.d("HASH", this.mName);
+        if (DBG) {
+            VisualLog.d("HASH", " ");
+        }
+        if (DBG) {
+            VisualLog.d("HASH", this.mName);
+        }
         int hash = updateHash(this.mName, 0);
         // Hash object attributes
         hash = updateHash(this.mIsSettings ? 1 : 0, hash);
         hash = updateHash(this.mIsSingleInst ? 1 : 0, hash);
         // Hash field information
         for (int n = 0; n < this.mFieldArray.length; n++) {
-            if (DBG) VisualLog.d("HASH", this.mFieldArray[n].mName);
+            if (DBG) {
+                VisualLog.d("HASH", this.mFieldArray[n].mName);
+            }
             hash = updateHash(this.mFieldArray[n].mName, hash);
             hash = updateHash((this.mFieldArray[n].mElementCount), hash);
             hash = updateHash(this.mFieldArray[n].mType, hash);
             if (this.mFieldArray[n].mType == FIELDTYPE_ENUM) {
                 String[] options = this.mFieldArray[n].mOptions;
                 for (int m = 0; m < options.length; m++) {
-                    if (DBG) VisualLog.d("HASH", options[m]);
+                    if (DBG) {
+                        VisualLog.d("HASH", options[m]);
+                    }
                     hash = updateHash(options[m], hash);
                 }
             }
@@ -303,39 +327,31 @@ public class UAVTalkXMLObject {
         return hashout;
     }
 
-    public int getLength() {
-        int retval = 0;
-        for (int i : mFieldLengths) {
-            retval += i;
-        }
-        return retval;
-    }
-
     //TODO: Getter and Setter
     public class UAVTalkXMLObjectField implements Comparable<UAVTalkXMLObjectField> {
-        String mName;
-        ArrayList<String> mElements;
         int mElementCount;
-        int mType;
-        int mTypelength;
+        ArrayList<String> mElements;
+        String mName;
         String[] mOptions;
         int mPos;
         int mSize;
-
-        public int getType() {
-            return mType;
-        }
+        int mType;
+        int mTypelength;
 
         public ArrayList<String> getElements() {
             return mElements;
+        }
+
+        public String getName() {
+            return mName;
         }
 
         public String[] getOptions() {
             return mOptions;
         }
 
-        public String getName() {
-            return mName;
+        public int getType() {
+            return mType;
         }
 
         @Override
@@ -344,7 +360,8 @@ public class UAVTalkXMLObject {
         }
 
         public String toString() {
-            return mName + " Pos: " + mPos + " ElementCount: " + mElementCount + " Size:" + mSize + " Type:" + mType;
+            return mName + " Pos: " + mPos + " ElementCount: " + mElementCount + " Size:" + mSize +
+                    " Type:" + mType;
         }
     }
 }

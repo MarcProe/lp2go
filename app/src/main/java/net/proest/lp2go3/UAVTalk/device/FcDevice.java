@@ -29,23 +29,22 @@ import java.util.HashSet;
 import java.util.Set;
 
 public abstract class FcDevice {
-    public static final byte UAVTALK_DISCONNECTED = 0x00;
-    public static final byte UAVTALK_HANDSHAKE_REQUESTED = 0x01;
-    public static final byte UAVTALK_HANDSHAKE_ACKNOWLEDGED = 0x02;
     public static final byte UAVTALK_CONNECTED = 0x03;
-
+    public static final byte UAVTALK_DISCONNECTED = 0x00;
+    public static final byte UAVTALK_HANDSHAKE_ACKNOWLEDGED = 0x02;
+    public static final byte UAVTALK_HANDSHAKE_REQUESTED = 0x01;
     private static final int MAX_HANDSHAKE_FAILURE_CYCLES = 3;
     public final Set<String> nackedObjects;
     final MainActivity mActivity;
     volatile UAVTalkObjectTree mObjectTree;
     private int mFailedHandshakes = 0;
-    private FileOutputStream mLogOutputStream;
-    private String mLogFileName = "OP-YYYY-MM-DD_HH-MM-SS";
-    private long mLogStartTimeStamp;
     private boolean mIsLogging = false;
-    private long mLogBytesLoggedUAV = 0;
     private long mLogBytesLoggedOPL = 0;
+    private long mLogBytesLoggedUAV = 0;
+    private String mLogFileName = "OP-YYYY-MM-DD_HH-MM-SS";
     private long mLogObjectsLogged = 0;
+    private FileOutputStream mLogOutputStream;
+    private long mLogStartTimeStamp;
     private int mUavTalkConnectionState = 0x00;
 
     FcDevice(MainActivity mActivity) throws IllegalStateException {
@@ -53,16 +52,16 @@ public abstract class FcDevice {
         nackedObjects = new HashSet<>();
     }
 
-    public UAVTalkObjectTree getObjectTree() {
-        return mObjectTree;
+    public long getLogBytesLoggedOPL() {
+        return mLogBytesLoggedOPL;
     }
 
     public long getLogBytesLoggedUAV() {
         return mLogBytesLoggedUAV;
     }
 
-    public long getLogBytesLoggedOPL() {
-        return mLogBytesLoggedOPL;
+    public String getLogFileName() {
+        return mLogFileName;
     }
 
     public long getLogObjectsLogged() {
@@ -72,6 +71,14 @@ public abstract class FcDevice {
     public long getLogStartTimeStamp() {
         return this.mLogStartTimeStamp;
     }
+
+    public UAVTalkObjectTree getObjectTree() {
+        return mObjectTree;
+    }
+
+    public abstract boolean isConnected();
+
+    public abstract boolean isConnecting();
 
     public boolean isLogging() {
         return this.mIsLogging;
@@ -109,13 +116,15 @@ public abstract class FcDevice {
     }
 
     public void log(byte[] b) {
-        if (b == null) return;
+        if (b == null) {
+            return;
+        }
         try {
             long time = System.currentTimeMillis() - mLogStartTimeStamp;
             long len = b.length;
 
             @SuppressWarnings("ConstantConditions") //time is long, so reverse8bytes is just fine.
-            byte[] btime = Arrays.copyOfRange(H.reverse8bytes(H.toBytes(time)), 0, 4);
+                    byte[] btime = Arrays.copyOfRange(H.reverse8bytes(H.toBytes(time)), 0, 4);
             byte[] blen = H.reverse8bytes(H.toBytes(len));
 
             byte msg[] = H.concatArray(btime, blen);
@@ -134,7 +143,8 @@ public abstract class FcDevice {
 
     public abstract void stop();
 
-    public boolean sendSettingsObject(String objectName, int instance, String fieldName, String element, byte[] newFieldData) {
+    public boolean sendSettingsObject(String objectName, int instance, String fieldName,
+                                      String element, byte[] newFieldData) {
         return sendSettingsObject(
                 objectName,
                 instance,
@@ -145,7 +155,8 @@ public abstract class FcDevice {
         );
     }
 
-    public boolean sendSettingsObject(String objectName, int instance, String fieldName, int element, byte[] newFieldData) {
+    public boolean sendSettingsObject(String objectName, int instance, String fieldName,
+                                      int element, byte[] newFieldData) {
         return sendSettingsObject(
                 objectName,
                 instance,
@@ -162,7 +173,9 @@ public abstract class FcDevice {
 
     public abstract boolean sendSettingsObject(String objectName, int instance);
 
-    public abstract boolean sendSettingsObject(String objectName, int instance, String fieldName, int element, byte[] newFieldData, final boolean block);
+    public abstract boolean sendSettingsObject(String objectName, int instance, String fieldName,
+                                               int element, byte[] newFieldData,
+                                               final boolean block);
 
     public abstract boolean requestObject(String objectName);
 
@@ -172,31 +185,27 @@ public abstract class FcDevice {
         mObjectTree.getObjectFromName("ObjectPersistence").setWriteBlocked(true);
 
         byte[] op = {0x02};
-        UAVTalkDeviceHelper.updateSettingsObject(mObjectTree, "ObjectPersistence", 0, "Operation", 0, op);
+        UAVTalkDeviceHelper
+                .updateSettingsObject(mObjectTree, "ObjectPersistence", 0, "Operation", 0, op);
 
         byte[] sel = {0x00};
-        UAVTalkDeviceHelper.updateSettingsObject(mObjectTree, "ObjectPersistence", 0, "Selection", 0, sel);
+        UAVTalkDeviceHelper
+                .updateSettingsObject(mObjectTree, "ObjectPersistence", 0, "Selection", 0, sel);
         String sid = mObjectTree.getXmlObjects().get(saveObjectName).getId();
 
         byte[] oid = H.reverse4bytes(H.hexStringToByteArray(sid));
 
-        UAVTalkDeviceHelper.updateSettingsObject(mObjectTree, "ObjectPersistence", 0, "ObjectID", 0, oid);
+        UAVTalkDeviceHelper
+                .updateSettingsObject(mObjectTree, "ObjectPersistence", 0, "ObjectID", 0, oid);
 
         //for the last things we set, we can just use the sendsettingsobject. It will call updateSettingsObjectDeprecated for the last field.
         byte[] ins = {0x00};
-        UAVTalkDeviceHelper.updateSettingsObject(mObjectTree, "ObjectPersistence", 0, "InstanceID", 0, ins);
+        UAVTalkDeviceHelper
+                .updateSettingsObject(mObjectTree, "ObjectPersistence", 0, "InstanceID", 0, ins);
 
         sendSettingsObject("ObjectPersistence", 0);
 
         mObjectTree.getObjectFromName("ObjectPersistence").setWriteBlocked(false);
-    }
-
-    public abstract boolean isConnected();
-
-    public abstract boolean isConnecting();
-
-    public String getLogFileName() {
-        return mLogFileName;
     }
 
     public void handleHandshake(byte flightTelemtryStatusField) {
@@ -214,14 +223,16 @@ public abstract class FcDevice {
             sendSettingsObject("GCSTelemetryStats", 0, "Status", 0, msg);
             mUavTalkConnectionState = UAVTALK_HANDSHAKE_REQUESTED;
             //VisualLog.d("Handshake", "Setting REQUESTED " + mUavTalkConnectionState + " " + flightTelemtryStatusField);
-        } else if (flightTelemtryStatusField == UAVTALK_HANDSHAKE_ACKNOWLEDGED && mUavTalkConnectionState == UAVTALK_HANDSHAKE_REQUESTED) {
+        } else if (flightTelemtryStatusField == UAVTALK_HANDSHAKE_ACKNOWLEDGED &&
+                mUavTalkConnectionState == UAVTALK_HANDSHAKE_REQUESTED) {
             byte[] msg = new byte[1];
             msg[0] = UAVTALK_CONNECTED;
             sendSettingsObject("GCSTelemetryStats", 0, "Status", 0, msg);
             mUavTalkConnectionState = UAVTALK_CONNECTED;
             mFailedHandshakes++;
             //VisualLog.d("Handshake", "Setting CONNECTED " + mUavTalkConnectionState + " " + flightTelemtryStatusField);
-        } else if (flightTelemtryStatusField == UAVTALK_CONNECTED && mUavTalkConnectionState == UAVTALK_CONNECTED) {
+        } else if (flightTelemtryStatusField == UAVTALK_CONNECTED &&
+                mUavTalkConnectionState == UAVTALK_CONNECTED) {
             //We are connected, that is good.
             mFailedHandshakes = 0;
             //VisualLog.d("Handshake", "We're connected. How nice. " + mUavTalkConnectionState + " " + flightTelemtryStatusField);
@@ -236,7 +247,8 @@ public abstract class FcDevice {
         }
         byte[] myb = new byte[1];
         myb[0] = (byte) mUavTalkConnectionState;
-        UAVTalkDeviceHelper.updateSettingsObject(mObjectTree, "GCSTelemetryStats", 0, "Status", 0, myb);
+        UAVTalkDeviceHelper
+                .updateSettingsObject(mObjectTree, "GCSTelemetryStats", 0, "Status", 0, myb);
         requestObject("FlightTelemetryStats");
     }
 }

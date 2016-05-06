@@ -39,12 +39,12 @@ public class PidInputAlertDialog extends InputAlertDialog
         implements SeekBar.OnSeekBarChangeListener, TextWatcher {
 
     private static String str;
-    private int mStep;
-    private int mDenom;
-    private int mValueMax;
     private String mDecimalFormatString;
+    private int mDenom;
     private EditText mEditText;
     private PidTextView mPidTextView;
+    private int mStep;
+    private int mValueMax;
 
     public PidInputAlertDialog(Context parent) {
         super(parent);
@@ -168,69 +168,85 @@ public class PidInputAlertDialog extends InputAlertDialog
                     }
                 });
 
-        alertView.findViewById(R.id.imgPidDialogForward).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    float f = H.stringToFloat(mEditText.getText().toString());
-                    f += (float) mStep / mDenom;
-                    if (f > (float) mValueMax / mDenom) f = (float) mValueMax / mDenom;
-                    mEditText.setText(getDecimalString(f));
-                    seekbar.setProgress(Math.round(f * mDenom));
-                } catch (NumberFormatException e) {
-                    VisualLog.w("PidInputAlertDialog", "NPE Forward");
-                }
-            }
-        });
+        alertView.findViewById(R.id.imgPidDialogForward)
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        try {
+                            float f = H.stringToFloat(mEditText.getText().toString());
+                            f += (float) mStep / mDenom;
+                            if (f > (float) mValueMax / mDenom) {
+                                f = (float) mValueMax / mDenom;
+                            }
+                            mEditText.setText(getDecimalString(f));
+                            seekbar.setProgress(Math.round(f * mDenom));
+                        } catch (NumberFormatException e) {
+                            VisualLog.w("PidInputAlertDialog", "NPE Forward");
+                        }
+                    }
+                });
 
-        alertView.findViewById(R.id.imgPidDialogFastForward).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    float f = H.stringToFloat(mEditText.getText().toString());
-                    f += ((float) mStep / mDenom) * 10;
-                    if (f > (float) mValueMax / mDenom) f = (float) mValueMax / mDenom;
-                    mEditText.setText(getDecimalString(f));
-                    seekbar.setProgress(Math.round(f * mDenom));
-                } catch (NumberFormatException e) {
-                    VisualLog.w("PidInputAlertDialog", "NPE Fast Forward");
-                }
-            }
-        });
+        alertView.findViewById(R.id.imgPidDialogFastForward)
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        try {
+                            float f = H.stringToFloat(mEditText.getText().toString());
+                            f += ((float) mStep / mDenom) * 10;
+                            if (f > (float) mValueMax / mDenom) {
+                                f = (float) mValueMax / mDenom;
+                            }
+                            mEditText.setText(getDecimalString(f));
+                            seekbar.setProgress(Math.round(f * mDenom));
+                        } catch (NumberFormatException e) {
+                            VisualLog.w("PidInputAlertDialog", "NPE Fast Forward");
+                        }
+                    }
+                });
 
-        alertView.findViewById(R.id.imgPidDialogBackward).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    float f = H.stringToFloat(mEditText.getText().toString());
-                    f -= (float) mStep / mDenom;
-                    if (f < 0) f = 0;
-                    mEditText.setText(getDecimalString(f));
-                    seekbar.setProgress(Math.round(f * mDenom));
-                } catch (NumberFormatException e) {
-                    VisualLog.w("PidInputAlertDialog", "NPE Backward");
-                }
-            }
-        });
+        alertView.findViewById(R.id.imgPidDialogBackward)
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        try {
+                            float f = H.stringToFloat(mEditText.getText().toString());
+                            f -= (float) mStep / mDenom;
+                            if (f < 0) {
+                                f = 0;
+                            }
+                            mEditText.setText(getDecimalString(f));
+                            seekbar.setProgress(Math.round(f * mDenom));
+                        } catch (NumberFormatException e) {
+                            VisualLog.w("PidInputAlertDialog", "NPE Backward");
+                        }
+                    }
+                });
 
-        alertView.findViewById(R.id.imgPidDialogFastBackward).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    float f = H.stringToFloat(mEditText.getText().toString());
-                    f -= ((float) mStep / mDenom) * 10;
-                    if (f < 0) f = 0;
-                    mEditText.setText(getDecimalString(f));
-                    seekbar.setProgress(Math.round(f * mDenom));
-                } catch (NumberFormatException e) {
-                    VisualLog.w("PidInputAlertDialog", "NPE Fast Backward");
-                }
-            }
-        });
+        alertView.findViewById(R.id.imgPidDialogFastBackward)
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        try {
+                            float f = H.stringToFloat(mEditText.getText().toString());
+                            f -= ((float) mStep / mDenom) * 10;
+                            if (f < 0) {
+                                f = 0;
+                            }
+                            mEditText.setText(getDecimalString(f));
+                            seekbar.setProgress(Math.round(f * mDenom));
+                        } catch (NumberFormatException e) {
+                            VisualLog.w("PidInputAlertDialog", "NPE Fast Backward");
+                        }
+                    }
+                });
 
         mEditText.addTextChangedListener(new TextWatcher() {
 
             private String lastTextOk = mText;
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
 
             public void afterTextChanged(Editable s) {
                 try {
@@ -246,9 +262,6 @@ public class PidInputAlertDialog extends InputAlertDialog
                 }
             }
 
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
 
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 try {
@@ -257,7 +270,8 @@ public class PidInputAlertDialog extends InputAlertDialog
                         lastTextOk = s.toString();
                     } else {
                         SingleToast.show(getContext(),
-                                "Values 0 - " + getDecimalString((float) mValueMax / mDenom) + " allowed.",
+                                "Values 0 - " + getDecimalString((float) mValueMax / mDenom) +
+                                        " allowed.",
                                 Toast.LENGTH_SHORT);
                     }
                 } catch (NumberFormatException e) {

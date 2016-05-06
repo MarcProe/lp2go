@@ -54,7 +54,8 @@ public class EnumInputAlertDialog extends InputAlertDialog {
 
         int current = 0;
         try {
-            String type = mFcDevice.getObjectTree().getData(mObject, 0, mField, mElement).toString();
+            String type =
+                    mFcDevice.getObjectTree().getData(mObject, 0, mField, mElement).toString();
             if (type != null) {
                 for (String t : types) {
                     if (t.equals(type)) {

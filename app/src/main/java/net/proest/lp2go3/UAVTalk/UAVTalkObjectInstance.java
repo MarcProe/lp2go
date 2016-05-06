@@ -26,15 +26,15 @@ public class UAVTalkObjectInstance {
         this.mData = data;
     }
 
-    public int getId() {
-        return mId;
-    }
-
     public byte[] getData() {
         return mData;
     }
 
     public void setData(byte[] data) {
         this.mData = data;
+    }
+
+    public int getId() {
+        return mId;
     }
 }

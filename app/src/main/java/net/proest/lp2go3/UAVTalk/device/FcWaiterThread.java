@@ -35,7 +35,8 @@ abstract class FcWaiterThread extends Thread {
                 break;
             case 0x21:
                 //handle request message, nobody should request from LP2Go (so we don't implement this)
-                VisualLog.e("UAVTalk", "Received Object Request, but won't send any " + obj.getId());
+                VisualLog
+                        .e("UAVTalk", "Received Object Request, but won't send any " + obj.getId());
                 break;
             case 0x22:
                 //handle object with ACK REQ, means send ACK

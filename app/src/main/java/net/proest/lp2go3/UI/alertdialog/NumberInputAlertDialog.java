@@ -103,7 +103,8 @@ public class NumberInputAlertDialog extends InputAlertDialog implements TextWatc
                 min = -(int) Float.MAX_VALUE; //don't get academic on this.
                 max = (long) Float.MAX_VALUE;
 
-                input.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+                input.setInputType(
+                        InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
                 input.setKeyListener(DigitsKeyListener.getInstance("0123456789" + H.S));
                 break;
             default:
@@ -218,7 +219,9 @@ public class NumberInputAlertDialog extends InputAlertDialog implements TextWatc
                 default:
                     data = new byte[0];
                     SingleToast.show(getContext(), "Type not yet implemented!", Toast.LENGTH_SHORT);
-                    VisualLog.e("NumberInputAlertDialog", "Type not implemented! " + mFieldType + " " + input + " " + H.toBytes(Integer.parseInt(input)));
+                    VisualLog.e("NumberInputAlertDialog",
+                            "Type not implemented! " + mFieldType + " " + input + " " +
+                                    H.toBytes(Integer.parseInt(input)));
                     break;
             }
 
@@ -229,7 +232,8 @@ public class NumberInputAlertDialog extends InputAlertDialog implements TextWatc
 
 
         if (mFcDevice != null && data.length > 0) {
-            VisualLog.d("IntegerInputDialog", "" + mFieldType + " " + input + " " + H.bytesToHex(data));
+            VisualLog.d("IntegerInputDialog",
+                    "" + mFieldType + " " + input + " " + H.bytesToHex(data));
             mFcDevice.sendSettingsObject(mObject, 0, mField, mElement, data);
         }
     }

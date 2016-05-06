@@ -18,11 +18,11 @@ package net.proest.lp2go3.UAVTalk;
 
 public class UAVTalkMessage {
 
-    private byte mType;
+    private byte[] mData;
+    private int mInstanceId;
     private int mLength;
     private int mObjectId;
-    private int mInstanceId;
-    private byte[] mData;
+    private byte mType;
 
     public UAVTalkMessage(byte[] bytes, int offset) {
         if (bytes.length >= 10 + offset) {
@@ -91,8 +91,12 @@ public class UAVTalkMessage {
         }
     }
 
-    public byte getType() {
-        return mType;
+    public byte[] getData() {
+        return mData;
+    }
+
+    public int getInstanceId() {
+        return mInstanceId;
     }
 
     public int getLength() {
@@ -103,11 +107,7 @@ public class UAVTalkMessage {
         return mObjectId;
     }
 
-    public int getInstanceId() {
-        return mInstanceId;
-    }
-
-    public byte[] getData() {
-        return mData;
+    public byte getType() {
+        return mType;
     }
 }
