@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/toolbar"
+    android:layout_width="match_parent"
+    android:layout_height="64dp">
+
+
+    <LinearLayout
+        android:layout_width="30dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="right"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/imgFlightTelemetry"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:rotation="180"
+            android:src="@drawable/ic_wifi_tethering_black_24dp" />
+
+        <ImageView
+            android:id="@+id/imgGroundTelemetry"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:src="@drawable/ic_wifi_tethering_black_24dp" />
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/imgSerial"
+        android:layout_width="30dp"
+        android:layout_height="fill_parent"
+        android:layout_gravity="right"
+        android:src="@drawable/ic_warning_black_24dp" />
+
+    <ImageView
+        android:id="@+id/imgUavoSanity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+
+        android:layout_marginBottom="4dp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
+        android:layout_marginTop="4dp"
+        android:onClick="onObjectsSanityIndicatorClick"
+        android:src="@drawable/ic_now_widgets_32dp" />
+
+    <ImageView
+        android:id="@+id/imgToolbarSettings"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:layout_gravity="right"
+        android:layout_marginBottom="4dp"
+        android:layout_marginRight="12dp"
+        android:layout_marginTop="4dp"
+        android:onClick="onToolbarSettingsClick"
+        android:src="@drawable/ic_build_black_32dp" />
+</android.support.v7.widget.Toolbar>

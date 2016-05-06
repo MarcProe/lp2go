@@ -14,10 +14,12 @@
         android:orientation="vertical"
         tools:context=".MainActivity">
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="64dp" />
+        <include
+            layout="@layout/activity_toolbar_settings"
+            android:layout_width="fill_parent"
+            android:layout_height="64dp"
+            android:layout_marginLeft="0dp"
+            android:layout_marginTop="0dp" />
 
         <ScrollView
             android:layout_width="wrap_content"

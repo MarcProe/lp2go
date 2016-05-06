@@ -137,45 +137,51 @@ class PollThread extends Thread {
                 @Override
                 public void run() {
                     if (mA.mSerialModeUsed == MainActivity.SERIAL_BLUETOOTH) {
-                        mA.imgUSB.setColorFilter(Color.argb(0xff, 0x00, 0x00, 0x00));
                         if (mA.mFcDevice != null && mA.mFcDevice.isConnected()) {
-                            mA.imgBluetooth.setColorFilter(Color.argb(0xff, 0x00, 0x80, 0x00));
-                            mA.imgBluetooth.setImageDrawable(
+                            mA.imgSerial.setColorFilter(Color.argb(0xff, 0x00, 0x80, 0x00));
+                            mA.imgSerial.setImageDrawable(
                                     ContextCompat.getDrawable(mA.getApplicationContext(),
                                             R.drawable.ic_bluetooth_connected_128dp));
 
                         } else if (mA.mFcDevice != null && mA.mFcDevice.isConnecting()) {
                             if (mBlink) {
-                                mA.imgBluetooth.setColorFilter(Color.argb(0xff, 0xff, 0x66, 0x00));
-                                mA.imgBluetooth.setImageDrawable(
+                                mA.imgSerial.setColorFilter(Color.argb(0xff, 0xff, 0x66, 0x00));
+                                mA.imgSerial.setImageDrawable(
                                         ContextCompat.getDrawable(mA.getApplicationContext(),
                                                 R.drawable.ic_bluetooth_128dp));
                             } else {
-                                mA.imgBluetooth.setColorFilter(Color.argb(0xff, 0xff, 0x66, 0x00));
-                                mA.imgBluetooth.setImageDrawable(
+                                mA.imgSerial.setColorFilter(Color.argb(0xff, 0xff, 0x66, 0x00));
+                                mA.imgSerial.setImageDrawable(
                                         ContextCompat.getDrawable(mA.getApplicationContext(),
                                                 R.drawable.ic_bluetooth_connected_128dp));
                             }
                         } else {
-                            mA.imgBluetooth.setColorFilter(Color.argb(0xff, 0xd4, 0x00, 0x00));
-                            mA.imgBluetooth.setImageDrawable(
+                            mA.imgSerial.setColorFilter(Color.argb(0xff, 0xd4, 0x00, 0x00));
+                            mA.imgSerial.setImageDrawable(
                                     ContextCompat.getDrawable(mA.getApplicationContext(),
                                             R.drawable.ic_bluetooth_disabled_128dp));
                         }
                     } else if (mA.mSerialModeUsed == MainActivity.SERIAL_USB) {
-                        mA.imgBluetooth.setColorFilter(Color.argb(0xff, 0x00, 0x00, 0x00));
+                        mA.imgSerial.setImageDrawable(
+                                ContextCompat.getDrawable(mA.getApplicationContext(),
+                                        R.drawable.ic_usb_128dp));
                         if (mA.mFcDevice != null && mA.mFcDevice.isConnected()) {
-                            mA.imgUSB.setColorFilter(Color.argb(0xff, 0x00, 0x80, 0x00));
+                            mA.imgSerial.setColorFilter(Color.argb(0xff, 0x00, 0x80, 0x00));
+
 
                         } else if (mA.mFcDevice != null && mA.mFcDevice.isConnecting()) {
                             if (mBlink) {
-                                mA.imgUSB.setColorFilter(Color.argb(0xff, 0xff, 0x66, 0x00));
+                                mA.imgSerial.setColorFilter(Color.argb(0xff, 0xff, 0x66, 0x00));
                             } else {
-                                mA.imgUSB.setColorFilter(Color.argb(0xff, 0xff, 0x88, 0x00));
+                                mA.imgSerial.setColorFilter(Color.argb(0xff, 0xff, 0x88, 0x00));
                             }
                         } else {
-                            mA.imgUSB.setColorFilter(Color.argb(0xff, 0xd4, 0x00, 0x00));
+                            mA.imgSerial.setColorFilter(Color.argb(0xff, 0xd4, 0x00, 0x00));
                         }
+                    } else {
+                        mA.imgSerial.setImageDrawable(
+                                ContextCompat.getDrawable(mA.getApplicationContext(),
+                                        R.drawable.ic_warning_black_24dp));
                     }
                 }
             });
@@ -189,24 +195,59 @@ class PollThread extends Thread {
                 requestObjects();
                 request = 0;
             }
-
             mA.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-
                     try {
+
+/**
+ * We have 100 bytes for the whole description.
+ *
+ * Structure is:
+ *   4 bytes: header: "OpFw".
+ *   4 bytes: GIT commit tag (short version of SHA1).
+ *   4 bytes: Unix timestamp of compile time.
+ *   2 bytes: target platform. Should follow same rule as BOARD_TYPE and BOARD_REVISION in board define files.
+ *  26 bytes: commit tag if it is there, otherwise branch name. '-dirty' may be added if needed. Zero-padded.
+ *  20 bytes: SHA1 sum of the firmware.
+ *  20 bytes: SHA1 sum of the uavo definitions.
+ *  20 bytes: free for now.
+ *
+ */
+                        String fcUavoHash = H.bytesToHex(getByteData("FirmwareIAPObj", "Description", 60, 20));
+                        mA.setUavoLongHashFC(fcUavoHash.toLowerCase());
+                        if (fcUavoHash.toLowerCase().equals(mA.getUavoLongHash().toLowerCase())) {
+                            mA.imgUavoSanity.setColorFilter(Color.argb(0xff, 0, 0x80, 0));
+                            mA.imgUavoSanity.setRotation(0f);
+                        } else {
+                            if (mBlink) {
+                                mA.imgUavoSanity.setColorFilter(Color.argb(0xff, 0xd4, 0, 0));
+                                mA.imgUavoSanity.setRotation(mRotObjIcon++ * 90.f);
+                            } else {
+                                mA.imgUavoSanity.setColorFilter(Color.argb(0xff, 0xd4, 0x80, 0x80));
+                                mA.imgUavoSanity.setRotation(mRotObjIcon++ * 90.f);
+                                if (mRotObjIcon == 4) mRotObjIcon = 0;
+                            }
+                        }
+
+                        setImageColor(mA.imgFlightTelemetry,
+                                getData("FlightTelemetryStats", "Status").toString());
+                        setImageColor(mA.imgGroundTelemetry,
+                                getData("GCSTelemetryStats", "Status").toString());
+
+
                         switch (MainActivity.mCurrentView) {
                             case MainActivity.VIEW_MAIN:
 
                                 mA.txtObjectLogTx.setText(
-                                        H.k(String.valueOf(
-                                                mA.mTxObjects * MainActivity.POLL_SECOND_FACTOR)));
+                                        H.k(String.valueOf(mA.mTxObjects *
+                                                MainActivity.POLL_SECOND_FACTOR)));
                                 mA.txtObjectLogRxGood.setText(
-                                        H.k(String.valueOf(
-                                                mA.mRxObjectsGood * MainActivity.POLL_SECOND_FACTOR)));
+                                        H.k(String.valueOf(mA.mRxObjectsGood *
+                                                MainActivity.POLL_SECOND_FACTOR)));
                                 mA.txtObjectLogRxBad.setText(
-                                        H.k(String.valueOf(
-                                                mA.mRxObjectsBad * MainActivity.POLL_SECOND_FACTOR)));
+                                        H.k(String.valueOf(mA.mRxObjectsBad *
+                                                MainActivity.POLL_SECOND_FACTOR)));
 
                                 if (mBlink) {
                                     if (mA.mRxObjectsGood > 0)
@@ -234,36 +275,6 @@ class PollThread extends Thread {
                                 mA.setRxObjectsBad(0);
                                 mA.setRxObjectsGood(0);
 
-                                /**
-                                 * We have 100 bytes for the whole description.
-                                 *
-                                 * Structure is:
-                                 *   4 bytes: header: "OpFw".
-                                 *   4 bytes: GIT commit tag (short version of SHA1).
-                                 *   4 bytes: Unix timestamp of compile time.
-                                 *   2 bytes: target platform. Should follow same rule as BOARD_TYPE and BOARD_REVISION in board define files.
-                                 *  26 bytes: commit tag if it is there, otherwise branch name. '-dirty' may be added if needed. Zero-padded.
-                                 *  20 bytes: SHA1 sum of the firmware.
-                                 *  20 bytes: SHA1 sum of the uavo definitions.
-                                 *  20 bytes: free for now.
-                                 *
-                                 */
-                                String fcUavoHash = H.bytesToHex(getByteData("FirmwareIAPObj", "Description", 60, 20));
-                                mA.setUavoLongHashFC(fcUavoHash.toLowerCase());
-                                if (fcUavoHash.toLowerCase().equals(mA.getUavoLongHash().toLowerCase())) {
-                                    mA.imgUavoSanity.setColorFilter(Color.argb(0xff, 0, 0x80, 0));
-                                    mA.imgUavoSanity.setRotation(0f);
-                                } else {
-                                    if (mBlink) {
-                                        mA.imgUavoSanity.setColorFilter(Color.argb(0xff, 0xd4, 0, 0));
-                                        mA.imgUavoSanity.setRotation(mRotObjIcon++ * 90.f);
-                                    } else {
-                                        mA.imgUavoSanity.setColorFilter(Color.argb(0xff, 0xd4, 0x80, 0x80));
-                                        mA.imgUavoSanity.setRotation(mRotObjIcon++ * 90.f);
-                                        if (mRotObjIcon == 4) mRotObjIcon = 0;
-                                    }
-                                }
-
                                 setText(mA.txtVehicleName, getStringData("SystemSettings", "VehicleName", 20));
 
                                 setTextBGColor(mA.txtAtti, getData("SystemAlarms", "Alarm", "Attitude").toString());
@@ -281,9 +292,6 @@ class PollThread extends Thread {
                                 setTextBGColor(mA.txtOutput, getData("SystemAlarms", "Alarm", "Actuator").toString());
                                 setTextBGColor(mA.txtI2C, getData("SystemAlarms", "Alarm", "I2C").toString());
                                 setTextBGColor(mA.txtTelemetry, getData("SystemAlarms", "Alarm", "Telemetry").toString());
-
-                                setImageColor(mA.imgFlightTelemetry, getData("FlightTelemetryStats", "Status").toString());
-                                setImageColor(mA.imgGroundTelemetry, getData("GCSTelemetryStats", "Status").toString());
 
                                 setText(mA.txtHealthAlertDialogFusionAlgorithm, getData("RevoSettings", "FusionAlgorithm").toString());
 

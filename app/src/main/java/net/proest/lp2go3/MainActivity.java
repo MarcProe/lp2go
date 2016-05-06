@@ -242,8 +242,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     TextView txtHealthAlertDialogFusionAlgorithm;
     ImageView imgFlightTelemetry;
     ImageView imgGroundTelemetry;
-    ImageView imgBluetooth;
-    ImageView imgUSB;
+    ImageView imgSerial;
+    ImageView imgToolbarSettings;
     ImageView imgPacketsUp;
     ImageView imgPacketsGood;
     ImageView imgPacketsBad;
@@ -618,19 +618,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         txtModeAssistedControl = (TextView) findViewById(R.id.txtModeAssistedControl);
         txtVehicleName = (TextView) findViewById(R.id.txtVehicleName);
 
-        imgBluetooth = (ImageView) findViewById(R.id.imgBluetooth);
-        imgUSB = (ImageView) findViewById(R.id.imgUSB);
+        imgSerial = (ImageView) findViewById(R.id.imgSerial);
 
-        if (mSerialModeUsed != SERIAL_BLUETOOTH) {
-            imgBluetooth.setImageAlpha(ICON_TRANSPARENT);
+        if (mSerialModeUsed == SERIAL_BLUETOOTH) {
+            imgSerial.setColorFilter(Color.argb(0xff, 0xff, 0x0, 0x0));
+        } else if (mSerialModeUsed == SERIAL_USB) {
+            imgSerial.setColorFilter(Color.argb(0xff, 0xff, 0x0, 0x0));
         } else {
-            imgBluetooth.setColorFilter(Color.argb(0xff, 0xff, 0x0, 0x0));
-        }
-
-        if (mSerialModeUsed != SERIAL_USB) {
-            imgUSB.setImageAlpha(ICON_TRANSPARENT);
-        } else {
-            imgUSB.setColorFilter(Color.argb(0xff, 0xff, 0x0, 0x0));
+            imgSerial.setImageAlpha(ICON_TRANSPARENT);
         }
     }
 
@@ -1411,20 +1406,16 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
                 mSerialModeUsed = spnConnectionTypeSpinner.getSelectedItemPosition();
 
-                imgBluetooth.setColorFilter(Color.argb(0xff, 0xd4, 0x00, 0x00));
-                imgUSB.setColorFilter(Color.argb(0xff, 0xd4, 0x00, 0x00));
+                imgSerial.setColorFilter(Color.argb(0xff, 0xd4, 0x00, 0x00));
                 switch (mSerialModeUsed) {
                     case SERIAL_NONE:
-                        imgBluetooth.setImageAlpha(ICON_TRANSPARENT);
-                        imgUSB.setImageAlpha(ICON_TRANSPARENT);
+                        imgSerial.setImageAlpha(ICON_TRANSPARENT);
                         break;
                     case SERIAL_USB:
-                        imgBluetooth.setImageAlpha(ICON_TRANSPARENT);
-                        imgUSB.setImageAlpha(ICON_OPAQUE);
+                        imgSerial.setImageAlpha(ICON_OPAQUE);
                         break;
                     case SERIAL_BLUETOOTH:
-                        imgBluetooth.setImageAlpha(ICON_OPAQUE);
-                        imgUSB.setImageAlpha(ICON_TRANSPARENT);
+                        imgSerial.setImageAlpha(ICON_OPAQUE);
                         break;
                 }
 
@@ -1473,6 +1464,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
 
         String menuTitle = "";
+        int toolbarSettingsVisibility = View.INVISIBLE;
 
         //init new view
         switch (position) {
@@ -1481,10 +1473,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 fragment = new MainFragment();
                 setContentView(mViews.get(VIEW_MAIN), position);
 
-                imgBluetooth = (ImageView) findViewById(R.id.imgBluetooth);
-                imgUSB = (ImageView) findViewById(R.id.imgUSB);
-
                 menuTitle = getString(R.string.menu_main);
+                toolbarSettingsVisibility = View.VISIBLE;
 
                 break;
             case VIEW_MAP:
@@ -1493,6 +1483,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 mMapView.onResume();  //(re)activate the Map
 
                 menuTitle = getString(R.string.menu_map);
+                toolbarSettingsVisibility = View.INVISIBLE;
 
                 break;
             case VIEW_OBJECTS:
@@ -1500,6 +1491,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 setContentView(mViews.get(VIEW_OBJECTS), position);
 
                 menuTitle = getString(R.string.menu_objects);
+                toolbarSettingsVisibility = View.INVISIBLE;
 
                 break;
             case VIEW_SETTINGS:
@@ -1515,6 +1507,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 }
 
                 menuTitle = getString(R.string.menu_settings);
+                toolbarSettingsVisibility = View.INVISIBLE;
 
                 break;
             case VIEW_LOGS:
@@ -1522,6 +1515,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 setContentView(mViews.get(VIEW_LOGS), position);
 
                 menuTitle = getString(R.string.menu_logs);
+                toolbarSettingsVisibility = View.INVISIBLE;
 
                 break;
             case VIEW_ABOUT:
@@ -1529,6 +1523,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 setContentView(mViews.get(VIEW_ABOUT), position);
 
                 menuTitle = getString(R.string.menu_about);
+                toolbarSettingsVisibility = View.INVISIBLE;
 
                 break;
 
@@ -1538,8 +1533,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 SingleToast.show(this, R.string.CHECK_PID_WARNING, Toast.LENGTH_SHORT);
 
                 try {
-                    imgBluetooth = (ImageView) findViewById(R.id.imgBluetooth);
-                    imgUSB = (ImageView) findViewById(R.id.imgUSB);
+                    imgSerial = (ImageView) findViewById(R.id.imgSerial);
 
                     final View lloOuterPid = findViewById(R.id.lloOuterPid);
                     final View lloInnerPid = findViewById(R.id.lloInnerPid);
@@ -1566,6 +1560,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 }
 
                 menuTitle = getString(R.string.menu_pid);
+                toolbarSettingsVisibility = View.INVISIBLE;
 
                 break;
 
@@ -1575,8 +1570,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 SingleToast.show(this, R.string.CHECK_PID_WARNING, Toast.LENGTH_SHORT);
 
                 try {
-                    imgBluetooth = (ImageView) findViewById(R.id.imgBluetooth);
-                    imgUSB = (ImageView) findViewById(R.id.imgUSB);
+                    imgSerial = (ImageView) findViewById(R.id.imgSerial);
 
                     final View lloStickResponse = findViewById(R.id.lloStickResponse);
                     final View lloControllCoeff = findViewById(R.id.lloControlCoeff);
@@ -1603,17 +1597,20 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 }
 
                 menuTitle = getString(R.string.menu_vpid);
+                toolbarSettingsVisibility = View.INVISIBLE;
 
                 break;
 
             case VIEW_DEBUG:
                 fragment = new DebugFragment();
                 setContentView(mViews.get(VIEW_DEBUG), position);
+                toolbarSettingsVisibility = View.INVISIBLE;
                 break;
 
             case VIEW_SCOPE:
                 fragment = new ScopeFragment();
                 setContentView(mViews.get(VIEW_SCOPE), position);
+                toolbarSettingsVisibility = View.INVISIBLE;
                 break;
 
             default:
@@ -1632,6 +1629,21 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             mDrawerList.setItemChecked(position, true);
             mDrawerList.setSelection(position);
             setTitle(menuTitle);
+
+            imgToolbarSettings = (ImageView) findViewById(R.id.imgToolbarSettings);
+            if (imgToolbarSettings != null) {
+                imgToolbarSettings.setVisibility(toolbarSettingsVisibility);
+            }
+            imgSerial = (ImageView) findViewById(R.id.imgSerial);
+            imgUavoSanity = (ImageView) findViewById(R.id.imgUavoSanity);
+
+            imgPacketsGood = (ImageView) findViewById(R.id.imgPacketsGood);
+            imgPacketsBad = (ImageView) findViewById(R.id.imgPacketsBad);
+            imgPacketsUp = (ImageView) findViewById(R.id.imgPacketsUp);
+
+            imgGroundTelemetry = (ImageView) findViewById(R.id.imgGroundTelemetry);
+            imgFlightTelemetry = (ImageView) findViewById(R.id.imgFlightTelemetry);
+
             mDrawerLayout.closeDrawer(mDrawerList);
         }
     }
@@ -1730,38 +1742,43 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 .start();
     }
 
-    public void onHealthSettingsClick(View v) {
-        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
-        dialogBuilder.setTitle("Health Settings");
+    public void onToolbarSettingsClick(View v) {
+        switch (mCurrentView) {
+            case VIEW_MAIN: {
+                AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+                dialogBuilder.setTitle("Health Settings");
 
-        final View alertView = View.inflate(this, R.layout.alert_dialog_health, null);
-        dialogBuilder.setView(alertView);
+                final View alertView = View.inflate(this, R.layout.alert_dialog_health, null);
+                dialogBuilder.setView(alertView);
 
-        try {
-            txtHealthAlertDialogBatteryCapacity =
-                    (TextView) alertView.findViewById(R.id.txtHealthAlertDialogBatteryCapacity);
-            txtHealthAlertDialogBatteryCells =
-                    (TextView) alertView.findViewById(R.id.txtHealthAlertDialogBatteryCells);
-            txtHealthAlertDialogFusionAlgorithm =
-                    (TextView) alertView.findViewById(R.id.txtHealthAlertDialogFusionAlgorithm);
+                try {
+                    txtHealthAlertDialogBatteryCapacity =
+                            (TextView) alertView.findViewById(R.id.txtHealthAlertDialogBatteryCapacity);
+                    txtHealthAlertDialogBatteryCells =
+                            (TextView) alertView.findViewById(R.id.txtHealthAlertDialogBatteryCells);
+                    txtHealthAlertDialogFusionAlgorithm =
+                            (TextView) alertView.findViewById(R.id.txtHealthAlertDialogFusionAlgorithm);
 
-            txtHealthAlertDialogBatteryCapacity.setText(mFcDevice.getObjectTree()
-                    .getData("FlightBatterySettings", "Capacity").toString());
-            txtHealthAlertDialogBatteryCells.setText(mFcDevice.getObjectTree()
-                    .getData("FlightBatterySettings", "NbCells").toString());
-            txtHealthAlertDialogFusionAlgorithm.setText(mFcDevice.getObjectTree()
-                    .getData("RevoSettings", "FusionAlgorithm").toString());
-        } catch (UAVTalkMissingObjectException | NullPointerException e) {
-            e.printStackTrace();
-        }
+                    txtHealthAlertDialogBatteryCapacity.setText(mFcDevice.getObjectTree()
+                            .getData("FlightBatterySettings", "Capacity").toString());
+                    txtHealthAlertDialogBatteryCells.setText(mFcDevice.getObjectTree()
+                            .getData("FlightBatterySettings", "NbCells").toString());
+                    txtHealthAlertDialogFusionAlgorithm.setText(mFcDevice.getObjectTree()
+                            .getData("RevoSettings", "FusionAlgorithm").toString());
+                } catch (UAVTalkMissingObjectException | NullPointerException e) {
+                    e.printStackTrace();
+                }
 
-        dialogBuilder.setPositiveButton("Close", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
+                dialogBuilder.setPositiveButton("Close", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                dialogBuilder.show();
+                break;
             }
-        });
-        dialogBuilder.show();
+        }
     }
 
 

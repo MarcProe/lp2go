@@ -15,10 +15,12 @@
         android:orientation="vertical"
         tools:context=".MainActivity">
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="64dp" />
+        <include
+            layout="@layout/activity_toolbar_settings"
+            android:layout_width="fill_parent"
+            android:layout_height="64dp"
+            android:layout_marginLeft="0dp"
+            android:layout_marginTop="0dp" />
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
@@ -38,17 +40,9 @@
                     android:orientation="horizontal">
 
                     <ImageView
-                        android:id="@+id/imgBluetooth"
-                        android:layout_width="30dp"
-                        android:layout_height="fill_parent"
-                        android:src="@drawable/ic_bluetooth_disabled_128dp" />
-
-                    <ImageView
-                        android:id="@+id/imgUSB"
-                        android:layout_width="30dp"
-                        android:layout_height="fill_parent"
-                        android:contentDescription="USB"
-                        android:src="@drawable/ic_usb_128dp" />
+                        android:id="@+id/imgPlaceholder"
+                        android:layout_width="60dp"
+                        android:layout_height="fill_parent" />
 
                     <TextView
                         android:layout_width="0dp"
