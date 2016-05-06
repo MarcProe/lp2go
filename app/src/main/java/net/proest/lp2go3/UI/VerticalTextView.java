@@ -13,7 +13,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-package net.proest.lp2go3.UI;
+package net.proest.lp2go3.ui;
 
 import android.content.Context;
 import android.graphics.Canvas;

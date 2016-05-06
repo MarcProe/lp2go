@@ -50,13 +50,24 @@
         android:src="@drawable/ic_now_widgets_32dp" />
 
     <ImageView
-        android:id="@+id/imgToolbarSettings"
+        android:id="@+id/imgToolbarFlightSettings"
         android:layout_width="wrap_content"
         android:layout_height="fill_parent"
         android:layout_gravity="right"
         android:layout_marginBottom="4dp"
         android:layout_marginRight="12dp"
         android:layout_marginTop="4dp"
-        android:onClick="onToolbarSettingsClick"
+        android:onClick="onToolbarFlightSettingsClick"
         android:src="@drawable/ic_build_black_32dp" />
+
+    <ImageView
+        android:id="@+id/imgToolbarLocalSettings"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:layout_gravity="right"
+        android:layout_marginBottom="4dp"
+        android:layout_marginRight="12dp"
+        android:layout_marginTop="4dp"
+        android:onClick="onToolbarLocalSettingsClick"
+        android:src="@drawable/ic_settings_black_32dp" />
 </android.support.v7.widget.Toolbar>

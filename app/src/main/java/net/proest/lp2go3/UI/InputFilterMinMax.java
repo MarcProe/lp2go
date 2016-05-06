@@ -14,7 +14,7 @@
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-package net.proest.lp2go3.UI;
+package net.proest.lp2go3.ui;
 
 import android.content.Context;
 import android.text.InputFilter;

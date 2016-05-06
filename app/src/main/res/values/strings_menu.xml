@@ -25,12 +25,4 @@
         <item>@drawable/ic_vertical_align_center_black_128dp</item>
         <item>@drawable/ic_cancel_128dp</item>
     </array>
-
-    <drawable name="ic_main">@drawable/rounded_corner_ok</drawable>
-    <drawable name="ic_map">@drawable/rounded_corner_ok</drawable>
-    <drawable name="ic_objects">@drawable/rounded_corner_ok</drawable>
-    <drawable name="ic_settings">@drawable/rounded_corner_ok</drawable>
-    <drawable name="ic_logs">@drawable/rounded_corner_ok</drawable>
-    <drawable name="ic_about">@drawable/rounded_corner_ok</drawable>
-    <drawable name="ic_pid">@drawable/rounded_corner_ok</drawable>
 </resources>

@@ -14,14 +14,14 @@
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-package net.proest.lp2go3.UAVTalk.device;
+package net.proest.lp2go3.uavtalk.device;
 
 import android.content.Context;
 
 import net.proest.lp2go3.H;
 import net.proest.lp2go3.MainActivity;
-import net.proest.lp2go3.UAVTalk.UAVTalkDeviceHelper;
-import net.proest.lp2go3.UAVTalk.UAVTalkObjectTree;
+import net.proest.lp2go3.uavtalk.UAVTalkDeviceHelper;
+import net.proest.lp2go3.uavtalk.UAVTalkObjectTree;
 
 import java.io.FileOutputStream;
 import java.util.Arrays;

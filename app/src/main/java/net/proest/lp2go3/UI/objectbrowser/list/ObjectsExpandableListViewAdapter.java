@@ -14,7 +14,7 @@
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-package net.proest.lp2go3.UI.objectbrowser.list;
+package net.proest.lp2go3.ui.objectbrowser.list;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -29,7 +29,7 @@ import android.widget.TextView;
 
 import net.proest.lp2go3.H;
 import net.proest.lp2go3.R;
-import net.proest.lp2go3.UAVTalk.UAVTalkXMLObject;
+import net.proest.lp2go3.uavtalk.UAVTalkXMLObject;
 
 import java.text.DecimalFormat;
 import java.util.HashMap;

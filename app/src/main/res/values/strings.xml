@@ -50,5 +50,9 @@
     <string name="ARE_YOU_SURE_YOU_WANT_TO_CLOSE">Are you sure you want to close Lp2Go?</string>
     <string name="YES">Yes</string>
     <string name="NO">No</string>
+    <string name="SETTINGS">Settings</string>
+    <string name="COLORFUL_VIEW">Colorful View</string>
+    <string name="HEALTH_SETTINGS">Health Settings</string>
+    <string name="CLOSE_BUTTON">Close</string>
 </resources>
 

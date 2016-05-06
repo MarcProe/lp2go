@@ -14,7 +14,7 @@
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-package net.proest.lp2go3.UAVTalk.device;
+package net.proest.lp2go3.uavtalk.device;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothSocket;
@@ -24,11 +24,11 @@ import android.content.SharedPreferences;
 import net.proest.lp2go3.H;
 import net.proest.lp2go3.MainActivity;
 import net.proest.lp2go3.R;
-import net.proest.lp2go3.UAVTalk.UAVTalkDeviceHelper;
-import net.proest.lp2go3.UAVTalk.UAVTalkObject;
-import net.proest.lp2go3.UAVTalk.UAVTalkObjectTree;
-import net.proest.lp2go3.UAVTalk.UAVTalkXMLObject;
 import net.proest.lp2go3.VisualLog;
+import net.proest.lp2go3.uavtalk.UAVTalkDeviceHelper;
+import net.proest.lp2go3.uavtalk.UAVTalkObject;
+import net.proest.lp2go3.uavtalk.UAVTalkObjectTree;
+import net.proest.lp2go3.uavtalk.UAVTalkXMLObject;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;

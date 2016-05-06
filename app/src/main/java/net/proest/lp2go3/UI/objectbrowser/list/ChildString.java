@@ -14,7 +14,7 @@
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-package net.proest.lp2go3.UI.objectbrowser.list;
+package net.proest.lp2go3.ui.objectbrowser.list;
 
 public class ChildString {
     protected String data;

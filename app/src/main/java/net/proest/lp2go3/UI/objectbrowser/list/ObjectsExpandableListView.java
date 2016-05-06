@@ -14,7 +14,7 @@
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-package net.proest.lp2go3.UI.objectbrowser.list;
+package net.proest.lp2go3.ui.objectbrowser.list;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -24,15 +24,15 @@ import android.widget.Toast;
 
 import net.proest.lp2go3.MainActivity;
 import net.proest.lp2go3.R;
-import net.proest.lp2go3.UAVTalk.UAVTalkMissingObjectException;
-import net.proest.lp2go3.UAVTalk.UAVTalkObject;
-import net.proest.lp2go3.UAVTalk.UAVTalkObjectInstance;
-import net.proest.lp2go3.UAVTalk.UAVTalkXMLObject;
-import net.proest.lp2go3.UAVTalk.device.FcDevice;
-import net.proest.lp2go3.UI.SingleToast;
-import net.proest.lp2go3.UI.alertdialog.EnumInputAlertDialog;
-import net.proest.lp2go3.UI.alertdialog.NumberInputAlertDialog;
 import net.proest.lp2go3.VisualLog;
+import net.proest.lp2go3.uavtalk.UAVTalkMissingObjectException;
+import net.proest.lp2go3.uavtalk.UAVTalkObject;
+import net.proest.lp2go3.uavtalk.UAVTalkObjectInstance;
+import net.proest.lp2go3.uavtalk.UAVTalkXMLObject;
+import net.proest.lp2go3.uavtalk.device.FcDevice;
+import net.proest.lp2go3.ui.SingleToast;
+import net.proest.lp2go3.ui.alertdialog.EnumInputAlertDialog;
+import net.proest.lp2go3.ui.alertdialog.NumberInputAlertDialog;
 
 import java.util.ArrayList;
 import java.util.HashMap;

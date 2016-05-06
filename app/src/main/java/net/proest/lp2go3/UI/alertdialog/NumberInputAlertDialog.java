@@ -14,7 +14,7 @@
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-package net.proest.lp2go3.UI.alertdialog;
+package net.proest.lp2go3.ui.alertdialog;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -30,10 +30,10 @@ import android.widget.Toast;
 
 import net.proest.lp2go3.H;
 import net.proest.lp2go3.R;
-import net.proest.lp2go3.UAVTalk.UAVTalkXMLObject;
-import net.proest.lp2go3.UI.InputFilterMinMax;
-import net.proest.lp2go3.UI.SingleToast;
 import net.proest.lp2go3.VisualLog;
+import net.proest.lp2go3.uavtalk.UAVTalkXMLObject;
+import net.proest.lp2go3.ui.InputFilterMinMax;
+import net.proest.lp2go3.ui.SingleToast;
 
 import java.text.DecimalFormat;
 import java.util.regex.Pattern;

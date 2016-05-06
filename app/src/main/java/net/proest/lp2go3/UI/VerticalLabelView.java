@@ -1,4 +1,4 @@
-package net.proest.lp2go3.UI;
+package net.proest.lp2go3.ui;
 
 import android.content.Context;
 import android.content.res.TypedArray;

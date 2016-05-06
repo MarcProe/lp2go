@@ -26,10 +26,10 @@ import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import net.proest.lp2go3.UAVTalk.UAVTalkMissingObjectException;
-import net.proest.lp2go3.UAVTalk.UAVTalkObjectTree;
-import net.proest.lp2go3.UAVTalk.UAVTalkXMLObject;
-import net.proest.lp2go3.UI.PidTextView;
+import net.proest.lp2go3.uavtalk.UAVTalkMissingObjectException;
+import net.proest.lp2go3.uavtalk.UAVTalkObjectTree;
+import net.proest.lp2go3.uavtalk.UAVTalkXMLObject;
+import net.proest.lp2go3.ui.PidTextView;
 
 import java.util.Iterator;
 
@@ -286,8 +286,6 @@ class PollThread extends Thread {
                                 mA.setRxObjectsBad(0);
                                 mA.setRxObjectsGood(0);
 
-                                setText(mA.txtVehicleName,
-                                        getStringData("SystemSettings", "VehicleName", 20));
 
                                 setTextBGColor(mA.txtAtti,
                                         getData("SystemAlarms", "Alarm", "Attitude").toString());

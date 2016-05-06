@@ -34,7 +34,7 @@
  * limitations under the License.
  */
 
-package net.proest.lp2go3.UAVTalk.device;
+package net.proest.lp2go3.uavtalk.device;
 
 import android.hardware.usb.UsbConstants;
 import android.hardware.usb.UsbDeviceConnection;
@@ -43,11 +43,11 @@ import android.hardware.usb.UsbInterface;
 import android.hardware.usb.UsbRequest;
 
 import net.proest.lp2go3.MainActivity;
-import net.proest.lp2go3.UAVTalk.UAVTalkDeviceHelper;
-import net.proest.lp2go3.UAVTalk.UAVTalkObject;
-import net.proest.lp2go3.UAVTalk.UAVTalkObjectTree;
-import net.proest.lp2go3.UAVTalk.UAVTalkXMLObject;
 import net.proest.lp2go3.VisualLog;
+import net.proest.lp2go3.uavtalk.UAVTalkDeviceHelper;
+import net.proest.lp2go3.uavtalk.UAVTalkObject;
+import net.proest.lp2go3.uavtalk.UAVTalkObjectTree;
+import net.proest.lp2go3.uavtalk.UAVTalkXMLObject;
 
 import java.nio.ByteBuffer;
 import java.util.Map;

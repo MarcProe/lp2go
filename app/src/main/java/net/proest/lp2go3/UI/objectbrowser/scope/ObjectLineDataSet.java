@@ -1,4 +1,4 @@
-package net.proest.lp2go3.UI.objectbrowser.scope;
+package net.proest.lp2go3.ui.objectbrowser.scope;
 
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineDataSet;

@@ -36,8 +36,6 @@
 package net.proest.lp2go3;
 
 import android.app.AlertDialog;
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.app.PendingIntent;
 import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
@@ -71,11 +69,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -94,34 +90,24 @@ import com.google.android.gms.maps.model.Marker;
 import com.nbsp.materialfilepicker.MaterialFilePicker;
 import com.nbsp.materialfilepicker.ui.FilePickerActivity;
 
-import net.proest.lp2go3.UAVTalk.UAVTalkDeviceHelper;
-import net.proest.lp2go3.UAVTalk.UAVTalkMissingObjectException;
-import net.proest.lp2go3.UAVTalk.UAVTalkObjectTree;
-import net.proest.lp2go3.UAVTalk.UAVTalkXMLObject;
-import net.proest.lp2go3.UAVTalk.device.FcBluetoothDevice;
-import net.proest.lp2go3.UAVTalk.device.FcDevice;
-import net.proest.lp2go3.UAVTalk.device.FcUsbDevice;
-import net.proest.lp2go3.UI.PidTextView;
-import net.proest.lp2go3.UI.SingleToast;
-import net.proest.lp2go3.UI.alertdialog.EnumInputAlertDialog;
-import net.proest.lp2go3.UI.alertdialog.NumberInputAlertDialog;
-import net.proest.lp2go3.UI.alertdialog.PidInputAlertDialog;
-import net.proest.lp2go3.UI.objectbrowser.list.ChildString;
-import net.proest.lp2go3.UI.objectbrowser.list.ObjectsExpandableListView;
-import net.proest.lp2go3.UI.objectbrowser.list.ObjectsExpandableListViewAdapter;
 import net.proest.lp2go3.c.PID;
-import net.proest.lp2go3.slider.AboutFragment;
-import net.proest.lp2go3.slider.DebugFragment;
-import net.proest.lp2go3.slider.LogsFragment;
-import net.proest.lp2go3.slider.MainFragment;
-import net.proest.lp2go3.slider.MapFragment;
-import net.proest.lp2go3.slider.ObjectsFragment;
-import net.proest.lp2go3.slider.PidFragment;
-import net.proest.lp2go3.slider.ScopeFragment;
-import net.proest.lp2go3.slider.SettingsFragment;
-import net.proest.lp2go3.slider.VerticalPidFragment;
-import net.proest.lp2go3.slider.adapter.NavDrawerListAdapter;
-import net.proest.lp2go3.slider.model.NavDrawerItem;
+import net.proest.lp2go3.menu.MenuItem;
+import net.proest.lp2go3.menu.MenuListAdapter;
+import net.proest.lp2go3.uavtalk.UAVTalkDeviceHelper;
+import net.proest.lp2go3.uavtalk.UAVTalkMissingObjectException;
+import net.proest.lp2go3.uavtalk.UAVTalkObjectTree;
+import net.proest.lp2go3.uavtalk.UAVTalkXMLObject;
+import net.proest.lp2go3.uavtalk.device.FcBluetoothDevice;
+import net.proest.lp2go3.uavtalk.device.FcDevice;
+import net.proest.lp2go3.uavtalk.device.FcUsbDevice;
+import net.proest.lp2go3.ui.PidTextView;
+import net.proest.lp2go3.ui.SingleToast;
+import net.proest.lp2go3.ui.alertdialog.EnumInputAlertDialog;
+import net.proest.lp2go3.ui.alertdialog.NumberInputAlertDialog;
+import net.proest.lp2go3.ui.alertdialog.PidInputAlertDialog;
+import net.proest.lp2go3.ui.objectbrowser.list.ChildString;
+import net.proest.lp2go3.ui.objectbrowser.list.ObjectsExpandableListView;
+import net.proest.lp2go3.ui.objectbrowser.list.ObjectsExpandableListViewAdapter;
 
 import org.xml.sax.SAXException;
 
@@ -204,7 +190,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     ImageView imgPacketsGood;
     ImageView imgPacketsUp;
     ImageView imgSerial;
-    ImageView imgToolbarSettings;
+    ImageView imgToolbarFlightSettings;
+    ImageView imgToolbarLocalSettings;
     ImageView imgUavoSanity;
     LineChart lchScope;
     TextView txtAirspd;
@@ -252,11 +239,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     TextView txtTelemetry;
     TextView txtTime;
     TextView txtTimeLeft;
-    TextView txtVehicleName;
     TextView txtVolt;
     TextView txtmAh;
-    private CheckBox cbxColorfulPid;
-    private CheckBox cbxColorfulVPid;
     private BluetoothAdapter mBluetoothAdapter;
     private String mBluetoothDeviceUsed = null;
     private boolean mColorfulVPid;
@@ -447,31 +431,31 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.list_slidermenu);
-        ArrayList<NavDrawerItem> navDrawerItems = new ArrayList<NavDrawerItem>();
+        ArrayList<MenuItem> menuItems = new ArrayList<MenuItem>();
 
-        navDrawerItems.add(new NavDrawerItem(getString(R.string.menu_main),
+        menuItems.add(new MenuItem(getString(R.string.menu_main),
                 R.drawable.ic_notifications_on_24dp));
-        navDrawerItems.add(new NavDrawerItem(getString(R.string.menu_map),
+        menuItems.add(new MenuItem(getString(R.string.menu_map),
                 R.drawable.ic_public_24dp));
-        navDrawerItems.add(new NavDrawerItem(getString(R.string.menu_objects),
+        menuItems.add(new MenuItem(getString(R.string.menu_objects),
                 R.drawable.ic_now_widgets_24dp));
-        navDrawerItems.add(new NavDrawerItem(getString(R.string.menu_pid),
+        menuItems.add(new MenuItem(getString(R.string.menu_pid),
                 R.drawable.ic_tune_128dp));
-        navDrawerItems.add(new NavDrawerItem(getString(R.string.menu_vpid),
+        menuItems.add(new MenuItem(getString(R.string.menu_vpid),
                 R.drawable.ic_vertical_align_center_black_128dp));
-        navDrawerItems.add(new NavDrawerItem(getString(R.string.menu_logs),
+        menuItems.add(new MenuItem(getString(R.string.menu_logs),
                 R.drawable.ic_rate_review_24dp));
-        navDrawerItems.add(new NavDrawerItem(getString(R.string.menu_settings),
+        menuItems.add(new MenuItem(getString(R.string.menu_settings),
                 R.drawable.ic_settings_24dp));
-        navDrawerItems.add(new NavDrawerItem(getString(R.string.menu_about),
+        menuItems.add(new MenuItem(getString(R.string.menu_about),
                 R.drawable.ic_info_outline_24dp));
-        navDrawerItems.add(new NavDrawerItem(getString(R.string.menu_debug),
+        menuItems.add(new MenuItem(getString(R.string.menu_debug),
                 R.drawable.ic_cancel_128dp));
 
 
         navMenuIcons.recycle();
-        NavDrawerListAdapter drawListAdapter = new NavDrawerListAdapter(getApplicationContext(),
-                navDrawerItems);
+        MenuListAdapter drawListAdapter = new MenuListAdapter(getApplicationContext(),
+                menuItems);
         mDrawerList.setAdapter(drawListAdapter);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         if (toolbar != null) {
@@ -575,7 +559,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         txtModeFlightMode = (TextView) findViewById(R.id.txtModeFlightMode);
 
         txtModeAssistedControl = (TextView) findViewById(R.id.txtModeAssistedControl);
-        txtVehicleName = (TextView) findViewById(R.id.txtVehicleName);
 
         imgSerial = (ImageView) findViewById(R.id.imgSerial);
 
@@ -662,12 +645,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private void initViewSettings() {
         mViews.put(VIEW_SETTINGS, getLayoutInflater().inflate(R.layout.activity_settings, null));
         setContentView(mViews.get(VIEW_SETTINGS)); //Settings
-
-        cbxColorfulPid = (CheckBox) findViewById(R.id.cbxColorfulPid);
-        cbxColorfulPid.setChecked(mColorfulPid);
-
-        cbxColorfulVPid = (CheckBox) findViewById(R.id.cbxColorfulVPid);
-        cbxColorfulVPid.setChecked(mColorfulPid);
 
         spnConnectionTypeSpinner = (Spinner) findViewById(R.id.spnConnectionTypeSpinner);
         ArrayAdapter<CharSequence> serialConnectionTypeAdapter
@@ -1132,6 +1109,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         mBluetoothDeviceUsed = sharedPref.getString(getString(R.string.SETTINGS_BT_NAME), null);
         mLoadedUavo = sharedPref.getString(getString(R.string.SETTINGS_UAVO_SOURCE), null);
         mColorfulPid = sharedPref.getBoolean(getString(R.string.SETTINGS_COLORFUL_PID), false);
+        mColorfulVPid = sharedPref.getBoolean(getString(R.string.SETTINGS_COLORFUL_VPID), false);
     }
 
     @Override
@@ -1148,7 +1126,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(android.view.MenuItem item) {
         // toggle nav drawer on selecting action bar app icon/title
         if (mDrawerToggle.onOptionsItemSelected(item)) {
             return true;
@@ -1354,8 +1332,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     public void displayView(int position) {
-        Fragment fragment = null;
-
         //clean up current view
         switch (mCurrentView) {
             case VIEW_MAIN:
@@ -1416,8 +1392,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     SingleToast.show(this, "UAVO load completed", Toast.LENGTH_SHORT);
                 }
 
-                mColorfulPid = cbxColorfulPid.isChecked();
-
                 editor.putString(getString(R.string.SETTINGS_BT_MAC), btmac);
                 editor.putString(getString(R.string.SETTINGS_BT_NAME), btname);
                 editor.putString(getString(R.string.SETTINGS_UAVO_SOURCE), mLoadedUavo);
@@ -1453,38 +1427,38 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
 
         String menuTitle = "";
-        int toolbarSettingsVisibility = View.INVISIBLE;
+        int toolbarFlightSettingsVisibility = View.INVISIBLE;
+        int toolbarLocalSettingsVisibility = View.INVISIBLE;
 
         //init new view
         switch (position) {
             case VIEW_MAIN:
                 initViewMain(null);
-                fragment = new MainFragment();
                 setContentView(mViews.get(VIEW_MAIN), position);
 
                 menuTitle = getString(R.string.menu_main);
-                toolbarSettingsVisibility = View.VISIBLE;
+                toolbarFlightSettingsVisibility = View.VISIBLE;
+                toolbarLocalSettingsVisibility = View.INVISIBLE;
 
                 break;
             case VIEW_MAP:
-                fragment = new MapFragment();
                 setContentView(mViews.get(VIEW_MAP), position);
                 mMapView.onResume();  //(re)activate the Map
 
                 menuTitle = getString(R.string.menu_map);
-                toolbarSettingsVisibility = View.INVISIBLE;
+                toolbarFlightSettingsVisibility = View.INVISIBLE;
+                toolbarLocalSettingsVisibility = View.INVISIBLE;
 
                 break;
             case VIEW_OBJECTS:
-                fragment = new ObjectsFragment();
                 setContentView(mViews.get(VIEW_OBJECTS), position);
 
                 menuTitle = getString(R.string.menu_objects);
-                toolbarSettingsVisibility = View.INVISIBLE;
+                toolbarFlightSettingsVisibility = View.INVISIBLE;
+                toolbarLocalSettingsVisibility = View.INVISIBLE;
 
                 break;
             case VIEW_SETTINGS:
-                fragment = new SettingsFragment();
                 setContentView(mViews.get(VIEW_SETTINGS), position);
 
                 if (mSerialModeUsed == SERIAL_NONE) {
@@ -1496,28 +1470,28 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 }
 
                 menuTitle = getString(R.string.menu_settings);
-                toolbarSettingsVisibility = View.INVISIBLE;
+                toolbarFlightSettingsVisibility = View.INVISIBLE;
+                toolbarLocalSettingsVisibility = View.INVISIBLE;
 
                 break;
             case VIEW_LOGS:
-                fragment = new LogsFragment();
                 setContentView(mViews.get(VIEW_LOGS), position);
 
                 menuTitle = getString(R.string.menu_logs);
-                toolbarSettingsVisibility = View.INVISIBLE;
+                toolbarFlightSettingsVisibility = View.INVISIBLE;
+                toolbarLocalSettingsVisibility = View.INVISIBLE;
 
                 break;
             case VIEW_ABOUT:
-                fragment = new AboutFragment();
                 setContentView(mViews.get(VIEW_ABOUT), position);
 
                 menuTitle = getString(R.string.menu_about);
-                toolbarSettingsVisibility = View.INVISIBLE;
+                toolbarFlightSettingsVisibility = View.INVISIBLE;
+                toolbarLocalSettingsVisibility = View.INVISIBLE;
 
                 break;
 
             case VIEW_PID:
-                fragment = new PidFragment();
                 setContentView(mViews.get(VIEW_PID), position);
                 SingleToast.show(this, R.string.CHECK_PID_WARNING, Toast.LENGTH_SHORT);
 
@@ -1549,12 +1523,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 }
 
                 menuTitle = getString(R.string.menu_pid);
-                toolbarSettingsVisibility = View.INVISIBLE;
+                toolbarFlightSettingsVisibility = View.INVISIBLE;
+                toolbarLocalSettingsVisibility = View.VISIBLE;
 
                 break;
 
             case VIEW_VPID:
-                fragment = new VerticalPidFragment();
                 setContentView(mViews.get(VIEW_VPID), position);
                 SingleToast.show(this, R.string.CHECK_PID_WARNING, Toast.LENGTH_SHORT);
 
@@ -1586,55 +1560,51 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 }
 
                 menuTitle = getString(R.string.menu_vpid);
-                toolbarSettingsVisibility = View.INVISIBLE;
+                toolbarFlightSettingsVisibility = View.INVISIBLE;
+                toolbarLocalSettingsVisibility = View.VISIBLE;
 
                 break;
 
             case VIEW_DEBUG:
-                fragment = new DebugFragment();
                 setContentView(mViews.get(VIEW_DEBUG), position);
-                toolbarSettingsVisibility = View.INVISIBLE;
+                toolbarFlightSettingsVisibility = View.INVISIBLE;
+                toolbarLocalSettingsVisibility = View.INVISIBLE;
                 break;
 
             case VIEW_SCOPE:
-                fragment = new ScopeFragment();
                 setContentView(mViews.get(VIEW_SCOPE), position);
-                toolbarSettingsVisibility = View.INVISIBLE;
+                toolbarFlightSettingsVisibility = View.INVISIBLE;
+                toolbarLocalSettingsVisibility = View.INVISIBLE;
                 break;
 
             default:
                 break;
         }
 
-        if (fragment != null) {
-            FragmentManager fragmentManager = getFragmentManager();
-            try {
-                fragmentManager.beginTransaction().replace(R.id.frame_container, fragment).commit();
-            } catch (IllegalStateException e) {
-                //Maybe there's no need to fix, because we don't really replace the fragment here
-                VisualLog.e("FIXME", "After wakeup in different orientation, this happens.");
-            }
+        mDrawerList.setItemChecked(position, true);
+        mDrawerList.setSelection(position);
+        setTitle(menuTitle);
 
-            mDrawerList.setItemChecked(position, true);
-            mDrawerList.setSelection(position);
-            setTitle(menuTitle);
-
-            imgToolbarSettings = (ImageView) findViewById(R.id.imgToolbarSettings);
-            if (imgToolbarSettings != null) {
-                imgToolbarSettings.setVisibility(toolbarSettingsVisibility);
-            }
-            imgSerial = (ImageView) findViewById(R.id.imgSerial);
-            imgUavoSanity = (ImageView) findViewById(R.id.imgUavoSanity);
-
-            imgPacketsGood = (ImageView) findViewById(R.id.imgPacketsGood);
-            imgPacketsBad = (ImageView) findViewById(R.id.imgPacketsBad);
-            imgPacketsUp = (ImageView) findViewById(R.id.imgPacketsUp);
-
-            imgGroundTelemetry = (ImageView) findViewById(R.id.imgGroundTelemetry);
-            imgFlightTelemetry = (ImageView) findViewById(R.id.imgFlightTelemetry);
-
-            mDrawerLayout.closeDrawer(mDrawerList);
+        imgToolbarFlightSettings = (ImageView) findViewById(R.id.imgToolbarFlightSettings);
+        if (imgToolbarFlightSettings != null) {
+            imgToolbarFlightSettings.setVisibility(toolbarFlightSettingsVisibility);
         }
+        imgToolbarLocalSettings = (ImageView) findViewById(R.id.imgToolbarLocalSettings);
+        if (imgToolbarLocalSettings != null) {
+            imgToolbarLocalSettings.setVisibility(toolbarLocalSettingsVisibility);
+        }
+        imgSerial = (ImageView) findViewById(R.id.imgSerial);
+        imgUavoSanity = (ImageView) findViewById(R.id.imgUavoSanity);
+
+        imgPacketsGood = (ImageView) findViewById(R.id.imgPacketsGood);
+        imgPacketsBad = (ImageView) findViewById(R.id.imgPacketsBad);
+        imgPacketsUp = (ImageView) findViewById(R.id.imgPacketsUp);
+
+        imgGroundTelemetry = (ImageView) findViewById(R.id.imgGroundTelemetry);
+        imgFlightTelemetry = (ImageView) findViewById(R.id.imgFlightTelemetry);
+
+        mDrawerLayout.closeDrawer(mDrawerList);
+
     }
 
     @Override
@@ -1770,11 +1740,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 .start();
     }
 
-    public void onToolbarSettingsClick(View v) {
+    public void onToolbarFlightSettingsClick(View v) {
         switch (mCurrentView) {
             case VIEW_MAIN: {
                 AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
-                dialogBuilder.setTitle("Health Settings");
+                dialogBuilder.setTitle(R.string.HEALTH_SETTINGS);
 
                 final View alertView = View.inflate(this, R.layout.alert_dialog_health, null);
                 dialogBuilder.setView(alertView);
@@ -1800,13 +1770,53 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     e.printStackTrace();
                 }
 
-                dialogBuilder.setPositiveButton("Close", new DialogInterface.OnClickListener() {
+                dialogBuilder.setPositiveButton(R.string.CLOSE_BUTTON,
+                        new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
                     }
                 });
                 dialogBuilder.show();
+                break;
+            }
+        }
+    }
+
+    public void onToolbarLocalSettingsClick(View v) {
+        switch (mCurrentView) {
+            case VIEW_PID:
+            case VIEW_VPID: {
+                final String[] items = {getString(R.string.COLORFUL_VIEW)};
+                final boolean[] checkedItems = {true};
+                if (mCurrentView == VIEW_PID) {
+                    checkedItems[0] = mColorfulPid;
+                } else if (mCurrentView == VIEW_VPID) {
+                    checkedItems[0] = mColorfulVPid;
+                }
+
+                AlertDialog dialog = new AlertDialog.Builder(this)
+                        .setTitle(R.string.SETTINGS)
+                        .setMultiChoiceItems(items, checkedItems,
+                                new DialogInterface.OnMultiChoiceClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int indexSelected,
+                                                        boolean isChecked) {
+                                        if (mCurrentView == VIEW_PID) {
+                                            mColorfulPid = isChecked;
+                                        } else if (mCurrentView == VIEW_VPID) {
+                                            mColorfulVPid = isChecked;
+                                        }
+                                    }
+                                }).setPositiveButton(R.string.CLOSE_BUTTON,
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        dialog.dismiss();
+                                        displayView(mCurrentView);
+                                    }
+                                }).create();
+                dialog.show();
                 break;
             }
         }

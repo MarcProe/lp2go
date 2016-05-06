@@ -13,16 +13,16 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-package net.proest.lp2go3.UAVTalk.device;
+package net.proest.lp2go3.uavtalk.device;
 
 import android.hardware.usb.UsbDeviceConnection;
 import android.hardware.usb.UsbEndpoint;
 
 import net.proest.lp2go3.H;
-import net.proest.lp2go3.UAVTalk.UAVTalkMessage;
-import net.proest.lp2go3.UAVTalk.UAVTalkObject;
-import net.proest.lp2go3.UAVTalk.UAVTalkObjectInstance;
 import net.proest.lp2go3.VisualLog;
+import net.proest.lp2go3.uavtalk.UAVTalkMessage;
+import net.proest.lp2go3.uavtalk.UAVTalkObject;
+import net.proest.lp2go3.uavtalk.UAVTalkObjectInstance;
 
 import java.util.ArrayDeque;
 import java.util.Queue;

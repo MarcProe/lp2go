@@ -17,8 +17,8 @@ package net.proest.lp2go3;
 
 import android.widget.Toast;
 
-import net.proest.lp2go3.UAVTalk.UAVTalkMissingObjectException;
-import net.proest.lp2go3.UI.SingleToast;
+import net.proest.lp2go3.uavtalk.UAVTalkMissingObjectException;
+import net.proest.lp2go3.ui.SingleToast;
 
 class ConnectionThread extends Thread {
     private final MainActivity mA;

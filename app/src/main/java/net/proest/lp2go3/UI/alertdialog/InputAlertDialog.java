@@ -14,12 +14,12 @@
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-package net.proest.lp2go3.UI.alertdialog;
+package net.proest.lp2go3.ui.alertdialog;
 
 import android.app.AlertDialog;
 import android.content.Context;
 
-import net.proest.lp2go3.UAVTalk.device.FcDevice;
+import net.proest.lp2go3.uavtalk.device.FcDevice;
 
 public abstract class InputAlertDialog extends AlertDialog {
     String mElement = "0";
