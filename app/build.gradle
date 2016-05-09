@@ -28,10 +28,16 @@ android {
     productFlavors {
         alpha_flavor_ {
             applicationId 'net.proest.lp2go3'
+            resValue 'string', 'APPID', applicationId
+            resValue 'string', 'GMAPID', 'AIzaSyCE91uHoVzA_-mxPer8g5sU7WL2jTdQDzo'
+            resValue 'string', 'app_name', 'LP2Go Alpha'
         }
         beta_flavor_ {
             minSdkVersion 16
             applicationId 'org.librepilot.lp2go.beta'
+            resValue 'string', 'APPID', applicationId
+            resValue 'string', 'GMAPID', 'AIzaSyCE91uHoVzA_-mxPer8g5sU7WL2jTdQDzo'
+            resValue 'string', 'app_name', 'LP2Go Beta'
             targetSdkVersion 16
             versionCode 30000
             versionName '0.3.0.0'
@@ -39,6 +45,9 @@ android {
         release_flavor_ {
             minSdkVersion 16
             applicationId 'org.librepilot.lp2go.release'
+            resValue 'string', 'APPID', applicationId
+            resValue 'string', 'GMAPID', 'AIzaSyCE91uHoVzA_-mxPer8g5sU7WL2jTdQDzo'
+            resValue 'string', 'app_name', 'LP2Go'
             targetSdkVersion 16
             versionCode 1000000
             versionName '1.0.0.0'

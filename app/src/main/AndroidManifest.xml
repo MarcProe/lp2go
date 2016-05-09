@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="net.proest.lp2go3">
+          xmlns:tools="http://schemas.android.com/tools"
+          package="org.librepilot.lp2go">
 
     <uses-feature
         android:name="android.hardware.usb.host"
@@ -29,9 +29,9 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <permission
-        android:name="net.proest.permission.MAPS_RECEIVE"
+        android:name="${applicationId}.MAPS_RECEIVE"
         android:protectionLevel="signature" />
-    <uses-permission android:name="net.proest.permission.MAPS_RECEIVE" />
+    <uses-permission android:name="${applicationId}.MAPS_RECEIVE"/>
 
     <application
         android:allowBackup="true"
@@ -41,12 +41,8 @@
         tools:replace="android:icon">
 
     <uses-library android:name="com.google.android.maps" />
-        <!--<activity
-            android:name="net.proest.lp2go3.MainActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:screenOrientation="portrait">-->
         <activity
-            android:name="net.proest.lp2go3.MainActivity"
+            android:name="org.librepilot.lp2go.MainActivity"
             android:configChanges="orientation|screenSize|keyboard|keyboardHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -56,7 +52,7 @@
         </activity>
         <provider
             android:name="android.support.v4.content.FileProvider"
-            android:authorities="net.proest.lp2go3.logfileprovider"
+            android:authorities="${applicationId}.logfileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
@@ -69,7 +65,7 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyCE91uHoVzA_-mxPer8g5sU7WL2jTdQDzo" />
+            android:value="@string/GMAPID"/>
 
     </application>
 
