@@ -15,7 +15,7 @@ android:
   - extra
 
 script:
-- "./gradlew assemblealpha_flavor_Debug assemblealpha_flavor_Release"
+- "./gradlew assemblealpha_flavor_Debug assemblealpha_flavor_Release assemblebeta_flavor_Debug assemblebeta_flavor_Release assemblerelease_flavor_Debug assemblerelease_flavor_Release"
 
 before_install:
 
