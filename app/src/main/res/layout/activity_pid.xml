@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/drawer_layout"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".MainActivity">
+                                        xmlns:app="http://schemas.android.com/apk/res-auto"
+                                        xmlns:tools="http://schemas.android.com/tools"
+                                        android:id="@+id/drawer_layout"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        tools:context="org.librepilot.lp2go.MainActivity">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/frame_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        tools:context=".MainActivity">
+                  xmlns:tools="http://schemas.android.com/tools"
+                  android:id="@+id/frame_container"
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  android:orientation="vertical"
+                  tools:context="org.librepilot.lp2go.MainActivity">
 
         <include
             layout="@layout/activity_toolbar_inc_settings"
@@ -95,7 +95,7 @@
                     android:background="@drawable/border_top_blue"
                     android:orientation="horizontal">
 
-                    <net.proest.lp2go3.ui.VerticalLabelView
+                    <org.librepilot.lp2go.ui.VerticalLabelView
                         android:layout_width="25dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
@@ -105,7 +105,7 @@
                         app:text="Rate Stabilization"
                         app:textSize="20sp" />
 
-                    <net.proest.lp2go3.ui.VerticalLabelView
+                    <org.librepilot.lp2go.ui.VerticalLabelView
                         android:layout_width="25dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
@@ -139,7 +139,7 @@
                                 android:textAppearance="?android:attr/textAppearanceSmall"
                                 android:textSize="40sp" />
 
-                            <net.proest.lp2go3.ui.PidTextView
+                            <org.librepilot.lp2go.ui.PidTextView
                                 android:id="@+id/txtRateRollProportional"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
@@ -150,7 +150,7 @@
                                 android:textAppearance="?android:attr/textAppearanceLarge"
                                 android:textSize="25sp" />
 
-                            <net.proest.lp2go3.ui.PidTextView
+                            <org.librepilot.lp2go.ui.PidTextView
                                 android:id="@+id/txtRatePitchProportional"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
@@ -161,7 +161,7 @@
                                 android:textAppearance="?android:attr/textAppearanceLarge"
                                 android:textSize="25sp" />
 
-                            <net.proest.lp2go3.ui.PidTextView
+                            <org.librepilot.lp2go.ui.PidTextView
                                 android:id="@+id/txtRateYawProportional"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
@@ -191,7 +191,7 @@
                                 android:textAppearance="?android:attr/textAppearanceSmall"
                                 android:textSize="40sp" />
 
-                            <net.proest.lp2go3.ui.PidTextView
+                            <org.librepilot.lp2go.ui.PidTextView
                                 android:id="@+id/txtRateRollIntegral"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
@@ -202,7 +202,7 @@
                                 android:textAppearance="?android:attr/textAppearanceLarge"
                                 android:textSize="25sp" />
 
-                            <net.proest.lp2go3.ui.PidTextView
+                            <org.librepilot.lp2go.ui.PidTextView
                                 android:id="@+id/txtRatePitchIntegral"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
@@ -213,7 +213,7 @@
                                 android:textAppearance="?android:attr/textAppearanceLarge"
                                 android:textSize="25sp" />
 
-                            <net.proest.lp2go3.ui.PidTextView
+                            <org.librepilot.lp2go.ui.PidTextView
                                 android:id="@+id/txtRateYawIntegral"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
@@ -243,7 +243,7 @@
                                 android:textAppearance="?android:attr/textAppearanceSmall"
                                 android:textSize="40sp" />
 
-                            <net.proest.lp2go3.ui.PidTextView
+                            <org.librepilot.lp2go.ui.PidTextView
                                 android:id="@+id/txtRateRollDerivative"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
@@ -254,7 +254,7 @@
                                 android:textAppearance="?android:attr/textAppearanceLarge"
                                 android:textSize="25sp" />
 
-                            <net.proest.lp2go3.ui.PidTextView
+                            <org.librepilot.lp2go.ui.PidTextView
                                 android:id="@+id/txtRatePitchDerivative"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
@@ -265,7 +265,7 @@
                                 android:textAppearance="?android:attr/textAppearanceLarge"
                                 android:textSize="25sp" />
 
-                            <net.proest.lp2go3.ui.PidTextView
+                            <org.librepilot.lp2go.ui.PidTextView
                                 android:id="@+id/txtRateYawDerivative"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
@@ -288,7 +288,7 @@
                     android:background="@drawable/border_top_yellow"
                     android:orientation="horizontal">
 
-                    <net.proest.lp2go3.ui.VerticalLabelView
+                    <org.librepilot.lp2go.ui.VerticalLabelView
                         android:layout_width="25dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
@@ -299,7 +299,7 @@
                         app:text="Attitude Stabilization"
                         app:textSize="20sp" />
 
-                    <net.proest.lp2go3.ui.VerticalLabelView
+                    <org.librepilot.lp2go.ui.VerticalLabelView
                         android:layout_width="25dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
@@ -334,7 +334,7 @@
                                 android:textAppearance="?android:attr/textAppearanceSmall"
                                 android:textSize="40sp" />
 
-                            <net.proest.lp2go3.ui.PidTextView
+                            <org.librepilot.lp2go.ui.PidTextView
                                 android:id="@+id/txtAttitudeRollProportional"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
@@ -345,7 +345,7 @@
                                 android:textAppearance="?android:attr/textAppearanceLarge"
                                 android:textSize="25sp" />
 
-                            <net.proest.lp2go3.ui.PidTextView
+                            <org.librepilot.lp2go.ui.PidTextView
                                 android:id="@+id/txtAttitudePitchProportional"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
@@ -356,7 +356,7 @@
                                 android:textAppearance="?android:attr/textAppearanceLarge"
                                 android:textSize="25sp" />
 
-                            <net.proest.lp2go3.ui.PidTextView
+                            <org.librepilot.lp2go.ui.PidTextView
                                 android:id="@+id/txtAttitudeYawProportional"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
@@ -386,7 +386,7 @@
                                 android:textAppearance="?android:attr/textAppearanceSmall"
                                 android:textSize="40sp" />
 
-                            <net.proest.lp2go3.ui.PidTextView
+                            <org.librepilot.lp2go.ui.PidTextView
                                 android:id="@+id/txtAttitudeRollIntegral"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
@@ -397,7 +397,7 @@
                                 android:textAppearance="?android:attr/textAppearanceLarge"
                                 android:textSize="25sp" />
 
-                            <net.proest.lp2go3.ui.PidTextView
+                            <org.librepilot.lp2go.ui.PidTextView
                                 android:id="@+id/txtAttitudePitchIntegral"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
@@ -408,7 +408,7 @@
                                 android:textAppearance="?android:attr/textAppearanceLarge"
                                 android:textSize="25sp" />
 
-                            <net.proest.lp2go3.ui.PidTextView
+                            <org.librepilot.lp2go.ui.PidTextView
                                 android:id="@+id/txtAttitudeYawIntegral"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"

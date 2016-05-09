@@ -6,10 +6,10 @@
         <item>Bluetooth</item>
     </string-array>
 
-    <string name="SETTINGS_UAVO_SOURCE">net.proest.lp2go3.uavo_source</string>
-    <string name="SETTINGS_SERIAL_MODE">net.proest.lp2go2.serial_mode</string>
-    <string name="SETTINGS_BT_MAC">net.proest.lp2go2.bt_mac</string>
-    <string name="SETTINGS_BT_NAME">net.proest.lp2go2.bt_name</string>
-    <string name="SETTINGS_COLORFUL_PID">net.proest.lp2go3.colorful_pid</string>
-    <string name="SETTINGS_COLORFUL_VPID">net.proest.lp2go3.colorful_pid</string>
+    <string name="SETTINGS_UAVO_SOURCE">%1$s.uavo_source</string>
+    <string name="SETTINGS_SERIAL_MODE">%1$s.serial_mode</string>
+    <string name="SETTINGS_BT_MAC">%1$s.bt_mac</string>
+    <string name="SETTINGS_BT_NAME">%1$s.bt_name</string>
+    <string name="SETTINGS_COLORFUL_PID">%1$s.colorful_pid</string>
+    <string name="SETTINGS_COLORFUL_VPID">%1$s.colorful_pid</string>
 </resources>

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">LP2Go Alpha</string>
     <string name="CAPACITY_DIALOG_TITLE">Capacity (mAh)</string>
     <string name="CELLS_DIALOG_TITLE">Cells</string>
     <string name="OK_BUTTON">OK</string>
