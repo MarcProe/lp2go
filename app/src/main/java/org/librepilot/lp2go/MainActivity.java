@@ -313,6 +313,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         }
     };
+    private MenuItem menDebug = null;
     private Spinner spnBluetoothPairedDevice;
     private Spinner spnConnectionTypeSpinner;
     private Spinner spnUavoSource;
@@ -448,9 +449,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 R.drawable.ic_settings_24dp));
         menuItems.add(new MenuItem(getString(R.string.menu_about),
                 R.drawable.ic_info_outline_24dp));
-        menuItems.add(new MenuItem(getString(R.string.menu_debug),
-                R.drawable.ic_cancel_128dp));
-
+        if (menDebug != null) {
+            menuItems.add(menDebug);
+        }
 
         navMenuIcons.recycle();
         MenuListAdapter drawListAdapter = new MenuListAdapter(getApplicationContext(),
@@ -2344,6 +2345,16 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     }
                 });
         dialogBuilder.show();
+    }
+
+    public void onDebugLogoClick(View v) {
+        if (menDebug == null) {
+            menDebug = new MenuItem(getString(R.string.menu_debug), R.drawable.ic_cancel_128dp);
+            initSlider(null);
+        } else {
+            menDebug = null;
+            initSlider(null);
+        }
     }
 
     private class SlideMenuClickListener implements ListView.OnItemClickListener {
