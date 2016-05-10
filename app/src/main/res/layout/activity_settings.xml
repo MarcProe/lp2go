@@ -126,16 +126,12 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_margin="20dp"
                     android:autoLink="web"
                     android:clickable="true"
-                    android:text="Download prepackaged developer UAVO on http://bit.ly/1Xrw7EO"
-                    android:textAppearance="?android:attr/textAppearanceMedium" />
+                    android:text="See the wiki for help:\nhttps://librepilot.atlassian.net/wiki/display/LPDOC/LP2Go+Android+App"
+                    android:textAppearance="?android:attr/textAppearanceMedium"/>
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/HELP_CUSTOM_UAVO_FILES"
-                    android:textAppearance="?android:attr/textAppearanceMedium" />
 
             </LinearLayout>
         </ScrollView>
