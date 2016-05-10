@@ -32,10 +32,10 @@
 
                 <ImageView
                     android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="140dp"
                     android:layout_gravity="center_horizontal"
                     android:layout_margin="2dp"
-                    android:src="@drawable/ic_toolbar" />
+                    android:src="@drawable/ic_librepilot_logo_450dp"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -190,6 +190,15 @@
                     android:text="MPAndroidChart (https://github.com/PhilJay/MPAndroidChart) is licensed under the Apache License, Version 2."
                     android:textAlignment="center"
                     android:textAppearance="?android:attr/textAppearanceLarge" />
+
+                <ImageView
+                    android:id="@+id/imageView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="15dp"
+                    android:layout_marginTop="15dp"
+                    android:src="@drawable/ic_robot"/>
             </LinearLayout>
         </ScrollView>
 

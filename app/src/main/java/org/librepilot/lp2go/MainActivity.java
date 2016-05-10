@@ -458,7 +458,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         mDrawerList.setAdapter(drawListAdapter);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         if (toolbar != null) {
-            toolbar.setLogo(R.drawable.ic_toolbar_36x47dp);
+            toolbar.setLogo(R.drawable.ic_librepilot_logo_toolbar_48dp);
             toolbar.setNavigationIcon(R.drawable.ic_menu_black_24dp);
         }
         setSupportActionBar(toolbar);
