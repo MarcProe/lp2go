@@ -168,6 +168,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private static boolean mColorfulPid;
     private static boolean mHasPThread = false;
     final Marker[] mPosHistory = new Marker[HISTORY_MARKER_NUM];
+    public String mBluetoothDeviceAddress;
     public ObjectsExpandableListView mExpListView;
     protected ImageView imgPidBank;
     protected int mCurrentPosMarker = 0;
@@ -1109,6 +1110,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 sharedPref.getInt(getString(R.string.SETTINGS_SERIAL_MODE, R.string.APPID), 0);
         mBluetoothDeviceUsed =
                 sharedPref.getString(getString(R.string.SETTINGS_BT_NAME, R.string.APPID), null);
+        mBluetoothDeviceAddress =
+                sharedPref.getString(getString(R.string.SETTINGS_BT_MAC, R.string.APPID), null);
         mLoadedUavo = sharedPref
                 .getString(getString(R.string.SETTINGS_UAVO_SOURCE, R.string.APPID), null);
         mColorfulPid = sharedPref
@@ -1168,6 +1171,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 sharedPref.getInt(getString(R.string.SETTINGS_SERIAL_MODE, R.string.APPID), 0);
         mBluetoothDeviceUsed =
                 sharedPref.getString(getString(R.string.SETTINGS_BT_NAME, R.string.APPID), null);
+        mBluetoothDeviceAddress =
+                sharedPref.getString(getString(R.string.SETTINGS_BT_MAC, R.string.APPID), null);
         mLoadedUavo = sharedPref
                 .getString(getString(R.string.SETTINGS_UAVO_SOURCE, R.string.APPID), null);
         mColorfulPid = sharedPref
@@ -1376,6 +1381,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         }
                     }
                 }
+                mBluetoothDeviceAddress = btmac;
 
                 mSerialModeUsed = spnConnectionTypeSpinner.getSelectedItemPosition();
 

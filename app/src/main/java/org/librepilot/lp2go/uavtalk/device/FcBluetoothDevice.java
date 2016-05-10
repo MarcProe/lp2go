@@ -23,7 +23,6 @@ import android.content.SharedPreferences;
 
 import org.librepilot.lp2go.H;
 import org.librepilot.lp2go.MainActivity;
-import org.librepilot.lp2go.R;
 import org.librepilot.lp2go.VisualLog;
 import org.librepilot.lp2go.uavtalk.UAVTalkDeviceHelper;
 import org.librepilot.lp2go.uavtalk.UAVTalkObject;
@@ -65,9 +64,9 @@ public class FcBluetoothDevice extends FcDevice {
         SharedPreferences sharedPref = mActivity.getPreferences(Context.MODE_PRIVATE);
 
 
-        String mDeviceAddress =
-                sharedPref.getString(mActivity.getString(R.string.SETTINGS_BT_MAC), "")
-                        .toUpperCase().replace('-', ':');
+        String mDeviceAddress = mActivity.mBluetoothDeviceAddress.toUpperCase().replace('-', ':');
+        //sharedPref.getString(mActivity.getString(R.string.SETTINGS_BT_MAC), "")
+        //        .toUpperCase().replace('-', ':');
         //String reg1 = "^([0-9A-F]{2}[:]){5}([0-9A-F]{2})$";
         if (mDeviceAddress.matches("^([0-9A-F]{2}[:-]){5}([0-9A-F]{2})$")) {
             mDevice = mBluetoothAdapter.getRemoteDevice(mDeviceAddress);
@@ -210,7 +209,8 @@ public class FcBluetoothDevice extends FcDevice {
         }
     }
 
-    private void connectionFailed() {
+    private void connectionFailed(Exception e) {
+        //VisualLog.d("BT","ConnectionFailed", e);
         setState(STATE_NONE);
     }
 
@@ -263,7 +263,7 @@ public class FcBluetoothDevice extends FcDevice {
                     mmSocket.connect();
                 } catch (IOException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e1) {
                     VisualLog.e("BT", "Fallback BT  Connection failed, trying again.", e);
-                    connectionFailed();
+                    connectionFailed(e1);
                     try {
                         mmSocket.close();
                     } catch (IOException e2) {
@@ -273,11 +273,11 @@ public class FcBluetoothDevice extends FcDevice {
                     }
                     return;
                 } catch (NullPointerException e4) {
-                    connectionFailed();
+                    connectionFailed(e4);
                     return;
                 }
             } catch (NullPointerException e5) {
-                connectionFailed();
+                connectionFailed(e5);
                 return;
             }
 
