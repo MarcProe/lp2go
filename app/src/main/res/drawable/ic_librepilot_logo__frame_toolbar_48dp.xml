@@ -6,6 +6,16 @@
         android:viewportWidth="450">
 
     <path
+        android:name="rect4434"
+        android:fillColor="#ffffff"
+        android:pathData="M27.4373,0.0000144606 L422.563,0.0000144606 Q450,0.0000144606,450,27.4374
+L450,422.563 Q450,450,422.563,450 L27.4373,450
+Q-0.0000812139,450,-0.0000812139,422.563 L-0.0000812139,27.4374
+Q-0.0000812139,0.0000144606,27.4373,0.0000144606 Z"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:strokeWidth="4.51436901"/>
+    <path
         android:name="path3495"
         android:fillColor="#767575"
         android:pathData="M346.735,236.293 L261.41,150.969
