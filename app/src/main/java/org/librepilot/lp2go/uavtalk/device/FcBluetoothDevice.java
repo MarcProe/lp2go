@@ -131,10 +131,14 @@ public class FcBluetoothDevice extends FcDevice {
 
     @Override
     public boolean sendSettingsObject(String objectName, int instance) {
-        byte[] send =
-                mObjectTree.getObjectFromName(objectName).toMessage((byte) 0x22, instance, false);
+        byte[] send;
+        send = mObjectTree.getObjectFromName(objectName).toMessage((byte) 0x22, instance, false);
+
         if (send != null) {
-            writeByteArray(Arrays.copyOfRange(send, 0, send.length));
+            mActivity.incTxObjects();
+
+            writeByteArray(send);
+
             requestObject(objectName, instance);
             return true;
         } else {
