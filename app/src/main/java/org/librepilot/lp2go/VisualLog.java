@@ -23,30 +23,46 @@ import android.widget.TextView;
 public class VisualLog {
 
     private static Activity activity;
+    private static String nullstring;
     private static TextView txtDebugLog;
 
     static public void d(String tag, String msg) {
+        if (msg == null) {
+            msg = nullstring;
+        }
         Log.d(tag, msg);
         printToDebug(tag, msg);
     }
 
     static public void d(String tag, String msg, Throwable tr) {
+        if (msg == null) {
+            msg = nullstring;
+        }
         Log.e(tag, msg, tr);
         printToDebug(tag, msg);
         printToDebug(tr.getClass().getSimpleName(), Log.getStackTraceString(tr));
     }
 
     static public void w(String tag, String msg) {
+        if (msg == null) {
+            msg = nullstring;
+        }
         Log.w(tag, msg);
         printToDebug(tag, msg);
     }
 
     static public void e(String tag, String msg) {
+        if (msg == null) {
+            msg = nullstring;
+        }
         Log.e(tag, msg);
         printToDebug(tag, msg);
     }
 
     static public void e(String tag, String msg, Throwable tr) {
+        if (msg == null) {
+            msg = nullstring;
+        }
         Log.e(tag, msg, tr);
         printToDebug(tag, msg);
         printToDebug(tr.getClass().getSimpleName(), Log.getStackTraceString(tr));
@@ -57,6 +73,9 @@ public class VisualLog {
     }
 
     static public void i(String tag, String msg) {
+        if (msg == null) {
+            msg = nullstring;
+        }
         Log.i(tag, msg);
         printToDebug(tag, msg);
     }
@@ -74,6 +93,7 @@ public class VisualLog {
 
     public static void setActivity(Activity activity) {
         VisualLog.activity = activity;
+        VisualLog.nullstring = activity.getString(R.string.NULL);
     }
 
     public static void setDebugLogTextView(TextView txtDebugLog) {
