@@ -28,7 +28,7 @@ abstract class FcWaiterThread extends Thread {
 
     protected abstract void stopThread();
 
-    boolean handleMessageType(byte msgType, UAVTalkObject obj) {
+    final boolean handleMessageType(byte msgType, UAVTalkObject obj) {
         switch (msgType) {
             case 0x20:
                 //handle default package, nothing to do

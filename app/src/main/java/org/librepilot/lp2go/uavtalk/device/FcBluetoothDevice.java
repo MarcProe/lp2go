@@ -31,7 +31,6 @@ import org.librepilot.lp2go.uavtalk.UAVTalkXMLObject;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.UUID;
 
@@ -119,9 +118,12 @@ public class FcBluetoothDevice extends FcDevice {
     @Override
     public boolean sendAck(String objectId, int instance) {
         byte[] send = mObjectTree.getObjectFromID(objectId).toMessage((byte) 0x23, instance, true);
-        VisualLog.d("SEND", "" + H.bytesToHex(send));
+        VisualLog.d("SEND_ACK_BTO", "" + H.bytesToHex(send));
         if (send != null) {
-            writeByteArray(Arrays.copyOfRange(send, 0, send.length));
+            mActivity.incTxObjects();
+
+            writeByteArray(send);
+
             return true;
         } else {
             return false;

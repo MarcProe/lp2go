@@ -42,6 +42,7 @@ import android.hardware.usb.UsbEndpoint;
 import android.hardware.usb.UsbInterface;
 import android.hardware.usb.UsbRequest;
 
+import org.librepilot.lp2go.H;
 import org.librepilot.lp2go.MainActivity;
 import org.librepilot.lp2go.VisualLog;
 import org.librepilot.lp2go.uavtalk.UAVTalkDeviceHelper;
@@ -147,6 +148,7 @@ public class FcUsbDevice extends FcDevice {
     @Override
     public boolean sendAck(String objectId, int instance) {
         byte[] send = mObjectTree.getObjectFromID(objectId).toMessage((byte) 0x23, instance, true);
+        VisualLog.d("SEND_ACK_USB", "" + H.bytesToHex(send));
         if (send != null) {
             mActivity.incTxObjects();
 
