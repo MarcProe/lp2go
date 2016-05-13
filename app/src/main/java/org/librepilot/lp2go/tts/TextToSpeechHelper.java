@@ -26,10 +26,19 @@ import java.util.Locale;
 public class TextToSpeechHelper implements TextToSpeech.OnInitListener {
 
     private MainActivity mActivity;
+    private boolean mEnabled = true;
     private TextToSpeech mTts;
 
     public TextToSpeechHelper(MainActivity mActivity) {
         this.mActivity = mActivity;
+    }
+
+    public boolean isEnabled() {
+        return this.mEnabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        mEnabled = enabled;
     }
 
     public void checkForTTS() {
@@ -64,7 +73,7 @@ public class TextToSpeechHelper implements TextToSpeech.OnInitListener {
     }
 
     public void speakFlush(String text) {
-        if (mTts != null && text != null) {
+        if (mEnabled && mTts != null && text != null) {
             mTts.speak(text, TextToSpeech.QUEUE_FLUSH, null);
         }
     }

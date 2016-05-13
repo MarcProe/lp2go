@@ -12,4 +12,5 @@
     <string name="SETTINGS_BT_NAME">%1$s.bt_name</string>
     <string name="SETTINGS_COLORFUL_PID">%1$s.colorful_pid</string>
     <string name="SETTINGS_COLORFUL_VPID">%1$s.colorful_pid</string>
+    <string name="SETTINGS_TEXT2SPEECH_ENABLED">%1$s.tts_enabled</string>
 </resources>

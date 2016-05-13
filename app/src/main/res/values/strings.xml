@@ -52,5 +52,6 @@
     <string name="COLORFUL_VIEW">Colorful View</string>
     <string name="HEALTH_SETTINGS">Health Settings</string>
     <string name="CLOSE_BUTTON">Close</string>
+    <string name="ENABLE_TEXT2SPEECH">Enable Text2Speech\n(Only arming state at the moment)</string>
 </resources>
 

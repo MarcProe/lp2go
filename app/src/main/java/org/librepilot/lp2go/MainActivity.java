@@ -258,6 +258,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private MapView mMapView;
     private PendingIntent mPermissionIntent = null;
     private PollThread mPollThread = null;
+    private boolean mText2SpeechEnabled;
     private CharSequence mTitle;
     private TextToSpeechHelper mTtsHelper;
     private String mUavoLongHash;
@@ -1125,6 +1126,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 .getBoolean(getString(R.string.SETTINGS_COLORFUL_PID, R.string.APPID), false);
         mColorfulVPid = sharedPref
                 .getBoolean(getString(R.string.SETTINGS_COLORFUL_VPID, R.string.APPID), false);
+        mText2SpeechEnabled = sharedPref
+                .getBoolean(getString(R.string.SETTINGS_TEXT2SPEECH_ENABLED, R.string.APPID),
+                        false);
     }
 
     @Override
@@ -1186,6 +1190,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 .getBoolean(getString(R.string.SETTINGS_COLORFUL_PID, R.string.APPID), false);
         mColorfulVPid = sharedPref
                 .getBoolean(getString(R.string.SETTINGS_COLORFUL_VPID, R.string.APPID), false);
+        mText2SpeechEnabled = sharedPref
+                .getBoolean(getString(R.string.SETTINGS_TEXT2SPEECH_ENABLED, R.string.APPID),
+                        false);
 
         initTextToSpeech();
         //debug view is initialized above
@@ -1258,6 +1265,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private void initTextToSpeech() {
         mTtsHelper = new TextToSpeechHelper(this);
         mTtsHelper.checkForTTS();
+        mTtsHelper.setEnabled(mText2SpeechEnabled);
     }
 
     protected boolean loadXmlObjects(boolean overwrite) {
@@ -1470,7 +1478,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
                 menuTitle = getString(R.string.menu_main);
                 toolbarFlightSettingsVisibility = View.VISIBLE;
-                toolbarLocalSettingsVisibility = View.INVISIBLE;
+                toolbarLocalSettingsVisibility = View.VISIBLE;
 
                 break;
             case VIEW_MAP:
@@ -1780,7 +1788,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
                 dialogBuilder.setTitle(R.string.HEALTH_SETTINGS);
 
-                final View alertView = View.inflate(this, R.layout.alert_dialog_health, null);
+                final View alertView =
+                        View.inflate(this, R.layout.alert_health_settings_flight, null);
                 dialogBuilder.setView(alertView);
 
                 try {
@@ -1818,7 +1827,41 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     public void onToolbarLocalSettingsClick(View v) {
+        final MainActivity activity = this;
         switch (mCurrentView) {
+            case VIEW_MAIN: {
+                final CharSequence[] items = {getString(R.string.ENABLE_TEXT2SPEECH)};
+                final boolean[] checked = {mTtsHelper.isEnabled()};
+                AlertDialog dialog = new AlertDialog.Builder(this)
+                        .setTitle(R.string.SETTINGS)
+                        .setMultiChoiceItems(items, checked,
+                                new DialogInterface.OnMultiChoiceClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int indexSelected,
+                                                        boolean isChecked) {
+                                        if (indexSelected == 0) { //first element of string array
+                                            mText2SpeechEnabled = isChecked;
+                                            mTtsHelper.setEnabled(mText2SpeechEnabled);
+
+                                            activity.getPreferences(Context.MODE_PRIVATE).edit()
+                                                    .putBoolean(getString(
+                                                            R.string.SETTINGS_TEXT2SPEECH_ENABLED,
+                                                            R.string.APPID),
+                                                            mText2SpeechEnabled).apply();
+                                        }
+                                    }
+                                })
+                        .setPositiveButton(R.string.CLOSE_BUTTON,
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        dialog.dismiss();
+                                    }
+                                })
+                        .create();
+                dialog.show();
+                break;
+            }
             case VIEW_PID:
             case VIEW_VPID: {
                 final String[] items = {getString(R.string.COLORFUL_VIEW)};
