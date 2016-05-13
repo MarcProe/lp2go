@@ -93,6 +93,7 @@ import com.nbsp.materialfilepicker.ui.FilePickerActivity;
 import org.librepilot.lp2go.c.PID;
 import org.librepilot.lp2go.menu.MenuItem;
 import org.librepilot.lp2go.menu.MenuListAdapter;
+import org.librepilot.lp2go.tts.TextToSpeechHelper;
 import org.librepilot.lp2go.uavtalk.UAVTalkDeviceHelper;
 import org.librepilot.lp2go.uavtalk.UAVTalkMissingObjectException;
 import org.librepilot.lp2go.uavtalk.UAVTalkObjectTree;
@@ -138,6 +139,7 @@ import java.util.zip.ZipInputStream;
 import javax.xml.parsers.ParserConfigurationException;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+    public static final int CALLBACK_TTS = 6574;
     public static final int VIEW_SCOPE = 9;
     protected final static int HISTORY_MARKER_NUM = 5;
     protected static final String OFFSET_BAROSENSOR_ALTITUDE =
@@ -257,6 +259,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private PendingIntent mPermissionIntent = null;
     private PollThread mPollThread = null;
     private CharSequence mTitle;
+    private TextToSpeechHelper mTtsHelper;
     private String mUavoLongHash;
     private String mUavoLongHashFc;
     private UsbManager mUsbManager = null;
@@ -344,6 +347,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     public FcDevice getFcDevice() {
         return mFcDevice;
+    }
+
+    public TextToSpeechHelper getTtsHelper() {
+        return mTtsHelper;
     }
 
     public String getUavoLongHash() {
@@ -1180,6 +1187,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         mColorfulVPid = sharedPref
                 .getBoolean(getString(R.string.SETTINGS_COLORFUL_VPID, R.string.APPID), false);
 
+        initTextToSpeech();
         //debug view is initialized above
         initViewPid();
         initViewVerticalPid();
@@ -1245,6 +1253,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public void onDestroy() {
         super.onDestroy();
+    }
+
+    private void initTextToSpeech() {
+        mTtsHelper = new TextToSpeechHelper(this);
+        mTtsHelper.checkForTTS();
     }
 
     protected boolean loadXmlObjects(boolean overwrite) {
@@ -1629,6 +1642,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
+        mTtsHelper.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == CALLBACK_FILEPICKER && resultCode == RESULT_OK) {
             String filePath = data.getStringExtra(FilePickerActivity.RESULT_FILE_PATH);

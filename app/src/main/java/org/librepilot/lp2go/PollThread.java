@@ -341,7 +341,11 @@ class PollThread extends Thread {
                                 setTextBGColor(mA.txtCPU,
                                         getData("SystemAlarms", "Alarm", "CPUOverload").toString());
 
-                                setText(mA.txtArmed, getData("FlightStatus", "Armed").toString());
+                                String statusArmed = getData("FlightStatus", "Armed").toString();
+                                if (!mA.txtArmed.getText().toString().equals(statusArmed)) {
+                                    mA.getTtsHelper().speakFlush(statusArmed);
+                                    setText(mA.txtArmed, statusArmed);
+                                }
 
                                 setText(mA.txtFlightTime, H.getDateFromMilliSeconds(
                                         getData("SystemStats", "FlightTime").toString()));
