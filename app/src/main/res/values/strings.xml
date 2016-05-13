@@ -53,5 +53,7 @@
     <string name="HEALTH_SETTINGS">Health Settings</string>
     <string name="CLOSE_BUTTON">Close</string>
     <string name="ENABLE_TEXT2SPEECH">Enable Text2Speech\n(Only arming state at the moment)</string>
+    <string name="UAVO_MAYBE_TOO_FAST">UAVO problem.\nCheck OPLink connection and/or try reducing the serial link speed</string>
+    <string name="BAD_FC_UAVO_VERSION">00000000</string>
 </resources>
 

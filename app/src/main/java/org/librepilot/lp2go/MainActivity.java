@@ -2387,6 +2387,17 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                             getString(R.string.UAVO_VERSION) + getString(R.string.TAB) +
                             uavoShortHash
             );
+        } else if (uavoShortHashFc.equals(getString(R.string.BAD_FC_UAVO_VERSION))) {
+            dialogBuilder.setTitle(R.string.WARNING);
+            dialogBuilder.setMessage(
+                    getString(R.string.UAVO_MAYBE_TOO_FAST) + getString(R.string.LF) +
+                            getString(R.string.LF) +
+                            getString(R.string.UAVO_VERSION_FC) + getString(R.string.TAB) +
+                            getString(R.string.TAB) + getString(R.string.TAB) +
+                            getString(R.string.TAB) + uavoShortHashFc + getString(R.string.LF) +
+                            getString(R.string.UAVO_VERSION) + getString(R.string.TAB) +
+                            uavoShortHash
+            );
         } else {
             dialogBuilder.setTitle(R.string.WARNING);
             dialogBuilder.setMessage(
