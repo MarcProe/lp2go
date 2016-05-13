@@ -77,7 +77,7 @@ class ConnectionThread extends Thread {
                     }
                     mA.mFcDevice.handleHandshake(b);
                 } catch (UAVTalkMissingObjectException | NullPointerException e) {
-                    e.printStackTrace();
+                    VisualLog.d("ConnectionThread", "Error handshaking");
                 }
 
             }

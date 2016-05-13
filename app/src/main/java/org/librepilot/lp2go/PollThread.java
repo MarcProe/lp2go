@@ -626,7 +626,7 @@ class PollThread extends Thread {
 
             }
         } catch (UAVTalkMissingObjectException | NumberFormatException | ClassCastException e) {
-            VisualLog.e("Pollthread", "getByteData", e);
+            VisualLog.e("Pollthread", "Requesting " + object);
 
             try {
                 mA.mFcDevice.requestObject(object);
