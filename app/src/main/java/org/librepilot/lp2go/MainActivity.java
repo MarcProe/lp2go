@@ -370,6 +370,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         this.mRxObjectsGood = o;
     }
 
+    @Override
+    public void setTitle(CharSequence title) {
+        mTitle = title;
+        ActionBar ab = getSupportActionBar();
+        if (ab != null) {
+            getSupportActionBar().setTitle(mTitle);
+        }
+    }
+
     public synchronized void setTxObjects(long o) {
         this.mTxObjects = o;
     }
@@ -1160,15 +1169,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     @Override
-    public void setTitle(CharSequence title) {
-        mTitle = title;
-        ActionBar ab = getSupportActionBar();
-        if (ab != null) {
-            getSupportActionBar().setTitle(mTitle);
-        }
-    }
-
-    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         VisualLog.setActivity(this);
@@ -1346,7 +1346,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         if (mSerialModeUsed == SERIAL_USB) {
             for (android.hardware.usb.UsbDevice device : mUsbManager.getDeviceList().values()) {
                 if (device.getDeviceClass() == UsbConstants.USB_CLASS_MISC) {
-                    mUsbManager.requestPermission(device, mPermissionIntent);
+                    try {
+                        mUsbManager.requestPermission(device, mPermissionIntent);
+                    } catch (SecurityException e) {
+                        SingleToast.show(this,
+                                "USB Security Error. Please try again." + e.getMessage(),
+                                Toast.LENGTH_LONG);
+                    }
                 }
             }
         }
