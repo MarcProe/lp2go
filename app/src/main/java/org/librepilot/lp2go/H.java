@@ -188,14 +188,12 @@ public class H {
             return "";
         }
         long millis = Math.round(H.stringToFloat(seconds) * 1000);
-        final String ret = String.format("%02d:%02d:%02d",
+        return String.format("%02d:%02d:%02d",
                 TimeUnit.MILLISECONDS.toHours(millis),
                 TimeUnit.MILLISECONDS.toMinutes(millis) -
                         TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millis)),
                 TimeUnit.MILLISECONDS.toSeconds(millis) -
                         TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis)));
-        //VisualLog.d("GDFS", seconds + " " + millis + " " + ret);
-        return ret;
     }
 
     public static byte[] hexStringToByteArray(String s) {

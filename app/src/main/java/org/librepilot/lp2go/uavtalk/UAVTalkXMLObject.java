@@ -120,7 +120,7 @@ public class UAVTalkXMLObject {
             String sclone = f.getAttribute(XML_ATT_CLONEOF);
             uavField.mName = f.getAttribute(XML_ATT_NAME);
 
-            if (sclone != null && sclone != "") {
+            if (sclone != null && !sclone.equals("")) {
                 String tn = uavField.mName;
                 uavField = mFields.get(sclone);
                 uavField.mName = tn;
@@ -136,7 +136,7 @@ public class UAVTalkXMLObject {
 
                 String elementCountString = f.getAttribute(XML_ATT_ELEMENTS);
 
-                if (elementCountString != "" && elementCountString != null) {
+                if (!elementCountString.equals("") && elementCountString != null) {
                     uavField.mElementCount = Integer.parseInt(elementCountString);
                     if (uavField.mType == FIELDTYPE_ENUM
                             && f.getElementsByTagName(XML_TAG_ELEMENTNAMES).getLength() == 0) {
@@ -170,7 +170,7 @@ public class UAVTalkXMLObject {
                                 String content =
                                         optionnodes.item(j).getTextContent()
                                                 .replaceAll(REPLACE_OPTION_NODES, "");
-                                if (content != null && content != "") {
+                                if (content != null && !content.equals("")) {
                                     options.add(content);
                                 }
                             }

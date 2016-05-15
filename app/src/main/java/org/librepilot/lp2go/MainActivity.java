@@ -507,8 +507,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         initSlider(savedInstanceState);
 
-        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
-
         mOffset = new HashMap<String, Object>();
         mOffset.put(OFFSET_BAROSENSOR_ALTITUDE, .0f);
         mOffset.put(OFFSET_VELOCITY_DOWN, .0f);
@@ -633,8 +631,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 mExpListView
                         .init(new ArrayList<String>(), new HashMap<String, List<ChildString>>());
 
-                // Adding child data
-                int i = 0;
                 for (UAVTalkXMLObject xmlobj : mXmlObjects.values()) {
                     mExpListView.getListDataHeader().add(xmlobj.getName());
                     //VisualLog.d("OBJ", xmlobj.getName());
@@ -1138,13 +1134,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        // if nav drawer is opened, hide the action items
-        boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
-        return super.onPrepareOptionsMenu(menu);
-    }
-
-    @Override
     public boolean onOptionsItemSelected(android.view.MenuItem item) {
         // toggle nav drawer on selecting action bar app icon/title
         if (mDrawerToggle.onOptionsItemSelected(item)) {
@@ -1273,12 +1262,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         if (mXmlObjects == null || (overwrite && mLoadedUavo != null)) {
             mXmlObjects = new TreeMap<String, UAVTalkXMLObject>();
 
-            AssetManager assets = getAssets();
-
             String file = this.mLoadedUavo + getString(R.string.UAVO_FILE_EXTENSION);
             ZipInputStream zis = null;
-            MessageDigest crypt = null;
-            MessageDigest cumucrypt = null;
+            MessageDigest crypt;
+            MessageDigest cumucrypt;
             try {
                 InputStream is =
                         openFileInput(UAVO_INTERNAL_PATH + getString(R.string.DASH) + file);
@@ -1766,6 +1753,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 Matcher m = p.matcher(file.toString());
                 boolean b = m.matches();
                 if (b) {
+                    //noinspection ResultOfMethodCallIgnored
                     file.delete();
                 }
             }

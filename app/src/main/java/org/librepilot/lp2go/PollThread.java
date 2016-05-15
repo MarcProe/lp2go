@@ -557,7 +557,6 @@ class PollThread extends Thread {
                                             ptv.setText(data);
                                             break;
                                         default:
-                                            data = null;
                                             break;
 
                                     }

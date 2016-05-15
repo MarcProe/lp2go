@@ -18,8 +18,6 @@ package org.librepilot.lp2go.uavtalk.device;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothSocket;
-import android.content.Context;
-import android.content.SharedPreferences;
 
 import org.librepilot.lp2go.H;
 import org.librepilot.lp2go.MainActivity;
@@ -60,13 +58,9 @@ public class FcBluetoothDevice extends FcDevice {
             //finish();
             return;
         }
-        SharedPreferences sharedPref = mActivity.getPreferences(Context.MODE_PRIVATE);
-
 
         String mDeviceAddress = mActivity.mBluetoothDeviceAddress.toUpperCase().replace('-', ':');
-        //sharedPref.getString(mActivity.getString(R.string.SETTINGS_BT_MAC), "")
-        //        .toUpperCase().replace('-', ':');
-        //String reg1 = "^([0-9A-F]{2}[:]){5}([0-9A-F]{2})$";
+
         if (mDeviceAddress.matches("^([0-9A-F]{2}[:-]){5}([0-9A-F]{2})$")) {
             mDevice = mBluetoothAdapter.getRemoteDevice(mDeviceAddress);
         }

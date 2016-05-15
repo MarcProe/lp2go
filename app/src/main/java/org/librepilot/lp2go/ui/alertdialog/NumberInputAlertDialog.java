@@ -36,6 +36,7 @@ import org.librepilot.lp2go.ui.InputFilterMinMax;
 import org.librepilot.lp2go.ui.SingleToast;
 
 import java.text.DecimalFormat;
+import java.util.Arrays;
 import java.util.regex.Pattern;
 
 public class NumberInputAlertDialog extends InputAlertDialog implements TextWatcher {
@@ -186,8 +187,7 @@ public class NumberInputAlertDialog extends InputAlertDialog implements TextWatc
                 case UAVTalkXMLObject.FIELDTYPE_UINT16: {
                     data = new byte[2];
                     int i = Integer.parseInt(input);
-                    byte[] temp = new byte[4];
-                    temp = H.toBytes(i);
+                    byte[] temp = H.toBytes(i);
                     data[0] = temp[3];
                     data[1] = temp[2];
                     break;
@@ -221,7 +221,7 @@ public class NumberInputAlertDialog extends InputAlertDialog implements TextWatc
                     SingleToast.show(getContext(), "Type not yet implemented!", Toast.LENGTH_SHORT);
                     VisualLog.e("NumberInputAlertDialog",
                             "Type not implemented! " + mFieldType + " " + input + " " +
-                                    H.toBytes(Integer.parseInt(input)));
+                                    Arrays.toString(H.toBytes(Integer.parseInt(input))));
                     break;
             }
 

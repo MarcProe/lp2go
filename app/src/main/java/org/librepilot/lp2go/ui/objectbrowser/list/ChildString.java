@@ -39,7 +39,7 @@ public class ChildString {
         this.isSettings = isSettings;
         isInstanceHeader = false;
 
-        if (element == null || element == "") {
+        if (element == null || element.equals("")) {
             element = "";
         } else {
             element = "-" + element;
