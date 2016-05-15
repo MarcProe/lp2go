@@ -370,15 +370,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         this.mRxObjectsGood = o;
     }
 
-    @Override
-    public void setTitle(CharSequence title) {
-        mTitle = title;
-        ActionBar ab = getSupportActionBar();
-        if (ab != null) {
-            getSupportActionBar().setTitle(mTitle);
-        }
-    }
-
     public synchronized void setTxObjects(long o) {
         this.mTxObjects = o;
     }
@@ -1124,19 +1115,19 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
         mSerialModeUsed =
-                sharedPref.getInt(getString(R.string.SETTINGS_SERIAL_MODE, R.string.APPID), 0);
+                sharedPref.getInt(getString(R.string.SETTINGS_SERIAL_MODE, R.string.APP_ID), 0);
         mBluetoothDeviceUsed =
-                sharedPref.getString(getString(R.string.SETTINGS_BT_NAME, R.string.APPID), null);
+                sharedPref.getString(getString(R.string.SETTINGS_BT_NAME, R.string.APP_ID), null);
         mBluetoothDeviceAddress =
-                sharedPref.getString(getString(R.string.SETTINGS_BT_MAC, R.string.APPID), null);
+                sharedPref.getString(getString(R.string.SETTINGS_BT_MAC, R.string.APP_ID), null);
         mLoadedUavo = sharedPref
-                .getString(getString(R.string.SETTINGS_UAVO_SOURCE, R.string.APPID), null);
+                .getString(getString(R.string.SETTINGS_UAVO_SOURCE, R.string.APP_ID), null);
         mColorfulPid = sharedPref
-                .getBoolean(getString(R.string.SETTINGS_COLORFUL_PID, R.string.APPID), false);
+                .getBoolean(getString(R.string.SETTINGS_COLORFUL_PID, R.string.APP_ID), false);
         mColorfulVPid = sharedPref
-                .getBoolean(getString(R.string.SETTINGS_COLORFUL_VPID, R.string.APPID), false);
+                .getBoolean(getString(R.string.SETTINGS_COLORFUL_VPID, R.string.APP_ID), false);
         mText2SpeechEnabled = sharedPref
-                .getBoolean(getString(R.string.SETTINGS_TEXT2SPEECH_ENABLED, R.string.APPID),
+                .getBoolean(getString(R.string.SETTINGS_TEXT2SPEECH_ENABLED, R.string.APP_ID),
                         false);
     }
 
@@ -1169,6 +1160,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     @Override
+    public void setTitle(CharSequence title) {
+        mTitle = title;
+        ActionBar ab = getSupportActionBar();
+        if (ab != null) {
+            getSupportActionBar().setTitle(mTitle);
+        }
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         VisualLog.setActivity(this);
@@ -1179,19 +1179,19 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         copyAssets();
         final SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
         mSerialModeUsed =
-                sharedPref.getInt(getString(R.string.SETTINGS_SERIAL_MODE, R.string.APPID), 0);
+                sharedPref.getInt(getString(R.string.SETTINGS_SERIAL_MODE, R.string.APP_ID), 0);
         mBluetoothDeviceUsed =
-                sharedPref.getString(getString(R.string.SETTINGS_BT_NAME, R.string.APPID), null);
+                sharedPref.getString(getString(R.string.SETTINGS_BT_NAME, R.string.APP_ID), null);
         mBluetoothDeviceAddress =
-                sharedPref.getString(getString(R.string.SETTINGS_BT_MAC, R.string.APPID), null);
+                sharedPref.getString(getString(R.string.SETTINGS_BT_MAC, R.string.APP_ID), null);
         mLoadedUavo = sharedPref
-                .getString(getString(R.string.SETTINGS_UAVO_SOURCE, R.string.APPID), null);
+                .getString(getString(R.string.SETTINGS_UAVO_SOURCE, R.string.APP_ID), null);
         mColorfulPid = sharedPref
-                .getBoolean(getString(R.string.SETTINGS_COLORFUL_PID, R.string.APPID), false);
+                .getBoolean(getString(R.string.SETTINGS_COLORFUL_PID, R.string.APP_ID), false);
         mColorfulVPid = sharedPref
-                .getBoolean(getString(R.string.SETTINGS_COLORFUL_VPID, R.string.APPID), false);
+                .getBoolean(getString(R.string.SETTINGS_COLORFUL_VPID, R.string.APP_ID), false);
         mText2SpeechEnabled = sharedPref
-                .getBoolean(getString(R.string.SETTINGS_TEXT2SPEECH_ENABLED, R.string.APPID),
+                .getBoolean(getString(R.string.SETTINGS_TEXT2SPEECH_ENABLED, R.string.APP_ID),
                         false);
 
         initTextToSpeech();
@@ -1434,15 +1434,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     SingleToast.show(this, "UAVO load completed", Toast.LENGTH_SHORT);
                 }
 
-                editor.putString(getString(R.string.SETTINGS_BT_MAC, R.string.APPID), btmac);
-                editor.putString(getString(R.string.SETTINGS_BT_NAME, R.string.APPID), btname);
-                editor.putString(getString(R.string.SETTINGS_UAVO_SOURCE, R.string.APPID),
+                editor.putString(getString(R.string.SETTINGS_BT_MAC, R.string.APP_ID), btmac);
+                editor.putString(getString(R.string.SETTINGS_BT_NAME, R.string.APP_ID), btname);
+                editor.putString(getString(R.string.SETTINGS_UAVO_SOURCE, R.string.APP_ID),
                         mLoadedUavo);
-                editor.putInt(getString(R.string.SETTINGS_SERIAL_MODE, R.string.APPID),
+                editor.putInt(getString(R.string.SETTINGS_SERIAL_MODE, R.string.APP_ID),
                         mSerialModeUsed);
-                editor.putBoolean(getString(R.string.SETTINGS_COLORFUL_PID, R.string.APPID),
+                editor.putBoolean(getString(R.string.SETTINGS_COLORFUL_PID, R.string.APP_ID),
                         mColorfulPid);
-                editor.putBoolean(getString(R.string.SETTINGS_COLORFUL_VPID, R.string.APPID),
+                editor.putBoolean(getString(R.string.SETTINGS_COLORFUL_VPID, R.string.APP_ID),
                         mColorfulVPid);
 
                 editor.commit();
@@ -1852,7 +1852,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                                             activity.getPreferences(Context.MODE_PRIVATE).edit()
                                                     .putBoolean(getString(
                                                             R.string.SETTINGS_TEXT2SPEECH_ENABLED,
-                                                            R.string.APPID),
+                                                            R.string.APP_ID),
                                                             mText2SpeechEnabled).apply();
                                         }
                                     }
