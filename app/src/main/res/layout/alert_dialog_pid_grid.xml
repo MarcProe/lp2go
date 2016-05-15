@@ -21,6 +21,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:contentDescription="Big minus"
             android:rotation="180"
             android:src="@drawable/ic_fast_forward_128dp" />
 
@@ -29,6 +30,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:contentDescription="minus"
             android:rotation="180"
             android:src="@drawable/ic_play_arrow_128dp" />
 
@@ -46,6 +48,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:contentDescription="plus"
             android:src="@drawable/ic_play_arrow_128dp" />
 
         <ImageView
@@ -53,6 +56,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:contentDescription="Big plus"
             android:src="@drawable/ic_fast_forward_128dp" />
     </LinearLayout>
 

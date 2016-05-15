@@ -45,6 +45,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
+                android:contentDescription="Share Log"
                 android:onClick="onDebugLogShare"
                 android:src="@drawable/ic_share_96dp" />
         </LinearLayout>
@@ -57,7 +58,7 @@
         android:layout_gravity="start"
         android:background="@color/transparent"
         android:choiceMode="singleChoice"
-        android:divider="@color/list_divider"
+        android:divider="@drawable/list_divider"
         android:dividerHeight="1dp"
         android:listSelector="@drawable/list_selector" />
 

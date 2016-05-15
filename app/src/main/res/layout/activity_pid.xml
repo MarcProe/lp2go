@@ -41,7 +41,8 @@
                     <ImageView
                         android:id="@+id/imgPlaceholder"
                         android:layout_width="60dp"
-                        android:layout_height="fill_parent" />
+                        android:layout_height="fill_parent"
+                        android:contentDescription="(-)"/>
 
                     <TextView
                         android:layout_width="0dp"
@@ -101,6 +102,7 @@
                         android:layout_marginBottom="3dp"
                         android:layout_marginLeft="3dp"
                         android:layout_marginTop="3dp"
+                        android:contentDescription="Rate Stabilizastion"
                         android:gravity="center|center_vertical|center_horizontal"
                         android:src="@drawable/text_rate_stabilization"/>
 
@@ -111,6 +113,7 @@
                         android:layout_marginBottom="3dp"
                         android:layout_marginLeft="3dp"
                         android:layout_marginTop="3dp"
+                        android:contentDescription="Inner Loop"
                         android:gravity="center|center_vertical|center_horizontal"
                         android:src="@drawable/text_inner_loop"/>
 
@@ -293,6 +296,7 @@
                         android:layout_marginBottom="3dp"
                         android:layout_marginLeft="3dp"
                         android:layout_marginTop="3dp"
+                        android:contentDescription="Attitude Stabilization"
                         android:gravity="center|center_vertical|center_horizontal"
                         android:src="@drawable/text_attitude_stabilization"/>
 
@@ -303,6 +307,7 @@
                         android:layout_marginBottom="3dp"
                         android:layout_marginLeft="3dp"
                         android:layout_marginTop="3dp"
+                        android:contentDescription="Outer Loop"
                         android:gravity="center|center_vertical|center_horizontal"
                         android:src="@drawable/text_outer_loop"/>
 
@@ -470,7 +475,7 @@
         android:layout_gravity="start"
         android:background="@color/transparent"
         android:choiceMode="singleChoice"
-        android:divider="@color/list_divider"
+        android:divider="@drawable/list_divider"
         android:dividerHeight="1dp"
         android:listSelector="@drawable/list_selector" />
 
