@@ -86,7 +86,6 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.nbsp.materialfilepicker.MaterialFilePicker;
 import com.nbsp.materialfilepicker.ui.FilePickerActivity;
 
@@ -141,7 +140,6 @@ import javax.xml.parsers.ParserConfigurationException;
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     public static final int CALLBACK_TTS = 6574;
     public static final int VIEW_SCOPE = 9;
-    protected final static int HISTORY_MARKER_NUM = 5;
     protected static final String OFFSET_BAROSENSOR_ALTITUDE =
             "net.proest.lp2go3.BaroSensor-Altitude";
     protected static final String OFFSET_VELOCITY_DOWN = "net.proest.lp2go3.VelocityState-Down";
@@ -169,7 +167,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     static int mCurrentView = 0;
     private static boolean mColorfulPid;
     private static boolean mHasPThread = false;
-    final Marker[] mPosHistory = new Marker[HISTORY_MARKER_NUM];
     public String mBluetoothDeviceAddress;
     public ObjectsExpandableListView mExpListView;
     protected ImageView imgPidBank;
@@ -597,7 +594,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 MapsInitializer.initialize(this);
 
                 CameraUpdate cameraUpdate =
-                        CameraUpdateFactory.newLatLngZoom(new LatLng(32.154599, -110.827369), 18);
+                        CameraUpdateFactory.newLatLngZoom(new LatLng(32.154599, -110.827369), 20);
                 mMap.animateCamera(cameraUpdate);
                 mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
             }
@@ -1477,6 +1474,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             case VIEW_MAP:
                 setContentView(mViews.get(VIEW_MAP), position);
                 mMapView.onResume();  //(re)activate the Map
+                mMap.clear(); //clear old markers
 
                 menuTitle = getString(R.string.menu_map);
                 toolbarFlightSettingsVisibility = View.INVISIBLE;

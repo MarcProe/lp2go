@@ -20,16 +20,13 @@ import android.support.v4.content.ContextCompat;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.android.gms.maps.CameraUpdate;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.librepilot.lp2go.uavtalk.UAVTalkMissingObjectException;
 import org.librepilot.lp2go.uavtalk.UAVTalkObjectTree;
 import org.librepilot.lp2go.uavtalk.UAVTalkXMLObject;
 import org.librepilot.lp2go.ui.PidTextView;
+import org.librepilot.lp2go.ui.map.MapHelper;
 
 import java.util.Iterator;
 
@@ -37,7 +34,10 @@ class PollThread extends Thread {
 
     private MainActivity mA;
     private boolean mBlink = true;
+    private Float mFcCurrentLat = null;
+    private Float mFcCurrentLng = null;
     private boolean mIsValid = true;
+    private MapHelper mMapHelper;
     private UAVTalkObjectTree mObjectTree;
     private int mRotObjIcon = 0;
     private int request = 0;
@@ -49,6 +49,7 @@ class PollThread extends Thread {
         }
         MainActivity.hasPThread(true);
         this.mA = activity;
+        mMapHelper = new MapHelper(mA.mMap);
     }
 
     public void setObjectTree(UAVTalkObjectTree mObjectTree) {
@@ -415,41 +416,21 @@ class PollThread extends Thread {
                                 Float lat = getGPSCoordinates("GPSPositionSensor", "Latitude");
                                 Float lng = getGPSCoordinates("GPSPositionSensor", "Longitude");
 
+                                if (mFcCurrentLat != null && mFcCurrentLng != null) {
+                                    mMapHelper.updatePosition(
+                                            new LatLng(mFcCurrentLat, mFcCurrentLng),
+                                            new LatLng(lat, lng), deg);
+                                }
+
+                                mFcCurrentLat = lat;
+                                mFcCurrentLng = lng;
+
                                 setText(mA.txtLatitude, lat.toString());
                                 setText(mA.txtLongitude, lng.toString());
 
                                 LatLng src = mA.mMap.getCameraPosition().target;
                                 LatLng dst = new LatLng(lat, lng);
 
-                                double distance = H.calculationByDistance(src, dst);
-                                if (distance > 0.001) {
-                                    CameraUpdate cameraUpdate =
-                                            CameraUpdateFactory.newLatLng(new LatLng(lat, lng));
-                                    MapsInitializer.initialize(mA);
-                                    if (distance < 200) {
-                                        mA.mMap.animateCamera(cameraUpdate);
-                                    } else {
-                                        mA.mMap.moveCamera(cameraUpdate);
-                                    }
-
-                                    mA.mPosHistory[mA.mCurrentPosMarker]
-                                            = mA.mMap.addMarker(new MarkerOptions()
-                                            .position(new LatLng(lat, lng))
-                                            .title("Librepilot")
-                                            .snippet("LP rules")
-                                            .flat(true)
-                                            .anchor(0.5f, 0.5f)
-                                            .rotation(deg)
-                                    );
-
-                                    mA.mCurrentPosMarker++;
-                                    if (mA.mCurrentPosMarker >= MainActivity.HISTORY_MARKER_NUM) {
-                                        mA.mCurrentPosMarker = 0;
-                                    }
-                                    if (mA.mPosHistory[mA.mCurrentPosMarker] != null) {
-                                        mA.mPosHistory[mA.mCurrentPosMarker].remove();
-                                    }
-                                }
                                 break;
                             case MainActivity.VIEW_OBJECTS:
                                 try {
