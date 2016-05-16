@@ -7,8 +7,8 @@ android {
         minSdkVersion 16
         //noinspection OldTargetApi
         targetSdkVersion 16
-        versionName '0.2.6.14'
-        versionCode 20614
+        versionName '0.2.6.15'
+        versionCode 20615
     }
 
     buildTypes {
@@ -39,8 +39,8 @@ android {
             resValue 'string', 'GMAP_KEY', 'AIzaSyCE91uHoVzA_-mxPer8g5sU7WL2jTdQDzo'
             resValue 'string', 'APP_NAME', 'LP2Go Beta'
             targetSdkVersion 16
-            versionCode 30000
-            versionName '0.3.0.1'
+            versionCode 40000
+            versionName '0.4.0.0'
         }
         release_flavor_ {
             minSdkVersion 16
