@@ -28,7 +28,6 @@ import org.librepilot.lp2go.uavtalk.UAVTalkMissingObjectException;
 import org.librepilot.lp2go.uavtalk.UAVTalkObjectTree;
 import org.librepilot.lp2go.uavtalk.UAVTalkXMLObject;
 import org.librepilot.lp2go.ui.PidTextView;
-import org.librepilot.lp2go.ui.map.MapHelper;
 
 class PollThread extends Thread {
 
@@ -37,7 +36,6 @@ class PollThread extends Thread {
     private Float mFcCurrentLat = null;
     private Float mFcCurrentLng = null;
     private boolean mIsValid = true;
-    private MapHelper mMapHelper;
     private UAVTalkObjectTree mObjectTree;
     private int mRotObjIcon = 0;
     private int request = 0;
@@ -49,7 +47,6 @@ class PollThread extends Thread {
         }
         MainActivity.hasPThread(true);
         this.mA = activity;
-        mMapHelper = new MapHelper(mA.mMap);
     }
 
     public void setObjectTree(UAVTalkObjectTree mObjectTree) {
@@ -425,7 +422,7 @@ class PollThread extends Thread {
                                 Float lng = getGPSCoordinates("GPSPositionSensor", "Longitude");
 
                                 if (mFcCurrentLat != null && mFcCurrentLng != null) {
-                                    mMapHelper.updatePosition(
+                                    mA.mMapHelper.updatePosition(
                                             new LatLng(mFcCurrentLat, mFcCurrentLng),
                                             new LatLng(lat, lng), deg);
                                 }

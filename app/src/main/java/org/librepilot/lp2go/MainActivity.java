@@ -59,12 +59,12 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
-import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
@@ -80,16 +80,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.LineChart;
-import com.google.android.gms.maps.CameraUpdate;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
-import com.google.android.gms.maps.MapsInitializer;
-import com.google.android.gms.maps.model.LatLng;
 import com.nbsp.materialfilepicker.MaterialFilePicker;
 import com.nbsp.materialfilepicker.ui.FilePickerActivity;
 
 import org.librepilot.lp2go.c.PID;
+import org.librepilot.lp2go.helper.MapHelper;
 import org.librepilot.lp2go.helper.SettingsHelper;
 import org.librepilot.lp2go.helper.TextToSpeechHelper;
 import org.librepilot.lp2go.menu.MenuItem;
@@ -165,11 +161,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private static boolean mHasPThread = false;
     public ObjectsExpandableListView mExpListView;
     protected ImageView imgPidBank;
-    protected int mCurrentPosMarker = 0;
     protected String mCurrentStabilizationBank;
     protected boolean mDoReconnect = false;
     protected FcDevice mFcDevice;
-    protected GoogleMap mMap;
     protected HashMap<String, Object> mOffset;
     protected HashSet<PidTextView> mPidTexts;
     protected long mRxObjectsBad;
@@ -186,6 +180,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     ImageView imgToolbarLocalSettings;
     ImageView imgUavoSanity;
     LineChart lchScope;
+    MapHelper mMapHelper;
     TextView txtAirspd;
     TextView txtAltitude;
     TextView txtAltitudeAccel;
@@ -468,7 +463,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
 
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
-                R.drawable.ic_drawer, R.string.app_name, R.string.app_name) {
+                new Toolbar(this), R.string.app_name, R.string.app_name) {
 
             public void onDrawerOpened(View drawerView) {
                 getSupportActionBar().setTitle(mDrawerTitle);
@@ -570,24 +565,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         setContentView(mViews.get(VIEW_MAP)); //Map
         {
             mMapView = (MapView) findViewById(R.id.map);
+            mMapHelper = new MapHelper(this);
 
             if (mMapView != null) {
                 mMapView.onCreate(savedInstanceState);
-                mMap = mMapView.getMap();
+
+                mMapView.getMapAsync(mMapHelper);
             }
 
-            //Map can be null if services are not available, e.g. on an amazon fire tab
-            if (mMap != null) {
-                mMap.getUiSettings().setMyLocationButtonEnabled(false);
-                mMap.getUiSettings().setZoomControlsEnabled(true);
-                mMap.setMyLocationEnabled(true);
-                MapsInitializer.initialize(this);
-
-                CameraUpdate cameraUpdate =
-                        CameraUpdateFactory.newLatLngZoom(new LatLng(32.154599, -110.827369), 20);
-                mMap.animateCamera(cameraUpdate);
-                mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
-            }
             txtLatitude = (TextView) findViewById(R.id.txtLatitude);
             txtLongitude = (TextView) findViewById(R.id.txtLongitude);
             txtMapGPS = (TextView) findViewById(R.id.txtMapGPS);
@@ -1427,8 +1412,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 break;
             case VIEW_MAP:
                 setContentView(mViews.get(VIEW_MAP), position);
-                mMapView.onResume();  //(re)activate the Map
-                mMap.clear(); //clear old markers
+                mMapView.onResume();    //(re)activate the Map
+                mMapHelper.clear();     //clear old markers
 
                 menuTitle = getString(R.string.menu_map);
                 toolbarFlightSettingsVisibility = View.INVISIBLE;
