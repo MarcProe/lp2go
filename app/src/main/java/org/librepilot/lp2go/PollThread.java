@@ -353,11 +353,14 @@ class PollThread extends Thread {
                                         getData("SystemStats", "FlightTime").toString()));
 
                                 setText(mA.txtVolt,
-                                        getData("FlightBatteryState", "Voltage").toString());
+                                        getFloatData("FlightBatteryState", "Voltage", 4)
+                                                .toString());
                                 setText(mA.txtAmpere,
-                                        getData("FlightBatteryState", "Current").toString());
+                                        getFloatData("FlightBatteryState", "Current", 4)
+                                                .toString());
                                 setText(mA.txtmAh,
-                                        getData("FlightBatteryState", "ConsumedEnergy").toString());
+                                        getFloatData("FlightBatteryState", "ConsumedEnergy", 3)
+                                                .toString());
                                 setText(mA.txtTimeLeft, H.getDateFromSeconds(
                                         getData("FlightBatteryState", "EstimatedFlightTime")
                                                 .toString()));
@@ -370,6 +373,9 @@ class PollThread extends Thread {
                                 setText(mA.txtAltitude, getFloatOffsetData("BaroSensor", "Altitude",
                                         mA.getString(R.string.OFFSET_BAROSENSOR_ALTITUDE,
                                                 R.string.APP_ID)));
+
+                                setText(mA.txtAltitudeAccel,
+                                        getFloatData("VelocityState", "Down", 2).toString());
 
                                 String flightModeSwitchPosition =
                                         getData("ManualControlCommand", "FlightModeSwitchPosition",
@@ -643,6 +649,15 @@ class PollThread extends Thread {
         } catch (UAVTalkMissingObjectException | NullPointerException | ClassCastException e1) {
             VisualLog.d("GPS", "getCoord", e1);
             return 0.0f;
+        }
+    }
+
+    private String getFloatData(String obj, String field, int b) {
+        try {
+            Float f1 = H.stringToFloat(getData(obj, field).toString());
+            return String.valueOf(H.round(f1, b));
+        } catch (NumberFormatException e) {
+            return "";
         }
     }
 
