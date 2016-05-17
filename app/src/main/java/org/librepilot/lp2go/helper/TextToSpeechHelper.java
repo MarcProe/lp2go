@@ -16,6 +16,7 @@
 package org.librepilot.lp2go.helper;
 
 import android.content.Intent;
+import android.os.Build;
 import android.speech.tts.TextToSpeech;
 
 import org.librepilot.lp2go.MainActivity;
@@ -72,9 +73,18 @@ public class TextToSpeechHelper implements TextToSpeech.OnInitListener {
         }
     }
 
-    public void speakFlush(String text) {
+    private void speak(String text, int mode) {
         if (mEnabled && mTts != null && text != null) {
-            mTts.speak(text, TextToSpeech.QUEUE_FLUSH, null);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                mTts.speak(text, mode, null, null);
+            } else {
+                //noinspection deprecation
+                mTts.speak(text, mode, null);
+            }
         }
+    }
+
+    public void speakFlush(String text) {
+        this.speak(text, TextToSpeech.QUEUE_FLUSH);
     }
 }
