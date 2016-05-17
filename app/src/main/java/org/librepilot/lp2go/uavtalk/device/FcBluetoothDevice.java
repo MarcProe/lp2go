@@ -22,6 +22,7 @@ import android.bluetooth.BluetoothSocket;
 import org.librepilot.lp2go.H;
 import org.librepilot.lp2go.MainActivity;
 import org.librepilot.lp2go.VisualLog;
+import org.librepilot.lp2go.helper.SettingsHelper;
 import org.librepilot.lp2go.uavtalk.UAVTalkDeviceHelper;
 import org.librepilot.lp2go.uavtalk.UAVTalkObject;
 import org.librepilot.lp2go.uavtalk.UAVTalkObjectTree;
@@ -59,7 +60,8 @@ public class FcBluetoothDevice extends FcDevice {
             return;
         }
 
-        String mDeviceAddress = mActivity.mBluetoothDeviceAddress.toUpperCase().replace('-', ':');
+        String mDeviceAddress =
+                SettingsHelper.mBluetoothDeviceAddress.toUpperCase().replace('-', ':');
 
         if (mDeviceAddress.matches("^([0-9A-F]{2}[:-]){5}([0-9A-F]{2})$")) {
             mDevice = mBluetoothAdapter.getRemoteDevice(mDeviceAddress);

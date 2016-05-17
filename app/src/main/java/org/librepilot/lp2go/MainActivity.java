@@ -43,7 +43,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
@@ -90,6 +89,7 @@ import com.nbsp.materialfilepicker.MaterialFilePicker;
 import com.nbsp.materialfilepicker.ui.FilePickerActivity;
 
 import org.librepilot.lp2go.c.PID;
+import org.librepilot.lp2go.helper.SettingsHelper;
 import org.librepilot.lp2go.helper.TextToSpeechHelper;
 import org.librepilot.lp2go.menu.MenuItem;
 import org.librepilot.lp2go.menu.MenuListAdapter;
@@ -140,9 +140,6 @@ import javax.xml.parsers.ParserConfigurationException;
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     public static final int CALLBACK_TTS = 6574;
     public static final int VIEW_SCOPE = 9;
-    protected static final String OFFSET_BAROSENSOR_ALTITUDE =
-            "net.proest.lp2go3.BaroSensor-Altitude";
-    protected static final String OFFSET_VELOCITY_DOWN = "net.proest.lp2go3.VelocityState-Down";
     protected static final int POLL_WAIT_TIME = 500;
     protected static final int POLL_SECOND_FACTOR = 1000 / POLL_WAIT_TIME;
     protected static final int SERIAL_BLUETOOTH = 2;
@@ -156,7 +153,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     protected static final int VIEW_PID = 3;
     protected static final int VIEW_SETTINGS = 6;
     protected static final int VIEW_VPID = 4;
-    private static final String ACTION_USB_PERMISSION = "net.proest.lp2go3.USB_PERMISSION";
     private static final int CALLBACK_FILEPICKER = 3456;
     private static final int ICON_OPAQUE = 255;
     private static final int ICON_TRANSPARENT = 64;
@@ -165,22 +161,18 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private static final int SERIAL_NONE = 0;
     private static final String UAVO_INTERNAL_PATH = "uavo";
     static int mCurrentView = 0;
-    private static boolean mColorfulPid;
     private static boolean mHasPThread = false;
-    public String mBluetoothDeviceAddress;
     public ObjectsExpandableListView mExpListView;
     protected ImageView imgPidBank;
     protected int mCurrentPosMarker = 0;
     protected String mCurrentStabilizationBank;
     protected boolean mDoReconnect = false;
     protected FcDevice mFcDevice;
-    protected String mLoadedUavo = null;
     protected GoogleMap mMap;
     protected HashMap<String, Object> mOffset;
     protected HashSet<PidTextView> mPidTexts;
     protected long mRxObjectsBad;
     protected long mRxObjectsGood;
-    protected int mSerialModeUsed = -1;
     protected long mTxObjects;
     protected HashSet<PidTextView> mVerticalPidTexts;
     ImageView imgFlightTelemetry;
@@ -241,8 +233,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     TextView txtVolt;
     TextView txtmAh;
     private BluetoothAdapter mBluetoothAdapter;
-    private String mBluetoothDeviceUsed = null;
-    private boolean mColorfulVPid;
     private ConnectionThread mConnectionThread = null;
     private android.hardware.usb.UsbDevice mDevice;
     private UsbDeviceConnection mDeviceConnection;
@@ -255,7 +245,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private MapView mMapView;
     private PendingIntent mPermissionIntent = null;
     private PollThread mPollThread = null;
-    private boolean mText2SpeechEnabled;
     private CharSequence mTitle;
     private TextToSpeechHelper mTtsHelper;
     private String mUavoLongHash;
@@ -268,7 +257,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             String action = intent.getAction();
             VisualLog.d(getString(R.string.USB), action);
 
-            if (mSerialModeUsed == SERIAL_USB &&
+            if (SettingsHelper.mSerialModeUsed == SERIAL_USB &&
                     UsbManager.ACTION_USB_DEVICE_ATTACHED.equals(action)) {
                 android.hardware.usb.UsbDevice device =
                         intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
@@ -287,7 +276,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     mUsbManager.requestPermission(device, mPermissionIntent);
                 }
 
-            } else if (mSerialModeUsed == SERIAL_USB
+            } else if (SettingsHelper.mSerialModeUsed == SERIAL_USB
                     && UsbManager.ACTION_USB_DEVICE_DETACHED.equals(action)) {
                 android.hardware.usb.UsbDevice device =
                         intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
@@ -297,7 +286,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         mFcDevice.stop();
                     }
                 }
-            } else if (mSerialModeUsed == SERIAL_USB && ACTION_USB_PERMISSION.equals(action)) {
+            } else if (SettingsHelper.mSerialModeUsed == SERIAL_USB &&
+                    getString(R.string.ACTION_USB_PERMISSION).equals(action)) {
                 synchronized (this) {
                     android.hardware.usb.UsbDevice device =
                             intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
@@ -505,8 +495,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         initSlider(savedInstanceState);
 
         mOffset = new HashMap<String, Object>();
-        mOffset.put(OFFSET_BAROSENSOR_ALTITUDE, .0f);
-        mOffset.put(OFFSET_VELOCITY_DOWN, .0f);
+        mOffset.put(getString(R.string.OFFSET_BAROSENSOR_ALTITUDE, R.string.APP_ID), .0f);
 
         imgUavoSanity = (ImageView) findViewById(R.id.imgUavoSanity);
 
@@ -566,9 +555,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         imgSerial = (ImageView) findViewById(R.id.imgSerial);
 
-        if (mSerialModeUsed == SERIAL_BLUETOOTH) {
+        if (SettingsHelper.mSerialModeUsed == SERIAL_BLUETOOTH) {
             imgSerial.setColorFilter(Color.argb(0xff, 0xff, 0x0, 0x0));
-        } else if (mSerialModeUsed == SERIAL_USB) {
+        } else if (SettingsHelper.mSerialModeUsed == SERIAL_USB) {
             imgSerial.setColorFilter(Color.argb(0xff, 0xff, 0x0, 0x0));
         } else {
             imgSerial.setImageAlpha(ICON_TRANSPARENT);
@@ -658,7 +647,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         spnConnectionTypeSpinner.setAdapter(serialConnectionTypeAdapter);
         spnConnectionTypeSpinner.setOnItemSelectedListener(this);
-        spnConnectionTypeSpinner.setSelection(mSerialModeUsed);
+        spnConnectionTypeSpinner.setSelection(SettingsHelper.mSerialModeUsed);
 
         spnBluetoothPairedDevice = (Spinner) findViewById(R.id.spnBluetoothPairedDevice);
 
@@ -688,7 +677,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     for (android.bluetooth.BluetoothDevice device : pairedDevices) {
                         // Add the name and address to an array adapter to show in a ListView
                         btPairedDeviceAdapter.add(device.getName());
-                        if (device.getName().equals(mBluetoothDeviceUsed)) {
+                        if (device.getName().equals(SettingsHelper.mBluetoothDeviceUsed)) {
                             spnBluetoothPairedDevice.setSelection(btpd);
                         }
                         btpd++;
@@ -722,7 +711,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 boolean b = m.matches();
                 if (b) {
                     uavoSourceAdapter.add(m.group(1));
-                    if (m.group(1).equals(mLoadedUavo)) {
+                    if (m.group(1).equals(SettingsHelper.mLoadedUavo)) {
                         spnUavoSource.setSelection(i);
                     }
                     i++;
@@ -1106,22 +1095,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public void onRestart() {
         super.onRestart();
 
-        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
-        mSerialModeUsed =
-                sharedPref.getInt(getString(R.string.SETTINGS_SERIAL_MODE, R.string.APP_ID), 0);
-        mBluetoothDeviceUsed =
-                sharedPref.getString(getString(R.string.SETTINGS_BT_NAME, R.string.APP_ID), null);
-        mBluetoothDeviceAddress =
-                sharedPref.getString(getString(R.string.SETTINGS_BT_MAC, R.string.APP_ID), null);
-        mLoadedUavo = sharedPref
-                .getString(getString(R.string.SETTINGS_UAVO_SOURCE, R.string.APP_ID), null);
-        mColorfulPid = sharedPref
-                .getBoolean(getString(R.string.SETTINGS_COLORFUL_PID, R.string.APP_ID), false);
-        mColorfulVPid = sharedPref
-                .getBoolean(getString(R.string.SETTINGS_COLORFUL_VPID, R.string.APP_ID), false);
-        mText2SpeechEnabled = sharedPref
-                .getBoolean(getString(R.string.SETTINGS_TEXT2SPEECH_ENABLED, R.string.APP_ID),
-                        false);
+        SettingsHelper.loadSettings(this);
     }
 
     @Override
@@ -1163,22 +1137,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         initViewDebug();
 
         copyAssets();
-        final SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
-        mSerialModeUsed =
-                sharedPref.getInt(getString(R.string.SETTINGS_SERIAL_MODE, R.string.APP_ID), 0);
-        mBluetoothDeviceUsed =
-                sharedPref.getString(getString(R.string.SETTINGS_BT_NAME, R.string.APP_ID), null);
-        mBluetoothDeviceAddress =
-                sharedPref.getString(getString(R.string.SETTINGS_BT_MAC, R.string.APP_ID), null);
-        mLoadedUavo = sharedPref
-                .getString(getString(R.string.SETTINGS_UAVO_SOURCE, R.string.APP_ID), null);
-        mColorfulPid = sharedPref
-                .getBoolean(getString(R.string.SETTINGS_COLORFUL_PID, R.string.APP_ID), false);
-        mColorfulVPid = sharedPref
-                .getBoolean(getString(R.string.SETTINGS_COLORFUL_VPID, R.string.APP_ID), false);
-        mText2SpeechEnabled = sharedPref
-                .getBoolean(getString(R.string.SETTINGS_TEXT2SPEECH_ENABLED, R.string.APP_ID),
-                        false);
+        SettingsHelper.loadSettings(this);
 
         initTextToSpeech();
         //debug view is initialized above
@@ -1193,6 +1152,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         initViewMain(savedInstanceState);
 
         initWarnDialog().show();
+
+        VisualLog.d("DBG", getString(R.string.ACTION_USB_PERMISSION));
+        VisualLog.d("DBG", getString(R.string.APP_ID));
 
     }
 
@@ -1228,7 +1190,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             MainActivity.mHasPThread = false;
         }
 
-        mSerialModeUsed = SERIAL_NONE;
+        SettingsHelper.mSerialModeUsed = SERIAL_NONE;
         mDoReconnect = true;
 
         if (mFcDevice != null) {
@@ -1251,15 +1213,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private void initTextToSpeech() {
         mTtsHelper = new TextToSpeechHelper(this);
         mTtsHelper.checkForTTS();
-        mTtsHelper.setEnabled(mText2SpeechEnabled);
+        mTtsHelper.setEnabled(SettingsHelper.mText2SpeechEnabled);
     }
 
     protected boolean loadXmlObjects(boolean overwrite) {
 
-        if (mXmlObjects == null || (overwrite && mLoadedUavo != null)) {
+        if (mXmlObjects == null || (overwrite && SettingsHelper.mLoadedUavo != null)) {
             mXmlObjects = new TreeMap<String, UAVTalkXMLObject>();
 
-            String file = this.mLoadedUavo + getString(R.string.UAVO_FILE_EXTENSION);
+            String file = SettingsHelper.mLoadedUavo + getString(R.string.UAVO_FILE_EXTENSION);
             ZipInputStream zis = null;
             MessageDigest crypt;
             MessageDigest cumucrypt;
@@ -1327,7 +1289,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     protected void connectUSB() {
-        if (mSerialModeUsed == SERIAL_USB) {
+        if (SettingsHelper.mSerialModeUsed == SERIAL_USB) {
             for (android.hardware.usb.UsbDevice device : mUsbManager.getDeviceList().values()) {
                 if (device.getDeviceClass() == UsbConstants.USB_CLASS_MISC) {
                     try {
@@ -1343,7 +1305,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     protected void connectBluetooth() {
-        if (mSerialModeUsed == SERIAL_BLUETOOTH) {
+        if (SettingsHelper.mSerialModeUsed == SERIAL_BLUETOOTH) {
             setBluetoothInterface();
         }
     }
@@ -1370,13 +1332,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
                 break;
             case VIEW_SETTINGS:
-                SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPref.edit();
+
 
                 String btname = getString(R.string.EMPTY_STRING);
                 if (spnBluetoothPairedDevice.getSelectedItem() != null) {
                     btname = spnBluetoothPairedDevice.getSelectedItem().toString();
                 }
+                SettingsHelper.mBluetoothDeviceUsed = btname;
 
                 String btmac = getString(R.string.EMPTY_STRING);
 
@@ -1392,12 +1354,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         }
                     }
                 }
-                mBluetoothDeviceAddress = btmac;
+                SettingsHelper.mBluetoothDeviceAddress = btmac;
 
-                mSerialModeUsed = spnConnectionTypeSpinner.getSelectedItemPosition();
+                SettingsHelper.mSerialModeUsed = spnConnectionTypeSpinner.getSelectedItemPosition();
 
                 imgSerial.setColorFilter(Color.argb(0xff, 0xd4, 0x00, 0x00));
-                switch (mSerialModeUsed) {
+                switch (SettingsHelper.mSerialModeUsed) {
                     case SERIAL_NONE:
                         imgSerial.setImageAlpha(ICON_TRANSPARENT);
                         break;
@@ -1410,26 +1372,17 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 }
 
                 if (spnUavoSource.getSelectedItem() != null
-                        && !spnUavoSource.getSelectedItem().toString().equals(mLoadedUavo)) {
-                    mLoadedUavo = spnUavoSource.getSelectedItem().toString();
-                    VisualLog.d("UAVSource", mLoadedUavo + "  " + mLoadedUavo);
+                        && !spnUavoSource.getSelectedItem().toString()
+                        .equals(SettingsHelper.mLoadedUavo)) {
+                    SettingsHelper.mLoadedUavo = spnUavoSource.getSelectedItem().toString();
+                    VisualLog.d("UAVSource",
+                            SettingsHelper.mLoadedUavo + "  " + SettingsHelper.mLoadedUavo);
 
                     loadXmlObjects(true);
                     SingleToast.show(this, "UAVO load completed", Toast.LENGTH_SHORT);
                 }
 
-                editor.putString(getString(R.string.SETTINGS_BT_MAC, R.string.APP_ID), btmac);
-                editor.putString(getString(R.string.SETTINGS_BT_NAME, R.string.APP_ID), btname);
-                editor.putString(getString(R.string.SETTINGS_UAVO_SOURCE, R.string.APP_ID),
-                        mLoadedUavo);
-                editor.putInt(getString(R.string.SETTINGS_SERIAL_MODE, R.string.APP_ID),
-                        mSerialModeUsed);
-                editor.putBoolean(getString(R.string.SETTINGS_COLORFUL_PID, R.string.APP_ID),
-                        mColorfulPid);
-                editor.putBoolean(getString(R.string.SETTINGS_COLORFUL_VPID, R.string.APP_ID),
-                        mColorfulVPid);
-
-                editor.commit();
+                SettingsHelper.saveSettings(this);
                 mDoReconnect = true;
 
                 break;
@@ -1492,10 +1445,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             case VIEW_SETTINGS:
                 setContentView(mViews.get(VIEW_SETTINGS), position);
 
-                if (mSerialModeUsed == SERIAL_NONE) {
+                if (SettingsHelper.mSerialModeUsed == SERIAL_NONE) {
                     SingleToast.show(this, getString(R.string.PLEASE_SET_A)
                             + getString(R.string.CON_TYPE), Toast.LENGTH_LONG);
-                } else if (mSerialModeUsed == SERIAL_BLUETOOTH && mBluetoothDeviceUsed == null) {
+                } else if (SettingsHelper.mSerialModeUsed == SERIAL_BLUETOOTH &&
+                        SettingsHelper.mBluetoothDeviceUsed == null) {
                     SingleToast.show(this, getString(R.string.PLEASE_SET_A)
                             + getString(R.string.BT_DEVICE), Toast.LENGTH_LONG);
                 }
@@ -1533,7 +1487,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     final View lloInnerPid = findViewById(R.id.lloInnerPid);
 
                     if (lloInnerPid != null && lloOuterPid != null) {
-                        if (mColorfulPid) {
+                        if (SettingsHelper.mColorfulPid) {
                             lloOuterPid.setBackground(
                                     ContextCompat.getDrawable(getApplicationContext(),
                                             R.drawable.border_top_yellow));
@@ -1570,7 +1524,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     final View lloControllCoeff = findViewById(R.id.lloControlCoeff);
 
                     if (lloStickResponse != null && lloControllCoeff != null) {
-                        if (mColorfulVPid) {
+                        if (SettingsHelper.mColorfulVPid) {
                             lloStickResponse.setBackground(
                                     ContextCompat.getDrawable(getApplicationContext(),
                                             R.drawable.border_top_yellow));
@@ -1707,7 +1661,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         if (mPermissionIntent == null) {
             mPermissionIntent =
-                    PendingIntent.getBroadcast(this, 0, new Intent(ACTION_USB_PERMISSION), 0);
+                    PendingIntent.getBroadcast(this, 0,
+                            new Intent(getString(R.string.ACTION_USB_PERMISSION)), 0);
         }
 
         mUsbManager = (UsbManager) getSystemService(Context.USB_SERVICE);
@@ -1716,7 +1671,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         IntentFilter filter = new IntentFilter();
         filter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
         filter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
-        filter.addAction(ACTION_USB_PERMISSION);
+        filter.addAction(getString(R.string.ACTION_USB_PERMISSION));
 
         registerReceiver(mUsbReceiver, filter);
 
@@ -1807,11 +1762,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
                 dialogBuilder.setPositiveButton(R.string.CLOSE_BUTTON,
                         new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
                 dialogBuilder.show();
                 break;
             }
@@ -1832,14 +1787,16 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                                     public void onClick(DialogInterface dialog, int indexSelected,
                                                         boolean isChecked) {
                                         if (indexSelected == 0) { //first element of string array
-                                            mText2SpeechEnabled = isChecked;
-                                            mTtsHelper.setEnabled(mText2SpeechEnabled);
+                                            SettingsHelper.mText2SpeechEnabled = isChecked;
+                                            mTtsHelper
+                                                    .setEnabled(SettingsHelper.mText2SpeechEnabled);
 
                                             activity.getPreferences(Context.MODE_PRIVATE).edit()
                                                     .putBoolean(getString(
                                                             R.string.SETTINGS_TEXT2SPEECH_ENABLED,
                                                             R.string.APP_ID),
-                                                            mText2SpeechEnabled).apply();
+                                                            SettingsHelper.mText2SpeechEnabled)
+                                                    .apply();
                                         }
                                     }
                                 })
@@ -1859,9 +1816,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 final String[] items = {getString(R.string.COLORFUL_VIEW)};
                 final boolean[] checkedItems = {true};
                 if (mCurrentView == VIEW_PID) {
-                    checkedItems[0] = mColorfulPid;
+                    checkedItems[0] = SettingsHelper.mColorfulPid;
                 } else if (mCurrentView == VIEW_VPID) {
-                    checkedItems[0] = mColorfulVPid;
+                    checkedItems[0] = SettingsHelper.mColorfulVPid;
                 }
 
                 AlertDialog dialog = new AlertDialog.Builder(this)
@@ -1872,9 +1829,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                                     public void onClick(DialogInterface dialog, int indexSelected,
                                                         boolean isChecked) {
                                         if (mCurrentView == VIEW_PID) {
-                                            mColorfulPid = isChecked;
+                                            SettingsHelper.mColorfulPid = isChecked;
                                         } else if (mCurrentView == VIEW_VPID) {
-                                            mColorfulVPid = isChecked;
+                                            SettingsHelper.mColorfulVPid = isChecked;
                                         }
                                     }
                                 }).setPositiveButton(R.string.CLOSE_BUTTON,
@@ -1911,19 +1868,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     public void onAltitudeClick(View V) {
         try {
-            mOffset.put(OFFSET_BAROSENSOR_ALTITUDE, mFcDevice.getObjectTree()
-                    .getData("BaroSensor", "Altitude"));
+            mOffset.put(getString(R.string.OFFSET_BAROSENSOR_ALTITUDE, R.string.APP_ID),
+                    mFcDevice.getObjectTree()
+                            .getData("BaroSensor", "Altitude"));
             txtAltitude.setText(R.string.EMPTY_STRING);
-        } catch (UAVTalkMissingObjectException | NullPointerException e) {
-            VisualLog.i("INFO", "UAVO is missing");
-        }
-    }
-
-    public void onAltitudeAccelClick(View V) {
-        try {
-            mOffset.put(OFFSET_VELOCITY_DOWN, mFcDevice.getObjectTree()
-                    .getData("VelocityState", "Down"));
-            txtAltitudeAccel.setText(R.string.EMPTY_STRING);
         } catch (UAVTalkMissingObjectException | NullPointerException e) {
             VisualLog.i("INFO", "UAVO is missing");
         }

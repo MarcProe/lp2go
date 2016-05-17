@@ -22,6 +22,7 @@ import android.widget.TextView;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import org.librepilot.lp2go.helper.SettingsHelper;
 import org.librepilot.lp2go.uavtalk.UAVTalkMissingObjectException;
 import org.librepilot.lp2go.uavtalk.UAVTalkObjectTree;
 import org.librepilot.lp2go.uavtalk.UAVTalkXMLObject;
@@ -139,7 +140,7 @@ class PollThread extends Thread {
             mA.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    if (mA.mSerialModeUsed == MainActivity.SERIAL_BLUETOOTH) {
+                    if (SettingsHelper.mSerialModeUsed == MainActivity.SERIAL_BLUETOOTH) {
                         if (mA.mFcDevice != null && mA.mFcDevice.isConnected()) {
                             mA.imgSerial.setColorFilter(Color.argb(0xff, 0x00, 0x80, 0x00));
                             mA.imgSerial.setImageDrawable(
@@ -164,7 +165,7 @@ class PollThread extends Thread {
                                     ContextCompat.getDrawable(mA.getApplicationContext(),
                                             R.drawable.ic_bluetooth_disabled_128dp));
                         }
-                    } else if (mA.mSerialModeUsed == MainActivity.SERIAL_USB) {
+                    } else if (SettingsHelper.mSerialModeUsed == MainActivity.SERIAL_USB) {
                         mA.imgSerial.setImageDrawable(
                                 ContextCompat.getDrawable(mA.getApplicationContext(),
                                         R.drawable.ic_usb_128dp));
@@ -367,10 +368,8 @@ class PollThread extends Thread {
                                         getData("FlightBatterySettings", "NbCells").toString());
 
                                 setText(mA.txtAltitude, getFloatOffsetData("BaroSensor", "Altitude",
-                                        MainActivity.OFFSET_BAROSENSOR_ALTITUDE));
-                                setText(mA.txtAltitudeAccel,
-                                        getFloatOffsetData("VelocityState", "Down",
-                                                MainActivity.OFFSET_VELOCITY_DOWN));
+                                        mA.getString(R.string.OFFSET_BAROSENSOR_ALTITUDE,
+                                                R.string.APP_ID)));
 
                                 String flightModeSwitchPosition =
                                         getData("ManualControlCommand", "FlightModeSwitchPosition",
@@ -397,7 +396,8 @@ class PollThread extends Thread {
                                 break;
                             case MainActivity.VIEW_MAP:
 
-                                if (mA.mSerialModeUsed == MainActivity.SERIAL_BLUETOOTH) {
+                                if (SettingsHelper.mSerialModeUsed ==
+                                        MainActivity.SERIAL_BLUETOOTH) {
                                     mA.mFcDevice.requestObject("GPSSatellites");
                                     mA.mFcDevice.requestObject("SystemAlarms");
                                     mA.mFcDevice.requestObject("GPSPositionSensor");

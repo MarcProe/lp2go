@@ -31,6 +31,7 @@ android {
             resValue 'string', 'APP_ID', applicationId
             resValue 'string', 'GMAP_KEY', 'AIzaSyCE91uHoVzA_-mxPer8g5sU7WL2jTdQDzo'
             resValue 'string', 'APP_NAME', 'LP2Go Alpha'
+            resValue 'string', 'ACTION_USB_PERMISSION', applicationId + '.USB_PERMISSION'
         }
         beta_flavor_ {
             minSdkVersion 16
@@ -38,6 +39,7 @@ android {
             resValue 'string', 'APP_ID', applicationId
             resValue 'string', 'GMAP_KEY', 'AIzaSyCE91uHoVzA_-mxPer8g5sU7WL2jTdQDzo'
             resValue 'string', 'APP_NAME', 'LP2Go Beta'
+            resValue 'string', 'ACTION_USB_PERMISSION', applicationId + '.USB_PERMISSION'
             targetSdkVersion 16
             versionCode 40000
             versionName '0.4.0.0'
@@ -48,6 +50,7 @@ android {
             resValue 'string', 'APP_ID', applicationId
             resValue 'string', 'GMAP_KEY', 'AIzaSyCE91uHoVzA_-mxPer8g5sU7WL2jTdQDzo'
             resValue 'string', 'APP_NAME', 'LP2Go'
+            resValue 'string', 'ACTION_USB_PERMISSION', applicationId + '.USB_PERMISSION'
             targetSdkVersion 16
             versionCode 1000000
             versionName '1.0.0.0'

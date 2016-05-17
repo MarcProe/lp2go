@@ -17,6 +17,7 @@ package org.librepilot.lp2go;
 
 import android.widget.Toast;
 
+import org.librepilot.lp2go.helper.SettingsHelper;
 import org.librepilot.lp2go.uavtalk.UAVTalkMissingObjectException;
 import org.librepilot.lp2go.ui.SingleToast;
 
@@ -44,7 +45,7 @@ class ConnectionThread extends Thread {
         final long millis = System.currentTimeMillis();
 
         boolean loaded = false;
-        if (mA.mLoadedUavo != null) {
+        if (SettingsHelper.mLoadedUavo != null) {
             loaded = mA.loadXmlObjects(false);
         }
         if (loaded) {
@@ -98,7 +99,7 @@ class ConnectionThread extends Thread {
 
             if (mA.mFcDevice == null
                     || (!mA.mFcDevice.isConnected() && !mA.mFcDevice.isConnecting())) {
-                switch (mA.mSerialModeUsed) {
+                switch (SettingsHelper.mSerialModeUsed) {
                     case MainActivity.SERIAL_BLUETOOTH:
                         mA.connectBluetooth();
                         break;
