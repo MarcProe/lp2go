@@ -50,6 +50,7 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.hardware.usb.UsbConstants;
 import android.hardware.usb.UsbDeviceConnection;
 import android.hardware.usb.UsbInterface;
@@ -177,9 +178,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     protected HashSet<PidTextView> mVerticalPidTexts;
     ImageView imgFlightTelemetry;
     ImageView imgGroundTelemetry;
-    ImageView imgPacketsBad;
-    ImageView imgPacketsGood;
-    ImageView imgPacketsUp;
+    Drawable imgPacketsBad;
+    Drawable imgPacketsGood;
+    Drawable imgPacketsUp;
     ImageView imgSerial;
     ImageView imgToolbarFlightSettings;
     ImageView imgToolbarLocalSettings;
@@ -502,13 +503,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         imgGroundTelemetry = (ImageView) findViewById(R.id.imgGroundTelemetry);
         imgFlightTelemetry = (ImageView) findViewById(R.id.imgFlightTelemetry);
 
-        imgPacketsUp = (ImageView) findViewById(R.id.imgPacketsUp);
-        imgPacketsGood = (ImageView) findViewById(R.id.imgPacketsGood);
-        imgPacketsBad = (ImageView) findViewById(R.id.imgPacketsBad);
+        txtObjectLogTx = (TextView) findViewById(R.id.txtPacketsUp);
+        txtObjectLogRxGood = (TextView) findViewById(R.id.txtPacketsGood);
+        txtObjectLogRxBad = (TextView) findViewById(R.id.txtPacketsBad);
 
-        txtObjectLogTx = (TextView) findViewById(R.id.txtObjectLogTx);
-        txtObjectLogRxGood = (TextView) findViewById(R.id.txtObjectLogRxGood);
-        txtObjectLogRxBad = (TextView) findViewById(R.id.txtObjectLogRxBad);
+        imgPacketsUp = txtObjectLogTx.getCompoundDrawables()[0];
+        imgPacketsGood = txtObjectLogRxGood.getCompoundDrawables()[0];
+        imgPacketsBad = txtObjectLogRxBad.getCompoundDrawables()[0];
 
         txtPlan = (TextView) findViewById(R.id.txtPlan);
         txtAtti = (TextView) findViewById(R.id.txtAtti);
@@ -1581,9 +1582,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         imgSerial = (ImageView) findViewById(R.id.imgSerial);
         imgUavoSanity = (ImageView) findViewById(R.id.imgUavoSanity);
 
-        imgPacketsGood = (ImageView) findViewById(R.id.imgPacketsGood);
-        imgPacketsBad = (ImageView) findViewById(R.id.imgPacketsBad);
-        imgPacketsUp = (ImageView) findViewById(R.id.imgPacketsUp);
+        //imgPacketsGood = (ImageView) findViewById(R.id.imgPacketsGood);
+        //imgPacketsBad = (ImageView) findViewById(R.id.imgPacketsBad);
+        //imgPacketsUp = (ImageView) findViewById(R.id.imgPacketsUp);
 
         imgGroundTelemetry = (ImageView) findViewById(R.id.imgGroundTelemetry);
         imgFlightTelemetry = (ImageView) findViewById(R.id.imgFlightTelemetry);

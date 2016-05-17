@@ -16,6 +16,7 @@
 package org.librepilot.lp2go;
 
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.support.v4.content.ContextCompat;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -28,8 +29,6 @@ import org.librepilot.lp2go.uavtalk.UAVTalkObjectTree;
 import org.librepilot.lp2go.uavtalk.UAVTalkXMLObject;
 import org.librepilot.lp2go.ui.PidTextView;
 import org.librepilot.lp2go.ui.map.MapHelper;
-
-import java.util.Iterator;
 
 class PollThread extends Thread {
 
@@ -259,28 +258,34 @@ class PollThread extends Thread {
                                 if (mBlink) {
                                     if (mA.mRxObjectsGood > 0) {
                                         mA.imgPacketsGood.setColorFilter(
-                                                Color.argb(0xff, 0x00, 0x88, 0x00));
+                                                Color.argb(0xff, 0x00, 0x88, 0x00),
+                                                PorterDuff.Mode.SRC_ATOP);
                                     }
                                     if (mA.mRxObjectsBad > 0) {
                                         mA.imgPacketsBad.setColorFilter(
-                                                Color.argb(0xff, 0x88, 0x00, 0x00));
+                                                Color.argb(0xff, 0x88, 0x00, 0x00),
+                                                PorterDuff.Mode.SRC_ATOP);
                                     }
                                     if (mA.mTxObjects > 0) {
                                         mA.imgPacketsUp.setColorFilter(
-                                                Color.argb(0xff, 0x00, 0x00, 0x88));
+                                                Color.argb(0xff, 0x00, 0x00, 0xdd),
+                                                PorterDuff.Mode.SRC_ATOP);
                                     }
                                 } else {
                                     if (mA.mRxObjectsGood > 0) {
                                         mA.imgPacketsGood.setColorFilter(
-                                                Color.argb(0xff, 0x00, 0x00, 0x00));
+                                                Color.argb(0xff, 0x00, 0x00, 0x00),
+                                                PorterDuff.Mode.SRC_ATOP);
                                     }
                                     if (mA.mRxObjectsBad > 0) {
                                         mA.imgPacketsBad.setColorFilter(
-                                                Color.argb(0xff, 0x00, 0x00, 0x00));
+                                                Color.argb(0xff, 0x00, 0x00, 0x00),
+                                                PorterDuff.Mode.SRC_ATOP);
                                     }
                                     if (mA.mTxObjects > 0) {
                                         mA.imgPacketsUp.setColorFilter(
-                                                Color.argb(0xff, 0x00, 0x00, 0x00));
+                                                Color.argb(0xff, 0x00, 0x00, 0x00),
+                                                PorterDuff.Mode.SRC_ATOP);
                                     }
                                 }
 
@@ -353,14 +358,11 @@ class PollThread extends Thread {
                                         getData("SystemStats", "FlightTime").toString()));
 
                                 setText(mA.txtVolt,
-                                        getFloatData("FlightBatteryState", "Voltage", 4)
-                                                .toString());
+                                        getFloatData("FlightBatteryState", "Voltage", 4));
                                 setText(mA.txtAmpere,
-                                        getFloatData("FlightBatteryState", "Current", 4)
-                                                .toString());
+                                        getFloatData("FlightBatteryState", "Current", 4));
                                 setText(mA.txtmAh,
-                                        getFloatData("FlightBatteryState", "ConsumedEnergy", 3)
-                                                .toString());
+                                        getFloatData("FlightBatteryState", "ConsumedEnergy", 3));
                                 setText(mA.txtTimeLeft, H.getDateFromSeconds(
                                         getData("FlightBatteryState", "EstimatedFlightTime")
                                                 .toString()));
@@ -375,7 +377,7 @@ class PollThread extends Thread {
                                                 R.string.APP_ID)));
 
                                 setText(mA.txtAltitudeAccel,
-                                        getFloatData("VelocityState", "Down", 2).toString());
+                                        getFloatData("VelocityState", "Down", 2));
 
                                 String flightModeSwitchPosition =
                                         getData("ManualControlCommand", "FlightModeSwitchPosition",
@@ -433,9 +435,6 @@ class PollThread extends Thread {
 
                                 setText(mA.txtLatitude, lat.toString());
                                 setText(mA.txtLongitude, lng.toString());
-
-                                LatLng src = mA.mMap.getCameraPosition().target;
-                                LatLng dst = new LatLng(lat, lng);
 
                                 break;
                             case MainActivity.VIEW_OBJECTS:
@@ -511,10 +510,7 @@ class PollThread extends Thread {
                                         break;
                                 }
 
-                                Iterator<PidTextView> i = mA.mPidTexts.iterator();
-
-                                while (i.hasNext()) {
-                                    PidTextView ptv = i.next();
+                                for (PidTextView ptv : mA.mPidTexts) {
                                     String data = ptv.getDecimalString(
                                             toFloat(getData(mA.mCurrentStabilizationBank,
                                                     ptv.getField(), ptv.getElement())));
@@ -525,10 +521,7 @@ class PollThread extends Thread {
 
                             case MainActivity.VIEW_VPID:
 
-                                Iterator<PidTextView> vi = mA.mVerticalPidTexts.iterator();
-
-                                while (vi.hasNext()) {
-                                    PidTextView ptv = vi.next();
+                                for (PidTextView ptv : mA.mVerticalPidTexts) {
                                     //VisualLog.d("VPID", ptv.getDialogTitle() + " "  + ptv.getField() + " " + ptv.getElement() + " " + ptv.getText());
                                     String data;
                                     switch (ptv.getFieldType()) {

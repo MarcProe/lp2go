@@ -229,89 +229,59 @@
             android:layout_weight="1"
             android:orientation="vertical">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:id="@+id/imgPacketsUp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="fill_parent"
-                    android:contentDescription="Packets Up"
-                    android:paddingLeft="5dp"
-                    android:src="@drawable/ic_unarchive_black_24px" />
-
                 <TextView
-                    android:id="@+id/txtObjectLogTx"
+                    android:id="@+id/txtPacketsUp"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_weight="1"
                     android:width="30dp"
+                    android:drawableLeft="@drawable/ic_unarchive_black_24px"
                     android:ellipsize="start"
                     android:gravity="center_vertical|center_horizontal"
                     android:paddingRight="5dp"
                     android:singleLine="true"
                     android:text="0"
                     android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:textColor="@color/dark" />
-            </LinearLayout>
+                    android:textColor="@color/dark"/>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:orientation="horizontal">
 
-                <ImageView
-                    android:id="@+id/imgPacketsGood"
-                    android:layout_width="wrap_content"
-                    android:layout_height="fill_parent"
-                    android:contentDescription="Packet Bad"
-                    android:paddingLeft="5dp"
-                    android:src="@drawable/ic_archive_black_24px" />
+
 
                 <TextView
-                    android:id="@+id/txtObjectLogRxGood"
+                    android:id="@+id/txtPacketsGood"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:width="30dp"
+                    android:drawableLeft="@drawable/ic_archive_black_24px"
                     android:ellipsize="start"
                     android:gravity="center_vertical|center_horizontal"
                     android:paddingRight="5dp"
                     android:singleLine="true"
                     android:text="0"
                     android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:textColor="@color/dark" />
-            </LinearLayout>
+                    android:textColor="@color/dark"/>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:orientation="horizontal">
 
-                <ImageView
-                    android:id="@+id/imgPacketsBad"
-                    android:layout_width="wrap_content"
-                    android:layout_height="fill_parent"
-                    android:contentDescription="Packets Bad"
-                    android:paddingLeft="5dp"
-                    android:src="@drawable/ic_delete_forever_black_24px" />
+
 
                 <TextView
-                    android:id="@+id/txtObjectLogRxBad"
+                    android:id="@+id/txtPacketsBad"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:layout_weight="1"
                     android:width="30dp"
+                    android:drawableLeft="@drawable/ic_delete_forever_black_24px"
                     android:ellipsize="start"
                     android:gravity="center_vertical|center_horizontal"
                     android:paddingRight="5dp"
                     android:singleLine="true"
                     android:text="0"
                     android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:textColor="@color/dark" />
-            </LinearLayout>
+                    android:textColor="@color/dark"/>
+
 
         </LinearLayout>
 
