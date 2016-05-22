@@ -17,6 +17,7 @@ package org.librepilot.lp2go;
 
 import android.widget.Toast;
 
+import org.librepilot.lp2go.controller.ViewController;
 import org.librepilot.lp2go.helper.SettingsHelper;
 import org.librepilot.lp2go.uavtalk.UAVTalkMissingObjectException;
 import org.librepilot.lp2go.ui.SingleToast;
@@ -47,6 +48,14 @@ class ConnectionThread extends Thread {
         boolean loaded = false;
         if (SettingsHelper.mLoadedUavo != null) {
             loaded = mA.loadXmlObjects(false);
+            mA.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    for (ViewController vc : mA.mVcList) {
+                        vc.reset();
+                    }
+                }
+            });
         }
         if (loaded) {
             mA.runOnUiThread(new Runnable() {
@@ -92,7 +101,9 @@ class ConnectionThread extends Thread {
                 mA.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        mA.resetMainView();
+                        for (ViewController vc : mA.mVcList) {
+                            vc.reset();
+                        }
                     }
                 });
             }

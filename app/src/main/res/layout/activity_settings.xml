@@ -107,19 +107,19 @@
                     android:orientation="horizontal">
 
                     <Button
+                        android:id="@+id/btnLoadUavo"
                         style="?android:attr/buttonStyleSmall"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="18"
-                        android:onClick="onSelectUavObjectsSourceFileClick"
                         android:text="@string/LOAD_UAVO_FILE" />
 
                     <Button
+                        android:id="@+id/btnClearUavo"
                         style="?android:attr/buttonStyleSmall"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="12"
-                        android:onClick="onClearUavObjectFilesClick"
                         android:text="@string/CLEAR_UAVO_FILE" />
                 </LinearLayout>
 

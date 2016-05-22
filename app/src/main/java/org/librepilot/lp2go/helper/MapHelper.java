@@ -16,7 +16,6 @@
 
 package org.librepilot.lp2go.helper;
 
-import android.content.Context;
 import android.graphics.Color;
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -31,19 +30,20 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import org.librepilot.lp2go.H;
+import org.librepilot.lp2go.MainActivity;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
 
 public class MapHelper implements OnMapReadyCallback {
     private final int MAX_LINES = 20;
-    private Context mContext;
+    private MainActivity mActivity;
     private GoogleMap mMap;
     private Deque<Polyline> mMapLines;
     private Marker mPosMarker;
 
-    public MapHelper(Context context) {
-        this.mContext = context;
+    public MapHelper(MainActivity activity) {
+        this.mActivity = activity;
         mMapLines = new ArrayDeque<>();
     }
 
@@ -94,7 +94,7 @@ public class MapHelper implements OnMapReadyCallback {
             mMap.getUiSettings().setMyLocationButtonEnabled(false);
             mMap.getUiSettings().setZoomControlsEnabled(true);
             mMap.setMyLocationEnabled(true);
-            MapsInitializer.initialize(mContext);
+            MapsInitializer.initialize(mActivity);
 
             CameraUpdate cameraUpdate =
                     CameraUpdateFactory.newLatLngZoom(new LatLng(32.154599, -110.827369), 20);
@@ -105,7 +105,12 @@ public class MapHelper implements OnMapReadyCallback {
 
     public void clear() {
         if (mMap != null) {
-            mMap.clear();
+            mActivity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mMap.clear();
+                }
+            });
         }
     }
 }

@@ -10,6 +10,7 @@
     <string name="menu_pid">PID Tuning</string>
     <string name="menu_vpid">Altitude Hold</string>
     <string name="menu_debug">Debug</string>
+    <string name="menu_scope">Scope</string>
 
     <!-- Nav Drawer List Item Icons -->
     <!-- Keep them in order as the titles are in -->

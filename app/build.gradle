@@ -29,7 +29,7 @@ android {
         alpha_flavor_ {
             applicationId 'net.proest.lp2go3'
             resValue 'string', 'APP_ID', applicationId
-            resValue 'string', 'GMAP_KEY', 'AIzaSyCE91uHoVzA_-mxPer8g5sU7WL2jTdQDzo'
+            resValue 'string', 'google_api_key', 'AIzaSyCE91uHoVzA_-mxPer8g5sU7WL2jTdQDzo'
             resValue 'string', 'APP_NAME', 'LP2Go Alpha'
             resValue 'string', 'ACTION_USB_PERMISSION', applicationId + '.USB_PERMISSION'
         }
@@ -37,7 +37,7 @@ android {
             minSdkVersion 16
             applicationId 'org.librepilot.lp2go.beta'
             resValue 'string', 'APP_ID', applicationId
-            resValue 'string', 'GMAP_KEY', 'AIzaSyCE91uHoVzA_-mxPer8g5sU7WL2jTdQDzo'
+            resValue 'string', 'google_api_key', 'AIzaSyCE91uHoVzA_-mxPer8g5sU7WL2jTdQDzo'
             resValue 'string', 'APP_NAME', 'LP2Go Beta'
             resValue 'string', 'ACTION_USB_PERMISSION', applicationId + '.USB_PERMISSION'
             targetSdkVersion 16
@@ -48,7 +48,7 @@ android {
             minSdkVersion 16
             applicationId 'org.librepilot.lp2go.release'
             resValue 'string', 'APP_ID', applicationId
-            resValue 'string', 'GMAP_KEY', 'AIzaSyCE91uHoVzA_-mxPer8g5sU7WL2jTdQDzo'
+            resValue 'string', 'google_api_key', 'AIzaSyCE91uHoVzA_-mxPer8g5sU7WL2jTdQDzo'
             resValue 'string', 'APP_NAME', 'LP2Go'
             resValue 'string', 'ACTION_USB_PERMISSION', applicationId + '.USB_PERMISSION'
             targetSdkVersion 16

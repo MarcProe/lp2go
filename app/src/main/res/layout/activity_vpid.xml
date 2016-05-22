@@ -73,7 +73,6 @@
                                 android:layout_gravity="center"
                                 android:layout_weight="1"
                                 android:gravity="center|center_vertical|center_horizontal"
-                                android:onClick="onVerticalPidGridNumberClick"
                                 android:textAppearance="?android:attr/textAppearanceLarge"
                                 android:textSize="25sp" />
                         </LinearLayout>
@@ -103,7 +102,6 @@
                                 android:layout_gravity="center"
                                 android:layout_weight="1"
                                 android:gravity="center|center_vertical|center_horizontal"
-                                android:onClick="onVerticalPidGridNumberClick"
                                 android:textAppearance="?android:attr/textAppearanceLarge"
                                 android:textSize="25sp" />
 
@@ -134,7 +132,6 @@
                                 android:layout_gravity="center"
                                 android:layout_weight="1"
                                 android:gravity="center|center_vertical|center_horizontal"
-                                android:onClick="onVerticalPidGridNumberClick"
                                 android:textAppearance="?android:attr/textAppearanceLarge"
                                 android:textSize="25sp" />
                         </LinearLayout>
@@ -164,7 +161,6 @@
                                 android:layout_gravity="center"
                                 android:layout_weight="1"
                                 android:gravity="center|center_vertical|center_horizontal"
-                                android:onClick="onVerticalPidGridNumberClick"
                                 android:textAppearance="?android:attr/textAppearanceLarge"
                                 android:textSize="25sp" />
                         </LinearLayout>
@@ -194,7 +190,6 @@
                                 android:layout_gravity="center"
                                 android:layout_weight="1"
                                 android:gravity="center|center_vertical|center_horizontal"
-                                android:onClick="onVerticalPidGridNumberClick"
                                 android:textAppearance="?android:attr/textAppearanceLarge"
                                 android:textSize="25sp" />
                         </LinearLayout>
@@ -242,7 +237,6 @@
                                 android:layout_gravity="center"
                                 android:layout_weight="1"
                                 android:gravity="center|center_vertical|center_horizontal"
-                                android:onClick="onVerticalPidGridNumberClick"
                                 android:textAppearance="?android:attr/textAppearanceLarge"
                                 android:textSize="25sp" />
 
@@ -273,7 +267,6 @@
                                 android:layout_gravity="center"
                                 android:layout_weight="1"
                                 android:gravity="center|center_vertical|center_horizontal"
-                                android:onClick="onVerticalPidGridNumberClick"
                                 android:textAppearance="?android:attr/textAppearanceLarge"
                                 android:textSize="25sp" />
 
@@ -291,27 +284,27 @@
                 android:orientation="horizontal">
 
                 <ImageView
+                    android:id="@+id/imgVPidDownload"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:contentDescription="@string/DOWNLOAD_PID_FROM_FC"
-                    android:onClick="onVerticalPidDownloadClick"
                     android:src="@drawable/ic_cloud_download_96dp" />
 
                 <ImageView
+                    android:id="@+id/imgVPidUpload"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:contentDescription="@string/UPLOAD_PID_TO_FC"
-                    android:onClick="onVerticalPidUploadClick"
                     android:src="@drawable/ic_cloud_upload_128dp" />
 
                 <ImageView
+                    android:id="@+id/imgVPidSave"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:contentDescription="@string/SAVE_PID_PERSISTENT"
-                    android:onClick="onVerticalPidSaveClick"
                     android:src="@drawable/ic_cloud_done_96dp" />
 
             </LinearLayout>

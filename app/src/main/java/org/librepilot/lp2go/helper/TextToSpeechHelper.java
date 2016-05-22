@@ -32,6 +32,8 @@ public class TextToSpeechHelper implements TextToSpeech.OnInitListener {
 
     public TextToSpeechHelper(MainActivity mActivity) {
         this.mActivity = mActivity;
+        checkForTTS();
+        setEnabled(SettingsHelper.mText2SpeechEnabled);
     }
 
     public boolean isEnabled() {

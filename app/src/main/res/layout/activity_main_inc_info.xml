@@ -174,7 +174,6 @@
             android:layout_weight="1"
             android:background="@drawable/rounded_corner_left"
             android:gravity="center_vertical|center_horizontal"
-            android:onClick="onAltitudeClick"
             android:textAlignment="center"
             android:textColor="@color/dark" />
 
@@ -185,7 +184,6 @@
             android:layout_weight="1"
             android:background="@drawable/rounded_corner_right"
             android:gravity="center_vertical|center_horizontal"
-            android:onClick="onAltitudeClick"
             android:text="Altitude"
             android:textAlignment="center"
             android:textAppearance="?android:attr/textAppearanceSmall"
@@ -231,7 +229,6 @@
             android:layout_weight="0.2"
             android:background="@drawable/rounded_corner_left"
             android:gravity="center_vertical|center_horizontal"
-            android:onClick="onAltitudeClick"
             android:text="0"
             android:textAlignment="center"
             android:textColor="@color/dark" />
@@ -244,7 +241,6 @@
             android:layout_weight="0.8"
             android:background="@drawable/rounded_corner_middle"
             android:gravity="center_vertical|center_horizontal"
-            android:onClick="onAltitudeClick"
             android:textAlignment="center"
             android:textColor="@color/dark" />
 

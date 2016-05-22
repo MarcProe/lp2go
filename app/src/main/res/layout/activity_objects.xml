@@ -21,7 +21,7 @@
             android:layout_marginLeft="0dp"
             android:layout_marginTop="0dp" />
 
-        <org.librepilot.lp2go.ui.objectbrowser.list.ObjectsExpandableListView
+        <org.librepilot.lp2go.ui.objectbrowser.ObjectsExpandableListView
             android:id="@+id/elvObjects"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />

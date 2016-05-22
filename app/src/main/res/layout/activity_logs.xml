@@ -33,6 +33,7 @@
                 android:orientation="horizontal">
 
                 <ImageButton
+                    android:id="@+id/imgLogStart"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -42,6 +43,7 @@
                     android:src="@drawable/ic_cloud_download_96dp" />
 
                 <ImageButton
+                    android:id="@+id/imgLogStop"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -51,6 +53,7 @@
                     android:src="@drawable/ic_cloud_done_96dp" />
 
                 <ImageButton
+                    android:id="@+id/imgLogShare"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
