@@ -16,7 +16,7 @@ public class ViewControllerScope extends ViewController {
         super(activity, title, localSettingsVisible, flightSettingsVisible);
         activity.mViews.put(VIEW_SCOPE,
                 activity.getLayoutInflater().inflate(R.layout.activity_scope, null));
-        activity.setContentView(activity.mViews.get(VIEW_SCOPE)); //Logs
+        activity.setContentView(activity.mViews.get(VIEW_SCOPE));
         {
             lchScope = (LineChart) findViewById(R.id.scope_chart);
             lchScope.setDrawGridBackground(false);
