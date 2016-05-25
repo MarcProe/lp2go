@@ -3,6 +3,7 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 23
     buildToolsVersion '23.0.3'
+
     defaultConfig {
         minSdkVersion 16
         //noinspection OldTargetApi
@@ -10,8 +11,8 @@ android {
 
         multiDexEnabled true
 
-        versionName '0.2.6.18'
-        versionCode 20618
+        versionName '0.2.6.20'
+        versionCode 20620
     }
 
     dexOptions {
@@ -82,8 +83,12 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.4.0'
     compile 'com.android.support:multidex:1.0.1'
-    compile 'com.google.android.gms:play-services-appindexing:9.0.0'
-    compile 'com.google.android.gms:play-services:9.0.0'
+    //compile 'com.google.android.gms:play-services-maps:9.0.0'
+    //compile 'com.google.android.gms:play-services-appindexing:9.0.0'
+    //compile 'com.google.android.gms:play-services:9.0.0'
+    compile 'com.google.android.gms:play-services-maps:8.4.0'
+    compile 'com.google.android.gms:play-services-appindexing:8.4.0'
+    compile 'com.google.android.gms:play-services:8.4.0'
     compile 'com.nbsp:library:1.08'
     compile 'com.github.PhilJay:MPAndroidChart:v2.2.4'
 }
