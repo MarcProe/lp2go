@@ -48,14 +48,12 @@
             android:configChanges="orientation|screenSize|keyboard|keyboardHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name="org.librepilot.lp2go.MainActivity"
             android:configChanges="orientation|screenSize|keyboard|keyboardHidden">
-
         </activity>
         <provider
             android:name="android.support.v4.content.FileProvider"
