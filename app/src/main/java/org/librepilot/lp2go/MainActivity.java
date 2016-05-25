@@ -72,6 +72,7 @@ import org.librepilot.lp2go.controller.ViewControllerAbout;
 import org.librepilot.lp2go.controller.ViewControllerDebug;
 import org.librepilot.lp2go.controller.ViewControllerLogs;
 import org.librepilot.lp2go.controller.ViewControllerMain;
+import org.librepilot.lp2go.controller.ViewControllerMainAnimatorViewSetter;
 import org.librepilot.lp2go.controller.ViewControllerMap;
 import org.librepilot.lp2go.controller.ViewControllerObjects;
 import org.librepilot.lp2go.controller.ViewControllerPid;
@@ -464,6 +465,8 @@ public class MainActivity extends AppCompatActivity {
                         View.INVISIBLE);
         ViewController mVcMain =
                 new ViewControllerMain(this, R.string.menu_main, View.VISIBLE, View.VISIBLE);
+        ((ViewControllerMainAnimatorViewSetter) mVcMain).setTop(R.layout.activity_main_inc_health);
+        ((ViewControllerMainAnimatorViewSetter) mVcMain).setBottom(R.layout.activity_main_inc_info);
 
         mVcList = new ArrayList<ViewController>();
         mVcList.add(ViewController.VIEW_MAIN, mVcMain);

@@ -27,16 +27,17 @@
             android:baselineAligned="false"
             android:orientation="horizontal">
 
-            <include
-                layout="@layout/activity_main_inc_health"
+            <ViewAnimator
+                android:id="@+id/main_top"
                 android:layout_width="fill_parent"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="0dp"
                 android:layout_marginTop="0dp"
                 android:layout_weight="1" />
 
-            <include
-                layout="@layout/activity_main_inc_info"
+
+            <ViewAnimator
+                android:id="@+id/main_bottom"
                 android:layout_width="fill_parent"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="0dp"
