@@ -1,3 +1,18 @@
+/*
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+ * for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ */
 package org.librepilot.lp2go.controller;
 
 import android.widget.TextView;
@@ -12,14 +27,12 @@ import org.librepilot.lp2go.helper.MapHelper;
 import org.librepilot.lp2go.helper.SettingsHelper;
 import org.librepilot.lp2go.uavtalk.UAVTalkMissingObjectException;
 
-/**
- * Created by Marcus on 19.05.2016.
- */
+
 public class ViewControllerMap extends ViewController {
-    private final MapHelper mMapHelper;
-    private final MapView mMapView;
     private Float mFcCurrentLat = null;
     private Float mFcCurrentLng = null;
+    private MapHelper mMapHelper;
+    private MapView mMapView;
     private TextView txtLatitude;
     private TextView txtLongitude;
     private TextView txtMapGPS;
@@ -28,29 +41,21 @@ public class ViewControllerMap extends ViewController {
     public ViewControllerMap(MainActivity activity, int title, int localSettingsVisible,
                              int flightSettingsVisible) {
         super(activity, title, localSettingsVisible, flightSettingsVisible);
-        activity.mViews
+
+        getMainActivity().mViews
                 .put(VIEW_MAP, activity.getLayoutInflater().inflate(R.layout.activity_map, null));
-        activity.setContentView(activity.mViews.get(VIEW_MAP)); //Map
-        {
-            mMapView = (MapView) findViewById(R.id.map);
-            mMapHelper = new MapHelper(activity);
-
-            if (mMapView != null) {
-                mMapView.onCreate(null);
-
-                mMapView.getMapAsync(mMapHelper);
-            }
-
-            txtLatitude = (TextView) findViewById(R.id.txtLatitude);
-            txtLongitude = (TextView) findViewById(R.id.txtLongitude);
-            txtMapGPS = (TextView) findViewById(R.id.txtMapGPS);
-            txtMapGPSSatsInView = (TextView) findViewById(R.id.txtMapGPSSatsInView);
-        }
+        getMainActivity().setContentView(activity.mViews.get(VIEW_MAP));
+        init();
     }
 
     @Override
     public void enter(int view) {
-        super.enter(view);
+        enter(view, false);
+    }
+
+    @Override
+    public void enter(int view, boolean isSubwindow) {
+        super.enter(view, isSubwindow);
         mMapView.onResume();    //(re)activate the Map
     }
 
@@ -58,6 +63,25 @@ public class ViewControllerMap extends ViewController {
     public void leave() {
         super.leave();
         mMapView.onPause();
+    }
+
+    @Override
+    public void init() {
+        super.init();
+
+        mMapView = (MapView) findViewById(R.id.map);
+        mMapHelper = new MapHelper(getMainActivity());
+
+        if (mMapView != null) {
+            mMapView.onCreate(null);
+
+            mMapView.getMapAsync(mMapHelper);
+        }
+
+        txtLatitude = (TextView) findViewById(R.id.txtLatitude);
+        txtLongitude = (TextView) findViewById(R.id.txtLongitude);
+        txtMapGPS = (TextView) findViewById(R.id.txtMapGPS);
+        txtMapGPSSatsInView = (TextView) findViewById(R.id.txtMapGPSSatsInView);
     }
 
     @Override

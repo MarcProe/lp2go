@@ -19,12 +19,12 @@
             android:layout_width="fill_parent"
             android:layout_height="64dp"
             android:layout_marginLeft="0dp"
-            android:layout_marginTop="0dp" />
+            android:layout_marginTop="0dp"/>
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+                      android:layout_width="match_parent"
+                      android:layout_height="match_parent"
+                      android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -64,7 +64,7 @@
                                 android:gravity="center|center_vertical|center_horizontal"
                                 android:text="Altitude P"
                                 android:textAppearance="?android:attr/textAppearanceSmall"
-                                android:textSize="20sp" />
+                                android:textSize="20sp"/>
 
                             <org.librepilot.lp2go.ui.PidTextView
                                 android:id="@+id/txtVerticalAltitudeProportional"
@@ -74,7 +74,7 @@
                                 android:layout_weight="1"
                                 android:gravity="center|center_vertical|center_horizontal"
                                 android:textAppearance="?android:attr/textAppearanceLarge"
-                                android:textSize="25sp" />
+                                android:textSize="25sp"/>
                         </LinearLayout>
 
                         <LinearLayout
@@ -93,7 +93,7 @@
                                 android:gravity="center|center_vertical|center_horizontal"
                                 android:text="Velocity P"
                                 android:textAppearance="?android:attr/textAppearanceSmall"
-                                android:textSize="20sp" />
+                                android:textSize="20sp"/>
 
                             <org.librepilot.lp2go.ui.PidTextView
                                 android:id="@+id/txtVerticalVelocityProportional"
@@ -103,7 +103,7 @@
                                 android:layout_weight="1"
                                 android:gravity="center|center_vertical|center_horizontal"
                                 android:textAppearance="?android:attr/textAppearanceLarge"
-                                android:textSize="25sp" />
+                                android:textSize="25sp"/>
 
                         </LinearLayout>
 
@@ -123,7 +123,7 @@
                                 android:gravity="center|center_vertical|center_horizontal"
                                 android:text="Velocity I"
                                 android:textAppearance="?android:attr/textAppearanceSmall"
-                                android:textSize="20sp" />
+                                android:textSize="20sp"/>
 
                             <org.librepilot.lp2go.ui.PidTextView
                                 android:id="@+id/txtVerticalVelocityIntegral"
@@ -133,7 +133,7 @@
                                 android:layout_weight="1"
                                 android:gravity="center|center_vertical|center_horizontal"
                                 android:textAppearance="?android:attr/textAppearanceLarge"
-                                android:textSize="25sp" />
+                                android:textSize="25sp"/>
                         </LinearLayout>
 
                         <LinearLayout
@@ -152,7 +152,7 @@
                                 android:gravity="center|center_vertical|center_horizontal"
                                 android:text="Velocity D"
                                 android:textAppearance="?android:attr/textAppearanceSmall"
-                                android:textSize="20sp" />
+                                android:textSize="20sp"/>
 
                             <org.librepilot.lp2go.ui.PidTextView
                                 android:id="@+id/txtVerticalVelocityDerivative"
@@ -162,7 +162,7 @@
                                 android:layout_weight="1"
                                 android:gravity="center|center_vertical|center_horizontal"
                                 android:textAppearance="?android:attr/textAppearanceLarge"
-                                android:textSize="25sp" />
+                                android:textSize="25sp"/>
                         </LinearLayout>
 
                         <LinearLayout
@@ -181,7 +181,7 @@
                                 android:gravity="center|center_vertical|center_horizontal"
                                 android:text="Velocity β"
                                 android:textAppearance="?android:attr/textAppearanceSmall"
-                                android:textSize="20sp" />
+                                android:textSize="20sp"/>
 
                             <org.librepilot.lp2go.ui.PidTextView
                                 android:id="@+id/txtVerticalVelocityBeta"
@@ -191,7 +191,7 @@
                                 android:layout_weight="1"
                                 android:gravity="center|center_vertical|center_horizontal"
                                 android:textAppearance="?android:attr/textAppearanceLarge"
-                                android:textSize="25sp" />
+                                android:textSize="25sp"/>
                         </LinearLayout>
                     </LinearLayout>
 
@@ -228,7 +228,7 @@
                                 android:gravity="center|center_vertical|center_horizontal"
                                 android:text="Exponential"
                                 android:textAppearance="?android:attr/textAppearanceSmall"
-                                android:textSize="20sp" />
+                                android:textSize="20sp"/>
 
                             <org.librepilot.lp2go.ui.PidTextView
                                 android:id="@+id/txtVerticalExponential"
@@ -238,7 +238,7 @@
                                 android:layout_weight="1"
                                 android:gravity="center|center_vertical|center_horizontal"
                                 android:textAppearance="?android:attr/textAppearanceLarge"
-                                android:textSize="25sp" />
+                                android:textSize="25sp"/>
 
                         </LinearLayout>
 
@@ -258,7 +258,7 @@
                                 android:gravity="center|center_vertical|center_horizontal"
                                 android:text="Thrust Rate"
                                 android:textAppearance="?android:attr/textAppearanceSmall"
-                                android:textSize="20sp" />
+                                android:textSize="20sp"/>
 
                             <org.librepilot.lp2go.ui.PidTextView
                                 android:id="@+id/txtVerticalThrustRate"
@@ -268,7 +268,7 @@
                                 android:layout_weight="1"
                                 android:gravity="center|center_vertical|center_horizontal"
                                 android:textAppearance="?android:attr/textAppearanceLarge"
-                                android:textSize="25sp" />
+                                android:textSize="25sp"/>
 
                         </LinearLayout>
                     </LinearLayout>
@@ -289,7 +289,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:contentDescription="@string/DOWNLOAD_PID_FROM_FC"
-                    android:src="@drawable/ic_cloud_download_96dp" />
+                    android:src="@drawable/ic_cloud_download_96dp"/>
 
                 <ImageView
                     android:id="@+id/imgVPidUpload"
@@ -297,7 +297,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:contentDescription="@string/UPLOAD_PID_TO_FC"
-                    android:src="@drawable/ic_cloud_upload_128dp" />
+                    android:src="@drawable/ic_cloud_upload_128dp"/>
 
                 <ImageView
                     android:id="@+id/imgVPidSave"
@@ -305,7 +305,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:contentDescription="@string/SAVE_PID_PERSISTENT"
-                    android:src="@drawable/ic_cloud_done_96dp" />
+                    android:src="@drawable/ic_cloud_done_96dp"/>
 
             </LinearLayout>
         </LinearLayout>
@@ -321,6 +321,6 @@
         android:choiceMode="singleChoice"
         android:divider="@drawable/list_divider"
         android:dividerHeight="1dp"
-        android:listSelector="@drawable/list_selector" />
+        android:listSelector="@drawable/list_selector"/>
 
 </android.support.v4.widget.DrawerLayout>

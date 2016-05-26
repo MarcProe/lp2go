@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/toolbar"
-    android:layout_width="match_parent"
-    android:layout_height="64dp">
+                                   android:id="@+id/toolbar"
+                                   android:layout_width="match_parent"
+                                   android:layout_height="64dp">
 
     <LinearLayout
         android:layout_width="30dp"
@@ -19,7 +19,7 @@
             android:layout_weight="1"
             android:contentDescription="Flight Telemetry Handshake"
             android:rotation="180"
-            android:src="@drawable/ic_wifi_tethering_black_24dp" />
+            android:src="@drawable/ic_wifi_tethering_black_24dp"/>
 
         <ImageView
             android:id="@+id/imgGroundTelemetry"
@@ -27,7 +27,7 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:contentDescription="Ground Telemetry Handshake"
-            android:src="@drawable/ic_wifi_tethering_black_24dp" />
+            android:src="@drawable/ic_wifi_tethering_black_24dp"/>
     </LinearLayout>
 
     <ImageView
@@ -36,7 +36,7 @@
         android:layout_height="fill_parent"
         android:layout_gravity="right"
         android:contentDescription="Serial Connection State"
-        android:src="@drawable/ic_warning_black_24dp" />
+        android:src="@drawable/ic_warning_black_24dp"/>
 
     <ImageView
         android:id="@+id/imgUavoSanity"
@@ -50,7 +50,7 @@
         android:layout_marginTop="4dp"
         android:contentDescription="UAVO Sanity"
         android:onClick="onObjectsSanityIndicatorClick"
-        android:src="@drawable/ic_now_widgets_32dp" />
+        android:src="@drawable/ic_now_widgets_32dp"/>
 
     <ImageView
         android:id="@+id/imgToolbarFlightSettings"
@@ -62,7 +62,7 @@
         android:layout_marginTop="4dp"
         android:contentDescription="Flight Settings"
         android:onClick="onToolbarFlightSettingsClick"
-        android:src="@drawable/ic_build_black_32dp" />
+        android:src="@drawable/ic_build_black_32dp"/>
 
     <ImageView
         android:id="@+id/imgToolbarLocalSettings"
@@ -74,5 +74,5 @@
         android:layout_marginTop="4dp"
         android:contentDescription="Local Settings"
         android:onClick="onToolbarLocalSettingsClick"
-        android:src="@drawable/ic_settings_black_32dp" />
+        android:src="@drawable/ic_settings_black_32dp"/>
 </android.support.v7.widget.Toolbar>

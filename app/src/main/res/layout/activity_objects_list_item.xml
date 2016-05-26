@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="55dip"
-    android:orientation="horizontal">
+              android:layout_width="match_parent"
+              android:layout_height="55dip"
+              android:orientation="horizontal">
 
     <TextView
         android:id="@+id/txtListItemLabel"
@@ -14,7 +14,7 @@
         android:paddingLeft="?android:attr/expandableListPreferredChildPaddingLeft"
         android:paddingTop="5dp"
         android:singleLine="true"
-        android:textSize="17sp" />
+        android:textSize="17sp"/>
 
     <TextView
         android:id="@+id/txtListItemValue"
@@ -26,7 +26,7 @@
         android:paddingLeft="?android:attr/expandableListPreferredChildPaddingLeft"
         android:paddingTop="5dp"
         android:singleLine="true"
-        android:textSize="17sp" />
+        android:textSize="17sp"/>
 
     <ImageView
         android:id="@+id/imgListChildIcon"

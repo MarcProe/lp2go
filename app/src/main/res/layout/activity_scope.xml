@@ -19,7 +19,7 @@
             android:layout_width="fill_parent"
             android:layout_height="64dp"
             android:layout_marginLeft="0dp"
-            android:layout_marginTop="0dp" />
+            android:layout_marginTop="0dp"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -30,7 +30,7 @@
                 android:id="@+id/scope_chart"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="8" />
+                android:layout_weight="8"/>
 
         </LinearLayout>
     </LinearLayout>
@@ -44,6 +44,6 @@
         android:choiceMode="singleChoice"
         android:divider="@drawable/list_divider"
         android:dividerHeight="1dp"
-        android:listSelector="@drawable/list_selector" />
+        android:listSelector="@drawable/list_selector"/>
 
 </android.support.v4.widget.DrawerLayout>

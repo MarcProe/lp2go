@@ -58,10 +58,10 @@ public class ViewControllerAbout extends ViewController implements View.OnClickL
         if (getMainActivity().menDebug == null) {
             getMainActivity().menDebug =
                     new MenuItem(getString(R.string.menu_debug), R.drawable.ic_cancel_128dp);
-            getMainActivity().initSlider(null);
+            getMainActivity().initSlider();
         } else {
             getMainActivity().menDebug = null;
-            getMainActivity().initSlider(null);
+            getMainActivity().initSlider();
         }
     }
 

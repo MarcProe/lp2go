@@ -19,12 +19,12 @@
             android:layout_width="fill_parent"
             android:layout_height="64dp"
             android:layout_marginLeft="0dp"
-            android:layout_marginTop="0dp" />
+            android:layout_marginTop="0dp"/>
 
         <org.librepilot.lp2go.ui.objectbrowser.ObjectsExpandableListView
             android:id="@+id/elvObjects"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"/>
 
     </LinearLayout>
 
@@ -37,6 +37,6 @@
         android:choiceMode="singleChoice"
         android:divider="@drawable/list_divider"
         android:dividerHeight="1dp"
-        android:listSelector="@drawable/list_selector" />
+        android:listSelector="@drawable/list_selector"/>
 
 </android.support.v4.widget.DrawerLayout>

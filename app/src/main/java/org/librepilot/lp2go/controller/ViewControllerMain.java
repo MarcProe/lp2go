@@ -1,3 +1,18 @@
+/*
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+ * for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ */
 package org.librepilot.lp2go.controller;
 
 import android.app.AlertDialog;
@@ -83,14 +98,7 @@ public class ViewControllerMain extends ViewController implements View.OnClickLi
         mTopLayout = R.layout.activity_main_inc_empty;
         mBottomLayout = R.layout.activity_main_inc_empty;
 
-        ma.mViews.put(VIEW_MAIN, ma.getLayoutInflater().inflate(R.layout.activity_main, null));
-        ma.setContentView(ma.mViews.get(VIEW_MAIN));  //Main
-
-        mTopAnimator = (ViewAnimator) findViewById(R.id.main_top);
-        mBottomAnimator = (ViewAnimator) findViewById(R.id.main_bottom);
-
-        setTop(mTopLayout);
-        setBottom(mBottomLayout);
+        init();
 
         mFlightSettingsView = View.inflate(ma, R.layout.alert_health_settings_flight, null);
 
@@ -110,20 +118,24 @@ public class ViewControllerMain extends ViewController implements View.OnClickLi
     }
 
     @Override
-    public void setTop(int topLayoutId) {
-        mTopLayout = topLayoutId;
-
-        final View top = LayoutInflater.from(getMainActivity()).inflate(mTopLayout, null);
-        final View old = mTopAnimator.getCurrentView();
-
-        mTopAnimator.addView(top);
-        mTopAnimator.showNext();
-        mTopAnimator.removeView(old);
+    public void setBottom(int bottomLayoutId) {
+        setBottomNoInit(bottomLayoutId);
         init();
     }
 
     @Override
-    public void setBottom(int bottomLayoutId) {
+    public void setTop(int topLayoutId) {
+        setTopNoInit(topLayoutId);
+        init();
+    }
+
+    @Override
+    public void setBoth(int topLayoutId, int bottomLayoutId) {
+        setTopNoInit(topLayoutId);
+        setBottom(bottomLayoutId);
+    }
+
+    private void setBottomNoInit(int bottomLayoutId) {
         mBottomLayout = bottomLayoutId;
 
         final View old = mBottomAnimator.getCurrentView();
@@ -140,11 +152,56 @@ public class ViewControllerMain extends ViewController implements View.OnClickLi
         mBottomAnimator.addView(bottom);
         mBottomAnimator.showNext();
         mBottomAnimator.removeView(old);
-
-        init();
     }
 
-    private void init() {
+    private void setTopNoInit(int topLayoutId) {
+        mTopLayout = topLayoutId;
+
+        final View top = LayoutInflater.from(getMainActivity()).inflate(mTopLayout, null);
+        final View old = mTopAnimator.getCurrentView();
+
+        mTopAnimator.addView(top);
+        mTopAnimator.showNext();
+        mTopAnimator.removeView(old);
+    }
+
+    @Override
+    public void enter(int view) {
+        super.enter(view);
+        if (mTopAnimator.getCurrentView().getId() == R.id.root_main_inc_map
+                || (mBottomAnimator.getCurrentView() != null
+                && mBottomAnimator.getCurrentView().getId() == R.id.root_main_inc_map)) {
+            getMainActivity().mVcList.get(ViewController.VIEW_MAP).enter(view, true);
+
+        }
+    }
+
+    @Override
+    public void leave() {
+        super.leave();
+        if (mTopAnimator.getCurrentView().getId() == R.id.root_main_inc_map
+                || (mBottomAnimator.getCurrentView() != null
+                && mBottomAnimator.getCurrentView().getId() == R.id.root_main_inc_map)) {
+            getMainActivity().mVcList.get(ViewController.VIEW_MAP).leave();
+
+        }
+    }
+
+    @Override
+    public void init() {
+        super.init();
+
+        MainActivity ma = getMainActivity();
+
+        ma.mViews.put(VIEW_MAIN, ma.getLayoutInflater().inflate(R.layout.activity_main, null));
+        ma.setContentView(ma.mViews.get(VIEW_MAIN));  //Main
+
+        mTopAnimator = (ViewAnimator) findViewById(R.id.main_top);
+        mBottomAnimator = (ViewAnimator) findViewById(R.id.main_bottom);
+
+        setTopNoInit(mTopLayout);
+        setBottomNoInit(mBottomLayout);
+
         if (mTopAnimator.getCurrentView().getId() == R.id.root_main_inc_health
                 || (mBottomAnimator.getCurrentView() != null
                 && mBottomAnimator.getCurrentView().getId() == R.id.root_main_inc_health)) {
@@ -207,7 +264,12 @@ public class ViewControllerMain extends ViewController implements View.OnClickLi
 
             txtModeAssistedControl = (TextView) findViewById(R.id.txtModeAssistedControl);
         }
+        if (mTopAnimator.getCurrentView().getId() == R.id.root_main_inc_map
+                || (mBottomAnimator.getCurrentView() != null
+                && mBottomAnimator.getCurrentView().getId() == R.id.root_main_inc_map)) {
+            getMainActivity().mVcList.get(ViewController.VIEW_MAP).init();
 
+        }
     }
 
     @Override
@@ -376,6 +438,13 @@ public class ViewControllerMain extends ViewController implements View.OnClickLi
                     getData("FlightStatus", "FlightModeAssist", true)
                             .toString());
         }
+
+        if (mTopAnimator.getCurrentView().getId() == R.id.root_main_inc_map
+                || (mBottomAnimator.getCurrentView() != null
+                && mBottomAnimator.getCurrentView().getId() == R.id.root_main_inc_map)) {
+            getMainActivity().mVcList.get(ViewController.VIEW_MAP).update();
+
+        }
         getMainActivity().mFcDevice.requestObject("FlightBatteryState");
         getMainActivity().mFcDevice.requestObject("SystemStats");
     }
@@ -430,6 +499,13 @@ public class ViewControllerMain extends ViewController implements View.OnClickLi
             txtModeNum.setText(R.string.EMPTY_STRING);
             txtModeFlightMode.setText(R.string.EMPTY_STRING);
             txtModeAssistedControl.setText(R.string.EMPTY_STRING);
+        }
+
+        if (mTopAnimator.getCurrentView().getId() == R.id.root_main_inc_map
+                || (mBottomAnimator.getCurrentView() != null
+                && mBottomAnimator.getCurrentView().getId() == R.id.root_main_inc_map)) {
+            getMainActivity().mVcList.get(ViewController.VIEW_MAP).reset();
+
         }
     }
 

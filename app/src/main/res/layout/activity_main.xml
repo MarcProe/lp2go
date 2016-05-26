@@ -15,16 +15,16 @@
                   tools:context="org.librepilot.lp2go.MainActivity">
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+                      android:layout_width="match_parent"
+                      android:layout_height="match_parent"
+                      android:orientation="vertical">
 
             <include
                 layout="@layout/activity_toolbar_inc_settings"
                 android:layout_width="fill_parent"
                 android:layout_height="64dp"
                 android:layout_marginLeft="0dp"
-                android:layout_marginTop="0dp" />
+                android:layout_marginTop="0dp"/>
 
 
             <ViewAnimator
@@ -33,7 +33,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginLeft="0dp"
                 android:layout_marginTop="0dp"
-                android:layout_weight="1" />
+                android:layout_weight="1"/>
 
 
             <ViewAnimator
@@ -42,7 +42,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginLeft="0dp"
                 android:layout_marginTop="0dp"
-                android:layout_weight="1" />
+                android:layout_weight="1"/>
 
         </LinearLayout>
 
@@ -57,6 +57,6 @@
         android:choiceMode="singleChoice"
         android:divider="@drawable/list_divider"
         android:dividerHeight="1dp"
-        android:listSelector="@drawable/list_selector" />
+        android:listSelector="@drawable/list_selector"/>
 
 </android.support.v4.widget.DrawerLayout>

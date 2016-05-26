@@ -130,12 +130,12 @@ public class MainActivity extends AppCompatActivity {
     public boolean mDoReconnect = false;
     public FcDevice mFcDevice;
     public PollThread mPollThread = null;
+    public ArrayList<ViewController> mVcList;
     public Map<Integer, View> mViews;
     public Map<String, UAVTalkXMLObject> mXmlObjects = null;
     public MenuItem menDebug = null;
     ImageView imgFlightTelemetry;
     ImageView imgGroundTelemetry;
-    ArrayList<ViewController> mVcList;
     private ConnectionThread mConnectionThread = null;
     private android.hardware.usb.UsbDevice mDevice;
     private UsbDeviceConnection mDeviceConnection;
@@ -328,7 +328,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void initSlider(Bundle savedInstanceState) {
+    public void initSlider() {
         mTitle = mDrawerTitle = getTitle();
         TypedArray navMenuIcons = getResources()
                 .obtainTypedArray(R.array.nav_drawer_icons);
@@ -465,8 +465,6 @@ public class MainActivity extends AppCompatActivity {
                         View.INVISIBLE);
         ViewController mVcMain =
                 new ViewControllerMain(this, R.string.menu_main, View.VISIBLE, View.VISIBLE);
-        ((ViewControllerMainAnimatorViewSetter) mVcMain).setTop(R.layout.activity_main_inc_health);
-        ((ViewControllerMainAnimatorViewSetter) mVcMain).setBottom(R.layout.activity_main_inc_info);
 
         mVcList = new ArrayList<ViewController>();
         mVcList.add(ViewController.VIEW_MAIN, mVcMain);
@@ -480,7 +478,14 @@ public class MainActivity extends AppCompatActivity {
         mVcList.add(ViewController.VIEW_DEBUG, mVcDebug);
         mVcList.add(ViewController.VIEW_SCOPE, mVcScope);
 
-        initSlider(savedInstanceState);
+        //((ViewControllerMainAnimatorViewSetter) mVcMain).setTop(R.layout.activity_main_inc_health);
+        //((ViewControllerMainAnimatorViewSetter) mVcMain).setBottom(R.layout.activity_main_inc_info);
+        //((ViewControllerMainAnimatorViewSetter) mVcMain).setBottom(R.layout.activity_main_inc_map);
+
+        ((ViewControllerMainAnimatorViewSetter) mVcMain)
+                .setBoth(R.layout.activity_main_inc_map, R.layout.activity_main_inc_info);
+
+        initSlider();
 
         initWarnDialog().show();
     }
@@ -496,7 +501,9 @@ public class MainActivity extends AppCompatActivity {
         super.onConfigurationChanged(newConfig);
         mDrawerToggle.onConfigurationChanged(newConfig);
 
+        mVcList.get(mCurrentView).init();
         displayView(mCurrentView);
+        initSlider();
     }
 
     @Override
@@ -633,7 +640,7 @@ public class MainActivity extends AppCompatActivity {
         if (mCurrentView != p) {
             mCurrentView = p;
             super.setContentView(v);
-            initSlider(null);
+            initSlider();
         }
     }
 
@@ -647,10 +654,6 @@ public class MainActivity extends AppCompatActivity {
 
         imgSerial = (ImageView) findViewById(R.id.imgSerial);
         imgUavoSanity = (ImageView) findViewById(R.id.imgUavoSanity);
-
-        //imgPacketsGood = (ImageView) findViewById(R.id.imgPacketsGood);
-        //imgPacketsBad = (ImageView) findViewById(R.id.imgPacketsBad);
-        //imgPacketsUp = (ImageView) findViewById(R.id.imgPacketsUp);
 
         imgGroundTelemetry = (ImageView) findViewById(R.id.imgGroundTelemetry);
         imgFlightTelemetry = (ImageView) findViewById(R.id.imgFlightTelemetry);

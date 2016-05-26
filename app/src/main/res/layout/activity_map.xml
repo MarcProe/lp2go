@@ -19,90 +19,13 @@
             android:layout_width="fill_parent"
             android:layout_height="64dp"
             android:layout_marginLeft="0dp"
-            android:layout_marginTop="0dp" />
+            android:layout_marginTop="0dp"/>
 
-        <LinearLayout
+        <include
+            layout="@layout/activity_main_inc_map"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="match_parent"/>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/txtMapGPS"
-                    android:layout_width="0dp"
-                    android:layout_height="fill_parent"
-                    android:layout_margin="1dp"
-                    android:layout_weight="0.75"
-                    android:background="@drawable/rounded_corner_unini"
-                    android:gravity="center_vertical|center_horizontal"
-                    android:text="@string/GPS"
-                    android:textAlignment="center"
-                    android:textColor="@color/light" />
-
-                <TextView
-                    android:id="@+id/txtMapGPSSatsInView"
-                    android:layout_width="0dp"
-                    android:layout_height="fill_parent"
-                    android:layout_margin="1dp"
-                    android:layout_weight="0.25"
-                    android:background="@drawable/rounded_corner_right"
-                    android:gravity="center_vertical|center_horizontal"
-                    android:text="0"
-                    android:textAlignment="center"
-                    android:textColor="@color/dark" />
-
-                <TextView
-                    android:id="@+id/txtLatitude"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="1dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/rounded_corner_left"
-                    android:ellipsize="end"
-                    android:padding="1dp"
-                    android:singleLine="true"
-                    android:text="32.154599"
-                    android:textAlignment="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge" />
-
-                <TextView
-                    android:id="@+id/txtLongitude"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="1dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/rounded_corner_right"
-                    android:ellipsize="end"
-                    android:padding="1dp"
-                    android:singleLine="true"
-                    android:text="-110.827369"
-                    android:textAlignment="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge" />
-
-            </LinearLayout>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <com.google.android.gms.maps.MapView
-                    android:id="@+id/map"
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:apiKey="AIzaSyCE91uHoVzA_-mxPer8g5sU7WL2jTdQDzo" />
-
-            </FrameLayout>
-        </LinearLayout>
     </LinearLayout>
 
     <ListView
@@ -114,6 +37,6 @@
         android:choiceMode="singleChoice"
         android:divider="@drawable/list_divider"
         android:dividerHeight="1dp"
-        android:listSelector="@drawable/list_selector" />
+        android:listSelector="@drawable/list_selector"/>
 
 </android.support.v4.widget.DrawerLayout>

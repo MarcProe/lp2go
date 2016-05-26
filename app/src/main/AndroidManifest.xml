@@ -42,7 +42,8 @@
         android:theme="@style/AppTheme">
         tools:replace="android:icon,android:label">
 
-    <uses-library android:name="com.google.android.maps" />
+        <uses-library android:name="com.google.android.maps"/>
+
         <activity
             android:name="org.librepilot.lp2go.SplashActivity"
             android:configChanges="orientation|screenSize|keyboard|keyboardHidden">
@@ -53,7 +54,11 @@
         </activity>
         <activity
             android:name="org.librepilot.lp2go.MainActivity"
+
             android:configChanges="orientation|screenSize|keyboard|keyboardHidden">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+            </intent-filter>
         </activity>
         <provider
             android:name="android.support.v4.content.FileProvider"

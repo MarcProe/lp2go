@@ -49,24 +49,32 @@ public abstract class ViewController {
     }
 
     public void enter(int view) {
+        enter(view, false);
+    }
 
-        mActivity.setContentView(mActivity.mViews.get(view), view);
-        //mActivity.setTitle(mActivity.getString(title));
-        ActionBar ab = mActivity.getSupportActionBar();
-        if (ab != null) {
-            ab.setTitle(mTitle);
+    public void enter(int view, boolean isSubwindow) {
+
+        if (!isSubwindow) {
+
+            mActivity.setContentView(mActivity.mViews.get(view), view);
+            //mActivity.setTitle(mActivity.getString(title));
+            ActionBar ab = mActivity.getSupportActionBar();
+            if (ab != null) {
+                ab.setTitle(mTitle);
+            }
+            mActivity.imgToolbarFlightSettings =
+                    (ImageView) findViewById(R.id.imgToolbarFlightSettings);
+            if (mActivity.imgToolbarFlightSettings != null) {
+                mActivity.imgToolbarFlightSettings.setVisibility(mFlightSettingsVisible);
+            }
+            mActivity.imgToolbarLocalSettings =
+                    (ImageView) findViewById(R.id.imgToolbarLocalSettings);
+            if (mActivity.imgToolbarLocalSettings != null) {
+                mActivity.imgToolbarLocalSettings.setVisibility(mLocalSettingsVisible);
+            }
+            mActivity.imgSerial = (ImageView) findViewById(R.id.imgSerial);
+            mActivity.imgUavoSanity = (ImageView) findViewById(R.id.imgUavoSanity);
         }
-        mActivity.imgToolbarFlightSettings =
-                (ImageView) findViewById(R.id.imgToolbarFlightSettings);
-        if (mActivity.imgToolbarFlightSettings != null) {
-            mActivity.imgToolbarFlightSettings.setVisibility(mFlightSettingsVisible);
-        }
-        mActivity.imgToolbarLocalSettings = (ImageView) findViewById(R.id.imgToolbarLocalSettings);
-        if (mActivity.imgToolbarLocalSettings != null) {
-            mActivity.imgToolbarLocalSettings.setVisibility(mLocalSettingsVisible);
-        }
-        mActivity.imgSerial = (ImageView) findViewById(R.id.imgSerial);
-        mActivity.imgUavoSanity = (ImageView) findViewById(R.id.imgUavoSanity);
     }
 
     protected View findViewById(int res) {
@@ -82,6 +90,10 @@ public abstract class ViewController {
     }
 
     public void leave() {
+    }
+
+    public void init() {
+
     }
 
     public void update() {
