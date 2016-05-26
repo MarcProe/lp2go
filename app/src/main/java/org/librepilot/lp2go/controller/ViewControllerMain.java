@@ -25,6 +25,9 @@ import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
+import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewAnimator;
@@ -41,8 +44,9 @@ import org.librepilot.lp2go.ui.alertdialog.EnumInputAlertDialog;
 import org.librepilot.lp2go.ui.alertdialog.NumberInputAlertDialog;
 
 public class ViewControllerMain extends ViewController implements View.OnClickListener,
-        ViewControllerMainAnimatorViewSetter {
+        ViewControllerMainAnimatorViewSetter, CompoundButton.OnCheckedChangeListener {
     private final View mFlightSettingsView;
+    private final View mLocalSettingsView;
     private Drawable imgPacketsBad;
     private Drawable imgPacketsGood;
     private Drawable imgPacketsUp;
@@ -50,6 +54,9 @@ public class ViewControllerMain extends ViewController implements View.OnClickLi
     private int mBottomLayout;
     private ViewAnimator mTopAnimator;
     private int mTopLayout;
+    private Spinner spiBottomRight;
+    private Spinner spiTopLeft;
+    private Switch swiEnableText2Speech;
     private TextView txtAirspd;
     private TextView txtAltitude;
     private TextView txtAltitudeAccel;
@@ -100,7 +107,8 @@ public class ViewControllerMain extends ViewController implements View.OnClickLi
 
         init();
 
-        mFlightSettingsView = View.inflate(ma, R.layout.alert_health_settings_flight, null);
+        mFlightSettingsView = View.inflate(ma, R.layout.alert_main_settings_flight, null);
+        mLocalSettingsView = View.inflate(ma, R.layout.alert_main_settings_local, null);
 
         txtHealthAlertDialogBatteryCapacity =
                 (TextView) mFlightSettingsView
@@ -115,6 +123,13 @@ public class ViewControllerMain extends ViewController implements View.OnClickLi
                 (TextView) mFlightSettingsView
                         .findViewById(R.id.txtHealthAlertDialogFusionAlgorithm);
         txtHealthAlertDialogFusionAlgorithm.setOnClickListener(this);
+
+        spiTopLeft = SettingsHelper.initSpinner(R.id.spiTopLeftView, mLocalSettingsView,
+                null, R.array.main_elements, SettingsHelper.mTopLeftLayout);
+        spiBottomRight = SettingsHelper.initSpinner(R.id.spiBottomRightView, mLocalSettingsView,
+                null, R.array.main_elements, SettingsHelper.mBottomRightLayout);
+        swiEnableText2Speech = (Switch) mLocalSettingsView.findViewById(R.id.swiEnableText2Speech);
+        swiEnableText2Speech.setOnCheckedChangeListener(this);
     }
 
     @Override
@@ -133,6 +148,33 @@ public class ViewControllerMain extends ViewController implements View.OnClickLi
     public void setBoth(int topLayoutId, int bottomLayoutId) {
         setTopNoInit(topLayoutId);
         setBottom(bottomLayoutId);
+    }
+
+    @Override
+    public void setLayout() {
+        MainActivity ma = getMainActivity();
+
+        if (SettingsHelper.mTopLeftLayout.equals(ma.getString(R.string.main_element_health))) {
+            setTopNoInit(R.layout.activity_main_inc_health);
+        } else if (SettingsHelper.mTopLeftLayout.equals(ma.getString(R.string.main_element_info))) {
+            setTopNoInit(R.layout.activity_main_inc_info);
+        } else if (SettingsHelper.mTopLeftLayout.equals(ma.getString(R.string.main_element_map))) {
+            setTopNoInit(R.layout.activity_main_inc_map);
+        }
+
+        if (SettingsHelper.mBottomRightLayout.equals(ma.getString(R.string.main_element_health))) {
+            setBottomNoInit(R.layout.activity_main_inc_health);
+        } else if (SettingsHelper.mBottomRightLayout
+                .equals(ma.getString(R.string.main_element_info))) {
+            setBottomNoInit(R.layout.activity_main_inc_info);
+        } else if (SettingsHelper.mBottomRightLayout
+                .equals(ma.getString(R.string.main_element_map))) {
+            setBottomNoInit(R.layout.activity_main_inc_map);
+        }
+
+        init();
+        enter(ViewController.VIEW_MAIN);
+        getMainActivity().initSlider();
     }
 
     private void setBottomNoInit(int bottomLayoutId) {
@@ -442,6 +484,7 @@ public class ViewControllerMain extends ViewController implements View.OnClickLi
         if (mTopAnimator.getCurrentView().getId() == R.id.root_main_inc_map
                 || (mBottomAnimator.getCurrentView() != null
                 && mBottomAnimator.getCurrentView().getId() == R.id.root_main_inc_map)) {
+
             getMainActivity().mVcList.get(ViewController.VIEW_MAP).update();
 
         }
@@ -513,7 +556,7 @@ public class ViewControllerMain extends ViewController implements View.OnClickLi
     public void onToolbarFlightSettingsClick(View v) {
 
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getMainActivity());
-        dialogBuilder.setTitle(R.string.HEALTH_SETTINGS);
+        dialogBuilder.setTitle(R.string.FLIGHT_HEALTH_SETTINGS);
         dialogBuilder.setView(mFlightSettingsView);
 
         try {
@@ -543,39 +586,30 @@ public class ViewControllerMain extends ViewController implements View.OnClickLi
 
     @Override
     public void onToolbarLocalSettingsClick(View v) {
-        final MainActivity activity = getMainActivity();
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getMainActivity());
+        dialogBuilder.setTitle(R.string.LOCAL_HEALTH_SETTINGS);
+        dialogBuilder.setView(mLocalSettingsView);
 
-        final CharSequence[] items = {getString(R.string.ENABLE_TEXT2SPEECH)};
-        final boolean[] checked = {SettingsHelper.mText2SpeechEnabled};
-        AlertDialog dialog = new AlertDialog.Builder(activity)
-                .setTitle(R.string.SETTINGS)
-                .setMultiChoiceItems(items, checked,
-                        new DialogInterface.OnMultiChoiceClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int indexSelected,
-                                                boolean isChecked) {
-                                if (indexSelected == 0) { //first element of string array
-                                    SettingsHelper.mText2SpeechEnabled = isChecked;
-                                    activity.getTtsHelper()
-                                            .setEnabled(SettingsHelper.mText2SpeechEnabled);
-                                    activity.getPreferences(Context.MODE_PRIVATE).edit()
-                                            .putBoolean(getString(
-                                                    R.string.SETTINGS_TEXT2SPEECH_ENABLED,
-                                                    R.string.APP_ID),
-                                                    SettingsHelper.mText2SpeechEnabled)
-                                            .apply();
-                                }
-                            }
-                        })
-                .setPositiveButton(R.string.CLOSE_BUTTON,
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.dismiss();
-                            }
-                        })
-                .create();
-        dialog.show();
+
+        dialogBuilder.setPositiveButton(R.string.CLOSE_BUTTON,
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        SettingsHelper.mTopLeftLayout = spiTopLeft.getSelectedItem().toString();
+                        SettingsHelper.mBottomRightLayout =
+                                spiBottomRight.getSelectedItem().toString();
+                        SettingsHelper.saveSettings(getMainActivity());
+                        setLayout();
+                        dialog.dismiss();
+                    }
+                });
+
+        try {
+            ((ViewGroup) mLocalSettingsView.getParent()).removeView(mLocalSettingsView);
+        } catch (NullPointerException ignored) {
+        }
+        dialogBuilder.show();
+
     }
 
     private void onAltitudeClick(View v) {
@@ -676,5 +710,18 @@ public class ViewControllerMain extends ViewController implements View.OnClickLi
             SingleToast.show(ma, R.string.SEND_FAILED, Toast.LENGTH_SHORT);
         }
 
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        if (buttonView.getId() == R.id.swiEnableText2Speech) {
+            SettingsHelper.mText2SpeechEnabled = isChecked;
+            getMainActivity().getTtsHelper().setEnabled(SettingsHelper.mText2SpeechEnabled);
+            getMainActivity().getPreferences(Context.MODE_PRIVATE)
+                    .edit()
+                    .putBoolean(getString(R.string.SETTINGS_TEXT2SPEECH_ENABLED, R.string.APP_ID),
+                            SettingsHelper.mText2SpeechEnabled)
+                    .apply();
+        }
     }
 }

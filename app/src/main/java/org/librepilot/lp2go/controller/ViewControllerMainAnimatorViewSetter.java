@@ -22,4 +22,6 @@ public interface ViewControllerMainAnimatorViewSetter {
     void setTop(int topLayoutId);
 
     void setBoth(int topLayout, int bottomLayout);
+
+    void setLayout();
 }

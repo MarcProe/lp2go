@@ -50,7 +50,8 @@
     <string name="NO">No</string>
     <string name="SETTINGS">Settings</string>
     <string name="COLORFUL_VIEW">Colorful View</string>
-    <string name="HEALTH_SETTINGS">Health Settings</string>
+    <string name="FLIGHT_HEALTH_SETTINGS">Health Settings</string>
+    <string name="LOCAL_HEALTH_SETTINGS">Health Settings</string>
     <string name="CLOSE_BUTTON">Close</string>
     <string name="ENABLE_TEXT2SPEECH">Enable Text2Speech\n(Only arming state at the moment)</string>
     <string name="UAVO_MAYBE_TOO_FAST">UAVO problem.\nCheck OPLink connection and/or try reducing the serial link speed</string>

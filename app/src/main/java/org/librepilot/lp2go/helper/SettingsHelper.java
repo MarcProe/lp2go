@@ -18,6 +18,10 @@ package org.librepilot.lp2go.helper;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
 import org.librepilot.lp2go.MainActivity;
 import org.librepilot.lp2go.R;
@@ -25,37 +29,39 @@ import org.librepilot.lp2go.R;
 public class SettingsHelper {
     public static String mBluetoothDeviceAddress = null;
     public static String mBluetoothDeviceUsed = null;
+    public static String mBottomRightLayout;
     public static boolean mColorfulPid = false;
     public static boolean mColorfulVPid = false;
     public static String mLoadedUavo = null;
     public static int mSerialModeUsed = -1;
     public static boolean mText2SpeechEnabled = false;
+    public static String mTopLeftLayout;
 
     public static void loadSettings(MainActivity mainActivity) {
         SharedPreferences sharedPref = mainActivity.getPreferences(Context.MODE_PRIVATE);
-        mSerialModeUsed =
-                sharedPref.getInt(mainActivity
+        mSerialModeUsed = sharedPref.getInt(mainActivity
                         .getString(R.string.SETTINGS_SERIAL_MODE, R.string.APP_ID), 0);
-        mBluetoothDeviceUsed =
-                sharedPref.getString(
+        mBluetoothDeviceUsed = sharedPref.getString(
                         mainActivity.getString(R.string.SETTINGS_BT_NAME, R.string.APP_ID), null);
-        mBluetoothDeviceAddress =
-                sharedPref.getString(
+        mBluetoothDeviceAddress = sharedPref.getString(
                         mainActivity.getString(R.string.SETTINGS_BT_MAC, R.string.APP_ID), null);
         mLoadedUavo = sharedPref
                 .getString(mainActivity.getString(R.string.SETTINGS_UAVO_SOURCE, R.string.APP_ID),
                         null);
-        mColorfulPid = sharedPref
-                .getBoolean(mainActivity.getString(R.string.SETTINGS_COLORFUL_PID, R.string.APP_ID),
-                        false);
-        mColorfulVPid = sharedPref
-                .getBoolean(
+        mColorfulPid = sharedPref.getBoolean(
+                mainActivity.getString(R.string.SETTINGS_COLORFUL_PID, R.string.APP_ID), false);
+        mColorfulVPid = sharedPref.getBoolean(
                         mainActivity.getString(R.string.SETTINGS_COLORFUL_VPID, R.string.APP_ID),
                         false);
-        mText2SpeechEnabled = sharedPref
-                .getBoolean(mainActivity
-                                .getString(R.string.SETTINGS_TEXT2SPEECH_ENABLED, R.string.APP_ID),
+        mText2SpeechEnabled = sharedPref.getBoolean(
+                mainActivity.getString(R.string.SETTINGS_TEXT2SPEECH_ENABLED, R.string.APP_ID),
                         false);
+        mTopLeftLayout = sharedPref.getString(
+                mainActivity.getString(R.string.SETTINGS_TOP_LEFT_LAYOUT_RES, R.string.APP_ID),
+                mainActivity.getString(R.string.main_element_health));
+        mBottomRightLayout = sharedPref.getString(
+                mainActivity.getString(R.string.SETTINGS_BOTTOM_RIGHT_LAYOUT_RES, R.string.APP_ID),
+                mainActivity.getString(R.string.main_element_info));
     }
 
     public static void saveSettings(MainActivity mainActivity) {
@@ -73,7 +79,26 @@ public class SettingsHelper {
                 SettingsHelper.mColorfulPid);
         editor.putBoolean(mainActivity.getString(R.string.SETTINGS_COLORFUL_VPID, R.string.APP_ID),
                 SettingsHelper.mColorfulVPid);
+        editor.putString(mainActivity.getString(R.string.SETTINGS_TOP_LEFT_LAYOUT_RES,
+                R.string.APP_ID), mTopLeftLayout);
+        editor.putString(mainActivity.getString(R.string.SETTINGS_BOTTOM_RIGHT_LAYOUT_RES,
+                R.string.APP_ID), mBottomRightLayout);
 
         editor.commit();
+    }
+
+    public static Spinner initSpinner(int spinnerRes, View parent,
+                                      AdapterView.OnItemSelectedListener l, int elementRes,
+                                      String selection) {
+        Spinner spinner = (Spinner) parent.findViewById(spinnerRes);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(parent.getContext(),
+                elementRes, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+        if (l != null) {
+            spinner.setOnItemSelectedListener(l);
+        }
+        spinner.setSelection(adapter.getPosition(selection));
+        return spinner;
     }
 }

@@ -16,7 +16,10 @@
 
 package org.librepilot.lp2go.helper;
 
+import android.content.Context;
 import android.graphics.Color;
+import android.location.Location;
+import android.location.LocationManager;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -71,23 +74,24 @@ public class MapHelper implements OnMapReadyCallback {
             );
 
             double distance = H.calculationByDistance(s, e);
-            if (distance > 0.001) {
+            //if (distance > 0.001) {
                 CameraUpdate cameraUpdate =
-                        CameraUpdateFactory.newLatLng(e);
+                        CameraUpdateFactory.newLatLngZoom(e, 19);
 
                 if (distance < 200) {
                     mMap.animateCamera(cameraUpdate);
                 } else {
                     mMap.moveCamera(cameraUpdate);
                 }
-            }
+            //}
         }
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-
-        mMap = googleMap;
+        if (googleMap != null) {
+            mMap = googleMap;
+        }
 
         //Map can be null if services are not available, e.g. on an amazon fire tab
         if (mMap != null) {
@@ -96,9 +100,19 @@ public class MapHelper implements OnMapReadyCallback {
             mMap.setMyLocationEnabled(true);
             MapsInitializer.initialize(mActivity);
 
-            CameraUpdate cameraUpdate =
-                    CameraUpdateFactory.newLatLngZoom(new LatLng(32.154599, -110.827369), 20);
-            mMap.animateCamera(cameraUpdate);
+            LocationManager lm =
+                    (LocationManager) mActivity.getSystemService(Context.LOCATION_SERVICE);
+            Location l = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+            LatLng currentDevicePos;
+            if (l != null) {
+                currentDevicePos = new LatLng(l.getLatitude(), l.getLongitude());
+            } else {
+                currentDevicePos = new LatLng(.0f, .0f);
+            }
+
+            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(currentDevicePos, 19);
+            mMap.moveCamera(cameraUpdate);
             mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
         }
     }

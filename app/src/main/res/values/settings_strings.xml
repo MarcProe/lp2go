@@ -6,6 +6,16 @@
         <item>Bluetooth</item>
     </string-array>
 
+    <string name="main_element_health">Health</string>
+    <string name="main_element_info">Info</string>
+    <string name="main_element_map">Map</string>
+
+    <string-array name="main_elements">
+        <item>@string/main_element_health</item>
+        <item>@string/main_element_info</item>
+        <item>@string/main_element_map</item>
+    </string-array>
+
     <string name="SETTINGS_UAVO_SOURCE">%1$s.uavo_source</string>
     <string name="SETTINGS_SERIAL_MODE">%1$s.serial_mode</string>
     <string name="SETTINGS_BT_MAC">%1$s.bt_mac</string>
@@ -13,6 +23,10 @@
     <string name="SETTINGS_COLORFUL_PID">%1$s.colorful_pid</string>
     <string name="SETTINGS_COLORFUL_VPID">%1$s.colorful_pid</string>
     <string name="SETTINGS_TEXT2SPEECH_ENABLED">%1$s.tts_enabled</string>
+    <string name="SETTINGS_TOP_LEFT_LAYOUT_RES">%1$s.top_left_layout</string>
+    <string name="SETTINGS_BOTTOM_RIGHT_LAYOUT_RES">%1$s.bottom_right_layout</string>
 
     <string name="OFFSET_BAROSENSOR_ALTITUDE">%1$s.Offset.BaroSensor-Altitude</string>
+
+
 </resources>

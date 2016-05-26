@@ -24,7 +24,6 @@ import org.librepilot.lp2go.MainActivity;
 import org.librepilot.lp2go.R;
 import org.librepilot.lp2go.VisualLog;
 import org.librepilot.lp2go.helper.MapHelper;
-import org.librepilot.lp2go.helper.SettingsHelper;
 import org.librepilot.lp2go.uavtalk.UAVTalkMissingObjectException;
 
 
@@ -56,7 +55,9 @@ public class ViewControllerMap extends ViewController {
     @Override
     public void enter(int view, boolean isSubwindow) {
         super.enter(view, isSubwindow);
+        init();
         mMapView.onResume();    //(re)activate the Map
+        mMapHelper.onMapReady(null);
     }
 
     @Override
@@ -74,7 +75,6 @@ public class ViewControllerMap extends ViewController {
 
         if (mMapView != null) {
             mMapView.onCreate(null);
-
             mMapView.getMapAsync(mMapHelper);
         }
 
@@ -88,12 +88,11 @@ public class ViewControllerMap extends ViewController {
     public void update() {
         super.update();
         MainActivity ma = getMainActivity();
-        if (SettingsHelper.mSerialModeUsed ==
-                MainActivity.SERIAL_BLUETOOTH) {
-            ma.mFcDevice.requestObject("GPSSatellites");
+
+        ma.mFcDevice.requestObject("GPSSatellites");
             ma.mFcDevice.requestObject("SystemAlarms");
             ma.mFcDevice.requestObject("GPSPositionSensor");
-        }
+
 
         setText(txtMapGPSSatsInView,
                 getData("GPSSatellites", "SatsInView").toString());

@@ -478,12 +478,7 @@ public class MainActivity extends AppCompatActivity {
         mVcList.add(ViewController.VIEW_DEBUG, mVcDebug);
         mVcList.add(ViewController.VIEW_SCOPE, mVcScope);
 
-        //((ViewControllerMainAnimatorViewSetter) mVcMain).setTop(R.layout.activity_main_inc_health);
-        //((ViewControllerMainAnimatorViewSetter) mVcMain).setBottom(R.layout.activity_main_inc_info);
-        //((ViewControllerMainAnimatorViewSetter) mVcMain).setBottom(R.layout.activity_main_inc_map);
-
-        ((ViewControllerMainAnimatorViewSetter) mVcMain)
-                .setBoth(R.layout.activity_main_inc_map, R.layout.activity_main_inc_info);
+        ((ViewControllerMainAnimatorViewSetter) mVcMain).setLayout();
 
         initSlider();
 
