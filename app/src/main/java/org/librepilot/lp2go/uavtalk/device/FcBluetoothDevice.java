@@ -176,7 +176,7 @@ public class FcBluetoothDevice extends FcDevice {
         }
 
         if (nackedObjects.contains(xmlObj.getId())) {
-            VisualLog.d("NACKED", xmlObj.getId());
+            //VisualLog.d("NACKED", xmlObj.getId());
             return false;  //if it was already nacked, don't try to get it again
         }
 
