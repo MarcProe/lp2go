@@ -25,9 +25,6 @@ import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.LinearInterpolator;
-import android.view.animation.RotateAnimation;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -43,13 +40,16 @@ import org.librepilot.lp2go.R;
 import org.librepilot.lp2go.VisualLog;
 import org.librepilot.lp2go.helper.SettingsHelper;
 import org.librepilot.lp2go.uavtalk.UAVTalkMissingObjectException;
+import org.librepilot.lp2go.uavtalk.UAVTalkObject;
+import org.librepilot.lp2go.uavtalk.UAVTalkObjectListener;
 import org.librepilot.lp2go.uavtalk.UAVTalkXMLObject;
 import org.librepilot.lp2go.ui.SingleToast;
 import org.librepilot.lp2go.ui.alertdialog.EnumInputAlertDialog;
 import org.librepilot.lp2go.ui.alertdialog.NumberInputAlertDialog;
 
 public class ViewControllerMain extends ViewController implements View.OnClickListener,
-        ViewControllerMainAnimatorViewSetter, CompoundButton.OnCheckedChangeListener {
+        ViewControllerMainAnimatorViewSetter, CompoundButton.OnCheckedChangeListener,
+        UAVTalkObjectListener {
     private final View mFlightSettingsView;
     private final View mLocalSettingsView;
     private Drawable imgPacketsBad;
@@ -58,7 +58,7 @@ public class ViewControllerMain extends ViewController implements View.OnClickLi
     private ViewAnimator mBottomAnimator;
     private int mBottomLayout;
     private ImageView mPfdRollPitch;
-    private Float mPreviousRoll;
+    private Float mPreviousRoll = .0f;
     private ViewAnimator mTopAnimator;
     private int mTopLayout;
     private Spinner spiBottomRight;
@@ -239,6 +239,17 @@ public class ViewControllerMain extends ViewController implements View.OnClickLi
             getMainActivity().mVcList.get(ViewController.VIEW_MAP).leave();
 
         }
+        if (mTopAnimator.getCurrentView().getId() == R.id.root_main_inc_pfd
+                || (mBottomAnimator.getCurrentView() != null
+                && mBottomAnimator.getCurrentView().getId() == R.id.root_main_inc_pfd)) {
+            try {
+                getMainActivity().mFcDevice.getObjectTree().setListener("AttitudeState", null);
+            } catch (NullPointerException e) {
+
+            } catch (IllegalStateException e1) {
+
+            }
+        }
     }
 
     @Override
@@ -338,7 +349,7 @@ public class ViewControllerMain extends ViewController implements View.OnClickLi
             int top = mPfdRollPitch.getHeight();
             int bottom = top;
             lp.setMargins(left, top, right, bottom);
-            mPfdRollPitch.setLayoutParams(lp);
+            //mPfdRollPitch.setLayoutParams(lp);
 
         }
     }
@@ -517,32 +528,20 @@ public class ViewControllerMain extends ViewController implements View.OnClickLi
             getMainActivity().mVcList.get(ViewController.VIEW_MAP).update();
 
         }
+
         if (mTopAnimator.getCurrentView().getId() == R.id.root_main_inc_pfd
                 || (mBottomAnimator.getCurrentView() != null
                 && mBottomAnimator.getCurrentView().getId() == R.id.root_main_inc_pfd)) {
-
-            Float roll;
             try {
-                roll = (Float) getData("AttitudeState", "Roll");
-            } catch (java.lang.ClassCastException e) {
-                roll = null;
-            }
+                if (getMainActivity().mFcDevice.getObjectTree().getListener("AttitudeState")
+                        == null) {
+                    getMainActivity().mFcDevice.getObjectTree().setListener("AttitudeState", this);
+                }
+            } catch (NullPointerException e) {
 
-
-            if (roll != null && mPreviousRoll != null) {
-                VisualLog.d("ROLL", "" + roll + " " + mPreviousRoll);
-                RotateAnimation anim = new RotateAnimation(mPreviousRoll, roll,
-                        Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-                anim.setInterpolator(new LinearInterpolator());
-                anim.setRepeatCount(1);
-                anim.setDuration(Math.round(MainActivity.POLL_WAIT_TIME * .9f));
-
-                // Start animating the image
-                mPfdRollPitch.startAnimation(anim);
-                //imageView.setRotation(-roll);
+            } catch (IllegalStateException e1) {
 
             }
-            mPreviousRoll = roll;
 
         }
 
@@ -780,6 +779,28 @@ public class ViewControllerMain extends ViewController implements View.OnClickLi
                     .putBoolean(getString(R.string.SETTINGS_TEXT2SPEECH_ENABLED, R.string.APP_ID),
                             SettingsHelper.mText2SpeechEnabled)
                     .apply();
+        }
+    }
+
+    @Override
+    public void onObjectUpdate(UAVTalkObject o) {
+        if (mTopAnimator.getCurrentView().getId() == R.id.root_main_inc_pfd
+                || (mBottomAnimator.getCurrentView() != null
+                && mBottomAnimator.getCurrentView().getId() == R.id.root_main_inc_pfd)) {
+
+            Float roll;
+            try {
+                roll = (Float) getData("AttitudeState", "Roll");
+            } catch (java.lang.ClassCastException e) {
+                roll = null;
+            }
+
+            if (roll != null && roll != .0f && roll - mPreviousRoll > 1 ||
+                    roll - mPreviousRoll < -1) {
+                mPfdRollPitch.setRotation(-roll);
+                mPreviousRoll = roll;
+            }
+
         }
     }
 }
