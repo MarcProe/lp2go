@@ -9,11 +9,13 @@
     <string name="main_element_health">Health</string>
     <string name="main_element_info">Info</string>
     <string name="main_element_map">Map</string>
+    <string name="main_element_pfd">PFD</string>
 
     <string-array name="main_elements">
         <item>@string/main_element_health</item>
         <item>@string/main_element_info</item>
         <item>@string/main_element_map</item>
+        <item>@string/main_element_pfd</item>
     </string-array>
 
     <string name="SETTINGS_UAVO_SOURCE">%1$s.uavo_source</string>

@@ -26,6 +26,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -160,6 +161,8 @@ public class ViewControllerMain extends ViewController implements View.OnClickLi
             setTopNoInit(R.layout.activity_main_inc_info);
         } else if (SettingsHelper.mTopLeftLayout.equals(ma.getString(R.string.main_element_map))) {
             setTopNoInit(R.layout.activity_main_inc_map);
+        } else if (SettingsHelper.mTopLeftLayout.equals(ma.getString(R.string.main_element_pfd))) {
+            setTopNoInit(R.layout.activity_main_inc_pfd);
         }
 
         if (SettingsHelper.mBottomRightLayout.equals(ma.getString(R.string.main_element_health))) {
@@ -170,6 +173,9 @@ public class ViewControllerMain extends ViewController implements View.OnClickLi
         } else if (SettingsHelper.mBottomRightLayout
                 .equals(ma.getString(R.string.main_element_map))) {
             setBottomNoInit(R.layout.activity_main_inc_map);
+        } else if (SettingsHelper.mBottomRightLayout
+                .equals(ma.getString(R.string.main_element_pfd))) {
+            setBottomNoInit(R.layout.activity_main_inc_pfd);
         }
 
         init();
@@ -488,6 +494,19 @@ public class ViewControllerMain extends ViewController implements View.OnClickLi
             getMainActivity().mVcList.get(ViewController.VIEW_MAP).update();
 
         }
+        if (mTopAnimator.getCurrentView().getId() == R.id.root_main_inc_pfd
+                || (mBottomAnimator.getCurrentView() != null
+                && mBottomAnimator.getCurrentView().getId() == R.id.root_main_inc_pfd)) {
+
+            ImageView imageView = (ImageView) findViewById(R.id.pfd_image);
+            Float roll = (Float) getData("AttitudeState", "Roll");
+            if (roll != null) {
+                imageView.setRotation(-roll);
+            }
+
+        }
+
+
         getMainActivity().mFcDevice.requestObject("FlightBatteryState");
         getMainActivity().mFcDevice.requestObject("SystemStats");
     }
