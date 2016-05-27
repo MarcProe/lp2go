@@ -24,6 +24,7 @@ public class UAVTalkObject {
 
     private final String mId;
     private final HashMap<Integer, UAVTalkObjectInstance> mInstances;
+    private UAVTalkObjectListener mListener = null;
     private boolean mWriteBlocked = false;
 
     public UAVTalkObject(String id) {
@@ -66,6 +67,18 @@ public class UAVTalkObject {
         return mInstances;
     }
 
+    protected UAVTalkObjectListener getListener() {
+        return mListener;
+    }
+
+    protected void setListener(UAVTalkObjectListener l) {
+        if (mListener == null) {
+            this.mListener = l;
+        } else {
+            throw new IllegalStateException("Listener already set");
+        }
+    }
+
     public boolean isWriteBlocked() {
         return mWriteBlocked;
     }
@@ -76,6 +89,9 @@ public class UAVTalkObject {
 
     public void setInstance(UAVTalkObjectInstance instance) {
         mInstances.put(instance.getId(), instance);
+        if (getListener() != null) {
+            getListener().onObjectUpdate(this);
+        }
     }
 
     public String toString() {

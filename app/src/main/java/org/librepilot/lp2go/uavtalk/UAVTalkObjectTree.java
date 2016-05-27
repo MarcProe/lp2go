@@ -42,6 +42,14 @@ public class UAVTalkObjectTree {
         this.xmlObjects = xmlObjects;
     }
 
+    public void setListener(String objName, UAVTalkObjectListener listener) {
+        objects.get(xmlObjects.get(objName).getId()).setListener(listener);
+    }
+
+    public UAVTalkObjectListener getListener(String objName) {
+        return objects.get(xmlObjects.get(objName).getId()).getListener();
+    }
+
     public String toString() {
         String ret = "";
         Iterator<String> i = xmlObjects.keySet().iterator();
@@ -83,6 +91,8 @@ public class UAVTalkObjectTree {
         } catch (NullPointerException e) {
             VisualLog.w("WAR", "objects not initialized");
         }
+
+
     }
 
     public byte[] getInstanceData(String objectname, int instance) {
