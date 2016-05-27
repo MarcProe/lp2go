@@ -25,8 +25,12 @@ import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.RotateAnimation;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -53,6 +57,8 @@ public class ViewControllerMain extends ViewController implements View.OnClickLi
     private Drawable imgPacketsUp;
     private ViewAnimator mBottomAnimator;
     private int mBottomLayout;
+    private ImageView mPfdRollPitch;
+    private Float mPreviousRoll;
     private ViewAnimator mTopAnimator;
     private int mTopLayout;
     private Spinner spiBottomRight;
@@ -318,6 +324,23 @@ public class ViewControllerMain extends ViewController implements View.OnClickLi
             getMainActivity().mVcList.get(ViewController.VIEW_MAP).init();
 
         }
+
+        if (mTopAnimator.getCurrentView().getId() == R.id.root_main_inc_pfd
+                || (mBottomAnimator.getCurrentView() != null
+                && mBottomAnimator.getCurrentView().getId() == R.id.root_main_inc_pfd)) {
+
+            mPfdRollPitch = (ImageView) findViewById(R.id.pfd_image);
+            LinearLayout.LayoutParams lp =
+                    new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+                            LinearLayout.LayoutParams.WRAP_CONTENT);
+            int left = mPfdRollPitch.getWidth();
+            int right = left;
+            int top = mPfdRollPitch.getHeight();
+            int bottom = top;
+            lp.setMargins(left, top, right, bottom);
+            mPfdRollPitch.setLayoutParams(lp);
+
+        }
     }
 
     @Override
@@ -498,14 +521,30 @@ public class ViewControllerMain extends ViewController implements View.OnClickLi
                 || (mBottomAnimator.getCurrentView() != null
                 && mBottomAnimator.getCurrentView().getId() == R.id.root_main_inc_pfd)) {
 
-            ImageView imageView = (ImageView) findViewById(R.id.pfd_image);
-            Float roll = (Float) getData("AttitudeState", "Roll");
-            if (roll != null) {
-                imageView.setRotation(-roll);
+            Float roll;
+            try {
+                roll = (Float) getData("AttitudeState", "Roll");
+            } catch (java.lang.ClassCastException e) {
+                roll = null;
             }
 
-        }
 
+            if (roll != null && mPreviousRoll != null) {
+                VisualLog.d("ROLL", "" + roll + " " + mPreviousRoll);
+                RotateAnimation anim = new RotateAnimation(mPreviousRoll, roll,
+                        Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+                anim.setInterpolator(new LinearInterpolator());
+                anim.setRepeatCount(1);
+                anim.setDuration(Math.round(MainActivity.POLL_WAIT_TIME * .9f));
+
+                // Start animating the image
+                mPfdRollPitch.startAnimation(anim);
+                //imageView.setRotation(-roll);
+
+            }
+            mPreviousRoll = roll;
+
+        }
 
         getMainActivity().mFcDevice.requestObject("FlightBatteryState");
         getMainActivity().mFcDevice.requestObject("SystemStats");

@@ -113,10 +113,10 @@ import javax.xml.parsers.ParserConfigurationException;
 public class MainActivity extends AppCompatActivity {
     public static final int CALLBACK_FILEPICKER = 3456;
     public static final int CALLBACK_TTS = 6574;
+    public static final int POLL_WAIT_TIME = 500;
+    public static final int POLL_SECOND_FACTOR = 1000 / POLL_WAIT_TIME;
     public static final int SERIAL_BLUETOOTH = 2;
     public static final int SERIAL_NONE = 0;
-    protected static final int POLL_WAIT_TIME = 500;
-    public static final int POLL_SECOND_FACTOR = 1000 / POLL_WAIT_TIME;
     protected static final int SERIAL_USB = 1;
     private static final int NUM_OF_VIEWS = 10;
     private static final String UAVO_INTERNAL_PATH = "uavo";
