@@ -129,16 +129,13 @@
                             android:layout_weight="1"
                             android:orientation="horizontal">
 
-                            <TextView
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
+                            <ImageView
+                                android:layout_width="32dp"
+                                android:layout_height="fill_parent"
                                 android:layout_gravity="center"
-                                android:layout_margin="10dp"
-                                android:layout_weight="0.5"
-                                android:gravity="center|center_vertical|center_horizontal"
-                                android:text="P"
-                                android:textAppearance="?android:attr/textAppearanceSmall"
-                                android:textSize="40sp"/>
+                                android:layout_marginBottom="2dp"
+                                android:layout_marginTop="2dp"
+                                android:src="@drawable/pid_p"/>
 
                             <org.librepilot.lp2go.ui.PidTextView
                                 android:id="@+id/txtRateRollProportional"
@@ -178,16 +175,13 @@
                             android:background="@drawable/border_top"
                             android:orientation="horizontal">
 
-                            <TextView
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
+                            <ImageView
+                                android:layout_width="32dp"
+                                android:layout_height="fill_parent"
                                 android:layout_gravity="center"
-                                android:layout_margin="10dp"
-                                android:layout_weight="0.5"
-                                android:gravity="center|center_vertical|center_horizontal"
-                                android:text="I"
-                                android:textAppearance="?android:attr/textAppearanceSmall"
-                                android:textSize="40sp"/>
+                                android:layout_marginBottom="2dp"
+                                android:layout_marginTop="2dp"
+                                android:src="@drawable/pid_i"/>
 
                             <org.librepilot.lp2go.ui.PidTextView
                                 android:id="@+id/txtRateRollIntegral"
@@ -197,7 +191,8 @@
                                 android:layout_weight="1"
                                 android:gravity="center|center_vertical|center_horizontal"
                                 android:textAppearance="?android:attr/textAppearanceLarge"
-                                android:textSize="25sp"/>
+                                android:textSize="25sp"
+                                />
 
                             <org.librepilot.lp2go.ui.PidTextView
                                 android:id="@+id/txtRatePitchIntegral"
@@ -218,6 +213,7 @@
                                 android:gravity="center|center_vertical|center_horizontal"
                                 android:textAppearance="?android:attr/textAppearanceLarge"
                                 android:textSize="25sp"/>
+
                         </LinearLayout>
 
                         <LinearLayout
@@ -227,16 +223,13 @@
                             android:background="@drawable/border_top"
                             android:orientation="horizontal">
 
-                            <TextView
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
+                            <ImageView
+                                android:layout_width="32dp"
+                                android:layout_height="fill_parent"
                                 android:layout_gravity="center"
-                                android:layout_margin="10dp"
-                                android:layout_weight="0.5"
-                                android:gravity="center|center_vertical|center_horizontal"
-                                android:text="D"
-                                android:textAppearance="?android:attr/textAppearanceSmall"
-                                android:textSize="40sp"/>
+                                android:layout_marginBottom="2dp"
+                                android:layout_marginTop="2dp"
+                                android:src="@drawable/pid_d"/>
 
                             <org.librepilot.lp2go.ui.PidTextView
                                 android:id="@+id/txtRateRollDerivative"
@@ -267,6 +260,7 @@
                                 android:gravity="center|center_vertical|center_horizontal"
                                 android:textAppearance="?android:attr/textAppearanceLarge"
                                 android:textSize="25sp"/>
+
                         </LinearLayout>
                     </LinearLayout>
 
@@ -314,16 +308,14 @@
                             android:layout_weight="1"
                             android:orientation="horizontal">
 
-                            <TextView
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
+                            <ImageView
+                                android:layout_width="32dp"
+                                android:layout_height="fill_parent"
                                 android:layout_gravity="center"
-                                android:layout_margin="10dp"
-                                android:layout_weight="0.5"
-                                android:gravity="center|center_vertical|center_horizontal"
-                                android:text="P"
-                                android:textAppearance="?android:attr/textAppearanceSmall"
-                                android:textSize="40sp"/>
+                                android:layout_marginBottom="2dp"
+                                android:layout_marginTop="2dp"
+                                android:src="@drawable/pid_p"
+                                />
 
                             <org.librepilot.lp2go.ui.PidTextView
                                 android:id="@+id/txtAttitudeRollProportional"
@@ -363,16 +355,14 @@
                             android:background="@drawable/border_top"
                             android:orientation="horizontal">
 
-                            <TextView
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
+                            <ImageView
+                                android:layout_width="32dp"
+                                android:layout_height="fill_parent"
                                 android:layout_gravity="center"
-                                android:layout_margin="10dp"
-                                android:layout_weight="0.5"
-                                android:gravity="center|center_vertical|center_horizontal"
-                                android:text="I"
-                                android:textAppearance="?android:attr/textAppearanceSmall"
-                                android:textSize="40sp"/>
+                                android:layout_marginBottom="2dp"
+                                android:layout_marginTop="2dp"
+                                android:src="@drawable/pid_i"
+                                />
 
                             <org.librepilot.lp2go.ui.PidTextView
                                 android:id="@+id/txtAttitudeRollIntegral"

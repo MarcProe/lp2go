@@ -55,16 +55,15 @@
                             android:background="@drawable/border_top"
                             android:orientation="horizontal">
 
-                            <TextView
+                            <ImageView
                                 android:layout_width="0dp"
-                                android:layout_height="wrap_content"
+                                android:layout_height="fill_parent"
                                 android:layout_gravity="center"
-                                android:layout_margin="10dp"
-                                android:layout_weight="1"
-                                android:gravity="center|center_vertical|center_horizontal"
-                                android:text="Altitude P"
-                                android:textAppearance="?android:attr/textAppearanceSmall"
-                                android:textSize="20sp"/>
+                                android:layout_marginBottom="3dp"
+                                android:layout_marginRight="10dp"
+                                android:layout_marginTop="2dp"
+                                android:layout_weight="0.5"
+                                android:src="@drawable/pid_altitude_p"/>
 
                             <org.librepilot.lp2go.ui.PidTextView
                                 android:id="@+id/txtVerticalAltitudeProportional"
@@ -84,16 +83,15 @@
                             android:background="@drawable/border_top"
                             android:orientation="horizontal">
 
-                            <TextView
+                            <ImageView
                                 android:layout_width="0dp"
-                                android:layout_height="wrap_content"
+                                android:layout_height="fill_parent"
                                 android:layout_gravity="center"
-                                android:layout_margin="10dp"
-                                android:layout_weight="1"
-                                android:gravity="center|center_vertical|center_horizontal"
-                                android:text="Velocity P"
-                                android:textAppearance="?android:attr/textAppearanceSmall"
-                                android:textSize="20sp"/>
+                                android:layout_marginBottom="3dp"
+                                android:layout_marginRight="10dp"
+                                android:layout_marginTop="2dp"
+                                android:layout_weight="0.5"
+                                android:src="@drawable/pid_velocity_p"/>
 
                             <org.librepilot.lp2go.ui.PidTextView
                                 android:id="@+id/txtVerticalVelocityProportional"
@@ -114,16 +112,16 @@
                             android:background="@drawable/border_top"
                             android:orientation="horizontal">
 
-                            <TextView
+                            <ImageView
+                                android:id="@+id/imageView2"
                                 android:layout_width="0dp"
-                                android:layout_height="wrap_content"
+                                android:layout_height="fill_parent"
                                 android:layout_gravity="center"
-                                android:layout_margin="10dp"
-                                android:layout_weight="1"
-                                android:gravity="center|center_vertical|center_horizontal"
-                                android:text="Velocity I"
-                                android:textAppearance="?android:attr/textAppearanceSmall"
-                                android:textSize="20sp"/>
+                                android:layout_marginBottom="3dp"
+                                android:layout_marginRight="10dp"
+                                android:layout_marginTop="2dp"
+                                android:layout_weight="0.5"
+                                android:src="@drawable/pid_velocity_i"/>
 
                             <org.librepilot.lp2go.ui.PidTextView
                                 android:id="@+id/txtVerticalVelocityIntegral"
@@ -143,16 +141,16 @@
                             android:background="@drawable/border_top"
                             android:orientation="horizontal">
 
-                            <TextView
+                            <ImageView
+                                android:id="@+id/imageView3"
                                 android:layout_width="0dp"
-                                android:layout_height="wrap_content"
+                                android:layout_height="fill_parent"
                                 android:layout_gravity="center"
-                                android:layout_margin="10dp"
-                                android:layout_weight="1"
-                                android:gravity="center|center_vertical|center_horizontal"
-                                android:text="Velocity D"
-                                android:textAppearance="?android:attr/textAppearanceSmall"
-                                android:textSize="20sp"/>
+                                android:layout_marginBottom="3dp"
+                                android:layout_marginRight="10dp"
+                                android:layout_marginTop="2dp"
+                                android:layout_weight="0.5"
+                                android:src="@drawable/pid_velocity_d"/>
 
                             <org.librepilot.lp2go.ui.PidTextView
                                 android:id="@+id/txtVerticalVelocityDerivative"
@@ -172,16 +170,16 @@
                             android:background="@drawable/border_top"
                             android:orientation="horizontal">
 
-                            <TextView
+                            <ImageView
+                                android:id="@+id/imageView4"
                                 android:layout_width="0dp"
-                                android:layout_height="wrap_content"
+                                android:layout_height="fill_parent"
                                 android:layout_gravity="center"
-                                android:layout_margin="10dp"
-                                android:layout_weight="1"
-                                android:gravity="center|center_vertical|center_horizontal"
-                                android:text="Velocity β"
-                                android:textAppearance="?android:attr/textAppearanceSmall"
-                                android:textSize="20sp"/>
+                                android:layout_marginBottom="3dp"
+                                android:layout_marginRight="10dp"
+                                android:layout_marginTop="2dp"
+                                android:layout_weight="0.5"
+                                android:src="@drawable/pid_velocity_beta"/>
 
                             <org.librepilot.lp2go.ui.PidTextView
                                 android:id="@+id/txtVerticalVelocityBeta"
@@ -219,16 +217,16 @@
                             android:background="@drawable/border_top"
                             android:orientation="horizontal">
 
-                            <TextView
+                            <ImageView
+                                android:id="@+id/imageView5"
                                 android:layout_width="0dp"
-                                android:layout_height="wrap_content"
+                                android:layout_height="fill_parent"
                                 android:layout_gravity="center"
-                                android:layout_margin="10dp"
-                                android:layout_weight="1"
-                                android:gravity="center|center_vertical|center_horizontal"
-                                android:text="Exponential"
-                                android:textAppearance="?android:attr/textAppearanceSmall"
-                                android:textSize="20sp"/>
+                                android:layout_marginBottom="3dp"
+                                android:layout_marginRight="10dp"
+                                android:layout_marginTop="2dp"
+                                android:layout_weight="0.5"
+                                android:src="@drawable/pid_exponential"/>
 
                             <org.librepilot.lp2go.ui.PidTextView
                                 android:id="@+id/txtVerticalExponential"
@@ -249,16 +247,16 @@
                             android:background="@drawable/border_top"
                             android:orientation="horizontal">
 
-                            <TextView
+                            <ImageView
+                                android:id="@+id/imageView6"
                                 android:layout_width="0dp"
-                                android:layout_height="wrap_content"
+                                android:layout_height="fill_parent"
                                 android:layout_gravity="center"
-                                android:layout_margin="10dp"
-                                android:layout_weight="1"
-                                android:gravity="center|center_vertical|center_horizontal"
-                                android:text="Thrust Rate"
-                                android:textAppearance="?android:attr/textAppearanceSmall"
-                                android:textSize="20sp"/>
+                                android:layout_marginBottom="3dp"
+                                android:layout_marginRight="10dp"
+                                android:layout_marginTop="2dp"
+                                android:layout_weight="0.5"
+                                android:src="@drawable/pid_thrust_rate"/>
 
                             <org.librepilot.lp2go.ui.PidTextView
                                 android:id="@+id/txtVerticalThrustRate"
