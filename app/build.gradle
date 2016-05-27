@@ -10,6 +10,7 @@ android {
         targetSdkVersion 16
 
         multiDexEnabled true
+        vectorDrawables.useSupportLibrary = true
 
         versionName '0.2.6.21'
         versionCode 20621
