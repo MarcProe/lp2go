@@ -27,7 +27,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -46,6 +45,7 @@ import org.librepilot.lp2go.uavtalk.UAVTalkXMLObject;
 import org.librepilot.lp2go.ui.SingleToast;
 import org.librepilot.lp2go.ui.alertdialog.EnumInputAlertDialog;
 import org.librepilot.lp2go.ui.alertdialog.NumberInputAlertDialog;
+import org.librepilot.lp2go.ui.pfd.PfdRollPitchView;
 
 public class ViewControllerMain extends ViewController implements View.OnClickListener,
         ViewControllerMainAnimatorViewSetter, CompoundButton.OnCheckedChangeListener,
@@ -55,9 +55,11 @@ public class ViewControllerMain extends ViewController implements View.OnClickLi
     private Drawable imgPacketsBad;
     private Drawable imgPacketsGood;
     private Drawable imgPacketsUp;
+    private ImageView imgPfdRoll;
+    private PfdRollPitchView imgPfdRollPitch;
     private ViewAnimator mBottomAnimator;
     private int mBottomLayout;
-    private ImageView mPfdRollPitch;
+    private Float mPreviousPitch = .0f;
     private Float mPreviousRoll = .0f;
     private ViewAnimator mTopAnimator;
     private int mTopLayout;
@@ -340,17 +342,8 @@ public class ViewControllerMain extends ViewController implements View.OnClickLi
                 || (mBottomAnimator.getCurrentView() != null
                 && mBottomAnimator.getCurrentView().getId() == R.id.root_main_inc_pfd)) {
 
-            mPfdRollPitch = (ImageView) findViewById(R.id.pfd_image);
-            LinearLayout.LayoutParams lp =
-                    new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
-                            LinearLayout.LayoutParams.WRAP_CONTENT);
-            int left = mPfdRollPitch.getWidth();
-            int right = left;
-            int top = mPfdRollPitch.getHeight();
-            int bottom = top;
-            lp.setMargins(left, top, right, bottom);
-            //mPfdRollPitch.setLayoutParams(lp);
-
+            imgPfdRollPitch = (PfdRollPitchView) findViewById(R.id.pfd_roll_pitch);
+            //imgPfdRoll = (ImageView) findViewById(R.id.pfd_roll);
         }
     }
 
@@ -542,7 +535,6 @@ public class ViewControllerMain extends ViewController implements View.OnClickLi
             } catch (IllegalStateException e1) {
 
             }
-
         }
 
         getMainActivity().mFcDevice.requestObject("FlightBatteryState");
@@ -789,18 +781,39 @@ public class ViewControllerMain extends ViewController implements View.OnClickLi
                 && mBottomAnimator.getCurrentView().getId() == R.id.root_main_inc_pfd)) {
 
             Float roll;
+            Float pitch;
+            boolean inval = false;
+
+
+
             try {
                 roll = (Float) getData("AttitudeState", "Roll");
+                pitch = (Float) getData("AttitudeState", "Pitch");
             } catch (java.lang.ClassCastException e) {
                 roll = null;
+                pitch = null;
             }
 
-            if (roll != null && roll != .0f && roll - mPreviousRoll > 1 ||
-                    roll - mPreviousRoll < -1) {
-                mPfdRollPitch.setRotation(-roll);
+
+            if (roll != null && (roll - mPreviousRoll > 1 || roll - mPreviousRoll < -1)) {
+                imgPfdRollPitch.setRoll(roll);
                 mPreviousRoll = roll;
+                inval = true;
             }
 
+            if (pitch != null && (pitch - mPreviousPitch > 1 || pitch - mPreviousPitch < -1)) {
+                imgPfdRollPitch.setPitch(pitch);
+                mPreviousPitch = pitch;
+                inval = true;
+            }
+
+            //if(pitch!=null && roll!=null) {
+            //    VisualLog.d("DBG", ""+roll+" " +pitch);
+            //}
+
+            if (inval) {
+                imgPfdRollPitch.postInvalidate();
+            }
         }
     }
 }
