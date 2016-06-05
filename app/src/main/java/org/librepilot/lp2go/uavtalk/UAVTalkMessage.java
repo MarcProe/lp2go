@@ -16,19 +16,28 @@
 
 package org.librepilot.lp2go.uavtalk;
 
+import org.librepilot.lp2go.uavtalk.device.FcWaiterThread;
+
 public class UAVTalkMessage {
 
     private byte[] mData;
     private int mInstanceId;
     private int mLength;
     private int mObjectId;
+    private byte[] mRaw;
+    private int mTimestamp;
     private byte mType;
 
     public UAVTalkMessage(byte[] bytes, int offset) {
+        this.mRaw = bytes;
+        int tsoffset = 0;
         if (bytes.length >= 10 + offset) {
 
-            //this.mSync = bytes[offset];
             this.mType = bytes[1 + offset];
+
+            if (((byte) 0x80 & this.mType) == 0x80) {
+                tsoffset = 2;
+            }
 
             int lb1 = bytes[3 + offset] & 0x000000ff;
             int lb2 = bytes[2 + offset] & 0x000000ff;
@@ -47,47 +56,23 @@ public class UAVTalkMessage {
 
             this.mInstanceId = ib1 << 8 | ib2;
 
+            if ((FcWaiterThread.MASK_TIMESTAMP & this.mType) == FcWaiterThread.MASK_TIMESTAMP) {
+                int ts1 = bytes[9 + offset] & 0x000000ff;
+                int ts2 = bytes[8 + offset] & 0x000000ff;
+
+                this.mTimestamp = ts1 << 8 | ts2;
+            } else {
+                mTimestamp = -1;
+            }
+
         } else {
             throw new UnsupportedOperationException("Bad Message, < 12 bytes");
         }
 
         if (this.mLength > 10 + offset && bytes.length - offset >= this.mLength) {
-            this.mData = new byte[this.mLength - 10];
-            System.arraycopy(bytes, 10 + offset, this.mData, 0, this.mLength - 10);
-        }
-    }
-
-    @Deprecated
-    public UAVTalkMessage(byte[] bytes) {
-        if (bytes.length >= 12) {
-            //mHead = bytes[0] + bytes[1]*8;
-            //this.mSync = bytes[2];
-            this.mType = bytes[3];
-
-            int lb1 = bytes[5] & 0x000000ff;
-            int lb2 = bytes[4] & 0x000000ff;
-
-            this.mLength = lb1 << 8 | lb2;
-
-            int ob1 = bytes[9] & 0x000000ff;
-            int ob2 = bytes[8] & 0x000000ff;
-            int ob3 = bytes[7] & 0x000000ff;
-            int ob4 = bytes[6] & 0x000000ff;
-
-            this.mObjectId = ob1 << 24 | ob2 << 16 | ob3 << 8 | ob4;
-
-            int ib1 = bytes[11] & 0x000000ff;
-            int ib2 = bytes[10] & 0x000000ff;
-
-            this.mInstanceId = ib1 << 8 | ib2;
-
-        } else {
-            throw new UnsupportedOperationException("Bad Message, < 12 bytes");
-        }
-
-        if (this.mLength > 12 && bytes.length >= this.mLength) {
-            this.mData = new byte[this.mLength - 10];
-            System.arraycopy(bytes, 12, this.mData, 0, this.mLength - 10);
+            this.mData = new byte[this.mLength - (10 + tsoffset)];
+            System.arraycopy(bytes, 10 + tsoffset + offset, this.mData, 0,
+                    this.mLength - (10 + tsoffset));
         }
     }
 
@@ -105,6 +90,14 @@ public class UAVTalkMessage {
 
     public int getObjectId() {
         return mObjectId;
+    }
+
+    public byte[] getRaw() {
+        return mRaw;
+    }
+
+    public int getTimestamp() {
+        return mTimestamp;
     }
 
     public byte getType() {

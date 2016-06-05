@@ -21,6 +21,7 @@ import android.content.Context;
 import org.librepilot.lp2go.H;
 import org.librepilot.lp2go.MainActivity;
 import org.librepilot.lp2go.uavtalk.UAVTalkDeviceHelper;
+import org.librepilot.lp2go.uavtalk.UAVTalkMessage;
 import org.librepilot.lp2go.uavtalk.UAVTalkObjectTree;
 
 import java.io.FileOutputStream;
@@ -116,11 +117,26 @@ public abstract class FcDevice {
     }
 
     public void log(byte[] b) {
+        log(b, -1);
+    }
+
+    public void log(UAVTalkMessage m) {
+        log(m.getRaw(), m.getTimestamp());
+    }
+
+    public void log(byte[] b, int timestamp) {
         if (b == null) {
             return;
         }
         try {
-            long time = System.currentTimeMillis() - mLogStartTimeStamp;
+            long time;
+
+            if (timestamp == -1) {
+                time = System.currentTimeMillis() - mLogStartTimeStamp;
+            } else {
+                time = timestamp;
+            }
+
             long len = b.length;
 
             @SuppressWarnings("ConstantConditions") //time is long, so reverse8bytes is just fine.

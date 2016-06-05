@@ -65,6 +65,7 @@ class FcUsbWaiterThread extends FcWaiterThread {
         byte[] lenbuffer = new byte[2];
         byte[] oidbuffer = new byte[4];
         byte[] iidbuffer = new byte[2];
+        byte[] timestampbuffer = new byte[2];
         byte[] databuffer;
         byte[] crcbuffer = new byte[1];
 
@@ -115,6 +116,11 @@ class FcUsbWaiterThread extends FcWaiterThread {
 
             oidbuffer = bufferRead(oidbuffer.length);
             iidbuffer = bufferRead(iidbuffer.length);
+
+            if ((MASK_TIMESTAMP & msgtypebuffer[0]) == MASK_TIMESTAMP) {
+                timestampbuffer = bufferRead(timestampbuffer.length);
+            }
+
             databuffer = bufferRead(len - 10);
             crcbuffer = bufferRead(crcbuffer.length);
 
@@ -122,6 +128,9 @@ class FcUsbWaiterThread extends FcWaiterThread {
             bmsg = H.concatArray(bmsg, lenbuffer);
             bmsg = H.concatArray(bmsg, oidbuffer);
             bmsg = H.concatArray(bmsg, iidbuffer);
+            if ((MASK_TIMESTAMP & msgtypebuffer[0]) == MASK_TIMESTAMP) {
+                bmsg = H.concatArray(bmsg, timestampbuffer);
+            }
             bmsg = H.concatArray(bmsg, databuffer);
             int crc = H.crc8(bmsg, 0, bmsg.length);
             bmsg = H.concatArray(bmsg, crcbuffer);
@@ -152,7 +161,7 @@ class FcUsbWaiterThread extends FcWaiterThread {
                 if (handleMessageType(msgtypebuffer[0], myObj)) {
                     mDevice.mObjectTree.updateObject(myObj);
                     if (mDevice.isLogging()) {
-                        mDevice.log(bmsg);
+                        mDevice.log(msg);
                     }
                 }
             } catch (Exception e) {
