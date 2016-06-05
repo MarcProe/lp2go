@@ -3,6 +3,7 @@ package org.librepilot.lp2go.ui.pfd;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PointF;
@@ -17,16 +18,25 @@ import android.view.View;
  */
 public class PfdRollPitchView extends View {
 
+    final int VIEWPORT_HEIGHT_DIVISOR = 45;
+    private final Rect textBounds = new Rect();
     private boolean isInitialized;
+    private AttributeSet mAttrSet;
+    private Path mDashedPitchPath;
+    private int mDefStyleAttr;
     private long mDiag;
     private Paint mEarthPaint;
     private Rect mEarthRect;
+    private Paint mFatHorizonPaint;
     private int mHalfDiag;
     private int mHorizon;
+    private float mHorizonDivisor;
     private Paint mHorizonPaint;
     private Rect mHorizonRect;
     private int mMiddle;
     private int mPitch;
+    private int mRadius;
+    private float mRawPitch;
     private float mRoll;
     private Path mRollScaleBottomTrianglePath;
     private Paint mRollScaleCrescentPaint;
@@ -65,7 +75,7 @@ public class PfdRollPitchView extends View {
     private Paint mSkyPaint;
     private Rect mSkyRect;
     private Paint mUiPaint;
-
+    private Paint mUiStrokedPaint;
 
     public PfdRollPitchView(Context context) {
         super(context);
@@ -73,14 +83,18 @@ public class PfdRollPitchView extends View {
 
     public PfdRollPitchView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        mAttrSet = attrs;
     }
 
     public PfdRollPitchView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        mAttrSet = attrs;
+        mDefStyleAttr = defStyleAttr;
     }
 
     public void setPitch(float pitch) {
-        this.mPitch = Math.round(pitch * (mHorizon / 90));
+        this.mRawPitch = pitch;
+        this.mPitch = Math.round(pitch * (mHorizon / VIEWPORT_HEIGHT_DIVISOR));
     }
 
     public void setRoll(float roll) {
@@ -89,14 +103,17 @@ public class PfdRollPitchView extends View {
 
     private void init() {
 
-        mRoll = 0;
-        mPitch = 0;
+
         //the length are just lazyness to do the real math, will calculate this stuff correctly later.
 
         mHorizon = Math.round(this.getHeight() / 2f + .5f);
         mMiddle = Math.round(this.getWidth() / 2f + .5f);
         mDiag = Math.round(Math.sqrt(Math.pow(mHorizon, 2) + Math.pow(mMiddle, 2)));
         mHalfDiag = Math.round(mDiag / 2);
+        mHorizonDivisor = mHorizon / VIEWPORT_HEIGHT_DIVISOR;
+
+        setPitch(0);
+        setRoll(0);
 
         //draw earth
         mEarthRect = new Rect(-mHalfDiag, mHorizon + mPitch, mHalfDiag * 4, mHalfDiag * 4);
@@ -115,12 +132,18 @@ public class PfdRollPitchView extends View {
         mHorizonPaint.setColor(Color.argb(0xff, 0xff, 0xff, 0xff));
 
         mUiPaint = new Paint();
-        mUiPaint.setColor(Color.argb(0xff, 0xff, 0xff, 0xff));
+        mUiPaint.setColor(Color.WHITE);
         mUiPaint.setStrokeWidth(5);
+        mUiPaint.setTextSize(mHorizon / 17);
 
+        mUiStrokedPaint = new Paint();
+        mUiStrokedPaint.setColor(Color.WHITE);
+        mUiStrokedPaint.setStrokeWidth(5);
+        mUiStrokedPaint.setStyle(Paint.Style.STROKE);
+        mUiStrokedPaint.setPathEffect(new DashPathEffect(new float[]{10, 02}, 0));
 
         //draw RollScale
-        int radius = Math.round(mMiddle / 2);
+        mRadius = Math.round(mHorizon / 2);
 
         mRollScaleCrescentPaint = new Paint();
         mRollScaleCrescentPaint.setColor(Color.WHITE);
@@ -129,8 +152,8 @@ public class PfdRollPitchView extends View {
 
         //rollscale half circle
         mRollScaleOval = new RectF();
-        mRollScaleOval
-                .set(mMiddle - radius, mHorizon - radius, mMiddle + radius, mHorizon + radius);
+        mRollScaleOval.set(mMiddle - mRadius, mHorizon - mRadius,
+                mMiddle + mRadius, mHorizon + mRadius);
 
         //rollscale center triangle
         mRollScalePaint = new Paint();
@@ -139,80 +162,84 @@ public class PfdRollPitchView extends View {
         mRollScalePaint.setStyle(Paint.Style.FILL);
 
         mRollScaleTopTrianglePath = new Path();
-        mRollScaleTopTrianglePath.moveTo(mMiddle, mHorizon - radius);
+        mRollScaleTopTrianglePath.moveTo(mMiddle, mHorizon - mRadius);
         mRollScaleTopTrianglePath
-                .lineTo(mMiddle - (mMiddle * .04f), mHorizon - radius - (mMiddle * .06f));
+                .lineTo(mMiddle - (mMiddle * .04f), mHorizon - mRadius - (mMiddle * .06f));
         mRollScaleTopTrianglePath
-                .lineTo(mMiddle + (mMiddle * .04f), mHorizon - radius - (mMiddle * .06f));
-        mRollScaleTopTrianglePath.lineTo(mMiddle, mHorizon - radius);
+                .lineTo(mMiddle + (mMiddle * .04f), mHorizon - mRadius - (mMiddle * .06f));
+        mRollScaleTopTrianglePath.lineTo(mMiddle, mHorizon - mRadius);
 
         //ticks
         float bigTickHeight = mMiddle * 0.06f;
         float smallTickHeight = mMiddle * 0.03f;
 
-        mRollScaleTick225StartPoint = getPosition(mHorizon, mMiddle, radius, 225);
-        mRollScaleTick225EndPoint = getPosition(mHorizon, mMiddle, radius + bigTickHeight, 225);
+        mRollScaleTick225StartPoint = getPosition(mHorizon, mMiddle, mRadius, 225);
+        mRollScaleTick225EndPoint = getPosition(mHorizon, mMiddle, mRadius + bigTickHeight, 225);
 
-        mRollScaleTick240StartPoint = getPosition(mHorizon, mMiddle, radius, 240);
-        mRollScaleTick240EndPoint = getPosition(mHorizon, mMiddle, radius + bigTickHeight, 240);
+        mRollScaleTick240StartPoint = getPosition(mHorizon, mMiddle, mRadius, 240);
+        mRollScaleTick240EndPoint = getPosition(mHorizon, mMiddle, mRadius + bigTickHeight, 240);
 
-        mRollScaleTick245StartPoint = getPosition(mHorizon, mMiddle, radius, 245);
-        mRollScaleTick245EndPoint = getPosition(mHorizon, mMiddle, radius + smallTickHeight, 245);
+        mRollScaleTick245StartPoint = getPosition(mHorizon, mMiddle, mRadius, 245);
+        mRollScaleTick245EndPoint = getPosition(mHorizon, mMiddle, mRadius + smallTickHeight, 245);
 
-        mRollScaleTick250StartPoint = getPosition(mHorizon, mMiddle, radius, 250);
-        mRollScaleTick250EndPoint = getPosition(mHorizon, mMiddle, radius + smallTickHeight, 250);
+        mRollScaleTick250StartPoint = getPosition(mHorizon, mMiddle, mRadius, 250);
+        mRollScaleTick250EndPoint = getPosition(mHorizon, mMiddle, mRadius + smallTickHeight, 250);
 
-        mRollScaleTick255StartPoint = getPosition(mHorizon, mMiddle, radius, 255);
-        mRollScaleTick255EndPoint = getPosition(mHorizon, mMiddle, radius + bigTickHeight, 255);
+        mRollScaleTick255StartPoint = getPosition(mHorizon, mMiddle, mRadius, 255);
+        mRollScaleTick255EndPoint = getPosition(mHorizon, mMiddle, mRadius + bigTickHeight, 255);
 
-        mRollScaleTick260StartPoint = getPosition(mHorizon, mMiddle, radius, 260);
-        mRollScaleTick260EndPoint = getPosition(mHorizon, mMiddle, radius + smallTickHeight, 260);
+        mRollScaleTick260StartPoint = getPosition(mHorizon, mMiddle, mRadius, 260);
+        mRollScaleTick260EndPoint = getPosition(mHorizon, mMiddle, mRadius + smallTickHeight, 260);
 
-        mRollScaleTick265StartPoint = getPosition(mHorizon, mMiddle, radius, 265);
-        mRollScaleTick265EndPoint = getPosition(mHorizon, mMiddle, radius + smallTickHeight, 265);
+        mRollScaleTick265StartPoint = getPosition(mHorizon, mMiddle, mRadius, 265);
+        mRollScaleTick265EndPoint = getPosition(mHorizon, mMiddle, mRadius + smallTickHeight, 265);
 
         //on 270 is the triangle
 
-        mRollScaleTick275StartPoint = getPosition(mHorizon, mMiddle, radius, 275);
-        mRollScaleTick275EndPoint = getPosition(mHorizon, mMiddle, radius + smallTickHeight, 275);
+        mRollScaleTick275StartPoint = getPosition(mHorizon, mMiddle, mRadius, 275);
+        mRollScaleTick275EndPoint = getPosition(mHorizon, mMiddle, mRadius + smallTickHeight, 275);
 
-        mRollScaleTick280StartPoint = getPosition(mHorizon, mMiddle, radius, 280);
-        mRollScaleTick280EndPoint = getPosition(mHorizon, mMiddle, radius + smallTickHeight, 280);
+        mRollScaleTick280StartPoint = getPosition(mHorizon, mMiddle, mRadius, 280);
+        mRollScaleTick280EndPoint = getPosition(mHorizon, mMiddle, mRadius + smallTickHeight, 280);
 
-        mRollScaleTick285StartPoint = getPosition(mHorizon, mMiddle, radius, 285);
-        mRollScaleTick285EndPoint = getPosition(mHorizon, mMiddle, radius + bigTickHeight, 285);
+        mRollScaleTick285StartPoint = getPosition(mHorizon, mMiddle, mRadius, 285);
+        mRollScaleTick285EndPoint = getPosition(mHorizon, mMiddle, mRadius + bigTickHeight, 285);
 
-        mRollScaleTick290StartPoint = getPosition(mHorizon, mMiddle, radius, 290);
-        mRollScaleTick290EndPoint = getPosition(mHorizon, mMiddle, radius + smallTickHeight, 290);
+        mRollScaleTick290StartPoint = getPosition(mHorizon, mMiddle, mRadius, 290);
+        mRollScaleTick290EndPoint = getPosition(mHorizon, mMiddle, mRadius + smallTickHeight, 290);
 
-        mRollScaleTick295StartPoint = getPosition(mHorizon, mMiddle, radius, 295);
-        mRollScaleTick295EndPoint = getPosition(mHorizon, mMiddle, radius + smallTickHeight, 295);
+        mRollScaleTick295StartPoint = getPosition(mHorizon, mMiddle, mRadius, 295);
+        mRollScaleTick295EndPoint = getPosition(mHorizon, mMiddle, mRadius + smallTickHeight, 295);
 
-        mRollScaleTick300StartPoint = getPosition(mHorizon, mMiddle, radius, 300);
-        mRollScaleTick300EndPoint = getPosition(mHorizon, mMiddle, radius + bigTickHeight, 300);
+        mRollScaleTick300StartPoint = getPosition(mHorizon, mMiddle, mRadius, 300);
+        mRollScaleTick300EndPoint = getPosition(mHorizon, mMiddle, mRadius + bigTickHeight, 300);
 
-        mRollScaleTick315StartPoint = getPosition(mHorizon, mMiddle, radius, 315);
-        mRollScaleTick315EndPoint = getPosition(mHorizon, mMiddle, radius + bigTickHeight, 315);
+        mRollScaleTick315StartPoint = getPosition(mHorizon, mMiddle, mRadius, 315);
+        mRollScaleTick315EndPoint = getPosition(mHorizon, mMiddle, mRadius + bigTickHeight, 315);
 
         //rollscale bottom triangle
         mRollScaleBottomTrianglePath = new Path();
-        mRollScaleBottomTrianglePath.moveTo(mMiddle, mHorizon - radius);
+        mRollScaleBottomTrianglePath.moveTo(mMiddle, mHorizon - mRadius);
         mRollScaleBottomTrianglePath
-                .lineTo(mMiddle - (mMiddle * .02f), mHorizon - radius + (mMiddle * .04f));
+                .lineTo(mMiddle - (mMiddle * .02f), mHorizon - mRadius + (mMiddle * .04f));
         mRollScaleBottomTrianglePath
-                .lineTo(mMiddle + (mMiddle * .02f), mHorizon - radius + (mMiddle * .04f));
-        mRollScaleBottomTrianglePath.lineTo(mMiddle, mHorizon - radius);
+                .lineTo(mMiddle + (mMiddle * .02f), mHorizon - mRadius + (mMiddle * .04f));
+        mRollScaleBottomTrianglePath.lineTo(mMiddle, mHorizon - mRadius);
+
+        //fat horizon line
+        mFatHorizonPaint = new Paint();
+        mFatHorizonPaint.setColor(Color.argb(0xff, 0xff, 0xff, 0xff));
+        mFatHorizonPaint.setStrokeWidth(8);
+
+        mDashedPitchPath = new Path();
 
         isInitialized = true;
 
     }
 
     private PointF getPosition(int cy, int cx, float rad, float angle) {
-
-        PointF p = new PointF((float) (cx + rad * Math.cos(Math.toRadians(angle))),
+        return new PointF((float) (cx + rad * Math.cos(Math.toRadians(angle))),
                 (float) (cy + rad * Math.sin(Math.toRadians(angle))));
-
-        return p;
     }
 
     @Override
@@ -288,10 +315,87 @@ public class PfdRollPitchView extends View {
         canvas.drawLine(mRollScaleTick315StartPoint.x, mRollScaleTick315StartPoint.y,
                 mRollScaleTick315EndPoint.x, mRollScaleTick315EndPoint.y, mRollScalePaint);
 
+        //fatHorizon
+        canvas.drawLine(mMiddle - mRadius * .55f, mHorizon + mPitch,
+                mMiddle + mRadius * .55f, mHorizon + mPitch, mFatHorizonPaint);
+
+        //pitch lines
+        final float mPitchScaleOffset = mRawPitch % 10;
+        final float radLineOffset = mRadius - mRadius * 0.1f;
+
+        //only draw top 3 lines if in the circle
+        if (radLineOffset > ((30 - mPitchScaleOffset) * (mHorizonDivisor))) {
+            drawLine(.4f, -30, canvas);
+        }
+
+        if (radLineOffset > ((25 - mPitchScaleOffset) * (mHorizonDivisor))) {
+            drawLine(.2f, -25, canvas);
+        }
+        if (radLineOffset > ((20 - mPitchScaleOffset) * (mHorizonDivisor))) {
+            drawLine(.4f, -20, canvas);
+        }
+
+        drawLine(.2f, -15, canvas);
+        drawLine(.4f, -10, canvas, Integer.toString(Math.round(mRawPitch) + 10));
+        drawLine(.2f, -5, canvas);
+        drawLine(.4f, 0, canvas);
+        drawLine(.2f, 5, canvas);
+        drawLine(.4f, 10, canvas);
+        drawLine(.2f, 15, canvas);
+
+        //only draw the bottom 3 lines if in the circle (which is invisible on the bottom)
+        if (radLineOffset > ((20 + mPitchScaleOffset) * (mHorizonDivisor))) {
+            drawLine(.4f, 20, canvas);
+        }
+
+        if (radLineOffset > ((25 + mPitchScaleOffset) * (mHorizonDivisor))) {
+            drawLine(.2f, 25, canvas);
+        }
+
+        if (radLineOffset > ((30 + mPitchScaleOffset) * (mHorizonDivisor))) {
+            drawLine(.4f, 30, canvas);
+        }
+
+        //all dashed lines are drawn here; see this.drawLine() for details
+        canvas.drawPath(mDashedPitchPath, mUiStrokedPaint);
+        mDashedPitchPath.reset();
+
         canvas.restore();
 
-        //now everything that does not move
+        //draw everything that does not move
         canvas.drawPath(mRollScaleBottomTrianglePath, mRollScalePaint);
 
+    }
+
+    private void drawLine(float lenFactor, int offset, Canvas canvas, String label) {
+        final float pitchScaleOffset = mRawPitch % 10;
+        final float fromX = mMiddle - mRadius * lenFactor;
+        final float y = mHorizon + ((offset + pitchScaleOffset) * (mHorizonDivisor));
+        final float toX = mMiddle + mRadius * lenFactor;
+
+        if (y < mHorizon + mPitch) {
+            canvas.drawLine(fromX, y, toX, y, mUiPaint);
+        } else {
+            //we want a dashed line here, drawLine does not
+            //support this with GPU support on some versions. so we'll use a path.
+            //We'll put all lines in one path and draw it in onDraw();
+
+            //TODO: maybe better use drawLines() (with "s") and draw a line for each dash. drawLines() is running on the GPU, drawPath on the CPU
+            mDashedPitchPath.moveTo(fromX, y);
+            mDashedPitchPath.lineTo(toX, y);
+        }
+
+        label = Float.toString(Math.round(mRawPitch - offset));
+        if (label != null && offset % 10 == 0) {
+            mUiPaint.getTextBounds(label, 0, label.length(), textBounds);
+            canvas.drawText(label, fromX - textBounds.width() - 4, y - textBounds.exactCenterY(),
+                    mUiPaint);
+            canvas.drawText(label, toX + 2, y - textBounds.exactCenterY(), mUiPaint);
+            //canvas.drawText(label, fromX - 30, fromY + mHorizon / 30, mUiPaint);
+        }
+    }
+
+    private void drawLine(float lenFactor, int offset, Canvas canvas) {
+        drawLine(lenFactor, offset, canvas, null);
     }
 }
