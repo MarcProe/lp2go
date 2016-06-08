@@ -21,10 +21,7 @@ public class PfdRollPitchView extends View {
     final int VIEWPORT_HEIGHT_DIVISOR = 45;
     private final Rect textBounds = new Rect();
     private boolean isInitialized;
-    private AttributeSet mAttrSet;
     private Path mDashedPitchPath;
-    private int mDefStyleAttr;
-    private long mDiag;
     private Paint mEarthPaint;
     private Rect mEarthRect;
     private Paint mFatHorizonPaint;
@@ -41,7 +38,6 @@ public class PfdRollPitchView extends View {
     private Path mRollScaleBottomTrianglePath;
     private Paint mRollScaleCrescentPaint;
     private RectF mRollScaleOval;
-    //private Path mRollScaleCrescentPath;
     private Paint mRollScalePaint;
     private PointF mRollScaleTick225EndPoint;
     private PointF mRollScaleTick225StartPoint;
@@ -83,13 +79,10 @@ public class PfdRollPitchView extends View {
 
     public PfdRollPitchView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        mAttrSet = attrs;
     }
 
     public PfdRollPitchView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        mAttrSet = attrs;
-        mDefStyleAttr = defStyleAttr;
     }
 
     public void setPitch(float pitch) {
@@ -102,14 +95,15 @@ public class PfdRollPitchView extends View {
     }
 
     private void init() {
-
-
         //the length are just lazyness to do the real math, will calculate this stuff correctly later.
+        //maybe.
 
         mHorizon = Math.round(this.getHeight() / 2f + .5f);
         mMiddle = Math.round(this.getWidth() / 2f + .5f);
-        mDiag = Math.round(Math.sqrt(Math.pow(mHorizon, 2) + Math.pow(mMiddle, 2)));
-        mHalfDiag = Math.round(mDiag / 2);
+
+        final long diag = Math.round(Math.sqrt(Math.pow(mHorizon, 2) + Math.pow(mMiddle, 2)));
+
+        mHalfDiag = Math.round(diag / 2);
         mHorizonDivisor = mHorizon / VIEWPORT_HEIGHT_DIVISOR;
 
         setPitch(0);
@@ -234,7 +228,6 @@ public class PfdRollPitchView extends View {
         mDashedPitchPath = new Path();
 
         isInitialized = true;
-
     }
 
     private PointF getPosition(int cy, int cx, float rad, float angle) {
@@ -336,7 +329,7 @@ public class PfdRollPitchView extends View {
         }
 
         drawLine(.2f, -15, canvas);
-        drawLine(.4f, -10, canvas, Integer.toString(Math.round(mRawPitch) + 10));
+        drawLine(.4f, -10, canvas);
         drawLine(.2f, -5, canvas);
         drawLine(.4f, 0, canvas);
         drawLine(.2f, 5, canvas);
@@ -367,7 +360,7 @@ public class PfdRollPitchView extends View {
 
     }
 
-    private void drawLine(float lenFactor, int offset, Canvas canvas, String label) {
+    private void drawLine(float lenFactor, int offset, Canvas canvas) {
         final float pitchScaleOffset = mRawPitch % 10;
         final float fromX = mMiddle - mRadius * lenFactor;
         final float y = mHorizon + ((offset + pitchScaleOffset) * (mHorizonDivisor));
@@ -385,17 +378,15 @@ public class PfdRollPitchView extends View {
             mDashedPitchPath.lineTo(toX, y);
         }
 
-        label = Float.toString(Math.round(mRawPitch - offset));
-        if (label != null && offset % 10 == 0) {
+        final double d = (Math.abs(Math.round(
+                (((offset + pitchScaleOffset) * (mHorizonDivisor)) - mPitch) / mHorizonDivisor)));
+        final String label = String.format("%s", (int) d);
+
+        if (label != null && d != 0 && d <= 90 && offset % 10 == 0) {
             mUiPaint.getTextBounds(label, 0, label.length(), textBounds);
             canvas.drawText(label, fromX - textBounds.width() - 4, y - textBounds.exactCenterY(),
                     mUiPaint);
             canvas.drawText(label, toX + 2, y - textBounds.exactCenterY(), mUiPaint);
-            //canvas.drawText(label, fromX - 30, fromY + mHorizon / 30, mUiPaint);
         }
-    }
-
-    private void drawLine(float lenFactor, int offset, Canvas canvas) {
-        drawLine(lenFactor, offset, canvas, null);
     }
 }
