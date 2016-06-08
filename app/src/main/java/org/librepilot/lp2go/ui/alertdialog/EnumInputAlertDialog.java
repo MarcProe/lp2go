@@ -80,7 +80,7 @@ public class EnumInputAlertDialog extends InputAlertDialog {
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        if (mChoice > 0) {
+                        if (mChoice >= 0) {
                             process(mChoice);
                             mFcDevice.savePersistent(mObject);
                         }
@@ -92,7 +92,7 @@ public class EnumInputAlertDialog extends InputAlertDialog {
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        if (mChoice > 0) {
+                        if (mChoice >= 0) {
                             process(mChoice);
                         }
                         dialog.dismiss();
