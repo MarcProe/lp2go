@@ -33,9 +33,11 @@ public class SettingsHelper {
     public static boolean mColorfulPid = false;
     public static boolean mColorfulVPid = false;
     public static String mLoadedUavo = null;
+    public static boolean mLogAsRawUavTalk;
     public static int mSerialModeUsed = -1;
     public static boolean mText2SpeechEnabled = false;
     public static String mTopLeftLayout;
+    public static boolean mUseTimestampsFromFc;
 
     public static void loadSettings(MainActivity mainActivity) {
         SharedPreferences sharedPref = mainActivity.getPreferences(Context.MODE_PRIVATE);
@@ -62,6 +64,13 @@ public class SettingsHelper {
         mBottomRightLayout = sharedPref.getString(
                 mainActivity.getString(R.string.SETTINGS_BOTTOM_RIGHT_LAYOUT_RES, R.string.APP_ID),
                 mainActivity.getString(R.string.main_element_info));
+
+        mLogAsRawUavTalk = sharedPref.getBoolean(
+                mainActivity.getString(R.string.SETTINGS_LOG_RAW, R.string.APP_ID),
+                false);
+        mUseTimestampsFromFc = sharedPref.getBoolean(
+                mainActivity.getString(R.string.SETTINGS_TIMESTAMPS_FROM_FC, R.string.APP_ID),
+                false);
     }
 
     public static void saveSettings(MainActivity mainActivity) {
@@ -83,6 +92,11 @@ public class SettingsHelper {
                 R.string.APP_ID), mTopLeftLayout);
         editor.putString(mainActivity.getString(R.string.SETTINGS_BOTTOM_RIGHT_LAYOUT_RES,
                 R.string.APP_ID), mBottomRightLayout);
+        editor.putBoolean(mainActivity.getString(R.string.SETTINGS_LOG_RAW, R.string.APP_ID),
+                SettingsHelper.mLogAsRawUavTalk);
+        editor.putBoolean(
+                mainActivity.getString(R.string.SETTINGS_TIMESTAMPS_FROM_FC, R.string.APP_ID),
+                SettingsHelper.mUseTimestampsFromFc);
 
         editor.commit();
     }

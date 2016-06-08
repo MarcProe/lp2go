@@ -454,7 +454,7 @@ public class MainActivity extends AppCompatActivity {
         ViewController mVcAbout =
                 new ViewControllerAbout(this, R.string.menu_about, View.INVISIBLE, View.INVISIBLE);
         ViewController mVcLogs =
-                new ViewControllerLogs(this, R.string.menu_logs, View.INVISIBLE, View.INVISIBLE);
+                new ViewControllerLogs(this, R.string.menu_logs, View.VISIBLE, View.VISIBLE);
         ViewController mVcSettings =
                 new ViewControllerSettings(this, R.string.menu_settings, View.INVISIBLE,
                         View.INVISIBLE);

@@ -76,7 +76,8 @@ public class ViewControllerObjects extends ViewController {
 
                     for (UAVTalkXMLObject xmlobj : ma.mXmlObjects.values()) {
                         mExpListView.getListDataHeader()
-                                .add(xmlobj.getName() + " (" + xmlobj.getId() + ")");
+                                //.add(xmlobj.getName() + " (" + xmlobj.getId() + ")");
+                                .add(xmlobj.getName());
                         //VisualLog.d("OBJ", xmlobj.getName());
                     }
 

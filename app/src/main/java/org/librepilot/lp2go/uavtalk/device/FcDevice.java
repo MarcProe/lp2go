@@ -20,6 +20,8 @@ import android.content.Context;
 
 import org.librepilot.lp2go.H;
 import org.librepilot.lp2go.MainActivity;
+import org.librepilot.lp2go.VisualLog;
+import org.librepilot.lp2go.helper.SettingsHelper;
 import org.librepilot.lp2go.uavtalk.UAVTalkDeviceHelper;
 import org.librepilot.lp2go.uavtalk.UAVTalkMessage;
 import org.librepilot.lp2go.uavtalk.UAVTalkObjectTree;
@@ -116,8 +118,8 @@ public abstract class FcDevice {
         }
     }
 
-    public void log(byte[] b) {
-        log(b, -1);
+    public void logRaw(byte[] b) {
+
     }
 
     public void log(UAVTalkMessage m) {
@@ -129,23 +131,29 @@ public abstract class FcDevice {
             return;
         }
         try {
-            long time;
-
-            if (timestamp == -1) {
-                time = System.currentTimeMillis() - mLogStartTimeStamp;
+            byte[] msg;
+            if (SettingsHelper.mLogAsRawUavTalk) {
+                msg = b;
             } else {
-                time = timestamp;
+                long time;
+
+                if (timestamp != -1 && SettingsHelper.mUseTimestampsFromFc) {
+                    time = timestamp;
+                } else {
+                    time = System.currentTimeMillis() - mLogStartTimeStamp;
+                }
+
+                long len = b.length;
+
+                //time is long, so reverse8bytes is just fine.
+
+                @SuppressWarnings("ConstantConditions")
+                byte[] btime = Arrays.copyOfRange(H.reverse8bytes(H.toBytes(time)), 0, 4);
+                byte[] blen = H.reverse8bytes(H.toBytes(len));
+
+                msg = H.concatArray(btime, blen);
+                msg = H.concatArray(msg, b);
             }
-
-            long len = b.length;
-
-            @SuppressWarnings("ConstantConditions") //time is long, so reverse8bytes is just fine.
-                    byte[] btime = Arrays.copyOfRange(H.reverse8bytes(H.toBytes(time)), 0, 4);
-            byte[] blen = H.reverse8bytes(H.toBytes(len));
-
-            byte msg[] = H.concatArray(btime, blen);
-            msg = H.concatArray(msg, b);
-
             mLogOutputStream.write(msg);
             mLogBytesLoggedUAV += b.length;
             mLogBytesLoggedOPL += msg.length;
@@ -153,6 +161,7 @@ public abstract class FcDevice {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        VisualLog.d("DGB", "Logging with timestamp " + timestamp);
     }
 
     public abstract void start();

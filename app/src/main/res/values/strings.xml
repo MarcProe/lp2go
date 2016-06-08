@@ -24,6 +24,7 @@
     <string name="BT_DEVICE">Bluetooth Device</string>
     <string name="CHECK_PID_WARNING">PLEASE CHECK PIDs WITH GCS BEFORE FLYING!</string>
     <string name="CHANGE_FUSION_ALGO_DISARMED">Change of Fusion Algorithm only allowed while disarmed</string>
+    <string name="CHANGE_SETTINGS_DISARMED">Change of Settings only allowed while disarmed</string>
     <string name="SAVED_PERSISTENT">Saved to persistent storage.</string>
     <string name="PID_SENT">Sent! Numbers should turn black now.</string>
     <string name="PID_LOADING">Loading current PID.</string>
@@ -49,6 +50,7 @@
     <string name="YES">Yes</string>
     <string name="NO">No</string>
     <string name="SETTINGS">Settings</string>
+    <string name="FLIGHT_SETTINGS">Flight Settings</string>
     <string name="COLORFUL_VIEW">Colorful View</string>
     <string name="FLIGHT_HEALTH_SETTINGS">Health Settings</string>
     <string name="LOCAL_HEALTH_SETTINGS">Health Settings</string>
@@ -57,5 +59,8 @@
     <string name="UAVO_MAYBE_TOO_FAST">UAVO problem.\nCheck OPLink connection and/or try reducing the serial link speed</string>
     <string name="BAD_FC_UAVO_VERSION">00000000</string>
     <string name="_0">0</string>
+    <string name="LOG_RAW">Log raw protocol (see wiki for details)</string>
+    <string name="FC_TIMESTATMPS">Use FC timestamps if available (Only valid if above is not checked)</string>
+    <string name="FC_TIMESTATMPS_REMOTE">Telemetry Timestamps</string>
 </resources>
 

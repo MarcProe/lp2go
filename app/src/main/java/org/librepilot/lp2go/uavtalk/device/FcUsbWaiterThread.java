@@ -117,11 +117,13 @@ class FcUsbWaiterThread extends FcWaiterThread {
             oidbuffer = bufferRead(oidbuffer.length);
             iidbuffer = bufferRead(iidbuffer.length);
 
+            int tsoffset = 0;
             if ((MASK_TIMESTAMP & msgtypebuffer[0]) == MASK_TIMESTAMP) {
                 timestampbuffer = bufferRead(timestampbuffer.length);
+                tsoffset = 2;
             }
 
-            databuffer = bufferRead(len - 10);
+            databuffer = bufferRead(len - (10 + tsoffset));
             crcbuffer = bufferRead(crcbuffer.length);
 
             byte[] bmsg = H.concatArray(syncbuffer, msgtypebuffer);

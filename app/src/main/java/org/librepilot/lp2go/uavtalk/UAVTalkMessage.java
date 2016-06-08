@@ -35,10 +35,6 @@ public class UAVTalkMessage {
 
             this.mType = bytes[1 + offset];
 
-            if (((byte) 0x80 & this.mType) == 0x80) {
-                tsoffset = 2;
-            }
-
             int lb1 = bytes[3 + offset] & 0x000000ff;
             int lb2 = bytes[2 + offset] & 0x000000ff;
 
@@ -57,8 +53,9 @@ public class UAVTalkMessage {
             this.mInstanceId = ib1 << 8 | ib2;
 
             if ((FcWaiterThread.MASK_TIMESTAMP & this.mType) == FcWaiterThread.MASK_TIMESTAMP) {
-                int ts1 = bytes[9 + offset] & 0x000000ff;
-                int ts2 = bytes[8 + offset] & 0x000000ff;
+                tsoffset = 2;
+                int ts1 = bytes[11 + offset] & 0x000000ff;
+                int ts2 = bytes[10 + offset] & 0x000000ff;
 
                 this.mTimestamp = ts1 << 8 | ts2;
             } else {

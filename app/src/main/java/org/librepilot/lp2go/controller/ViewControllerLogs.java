@@ -1,15 +1,22 @@
 package org.librepilot.lp2go.controller;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.v4.content.FileProvider;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.librepilot.lp2go.MainActivity;
 import org.librepilot.lp2go.R;
 import org.librepilot.lp2go.VisualLog;
+import org.librepilot.lp2go.helper.SettingsHelper;
+import org.librepilot.lp2go.uavtalk.UAVTalkMissingObjectException;
+import org.librepilot.lp2go.ui.SingleToast;
+import org.librepilot.lp2go.ui.alertdialog.EnumInputAlertDialog;
 
 import java.io.File;
 
@@ -69,6 +76,52 @@ public class ViewControllerLogs extends ViewController implements View.OnClickLi
         }
     }
 
+    @Override
+    public void onToolbarFlightSettingsClick(View v) {
+        onTelemetryTimestampsClick();
+    }
+
+    @Override
+    public void onToolbarLocalSettingsClick(View v) {
+        {
+            final String[] items =
+                    {getString(R.string.LOG_RAW), getString(R.string.FC_TIMESTATMPS)};
+            final boolean[] checkedItems = {false, false};
+
+            checkedItems[0] = SettingsHelper.mLogAsRawUavTalk;
+            checkedItems[1] = SettingsHelper.mUseTimestampsFromFc;
+
+
+            AlertDialog dialog = new AlertDialog.Builder(getMainActivity())
+                    .setTitle(R.string.SETTINGS)
+                    .setMultiChoiceItems(items, checkedItems,
+                            new DialogInterface.OnMultiChoiceClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int indexSelected,
+                                                    boolean isChecked) {
+                                    switch (indexSelected) {
+                                        case 0: {
+                                            SettingsHelper.mLogAsRawUavTalk = isChecked;
+                                            break;
+                                        }
+                                        case 1: {
+                                            SettingsHelper.mUseTimestampsFromFc = isChecked;
+                                            break;
+                                        }
+                                    }
+                                    SettingsHelper.saveSettings(getMainActivity());
+                                }
+                            }).setPositiveButton(R.string.CLOSE_BUTTON,
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.dismiss();
+                                }
+                            }).create();
+            dialog.show();
+        }
+    }
+
     private void onLogStart(View v) {
         try {
             getMainActivity().mFcDevice.setLogging(true);
@@ -121,6 +174,34 @@ public class ViewControllerLogs extends ViewController implements View.OnClickLi
                 onLogShare(v);
                 break;
             }
+        }
+    }
+
+    private void onTelemetryTimestampsClick() {
+        final MainActivity ma = getMainActivity();
+        if (ma.mFcDevice != null) {
+            String armingState;
+            try {
+                armingState =
+                        ma.mFcDevice.getObjectTree().getData("FlightStatus", "Armed").toString();
+            } catch (UAVTalkMissingObjectException e) {
+                armingState = "";
+                ma.mFcDevice.requestObject("HwSettings");
+            }
+            if (armingState.equals("Disarmed")) {
+                new EnumInputAlertDialog(ma)
+                        .withTitle("Telemetry Timestamps (reboot required)")
+                        .withUavTalkDevice(ma.mFcDevice)
+                        .withObject("HwSettings")
+                        .withField("TelemetryTimestamps")
+                        .show();
+            } else {
+                SingleToast.show(ma,
+                        getString(R.string.CHANGE_SETTINGS_DISARMED) + " " + armingState,
+                        Toast.LENGTH_LONG);
+            }
+        } else {
+            SingleToast.show(ma, R.string.SEND_FAILED, Toast.LENGTH_SHORT);
         }
     }
 }

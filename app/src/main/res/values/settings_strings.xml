@@ -18,6 +18,8 @@
         <item>@string/main_element_pfd</item>
     </string-array>
 
+    <string name="OFFSET_BAROSENSOR_ALTITUDE">%1$s.Offset.BaroSensor-Altitude</string>
+
     <string name="SETTINGS_UAVO_SOURCE">%1$s.uavo_source</string>
     <string name="SETTINGS_SERIAL_MODE">%1$s.serial_mode</string>
     <string name="SETTINGS_BT_MAC">%1$s.bt_mac</string>
@@ -27,8 +29,8 @@
     <string name="SETTINGS_TEXT2SPEECH_ENABLED">%1$s.tts_enabled</string>
     <string name="SETTINGS_TOP_LEFT_LAYOUT_RES">%1$s.top_left_layout</string>
     <string name="SETTINGS_BOTTOM_RIGHT_LAYOUT_RES">%1$s.bottom_right_layout</string>
-
-    <string name="OFFSET_BAROSENSOR_ALTITUDE">%1$s.Offset.BaroSensor-Altitude</string>
+    <string name="SETTINGS_LOG_RAW">%1$s.log_raw</string>
+    <string name="SETTINGS_TIMESTAMPS_FROM_FC">%1$s.fc_timestamps</string>
 
 
 </resources>
