@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="907.08661dp"
-    android:height="907.08661dp"
-    android:viewportHeight="907.08661"
-    android:viewportWidth="907.08661">
+        android:width="907.08661dp"
+        android:height="907.08661dp"
+        android:viewportHeight="907.08661"
+        android:viewportWidth="907.08661">
 
     <path
         android:name="path4701"
@@ -15,5 +15,5 @@ L199.033,110.492 Z M78.208,11.1994 L326.438,11.1994
 Q586.033,11.1994,707.456,119.463 Q828.879,227.129,828.879,456.817
 Q828.879,687.701,706.858,795.965 Q584.836,904.23,326.438,904.23 L78.208,904.234
 L78.208,11.204 Z"
-        android:strokeWidth="1" />
+        android:strokeWidth="1"/>
 </vector>
