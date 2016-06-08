@@ -10,10 +10,9 @@ android {
         targetSdkVersion 16
 
         multiDexEnabled true
-        //vectorDrawables.useSupportLibrary = true
 
-        versionName '0.2.6.23'
-        versionCode 20623
+        versionName '0.2.6.24'
+        versionCode 20624
     }
 
     dexOptions {
