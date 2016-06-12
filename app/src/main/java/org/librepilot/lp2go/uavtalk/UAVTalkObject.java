@@ -94,6 +94,10 @@ public class UAVTalkObject {
         }
     }
 
+    protected void removeListener() {
+        mListener = null;
+    }
+
     public String toString() {
         return mId;
     }

@@ -68,6 +68,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.librepilot.lp2go.controller.ViewController;
+import org.librepilot.lp2go.controller.ViewController3DMagCalibration;
 import org.librepilot.lp2go.controller.ViewControllerAbout;
 import org.librepilot.lp2go.controller.ViewControllerDebug;
 import org.librepilot.lp2go.controller.ViewControllerLogs;
@@ -118,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
     public static final int SERIAL_BLUETOOTH = 2;
     public static final int SERIAL_NONE = 0;
     protected static final int SERIAL_USB = 1;
-    private static final int NUM_OF_VIEWS = 10;
+    private static final int NUM_OF_VIEWS = 11;
     private static final String UAVO_INTERNAL_PATH = "uavo";
     static int mCurrentView = 0;
     private static boolean mHasPThread = false;
@@ -355,6 +356,10 @@ public class MainActivity extends AppCompatActivity {
                 R.drawable.ic_info_outline_24dp));
         if (menDebug != null) {
             menuItems.add(menDebug);
+            menuItems.add(new MenuItem(getString(R.string.menu_3dmag),
+                    R.drawable.ic_info_outline_24dp));
+            menuItems.add(new MenuItem(getString(R.string.menu_scope),
+                    R.drawable.ic_info_outline_24dp));
         }
 
         navMenuIcons.recycle();
@@ -463,6 +468,9 @@ public class MainActivity extends AppCompatActivity {
         ViewController mVcObjects =
                 new ViewControllerObjects(this, R.string.menu_objects, View.INVISIBLE,
                         View.INVISIBLE);
+        ViewController mVc3DMagCalibration =
+                new ViewController3DMagCalibration(this, R.string.menu_3dmag, View.INVISIBLE,
+                        View.INVISIBLE);
         ViewController mVcMain =
                 new ViewControllerMain(this, R.string.menu_main, View.VISIBLE, View.VISIBLE);
 
@@ -477,12 +485,15 @@ public class MainActivity extends AppCompatActivity {
         mVcList.add(ViewController.VIEW_ABOUT, mVcAbout);
         mVcList.add(ViewController.VIEW_DEBUG, mVcDebug);
         mVcList.add(ViewController.VIEW_SCOPE, mVcScope);
+        mVcList.add(ViewController.VIEW_3DMAG, mVc3DMagCalibration);
 
         ((ViewControllerMainAnimatorViewSetter) mVcMain).setLayout();
 
         initSlider();
 
-        initWarnDialog().show();
+
+        //initWarnDialog().show();
+
     }
 
     @Override

@@ -50,6 +50,10 @@ public class UAVTalkObjectTree {
         return objects.get(xmlObjects.get(objName).getId()).getListener();
     }
 
+    public void removeListener(String objName) {
+        objects.get(xmlObjects.get(objName).getId()).removeListener();
+    }
+
     public String toString() {
         String ret = "";
         Iterator<String> i = xmlObjects.keySet().iterator();
