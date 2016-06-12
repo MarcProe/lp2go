@@ -19,7 +19,7 @@ public class ViewControllerDebug extends ViewController implements View.OnClickL
         super(activity, title, localSettingsVisible, flightSettingsVisible);
         activity.mViews.put(VIEW_DEBUG,
                 activity.getLayoutInflater().inflate(R.layout.activity_debug, null));
-        activity.setContentView(activity.mViews.get(VIEW_DEBUG)); //Logs
+        activity.setContentView(activity.mViews.get(VIEW_DEBUG)); //DebugLogs
 
         txtDebugLog = (TextView) findViewById(R.id.txtDebugLog);
         VisualLog.setDebugLogTextView(txtDebugLog);
