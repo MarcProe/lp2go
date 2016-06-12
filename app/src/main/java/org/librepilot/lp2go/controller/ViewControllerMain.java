@@ -241,11 +241,12 @@ public class ViewControllerMain extends ViewController implements View.OnClickLi
             getMainActivity().mVcList.get(ViewController.VIEW_MAP).leave();
 
         }
+
         if (mTopAnimator.getCurrentView().getId() == R.id.root_main_inc_pfd
                 || (mBottomAnimator.getCurrentView() != null
                 && mBottomAnimator.getCurrentView().getId() == R.id.root_main_inc_pfd)) {
             try {
-                getMainActivity().mFcDevice.getObjectTree().setListener("AttitudeState", null);
+                getMainActivity().mFcDevice.getObjectTree().removeListener("AttitudeState");
             } catch (NullPointerException e) {
 
             } catch (IllegalStateException e1) {
@@ -525,15 +526,19 @@ public class ViewControllerMain extends ViewController implements View.OnClickLi
         if (mTopAnimator.getCurrentView().getId() == R.id.root_main_inc_pfd
                 || (mBottomAnimator.getCurrentView() != null
                 && mBottomAnimator.getCurrentView().getId() == R.id.root_main_inc_pfd)) {
-            try {
-                if (getMainActivity().mFcDevice.getObjectTree().getListener("AttitudeState")
-                        == null) {
-                    getMainActivity().mFcDevice.getObjectTree().setListener("AttitudeState", this);
+            if (getMainActivity().mFcDevice.getObjectTree().getListener("AttitudeState") == null) {
+                try {
+                    try {
+                        getMainActivity().mFcDevice.getObjectTree()
+                                .setListener("AttitudeState", this);
+                    } catch (IllegalStateException e1) {
+                        getMainActivity().mFcDevice.getObjectTree().removeListener("AttitudeState");
+                        getMainActivity().mFcDevice.getObjectTree()
+                                .setListener("AttitudeState", this);
+                    }
+                } catch (NullPointerException e) {
+
                 }
-            } catch (NullPointerException e) {
-
-            } catch (IllegalStateException e1) {
-
             }
         }
 
@@ -784,8 +789,6 @@ public class ViewControllerMain extends ViewController implements View.OnClickLi
             Float pitch;
             boolean inval = false;
 
-
-
             try {
                 roll = (Float) getData("AttitudeState", "Roll");
                 pitch = (Float) getData("AttitudeState", "Pitch");
@@ -793,7 +796,6 @@ public class ViewControllerMain extends ViewController implements View.OnClickLi
                 roll = null;
                 pitch = null;
             }
-
 
             if (roll != null && (roll - mPreviousRoll > 1 || roll - mPreviousRoll < -1)) {
                 imgPfdRollPitch.setRoll(roll);
