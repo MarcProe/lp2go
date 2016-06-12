@@ -3,7 +3,11 @@ package org.librepilot.lp2go.ui.opengl;
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLU;
+import android.opengl.Matrix;
 import android.util.AttributeSet;
+
+import com.badlogic.gdx.math.Quaternion;
+import com.badlogic.gdx.math.Vector3;
 
 import org.librepilot.lp2go.uavtalk.device.FcDevice;
 
@@ -14,9 +18,6 @@ import java.nio.FloatBuffer;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-/**
- * Created by Marcus on 09.06.2016.
- */
 public class OpenGl3DMagCalibrationView extends GLSurfaceView {
 
     private final OpenGLRenderer mRenderer;
@@ -95,30 +96,33 @@ class OpenGLRenderer implements GLSurfaceView.Renderer {
 
         gl.glTranslatef(0.0f, 0.0f, -10.0f);
 
-        gl.glRotatef(mPitch, 1.0f, 0.0f, 0.0f);     //Pitch
-        gl.glRotatef(mRoll, 0.0f, 1.0f, 0.0f);      //Roll
+        //gl.glRotatef(mRoll, 0.0f, 1.0f, 0.0f);      //Roll
+        //gl.glRotatef(mPitch, 1.0f, 0.0f, 0.0f);     //Pitch
         //gl.glRotatef(mYaw, 0.0f, 0.0f, 1.0f);       //Yaw
 
-/*
-        Quaternion p = new Quaternion(1, 0, 0, (float)Math.toRadians(mPitch+90));
-        Quaternion y = new Quaternion(0, 0, 1, (float)Math.toRadians(mYaw/2));
-        Quaternion r = new Quaternion(0, 1, 0, (float)Math.toRadians(mRoll/2));
+        Quaternion p = new Quaternion(new Vector3(1, 0, 0), mPitch);
+        Quaternion r = new Quaternion(new Vector3(0, 1, 0), mRoll);
+        Quaternion y = new Quaternion(new Vector3(0, 0, 1), mYaw);
 
-        Quaternion temp = p;
+        Quaternion temp;
+        temp = y.mul(p).mul(r);
 
-        float[] rotate = temp.toMatrix().getAsArray();
+        float[] rotate = new float[16];
+
+        temp.toMatrix(rotate);
+
         float transMinus[] = new float[16];
         float transPlus[] = new float[16];
         Matrix.setIdentityM(transMinus, 0);
         Matrix.setIdentityM(transPlus, 0);
-        Matrix.translateM(transMinus, 0, 0, 0, -3);
-        Matrix.translateM(transPlus, 0, 0, 0, 3);
+        Matrix.translateM(transMinus, 0, 0, 0, 0);
+        Matrix.translateM(transPlus, 0, 0, 0, 0);
 
         Matrix.multiplyMM(rotate, 0, transMinus, 0, rotate, 0);
         Matrix.multiplyMM(rotate, 0, rotate, 0, transPlus, 0);
 
         gl.glMultMatrixf(rotate,0);
-*/
+
         mRhombicuboctahedron.draw(gl);
 
         gl.glLoadIdentity();
@@ -164,20 +168,20 @@ class Rhombicuboctahedron {
             //                              PITCH   ROLL   YAW
             8, 4, 0,            //TNE       45      -45
 
-            0, 2, 1,            // T1       0       0       X
+            0, 2, 1,            // T1       0       0
             3, 2, 1,            // T2
 
             6, 20, 2,           ///TNW      45      45
 
-            1, 16, 3,           //TS1       -45     0       X
+            1, 16, 3,           //TS1       -45     0
             18, 16, 3,          //TS2
 
-            0, 2, 4,            // TN1      45      0       X
+            0, 2, 4,            // TN1      45      0
             6, 2, 4,            // TN2
 
             12, 9, 5,           //BNE       45      -135
 
-            4, 5, 6,            // N1       90      X      X
+            4, 5, 6,            // N1       90      X
             7, 5, 6,            // N2
 
             14, 21, 7,          //BNW       45      135
@@ -193,10 +197,10 @@ class Rhombicuboctahedron {
             13, 12, 11,         //BE1       0       -135
             9, 12, 11,          //BE2
 
-            5, 7, 12,           //BN1       35      +-180
+            5, 7, 12,           //BN1       45      +-180
             14, 7, 12,          //BN2
 
-            11, 17, 13,           //BSE
+            11, 17, 13,           //BSE     -45     -135
 
             12, 13, 14,         // B1       0       +-180     X
             15, 13, 14,         // B2
@@ -206,13 +210,13 @@ class Rhombicuboctahedron {
             11, 17, 16,         //SE1       -45     -90
             11, 10, 16,         //SE2
 
-            13, 15, 17,         //BS1
+            13, 15, 17,         //BS1       -45     +-180
             19, 15, 17,         //BS2
 
-            16, 17, 18,         //S1
+            16, 17, 18,         //S1        -90     X       X
             19, 17, 18,         //S2
 
-            18, 22, 19,         //SW
+            18, 22, 19,         //SW        -45     90
             22, 23, 19,         //SW
             //                              PITCH    ROLL   YAW
             2, 3, 20,           //TW1       0       45      X
@@ -221,22 +225,22 @@ class Rhombicuboctahedron {
             20, 22, 21,         //W1        0       90      X
             23, 22, 21,         //W2
 
-            3, 18, 22,          //TSW
+            3, 18, 22,          //TSW       -45     45
 
-            14, 15, 23,         //BW1
+            14, 15, 23,         //BW1       0       135
             14, 21, 23,         //BW2
 
             //last vertex is equal
             // to vertex 9 to map a
             // unique colour
 
-            4, 5, 24,           //NE
+            4, 5, 24,           //NE        45      -90
             4, 8, 24,           //NE
 
             //last vertex is equal
             // to vertex 7 to map a
             // unique colour
-            6, 20, 25,          //NW
+            6, 20, 25,          //NW        45      90
             21, 20, 25          //NW
 
     };
