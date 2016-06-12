@@ -20,7 +20,6 @@ import android.content.Context;
 
 import org.librepilot.lp2go.H;
 import org.librepilot.lp2go.MainActivity;
-import org.librepilot.lp2go.VisualLog;
 import org.librepilot.lp2go.helper.SettingsHelper;
 import org.librepilot.lp2go.uavtalk.UAVTalkDeviceHelper;
 import org.librepilot.lp2go.uavtalk.UAVTalkMessage;
@@ -123,10 +122,13 @@ public abstract class FcDevice {
     }
 
     public void log(UAVTalkMessage m) {
+        // byte[] type = new byte[1];
+        //type[0] = m.getType();
+        //VisualLog.d("DGB", "Logging object 0x"+ H.intToHex(m.getObjectId()) +" with messagetype " + H.bytesToHex(type) + " and timestamp " + m.getTimestamp());
         log(m.getRaw(), m.getTimestamp());
     }
 
-    public void log(byte[] b, int timestamp) {
+    private void log(byte[] b, int timestamp) {
         if (b == null) {
             return;
         }
@@ -161,7 +163,7 @@ public abstract class FcDevice {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        VisualLog.d("DGB", "Logging with timestamp " + timestamp);
+
     }
 
     public abstract void start();
