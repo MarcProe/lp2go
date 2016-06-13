@@ -142,8 +142,8 @@ class Rhombicuboctahedron {
             //Bottom        o
             //Front         ^
             //Stern         v
-            //Left          >
-            //Right         <
+            //Left          <
+            //Right         >
 
             0.75f, 0.5f, 0.75f, alpha,       //TFR
             0.9f, 0.9f, 0.9f, alpha,         //T
