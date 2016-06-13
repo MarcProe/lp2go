@@ -6,10 +6,8 @@ import android.opengl.GLU;
 import android.opengl.Matrix;
 import android.util.AttributeSet;
 
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Vector3;
-
-import org.librepilot.lp2go.uavtalk.device.FcDevice;
+import org.librepilot.lp2go.helper.libgdx.math.Quaternion;
+import org.librepilot.lp2go.helper.libgdx.math.Vector3;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -21,8 +19,6 @@ import javax.microedition.khronos.opengles.GL10;
 public class OpenGl3DMagCalibrationView extends GLSurfaceView {
 
     private final OpenGLRenderer mRenderer;
-    private FcDevice mFcDevice;
-
 
     public OpenGl3DMagCalibrationView(Context context) {
         super(context);
@@ -36,10 +32,6 @@ public class OpenGl3DMagCalibrationView extends GLSurfaceView {
         setEGLContextClientVersion(1);
         mRenderer = new OpenGLRenderer();
         setRenderer(mRenderer);
-    }
-
-    public void setFcDevice(FcDevice fcDevice) {
-        this.mFcDevice = fcDevice;
     }
 
     public void setPitch(float pitch) {
