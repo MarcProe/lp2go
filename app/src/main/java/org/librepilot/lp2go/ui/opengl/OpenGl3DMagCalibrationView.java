@@ -145,32 +145,32 @@ class Rhombicuboctahedron {
             //Left          <
             //Right         >
 
-            0.75f, 0.5f, 0.75f, alpha,       //TFR
-            0.9f, 0.9f, 0.9f, alpha,         //T
-            0.5f, 0.75f, 0.75f, alpha,       //TFL
-            1.0f, 0.75f, 0.75f, alpha,       //TS
-            0.75f, 0.75f, 1.0f, alpha,       //TF
-            .5f, .0f, .7f, alpha,            //BFR
-            0.5f, 0.5f, 1.0f, alpha,         //F
-            0.1f, .5f, .7f, alpha,           //BFL
-            0.9f, 0.5f, 0.9f, alpha,         //TR
-            0.5f, 0.0f, 0.5f, alpha,         //R
-            1.0f, 0.5f, 0.75f, alpha,        //TSR
-            0.25f, 0.0f, 0.25f, alpha,       //BR
-            .25f, .25f, 1.0f, alpha,         //BF
-            0.7f, 0.0f, 0.2f, alpha,         //BSR
-            0.1f, 0.1f, 0.1f, alpha,         //B
-            0.5f, 0.5f, 0.2f, alpha,         //BSL
-            0.9f, 0.0f, 0.4f, alpha,         //SR
-            1.0f, 0.25f, 0.25f, alpha,       //BS
-            1.0f, 0.5f, 0.5f, alpha,         //S
-            0.75f, 0.75f, 0.5f, alpha,       //SL
-            0.5f, 0.9f, 0.5f, alpha,         //TL
-            0.5f, 0.75f, 0.5f, alpha,        //L
-            1.0f, 1.00f, 0.75f, alpha,       //TSL
-            0.2f, 0.5f, 0.2f, alpha,         //BL
-            0.5f, 0.0f, 0.8f, alpha,         //FR
-            0.5f, 0.75f, 1.0f, alpha         //FL
+            0.7f, 0.5f, 0.7f, alpha,       //TFR
+            0.9f, 0.9f, 0.9f, alpha,       //T
+            0.5f, 0.7f, 0.7f, alpha,       //TFL
+            1.0f, 0.7f, 0.7f, alpha,       //TS
+            0.7f, 0.7f, 1.0f, alpha,       //TF
+            0.5f, 0.0f, 0.7f, alpha,       //BFR
+            0.5f, 0.5f, 1.0f, alpha,       //F
+            0.1f, 0.5f, 0.7f, alpha,       //BFL
+            0.9f, 0.5f, 0.9f, alpha,       //TR
+            0.5f, 0.0f, 0.5f, alpha,       //R
+            1.0f, 0.5f, 0.7f, alpha,       //TSR
+            0.2f, 0.0f, 0.2f, alpha,       //BR
+            0.2f, 0.2f, 1.0f, alpha,       //BF
+            0.7f, 0.0f, 0.2f, alpha,       //BSR
+            0.1f, 0.1f, 0.1f, alpha,       //B
+            0.5f, 0.5f, 0.2f, alpha,       //BSL
+            0.9f, 0.0f, 0.4f, alpha,       //SR
+            1.0f, 0.2f, 0.2f, alpha,       //BS
+            1.0f, 0.5f, 0.5f, alpha,       //S
+            0.7f, 0.7f, 0.5f, alpha,       //SL
+            0.5f, 0.9f, 0.5f, alpha,       //TL
+            0.5f, 0.7f, 0.5f, alpha,       //L
+            1.0f, 1.0f, 0.7f, alpha,       //TSL
+            0.2f, 0.5f, 0.2f, alpha,       //BL
+            0.5f, 0.0f, 0.8f, alpha,       //FR
+            0.5f, 0.7f, 1.0f, alpha        //FL
     };
     private byte indices[] = {
             //                              PITCH   ROLL   YAW
@@ -208,7 +208,7 @@ class Rhombicuboctahedron {
             5, 7, 12,           //BF1       45      +-180
             14, 7, 12,          //BF2
 
-            11, 17, 13,           //BSR     -45     -135
+            11, 17, 13,         //BSR       -45     -135
 
             12, 13, 14,         // B1       0       +-180
             15, 13, 14,         // B2
