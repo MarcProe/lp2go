@@ -14,7 +14,7 @@
  * limitations under the License.
  ******************************************************************************/
 
-package org.librepilot.lp2go.helper.libgdx;
+package org.librepilot.lp2go.helper.libgdx.utils;
 
 public final class NumberUtils {
     public static int floatToIntBits(float value) {
