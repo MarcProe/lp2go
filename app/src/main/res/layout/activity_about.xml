@@ -168,7 +168,7 @@
                     android:layout_gravity="center_horizontal"
                     android:layout_margin="5dp"
                     android:autoLink="web"
-                    android:text="SeekArc UI Element (https://github.com/neild001/SeekArc) is licensed under the MIT License."
+                    android:text="libgdx (https://github.com/libgdx/libgdx) is licensed under the Apache 2 License"
                     android:textAlignment="center"
                     android:textAppearance="?android:attr/textAppearanceLarge"/>
 
@@ -179,6 +179,16 @@
                     android:layout_margin="5dp"
                     android:autoLink="web"
                     android:text="Material File Picker (https://github.com/nbsp-team/MaterialFilePicker) is licensed under the GNU GENERAL PUBLIC LICENSE Version 2."
+                    android:textAlignment="center"
+                    android:textAppearance="?android:attr/textAppearanceLarge"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_margin="5dp"
+                    android:autoLink="web"
+                    android:text="SeekArc UI Element (https://github.com/neild001/SeekArc) is licensed under the MIT License."
                     android:textAlignment="center"
                     android:textAppearance="?android:attr/textAppearanceLarge"/>
 
