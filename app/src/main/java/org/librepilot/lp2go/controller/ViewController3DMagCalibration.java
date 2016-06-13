@@ -90,9 +90,8 @@ public class ViewController3DMagCalibration extends ViewController implements
                 @Override
                 public void run() {
                     try {
-                        ((TextView) m.findViewById(R.id.q1)).setText("" + Math.floor(q1));
-                        ((TextView) m.findViewById(R.id.q2)).setText("" + Math.floor(q2));
-                        ((TextView) m.findViewById(R.id.q3)).setText("" + Math.floor(q3));
+                        ((TextView) m.findViewById(R.id.q3))
+                                .setText("" + glv3DMagCalibration.PitchRollToString(pitch, roll));
                         ((TextView) m.findViewById(R.id.q4)).setText("" + Math.floor(q4));
 
                         ((TextView) m.findViewById(R.id.txt3dpitch))

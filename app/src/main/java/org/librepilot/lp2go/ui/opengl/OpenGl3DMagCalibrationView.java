@@ -12,6 +12,7 @@ import org.librepilot.lp2go.helper.libgdx.math.Vector3;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
+import java.util.HashMap;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -46,6 +47,10 @@ public class OpenGl3DMagCalibrationView extends GLSurfaceView {
         this.mRenderer.mYaw = yaw;
     }
 
+    public String PitchRollToString(float pitch, float roll) {
+        return mRenderer.PitchRollToString(pitch, roll);
+    }
+
 }
 
 class OpenGLRenderer implements GLSurfaceView.Renderer {
@@ -55,6 +60,10 @@ class OpenGLRenderer implements GLSurfaceView.Renderer {
     protected float mYaw = 0;
 
     private Rhombicuboctahedron mRhombicuboctahedron = new Rhombicuboctahedron();
+
+    public String PitchRollToString(float pitch, float roll) {
+        return mRhombicuboctahedron.PitchRollToString(pitch, roll);
+    }
 
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
@@ -129,78 +138,85 @@ class Rhombicuboctahedron {
     private final float ns = ps * (-1);
     private float alpha = 0.65f;
     private float colors[] = {
-            0.75f, 0.5f, 0.75f, alpha,       //TNE
+            //Top           *
+            //Bottom        o
+            //Front         ^
+            //Stern         v
+            //Left          >
+            //Right         <
+
+            0.75f, 0.5f, 0.75f, alpha,       //TFR
             0.9f, 0.9f, 0.9f, alpha,         //T
-            0.5f, 0.75f, 0.75f, alpha,       //TNW
+            0.5f, 0.75f, 0.75f, alpha,       //TFL
             1.0f, 0.75f, 0.75f, alpha,       //TS
-            0.75f, 0.75f, 1.0f, alpha,       //TN
-            .5f, .0f, .7f, alpha,            //BNE
-            0.5f, 0.5f, 1.0f, alpha,         //N
-            0.1f, .5f, .7f, alpha,           //BNW
-            0.9f, 0.5f, 0.9f, alpha,         //TE
-            0.5f, 0.0f, 0.5f, alpha,         //E
-            1.0f, 0.5f, 0.75f, alpha,        //TSE
-            0.25f, 0.0f, 0.25f, alpha,       //BE
-            .25f, .25f, 1.0f, alpha,         //BN
-            0.7f, 0.0f, 0.2f, alpha,         //BSE
+            0.75f, 0.75f, 1.0f, alpha,       //TF
+            .5f, .0f, .7f, alpha,            //BFR
+            0.5f, 0.5f, 1.0f, alpha,         //F
+            0.1f, .5f, .7f, alpha,           //BFL
+            0.9f, 0.5f, 0.9f, alpha,         //TR
+            0.5f, 0.0f, 0.5f, alpha,         //R
+            1.0f, 0.5f, 0.75f, alpha,        //TSR
+            0.25f, 0.0f, 0.25f, alpha,       //BR
+            .25f, .25f, 1.0f, alpha,         //BF
+            0.7f, 0.0f, 0.2f, alpha,         //BSR
             0.1f, 0.1f, 0.1f, alpha,         //B
-            0.5f, 0.5f, 0.2f, alpha,         //BSW
-            0.9f, 0.0f, 0.4f, alpha,         //SE
+            0.5f, 0.5f, 0.2f, alpha,         //BSL
+            0.9f, 0.0f, 0.4f, alpha,         //SR
             1.0f, 0.25f, 0.25f, alpha,       //BS
             1.0f, 0.5f, 0.5f, alpha,         //S
-            0.75f, 0.75f, 0.5f, alpha,       //SW
-            0.5f, 0.9f, 0.5f, alpha,         //TW
-            0.5f, 0.75f, 0.5f, alpha,        //W
-            1.0f, 1.00f, 0.75f, alpha,       //TSW
-            0.2f, 0.5f, 0.2f, alpha,         //BW
-            0.5f, 0.0f, 0.8f, alpha,         //NE
-            0.5f, 0.75f, 1.0f, alpha         //NW
+            0.75f, 0.75f, 0.5f, alpha,       //SL
+            0.5f, 0.9f, 0.5f, alpha,         //TL
+            0.5f, 0.75f, 0.5f, alpha,        //L
+            1.0f, 1.00f, 0.75f, alpha,       //TSL
+            0.2f, 0.5f, 0.2f, alpha,         //BL
+            0.5f, 0.0f, 0.8f, alpha,         //FR
+            0.5f, 0.75f, 1.0f, alpha         //FL
     };
     private byte indices[] = {
             //                              PITCH   ROLL   YAW
-            8, 4, 0,            //TNE       45      -45
+            8, 4, 0,            //TFR       45      -45
 
             0, 2, 1,            // T1       0       0
             3, 2, 1,            // T2
 
-            6, 20, 2,           ///TNW      45      45
+            6, 20, 2,           ///TFL      45      45
 
             1, 16, 3,           //TS1       -45     0
             18, 16, 3,          //TS2
 
-            0, 2, 4,            // TN1      45      0
-            6, 2, 4,            // TN2
+            0, 2, 4,            // TF1      45      0
+            6, 2, 4,            // TF2
 
-            12, 9, 5,           //BNE       45      -135
+            12, 9, 5,           //BFR       45      -135
 
-            4, 5, 6,            // N1       90      X
-            7, 5, 6,            // N2
+            4, 5, 6,            // F1       90      X
+            7, 5, 6,            // F2
 
-            14, 21, 7,          //BNW       45      135
+            14, 21, 7,          //BFL       45      135
 
-            0, 1, 8,            //TE1       0       -45
-            10, 1, 8,           //TE2
+            0, 1, 8,            //TR1       0       -45
+            10, 1, 8,           //TR2
 
-            8, 10, 9,           // E1       0       -90
-            11, 10, 9,          // E2
+            8, 10, 9,           // R1       0       -90
+            11, 10, 9,          // R2
 
-            1, 16, 10,          //TSE       -45     -45
+            1, 16, 10,          //TSR       -45     -45
             //                              PITCH    ROLL   YAW
-            13, 12, 11,         //BE1       0       -135
-            9, 12, 11,          //BE2
+            13, 12, 11,         //BR1       0       -135
+            9, 12, 11,          //BR2
 
-            5, 7, 12,           //BN1       45      +-180
-            14, 7, 12,          //BN2
+            5, 7, 12,           //BF1       45      +-180
+            14, 7, 12,          //BF2
 
-            11, 17, 13,           //BSE     -45     -135
+            11, 17, 13,           //BSR     -45     -135
 
             12, 13, 14,         // B1       0       +-180
             15, 13, 14,         // B2
 
-            19, 23, 15,          //BSW       -45     135
+            19, 23, 15,          //BSL       -45     135
 
-            11, 17, 16,         //SE1       -45     -90
-            11, 10, 16,         //SE2
+            11, 17, 16,         //SR1       -45     -90
+            11, 10, 16,         //SR2
 
             13, 15, 17,         //BS1       -45     +-180
             19, 15, 17,         //BS2
@@ -208,37 +224,38 @@ class Rhombicuboctahedron {
             16, 17, 18,         //S1        -90     X
             19, 17, 18,         //S2
 
-            18, 22, 19,         //SW        -45     90
-            22, 23, 19,         //SW
+            18, 22, 19,         //SL        -45     90
+            22, 23, 19,         //SL
             //                              PITCH    ROLL   YAW
-            2, 3, 20,           //TW1       0       45
-            22, 3, 20,          //TW2
+            2, 3, 20,           //TL1       0       45
+            22, 3, 20,          //TL2
 
-            20, 22, 21,         //W1        0       90
-            23, 22, 21,         //W2
+            20, 22, 21,         //L1        0       90
+            23, 22, 21,         //L2
 
-            3, 18, 22,          //TSW       -45     45
+            3, 18, 22,          //TSL       -45     45
 
-            14, 15, 23,         //BW1       0       135
-            14, 21, 23,         //BW2
+            14, 15, 23,         //BL1       0       135
+            14, 21, 23,         //BL2
 
             //last vertex is equal
             // to vertex 9 to map a
             // unique colour
 
-            4, 5, 24,           //NE        45      -90
-            4, 8, 24,           //NE
+            4, 5, 24,           //FR        45      -90
+            4, 8, 24,           //FR
 
             //last vertex is equal
             // to vertex 7 to map a
             // unique colour
-            6, 20, 25,          //NW        45      90
-            21, 20, 25          //NW
+            6, 20, 25,          //FL        45      90
+            21, 20, 25          //FL
 
     };
     private FloatBuffer mColorBuffer;
     private ByteBuffer mIndexBuffer;
     private FloatBuffer mVertexBuffer;
+    private HashMap<String, Integer> verticeMap;
     private float vertices[] = {
             po, po, ps,
             po, no, ps,
@@ -292,6 +309,43 @@ class Rhombicuboctahedron {
         mIndexBuffer = ByteBuffer.allocateDirect(indices.length);
         mIndexBuffer.put(indices);
         mIndexBuffer.position(0);
+
+        verticeMap = new HashMap<>();
+        int a = 0;
+        verticeMap.put("TFR", a++);
+        verticeMap.put("T", a++);
+        verticeMap.put("TFL", a++);
+        verticeMap.put("TS", a++);
+        verticeMap.put("TF", a++);
+        verticeMap.put("BFR", a++);
+        verticeMap.put("F", a++);
+        verticeMap.put("BFL", a++);
+        verticeMap.put("TR", a++);
+        verticeMap.put("R", a++);
+        verticeMap.put("TSR", a++);
+        verticeMap.put("BR", a++);
+        verticeMap.put("BF", a++);
+        verticeMap.put("BSR", a++);
+        verticeMap.put("B", a++);
+        verticeMap.put("BSL", a++);
+        verticeMap.put("SR", a++);
+        verticeMap.put("BS", a++);
+        verticeMap.put("S", a++);
+        verticeMap.put("SL", a++);
+        verticeMap.put("TL", a++);
+        verticeMap.put("L", a++);
+        verticeMap.put("TSL", a++);
+        verticeMap.put("BL", a++);
+        verticeMap.put("FR", a++);
+        verticeMap.put("FL", a);
+
+        for (int i = 0; i < verticeMap.size(); i++) {
+            mColorBuffer.put(i * 4, 1.f);
+            mColorBuffer.put(i * 4 + 1, .5f);
+            mColorBuffer.put(i * 4 + 2, .5f);
+            mColorBuffer.put(i * 4 + 3, .5f);
+        }
+
     }
 
     public void draw(GL10 gl) {
@@ -311,5 +365,39 @@ class Rhombicuboctahedron {
 
         gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
         gl.glDisableClientState(GL10.GL_COLOR_ARRAY);
+    }
+
+    protected String PitchRollToString(float pitch, float roll) {
+        String retval = "";
+
+        if (Math.abs(pitch) <= 67.5f && Math.abs(roll) <= 67.5f) {
+            retval += "T";
+        } else if (Math.abs(pitch) <= 67.5f && Math.abs(roll) >= 112.5) {
+            retval += "B";
+        }
+
+        if (pitch > 22.5f) {
+            retval += "F";
+        } else if (pitch < -22.5f) {
+            retval += "S";
+        }
+
+        if (roll < -22.5f && roll > -157.5f && Math.abs(pitch) < 67.5f) {
+            retval += "R";
+        } else if (roll > 22.5f && roll < 157.5f && Math.abs(pitch) < 67.5f) {
+            retval += "L";
+        }
+
+        if (!retval.equals("")) {
+            int index = verticeMap.get(retval);
+
+            mColorBuffer.put(index * 4, .5f);
+            mColorBuffer.put(index * 4 + 1, 1.0f);
+            mColorBuffer.put(index * 4 + 2, .5f);
+            mColorBuffer.put(index * 4 + 3, .5f);
+        }
+
+
+        return retval;
     }
 }
