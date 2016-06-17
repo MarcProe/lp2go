@@ -1,3 +1,1 @@
-# lp2go
-LP2Go
-:)
+# LibrePilot2Go
