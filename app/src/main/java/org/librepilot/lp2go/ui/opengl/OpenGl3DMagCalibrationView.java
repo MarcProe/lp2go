@@ -652,10 +652,8 @@ class CartesianCoordinateSystem {
 
 class CartesianCoordinateSystemAxis {
 
-    privaprivate
-    final float[] colors;
-    prite
-    final byte indices[] = {
+    private final float[] colors;
+    private final byte indices[] = {
             0, 4, 5, 0, 5, 1,
             1, 5, 6, 1, 6, 2,
             2, 6, 7, 2, 7, 3,
@@ -664,13 +662,10 @@ class CartesianCoordinateSystemAxis {
             3, 0, 1, 3, 1, 2
     };
 
-    tprivate
-    final FloatBuffer mVertexBuffer;
-    prie
-    final float[] vertices;
+    private final FloatBuffer mVertexBuffer;
+    private final float[] vertices;
     private FloatBuffer mColorBuffer;
-    vate ByteBuffer
-    mIndexBuffer;
+    private  ByteBuffer mIndexBuffer;
 
     public CartesianCoordinateSystemAxis(float[] vertices, float[] colors) {
 
