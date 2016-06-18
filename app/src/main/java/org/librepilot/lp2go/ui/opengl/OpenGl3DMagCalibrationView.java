@@ -12,6 +12,7 @@ import org.librepilot.lp2go.helper.libgdx.math.Vector3;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.microedition.khronos.egl.EGLConfig;
@@ -47,6 +48,31 @@ public class OpenGl3DMagCalibrationView extends GLSurfaceView {
         this.mRenderer.mYaw = yaw;
     }
 
+
+    public void addSample(float x, float y, float z) {
+        Cube c = new Cube(-y, -x, z);
+
+        int alpha = (int) (c.alpha / OpenGLRenderer.ANGLE_DEG);
+        int beta = (int) (c.beta / OpenGLRenderer.ANGLE_DEG);
+
+        int num = (int) this.mRenderer.mSampleCubes[alpha][beta];
+
+        if (num < OpenGLRenderer.SAMPLES) {
+            if (this.mRenderer.mCubes != null) {
+
+                c.setRGB(1.0f, 0.3f * num, 0.3f * num);
+                this.mRenderer.mCubes.add(c);
+
+                //increase counter for current sector
+                this.mRenderer.mSampleCubes[alpha][beta] = num + 1;
+                //VisualLog.d("DBG", "Adding Cube");
+            }
+
+        } else {
+            //VisualLog.d("DBG", "Won't add because " + num + " " + alpha +" " + beta + " ");
+        }
+    }
+
     public String PitchRollToString(float pitch, float roll) {
         return mRenderer.PitchRollToString(pitch, roll);
     }
@@ -55,11 +81,21 @@ public class OpenGl3DMagCalibrationView extends GLSurfaceView {
 
 class OpenGLRenderer implements GLSurfaceView.Renderer {
 
+    final static int ANGLE_DEG = 15;
+    final static int ANGLES = (int) (360 / ANGLE_DEG);
+    final static int SAMPLES = 3;
+    public ArrayList<Cube> mCubes;
     protected float mPitch = 0;
     protected float mRoll = 0;
+    protected float[][] mSampleCubes = new float[ANGLES][ANGLES];
     protected float mYaw = 0;
-
+    private CartesianCoordinateSystem mCcs = new CartesianCoordinateSystem();
     private Rhombicuboctahedron mRhombicuboctahedron = new Rhombicuboctahedron();
+
+
+    public OpenGLRenderer() {
+
+    }
 
     public String PitchRollToString(float pitch, float roll) {
         return mRhombicuboctahedron.PitchRollToString(pitch, roll);
@@ -75,6 +111,14 @@ class OpenGLRenderer implements GLSurfaceView.Renderer {
 
         gl.glHint(GL10.GL_PERSPECTIVE_CORRECTION_HINT,
                 GL10.GL_NICEST);
+
+        for (int i = 0; i < ANGLES; i++) {
+            for (int j = 0; j < ANGLES; j++) {
+                mSampleCubes[i][j] = 0;
+            }
+        }
+
+        mCubes = new ArrayList<>();
 
     }
 
@@ -92,14 +136,13 @@ class OpenGLRenderer implements GLSurfaceView.Renderer {
 
     @Override
     public void onDrawFrame(GL10 gl) {
+        gl.glEnable(GL10.GL_LIGHTING);
+        gl.glEnable(GL10.GL_LIGHT0);
+
         gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
         gl.glLoadIdentity();
 
         gl.glTranslatef(0.0f, 0.0f, -10.0f);
-
-        //gl.glRotatef(mRoll, 0.0f, 1.0f, 0.0f);      //Roll
-        //gl.glRotatef(mPitch, 1.0f, 0.0f, 0.0f);     //Pitch
-        //gl.glRotatef(mYaw, 0.0f, 0.0f, 1.0f);       //Yaw
 
         Quaternion p = new Quaternion(new Vector3(1, 0, 0), mPitch);
         Quaternion r = new Quaternion(new Vector3(0, 1, 0), mRoll);
@@ -122,9 +165,27 @@ class OpenGLRenderer implements GLSurfaceView.Renderer {
         Matrix.multiplyMM(rotate, 0, transMinus, 0, rotate, 0);
         Matrix.multiplyMM(rotate, 0, rotate, 0, transPlus, 0);
 
+
         gl.glMultMatrixf(rotate,0);
 
-        mRhombicuboctahedron.draw(gl);
+        float lightpos1[] = {.5f, 1.f, 1.f, 0.f};
+        gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_POSITION, lightpos1, 0);
+
+
+        // gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_AMBIENT, ambient, 0 );
+        //gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_POSITION, position, 0);
+        //gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_SPOT_DIRECTION, direction, 0);
+        //gl.glLightf(GL10.GL_LIGHT0, GL10.GL_SPOT_CUTOFF, 30.0f);
+
+        //mRhombicuboctahedron.draw(gl);
+
+        mCcs.draw(gl);
+
+        ArrayList<Cube> tc = new ArrayList<>(mCubes);
+
+        for (Cube mCube : tc) {
+            mCube.draw(gl);
+        }
 
         gl.glLoadIdentity();
     }
@@ -132,11 +193,11 @@ class OpenGLRenderer implements GLSurfaceView.Renderer {
 
 class Rhombicuboctahedron {
 
-    private final float no = -1.f;
+    private final float no = -1.0f;
     private final float po = 1.0f;
     private final float ps = 1.0f + (float) Math.sqrt(1.0f);
     private final float ns = ps * (-1);
-    private float alpha = 0.65f;
+    private float alpha = 0.4f;
     private float colors[] = {
             //Top           *
             //Bottom        o
@@ -397,7 +458,264 @@ class Rhombicuboctahedron {
             mColorBuffer.put(index * 4 + 3, .5f);
         }
 
-
         return retval;
+    }
+
+}
+
+
+class Cube {
+
+    final public double alpha, beta;
+    final public float x, y, z;
+    private final float colors[] = {
+            1.0f, 0.0f, 0.0f, 1.0f,
+            1.0f, 0.0f, 0.0f, 1.0f,
+            1.0f, 0.0f, 0.0f, 1.0f,
+            1.0f, 0.0f, 0.0f, 1.0f,
+            1.0f, 0.0f, 0.0f, 1.0f,
+            1.0f, 0.0f, 0.0f, 1.0f,
+            1.0f, 0.0f, 0.0f, 1.0f,
+            1.0f, 0.0f, 0.0f, 1.0f
+    };
+    private final byte indices[] = {
+            0, 4, 5, 0, 5, 1,
+            1, 5, 6, 1, 6, 2,
+            2, 6, 7, 2, 7, 3,
+            3, 7, 4, 3, 4, 0,
+            4, 7, 6, 4, 6, 5,
+            3, 0, 1, 3, 1, 2
+    };
+    private final float n = -0.1f;
+    private final float p = 0.1f;
+    private final float vertices[] = {
+            n, n, n,
+            p, n, n,
+            p, p, n,
+            n, p, n,
+            n, n, p,
+            p, n, p,
+            p, p, p,
+            n, p, p
+    };
+    private FloatBuffer mColorBuffer;
+    private ByteBuffer mIndexBuffer;
+    private FloatBuffer mVertexBuffer;
+
+    public Cube(float x, float y, float z) {
+
+        this.x = x / 300;
+        this.y = y / 300;
+        this.z = z / 300;
+
+
+        this.alpha = Math.atan2(x, y) * 180 / Math.PI + 180;
+        this.beta = Math.atan2(x, z) * 180 / Math.PI + 180;
+
+        ByteBuffer byteBuf = ByteBuffer.allocateDirect(vertices.length * 4);
+        byteBuf.order(ByteOrder.nativeOrder());
+        mVertexBuffer = byteBuf.asFloatBuffer();
+        mVertexBuffer.put(vertices);
+        mVertexBuffer.position(0);
+
+        //float[] lightcolor = {.0f, .0f, .0f, 1.0f};
+
+        byteBuf = ByteBuffer.allocateDirect(colors.length * 4);
+        byteBuf.order(ByteOrder.nativeOrder());
+        mColorBuffer = byteBuf.asFloatBuffer();
+        mColorBuffer.put(colors);
+        mColorBuffer.position(0);
+
+        mIndexBuffer = ByteBuffer.allocateDirect(indices.length);
+        mIndexBuffer.put(indices);
+        mIndexBuffer.position(0);
+    }
+
+    public void setRGB(float r, float g, float b) {
+        mColorBuffer.put(0, r);
+        mColorBuffer.put(1, g);
+        mColorBuffer.put(2, b);
+    }
+
+    public void draw(GL10 gl) {
+        gl.glPushMatrix();
+        gl.glFrontFace(GL10.GL_CW);
+        gl.glShadeModel(GL10.GL_SMOOTH);
+        gl.glEnable(GL10.GL_BLEND);
+
+
+        gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+
+        gl.glVertexPointer(3, GL10.GL_FLOAT, 0, mVertexBuffer);
+        //gl.glColorPointer(4, GL10.GL_FLOAT, 0, mColorBuffer);
+
+        gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
+        //gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
+
+        gl.glMaterialfv(GL10.GL_FRONT_AND_BACK, GL10.GL_AMBIENT_AND_DIFFUSE, mColorBuffer);
+        gl.glMaterialfv(GL10.GL_FRONT_AND_BACK, GL10.GL_SPECULAR, mColorBuffer);
+
+        gl.glMaterialf(GL10.GL_FRONT_AND_BACK, GL10.GL_SHININESS, 40.0f);
+
+        gl.glTranslatef(x, y, z);
+        gl.glDrawElements(GL10.GL_TRIANGLES, indices.length, GL10.GL_UNSIGNED_BYTE,
+                mIndexBuffer);
+
+        gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
+        gl.glDisableClientState(GL10.GL_COLOR_ARRAY);
+        gl.glPopMatrix();
+    }
+}
+
+class CartesianCoordinateSystem {
+    final float n = 0.0f;
+    final float o = 1.0f;
+    private final float d = 250.0f;
+    private final float m = -2.5f;
+    private final float p = 2.5f;
+    private final float verticesX[] = {
+            m, m / d, m / d,
+            p, m / d, m / d,
+            p, p / d, m / d,
+            m, p / d, m / d,
+            m, m / d, p / d,
+            p, m / d, p / d,
+            p, p / d, p / d,
+            m, p / d, p / d
+    };
+    private final float verticesY[] = {
+            m / d, m, m / d,
+            p / d, m, m / d,
+            p / d, p, m / d,
+            m / d, p, m / d,
+            m / d, m, p / d,
+            p / d, m, p / d,
+            p / d, p, p / d,
+            m / d, p, p / d
+    };
+    private final float verticesZ[] = {
+            m / d, m / d, m,
+            p / d, m / d, m,
+            p / d, p / d, m,
+            m / d, p / d, m,
+            m / d, m / d, p,
+            p / d, m / d, p,
+            p / d, p / d, p,
+            m / d, p / d, p
+    };
+    CartesianCoordinateSystemAxis x, y, z;
+    private float colorsX[] = {
+            o, n, n, o,
+            o, n, n, o,
+            o, n, n, o,
+            o, n, n, o,
+            o, n, n, o,
+            o, n, n, o,
+            o, n, n, o,
+            o, n, n, o
+    };
+
+    private float colorsY[] = {
+            n, o, n, o,
+            n, o, n, o,
+            n, o, n, o,
+            n, o, n, o,
+            n, o, n, o,
+            n, o, n, o,
+            n, o, n, o,
+            n, o, n, o
+    };
+
+    private float colorsZ[] = {
+            n, n, o, o,
+            n, n, o, o,
+            n, n, o, o,
+            n, n, o, o,
+            n, n, o, o,
+            n, n, o, o,
+            n, n, o, o,
+            n, n, o, o
+    };
+
+    public CartesianCoordinateSystem() {
+        x = new CartesianCoordinateSystemAxis(verticesX, colorsX);
+        y = new CartesianCoordinateSystemAxis(verticesY, colorsY);
+        z = new CartesianCoordinateSystemAxis(verticesZ, colorsZ);
+    }
+
+    public void draw(GL10 gl) {
+        x.draw(gl);
+        y.draw(gl);
+        z.draw(gl);
+    }
+}
+
+class CartesianCoordinateSystemAxis {
+
+    privaprivate
+    final float[] colors;
+    prite
+    final byte indices[] = {
+            0, 4, 5, 0, 5, 1,
+            1, 5, 6, 1, 6, 2,
+            2, 6, 7, 2, 7, 3,
+            3, 7, 4, 3, 4, 0,
+            4, 7, 6, 4, 6, 5,
+            3, 0, 1, 3, 1, 2
+    };
+
+    tprivate
+    final FloatBuffer mVertexBuffer;
+    prie
+    final float[] vertices;
+    private FloatBuffer mColorBuffer;
+    vate ByteBuffer
+    mIndexBuffer;
+
+    public CartesianCoordinateSystemAxis(float[] vertices, float[] colors) {
+
+        this.vertices = vertices;
+        this.colors = colors;
+
+        ByteBuffer byteBuf = ByteBuffer.allocateDirect(vertices.length * 4);
+        byteBuf.order(ByteOrder.nativeOrder());
+        mVertexBuffer = byteBuf.asFloatBuffer();
+        mVertexBuffer.put(vertices);
+        mVertexBuffer.position(0);
+
+        byteBuf = ByteBuffer.allocateDirect(colors.length * 4);
+        byteBuf.order(ByteOrder.nativeOrder());
+        mColorBuffer = byteBuf.asFloatBuffer();
+        mColorBuffer.put(colors);
+        mColorBuffer.position(0);
+
+        mIndexBuffer = ByteBuffer.allocateDirect(indices.length);
+        mIndexBuffer.put(indices);
+        mIndexBuffer.position(0);
+    }
+
+    public void draw(GL10 gl) {
+        gl.glPushMatrix();
+        gl.glFrontFace(GL10.GL_CW);
+        gl.glShadeModel(GL10.GL_SMOOTH);
+        gl.glEnable(GL10.GL_BLEND);
+        gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+
+        gl.glVertexPointer(3, GL10.GL_FLOAT, 0, mVertexBuffer);
+        //gl.glColorPointer(4, GL10.GL_FLOAT, 0, mColorBuffer);
+
+        gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
+        //gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
+        gl.glMaterialfv(GL10.GL_FRONT_AND_BACK, GL10.GL_AMBIENT_AND_DIFFUSE, mColorBuffer);
+        gl.glMaterialfv(GL10.GL_FRONT_AND_BACK, GL10.GL_SPECULAR, mColorBuffer);
+
+        gl.glMaterialf(GL10.GL_FRONT_AND_BACK, GL10.GL_SHININESS, 10.0f);
+
+        gl.glDrawElements(GL10.GL_TRIANGLES, indices.length, GL10.GL_UNSIGNED_BYTE,
+                mIndexBuffer);
+
+        gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
+        //gl.glDisableClientState(GL10.GL_COLOR_ARRAY);
+        gl.glPopMatrix();
     }
 }

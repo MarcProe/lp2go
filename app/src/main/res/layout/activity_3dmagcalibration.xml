@@ -30,7 +30,21 @@
                 android:id="@+id/glv_3d_mag_calibration"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="6"/>
+                android:layout_weight="9"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/faceName"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Large Text"
+                    android:textAppearance="?android:attr/textAppearanceLarge"/>
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -39,7 +53,7 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/q3"
+                    android:id="@+id/magx"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -47,7 +61,15 @@
                     android:textAppearance="?android:attr/textAppearanceLarge"/>
 
                 <TextView
-                    android:id="@+id/q4"
+                    android:id="@+id/magy"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Large Text"
+                    android:textAppearance="?android:attr/textAppearanceLarge"/>
+
+                <TextView
+                    android:id="@+id/magz"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
