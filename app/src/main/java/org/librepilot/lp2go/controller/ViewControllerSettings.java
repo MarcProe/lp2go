@@ -156,17 +156,21 @@ public class ViewControllerSettings extends ViewController
 
         String btmac = getString(R.string.EMPTY_STRING);
 
-        Set<android.bluetooth.BluetoothDevice> pairedDevices =
-                getMainActivity().mBluetoothAdapter.getBondedDevices();
-        // If there are paired devices
-        if (pairedDevices.size() > 0) {
-            // Loop through paired devices
-            for (android.bluetooth.BluetoothDevice device : pairedDevices) {
-                // Add the name and address to an array adapter to show in a ListView
-                if (device.getName().equals(btname)) {
-                    btmac = device.getAddress();
+        try {
+            Set<android.bluetooth.BluetoothDevice> pairedDevices =
+                    getMainActivity().mBluetoothAdapter.getBondedDevices();
+            // If there are paired devices
+            if (pairedDevices.size() > 0) {
+                // Loop through paired devices
+                for (android.bluetooth.BluetoothDevice device : pairedDevices) {
+                    // Add the name and address to an array adapter to show in a ListView
+                    if (device.getName().equals(btname)) {
+                        btmac = device.getAddress();
+                    }
                 }
             }
+        } catch (NullPointerException e) {
+            VisualLog.e("ERR", "No BT Device found.");
         }
         SettingsHelper.mBluetoothDeviceAddress = btmac;
 
