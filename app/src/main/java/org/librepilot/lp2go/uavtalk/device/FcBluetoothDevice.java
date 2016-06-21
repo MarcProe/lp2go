@@ -247,7 +247,9 @@ public class FcBluetoothDevice extends FcDevice {
         public void run() {
             setName("LP2GoDeviceBluetoothConnectThread");
 
-            mBluetoothAdapter.cancelDiscovery();
+            if(mBluetoothAdapter != null) {
+                mBluetoothAdapter.cancelDiscovery();
+            }
 
             try {
                 mmSocket = mmDevice.createRfcommSocketToServiceRecord(
