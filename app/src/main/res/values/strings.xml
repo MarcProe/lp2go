@@ -63,5 +63,6 @@
     <string name="FC_TIMESTATMPS">Use FC timestamps if available (Only valid if above is not checked)</string>
     <string name="FC_TIMESTATMPS_REMOTE">Telemetry Timestamps</string>
     <string name="menu_3dmag">Test Mag Cal</string>
+    <string name="WIKI_LINK_INFO">See the wiki for help:\nhttps://librepilot.atlassian.net/wiki/display/LPDOC/LibrePilot2Go+Android+App</string>
 </resources>
 
