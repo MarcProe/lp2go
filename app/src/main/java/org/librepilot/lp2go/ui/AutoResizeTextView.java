@@ -66,7 +66,7 @@ public class AutoResizeTextView extends TextView {
          *         text, it takes less space than {@code availableSpace}, > 0
          *         otherwise
          */
-        public int onTestSize(int suggestedSize, RectF availableSpace);
+        int onTestSize(int suggestedSize, RectF availableSpace);
     }
 
     private RectF mTextRect = new RectF();
@@ -194,7 +194,7 @@ public class AutoResizeTextView extends TextView {
     /**
      * Set the lower text size limit and invalidate the view
      *
-     * @param minTextSize
+     * @param minTextSize minimum Text size
      */
     public void setMinTextSize(float minTextSize) {
         mMinTextSize = minTextSize;
