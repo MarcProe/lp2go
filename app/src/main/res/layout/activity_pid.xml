@@ -145,7 +145,8 @@
                                 android:layout_weight="1"
                                 android:gravity="center|center_vertical|center_horizontal"
                                 android:textAppearance="?android:attr/textAppearanceLarge"
-                                android:textSize="25sp"/>
+                                android:textSize="25sp"
+                                android:maxLines="1" />
 
                             <org.librepilot.lp2go.ui.PidTextView
                                 android:id="@+id/txtRatePitchProportional"
@@ -155,7 +156,8 @@
                                 android:layout_weight="1"
                                 android:gravity="center|center_vertical|center_horizontal"
                                 android:textAppearance="?android:attr/textAppearanceLarge"
-                                android:textSize="25sp"/>
+                                android:textSize="25sp"
+                                android:maxLines="1" />
 
                             <org.librepilot.lp2go.ui.PidTextView
                                 android:id="@+id/txtRateYawProportional"
@@ -165,7 +167,8 @@
                                 android:layout_weight="1"
                                 android:gravity="center|center_vertical|center_horizontal"
                                 android:textAppearance="?android:attr/textAppearanceLarge"
-                                android:textSize="25sp"/>
+                                android:textSize="25sp"
+                                android:maxLines="1" />
                         </LinearLayout>
 
                         <LinearLayout
@@ -192,7 +195,7 @@
                                 android:gravity="center|center_vertical|center_horizontal"
                                 android:textAppearance="?android:attr/textAppearanceLarge"
                                 android:textSize="25sp"
-                                />
+                                android:maxLines="1" />
 
                             <org.librepilot.lp2go.ui.PidTextView
                                 android:id="@+id/txtRatePitchIntegral"
@@ -202,7 +205,8 @@
                                 android:layout_weight="1"
                                 android:gravity="center|center_vertical|center_horizontal"
                                 android:textAppearance="?android:attr/textAppearanceLarge"
-                                android:textSize="25sp"/>
+                                android:textSize="25sp"
+                                android:maxLines="1" />
 
                             <org.librepilot.lp2go.ui.PidTextView
                                 android:id="@+id/txtRateYawIntegral"
@@ -212,7 +216,8 @@
                                 android:layout_weight="1"
                                 android:gravity="center|center_vertical|center_horizontal"
                                 android:textAppearance="?android:attr/textAppearanceLarge"
-                                android:textSize="25sp"/>
+                                android:textSize="25sp"
+                                android:maxLines="1" />
 
                         </LinearLayout>
 
@@ -239,7 +244,8 @@
                                 android:layout_weight="1"
                                 android:gravity="center|center_vertical|center_horizontal"
                                 android:textAppearance="?android:attr/textAppearanceLarge"
-                                android:textSize="25sp"/>
+                                android:textSize="25sp"
+                                android:maxLines="1" />
 
                             <org.librepilot.lp2go.ui.PidTextView
                                 android:id="@+id/txtRatePitchDerivative"
@@ -249,7 +255,8 @@
                                 android:layout_weight="1"
                                 android:gravity="center|center_vertical|center_horizontal"
                                 android:textAppearance="?android:attr/textAppearanceLarge"
-                                android:textSize="25sp"/>
+                                android:textSize="25sp"
+                                android:maxLines="1" />
 
                             <org.librepilot.lp2go.ui.PidTextView
                                 android:id="@+id/txtRateYawDerivative"
@@ -259,7 +266,8 @@
                                 android:layout_weight="1"
                                 android:gravity="center|center_vertical|center_horizontal"
                                 android:textAppearance="?android:attr/textAppearanceLarge"
-                                android:textSize="25sp"/>
+                                android:textSize="25sp"
+                                android:maxLines="1" />
 
                         </LinearLayout>
                     </LinearLayout>
@@ -325,7 +333,8 @@
                                 android:layout_weight="1"
                                 android:gravity="center|center_vertical|center_horizontal"
                                 android:textAppearance="?android:attr/textAppearanceLarge"
-                                android:textSize="25sp"/>
+                                android:textSize="25sp"
+                                android:maxLines="1" />
 
                             <org.librepilot.lp2go.ui.PidTextView
                                 android:id="@+id/txtAttitudePitchProportional"
@@ -335,7 +344,8 @@
                                 android:layout_weight="1"
                                 android:gravity="center|center_vertical|center_horizontal"
                                 android:textAppearance="?android:attr/textAppearanceLarge"
-                                android:textSize="25sp"/>
+                                android:textSize="25sp"
+                                android:maxLines="1" />
 
                             <org.librepilot.lp2go.ui.PidTextView
                                 android:id="@+id/txtAttitudeYawProportional"
@@ -345,7 +355,8 @@
                                 android:layout_weight="1"
                                 android:gravity="center|center_vertical|center_horizontal"
                                 android:textAppearance="?android:attr/textAppearanceLarge"
-                                android:textSize="25sp"/>
+                                android:textSize="25sp"
+                                android:maxLines="1" />
                         </LinearLayout>
 
                         <LinearLayout
@@ -372,7 +383,8 @@
                                 android:layout_weight="1"
                                 android:gravity="center|center_vertical|center_horizontal"
                                 android:textAppearance="?android:attr/textAppearanceLarge"
-                                android:textSize="25sp"/>
+                                android:textSize="25sp"
+                                android:maxLines="1" />
 
                             <org.librepilot.lp2go.ui.PidTextView
                                 android:id="@+id/txtAttitudePitchIntegral"
@@ -382,7 +394,8 @@
                                 android:layout_weight="1"
                                 android:gravity="center|center_vertical|center_horizontal"
                                 android:textAppearance="?android:attr/textAppearanceLarge"
-                                android:textSize="25sp"/>
+                                android:textSize="25sp"
+                                android:maxLines="1" />
 
                             <org.librepilot.lp2go.ui.PidTextView
                                 android:id="@+id/txtAttitudeYawIntegral"
@@ -392,7 +405,8 @@
                                 android:layout_weight="1"
                                 android:gravity="center|center_vertical|center_horizontal"
                                 android:textAppearance="?android:attr/textAppearanceLarge"
-                                android:textSize="25sp"/>
+                                android:textSize="25sp"
+                                android:maxLines="1" />
                         </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>

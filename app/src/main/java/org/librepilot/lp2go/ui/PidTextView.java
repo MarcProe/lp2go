@@ -25,7 +25,7 @@ import org.librepilot.lp2go.uavtalk.UAVTalkXMLObject;
 
 import java.text.DecimalFormat;
 
-public class PidTextView extends TextView {
+public class PidTextView extends AutoResizeTextView {
     private String mDecimalFormatString;
     private int mDenom;
     private String mDialogTitle;
