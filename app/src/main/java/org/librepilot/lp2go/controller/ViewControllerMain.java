@@ -55,7 +55,6 @@ public class ViewControllerMain extends ViewController implements View.OnClickLi
     private Drawable imgPacketsBad;
     private Drawable imgPacketsGood;
     private Drawable imgPacketsUp;
-    private ImageView imgPfdRoll;
     private PfdRollPitchView imgPfdRollPitch;
     private ViewAnimator mBottomAnimator;
     private int mBottomLayout;
@@ -141,6 +140,16 @@ public class ViewControllerMain extends ViewController implements View.OnClickLi
         swiEnableText2Speech.setOnCheckedChangeListener(this);
     }
 
+    private boolean isView(int layoutId) {
+        if (mTopAnimator.getCurrentView().getId() == layoutId
+                || (mBottomAnimator.getCurrentView() != null
+                && mBottomAnimator.getCurrentView().getId() ==layoutId)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     @Override
     public void setBottom(int bottomLayoutId) {
         setBottomNoInit(bottomLayoutId);
@@ -224,32 +233,25 @@ public class ViewControllerMain extends ViewController implements View.OnClickLi
     @Override
     public void enter(int view) {
         super.enter(view);
-        if (mTopAnimator.getCurrentView().getId() == R.id.root_main_inc_map
-                || (mBottomAnimator.getCurrentView() != null
-                && mBottomAnimator.getCurrentView().getId() == R.id.root_main_inc_map)) {
+        if (isView(R.id.root_main_inc_map)) {
             getMainActivity().mVcList.get(ViewController.VIEW_MAP).enter(view, true);
 
         }
     }
 
+
     @Override
     public void leave() {
         super.leave();
-        if (mTopAnimator.getCurrentView().getId() == R.id.root_main_inc_map
-                || (mBottomAnimator.getCurrentView() != null
-                && mBottomAnimator.getCurrentView().getId() == R.id.root_main_inc_map)) {
+        if (isView(R.id.root_main_inc_map)) {
             getMainActivity().mVcList.get(ViewController.VIEW_MAP).leave();
 
         }
 
-        if (mTopAnimator.getCurrentView().getId() == R.id.root_main_inc_pfd
-                || (mBottomAnimator.getCurrentView() != null
-                && mBottomAnimator.getCurrentView().getId() == R.id.root_main_inc_pfd)) {
+        if (isView(R.id.root_main_inc_pfd)) {
             try {
                 getMainActivity().mFcDevice.getObjectTree().removeListener("AttitudeState");
-            } catch (NullPointerException e) {
-
-            } catch (IllegalStateException e1) {
+            } catch (NullPointerException | IllegalStateException ignored) {
 
             }
         }
@@ -270,9 +272,7 @@ public class ViewControllerMain extends ViewController implements View.OnClickLi
         setTopNoInit(mTopLayout);
         setBottomNoInit(mBottomLayout);
 
-        if (mTopAnimator.getCurrentView().getId() == R.id.root_main_inc_health
-                || (mBottomAnimator.getCurrentView() != null
-                && mBottomAnimator.getCurrentView().getId() == R.id.root_main_inc_health)) {
+        if (isView(R.id.root_main_inc_health)) {
             mOffset.put(getString(R.string.OFFSET_BAROSENSOR_ALTITUDE, R.string.APP_ID), .0f);
 
             txtObjectLogTx = (TextView) findViewById(R.id.txtPacketsUp);
@@ -311,9 +311,7 @@ public class ViewControllerMain extends ViewController implements View.OnClickLi
             txtCPU = (TextView) findViewById(R.id.txtCPU);
 
         }
-        if (mTopAnimator.getCurrentView().getId() == R.id.root_main_inc_info
-                || (mBottomAnimator.getCurrentView() != null
-                && mBottomAnimator.getCurrentView().getId() == R.id.root_main_inc_info)) {
+        if (isView(R.id.root_main_inc_info)) {
             txtArmed = (TextView) findViewById(R.id.txtArmed);
             txtFlightTime = (TextView) findViewById(R.id.txtFlightTime);
 
@@ -332,16 +330,12 @@ public class ViewControllerMain extends ViewController implements View.OnClickLi
 
             txtModeAssistedControl = (TextView) findViewById(R.id.txtModeAssistedControl);
         }
-        if (mTopAnimator.getCurrentView().getId() == R.id.root_main_inc_map
-                || (mBottomAnimator.getCurrentView() != null
-                && mBottomAnimator.getCurrentView().getId() == R.id.root_main_inc_map)) {
+        if (isView(R.id.root_main_inc_map)) {
             getMainActivity().mVcList.get(ViewController.VIEW_MAP).init();
 
         }
 
-        if (mTopAnimator.getCurrentView().getId() == R.id.root_main_inc_pfd
-                || (mBottomAnimator.getCurrentView() != null
-                && mBottomAnimator.getCurrentView().getId() == R.id.root_main_inc_pfd)) {
+        if (isView(R.id.root_main_inc_pfd)) {
 
             imgPfdRollPitch = (PfdRollPitchView) findViewById(R.id.pfd_roll_pitch);
             //imgPfdRoll = (ImageView) findViewById(R.id.pfd_roll);
@@ -354,8 +348,7 @@ public class ViewControllerMain extends ViewController implements View.OnClickLi
 
         MainActivity ma = getMainActivity();
 
-        if (mTopAnimator.getCurrentView().getId() == R.id.root_main_inc_health
-                || mBottomAnimator.getCurrentView().getId() == R.id.root_main_inc_health) {
+        if (isView(R.id.root_main_inc_health)) {
             txtObjectLogTx.setText(
                     H.k(String.valueOf(ma.getTxObjects() *
                             MainActivity.POLL_SECOND_FACTOR)));
@@ -461,8 +454,7 @@ public class ViewControllerMain extends ViewController implements View.OnClickLi
         }
 
 
-        if (mTopAnimator.getCurrentView().getId() == R.id.root_main_inc_info
-                || mBottomAnimator.getCurrentView().getId() == R.id.root_main_inc_info) {
+        if (isView(R.id.root_main_inc_info)) {
 
             String statusArmed = getData("FlightStatus", "Armed").toString();
             if (!txtArmed.getText().toString().equals(statusArmed)) {
@@ -515,17 +507,13 @@ public class ViewControllerMain extends ViewController implements View.OnClickLi
                             .toString());
         }
 
-        if (mTopAnimator.getCurrentView().getId() == R.id.root_main_inc_map
-                || (mBottomAnimator.getCurrentView() != null
-                && mBottomAnimator.getCurrentView().getId() == R.id.root_main_inc_map)) {
+        if (isView(R.id.root_main_inc_map)) {
 
             getMainActivity().mVcList.get(ViewController.VIEW_MAP).update();
 
         }
 
-        if (mTopAnimator.getCurrentView().getId() == R.id.root_main_inc_pfd
-                || (mBottomAnimator.getCurrentView() != null
-                && mBottomAnimator.getCurrentView().getId() == R.id.root_main_inc_pfd)) {
+        if (isView(R.id.root_main_inc_pfd)) {
             if (getMainActivity().mFcDevice.getObjectTree().getListener("AttitudeState") == null) {
                 try {
                     try {
@@ -536,7 +524,7 @@ public class ViewControllerMain extends ViewController implements View.OnClickLi
                         getMainActivity().mFcDevice.getObjectTree()
                                 .setListener("AttitudeState", this);
                     }
-                } catch (NullPointerException e) {
+                } catch (NullPointerException ignored) {
 
                 }
             }
@@ -550,8 +538,7 @@ public class ViewControllerMain extends ViewController implements View.OnClickLi
     public void reset() {
         Context c = getMainActivity().getApplicationContext();
 
-        if (mTopAnimator.getCurrentView().getId() == R.id.root_main_inc_health
-                || mBottomAnimator.getCurrentView().getId() == R.id.root_main_inc_health) {
+        if (isView(R.id.root_main_inc_health)) {
 
             txtAtti.setBackground(ContextCompat.getDrawable(c, R.drawable.rounded_corner_unini));
             txtStab.setBackground(ContextCompat.getDrawable(c, R.drawable.rounded_corner_unini));
@@ -581,8 +568,7 @@ public class ViewControllerMain extends ViewController implements View.OnClickLi
             txtCPU.setBackground(ContextCompat.getDrawable(c, R.drawable.rounded_corner_unini));
 
         }
-        if (mTopAnimator.getCurrentView().getId() == R.id.root_main_inc_info
-                || mBottomAnimator.getCurrentView().getId() == R.id.root_main_inc_info) {
+        if (isView(R.id.root_main_inc_info)) {
             txtArmed.setText(R.string.EMPTY_STRING);
 
             txtVolt.setText(R.string.EMPTY_STRING);
@@ -598,11 +584,8 @@ public class ViewControllerMain extends ViewController implements View.OnClickLi
             txtModeAssistedControl.setText(R.string.EMPTY_STRING);
         }
 
-        if (mTopAnimator.getCurrentView().getId() == R.id.root_main_inc_map
-                || (mBottomAnimator.getCurrentView() != null
-                && mBottomAnimator.getCurrentView().getId() == R.id.root_main_inc_map)) {
+        if (isView(R.id.root_main_inc_map)) {
             getMainActivity().mVcList.get(ViewController.VIEW_MAP).reset();
-
         }
     }
 
@@ -781,9 +764,7 @@ public class ViewControllerMain extends ViewController implements View.OnClickLi
 
     @Override
     public void onObjectUpdate(UAVTalkObject o) {
-        if (mTopAnimator.getCurrentView().getId() == R.id.root_main_inc_pfd
-                || (mBottomAnimator.getCurrentView() != null
-                && mBottomAnimator.getCurrentView().getId() == R.id.root_main_inc_pfd)) {
+        if (isView(R.id.root_main_inc_pfd)) {
 
             Float roll;
             Float pitch;
