@@ -129,7 +129,7 @@
                     android:layout_margin="20dp"
                     android:autoLink="web"
                     android:clickable="true"
-                    android:text="See the wiki for help:\nhttps://librepilot.atlassian.net/wiki/display/LPDOC/LP2Go+Android+App"
+                    android:text="@string/WIKI_LINK_INFO"
                     android:textAppearance="?android:attr/textAppearanceMedium"/>
 
 
