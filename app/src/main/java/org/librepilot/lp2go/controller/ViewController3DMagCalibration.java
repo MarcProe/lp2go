@@ -42,7 +42,7 @@ public class ViewController3DMagCalibration extends ViewController implements
         super.leave();
         try {
             getMainActivity().mFcDevice.getObjectTree().removeListener("AttitudeState");
-        } catch (NullPointerException e1) {
+        } catch (NullPointerException ignored) {
 
         }
     }
@@ -65,7 +65,7 @@ public class ViewController3DMagCalibration extends ViewController implements
                     getMainActivity().mFcDevice.getObjectTree().removeListener("AttitudeState");
                     getMainActivity().mFcDevice.getObjectTree().setListener("AttitudeState", this);
                 }
-            } catch (NullPointerException e1) {
+            } catch (NullPointerException ignored) {
 
             }
         }
@@ -81,7 +81,7 @@ public class ViewController3DMagCalibration extends ViewController implements
             //Vector3 v = new Vector3(magx, magy, magz).nor();
             Vector3 v = new Vector3(magx, magy, magz);
             glv3DMagCalibration.addSample(v.x, v.y, v.z);
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException ignored) {
 
         }
     }
