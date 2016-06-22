@@ -232,13 +232,14 @@ public class ViewControllerMain extends ViewController implements View.OnClickLi
 
     @Override
     public void enter(int view) {
+        init();
         super.enter(view);
+
         if (isView(R.id.root_main_inc_map)) {
             getMainActivity().mVcList.get(ViewController.VIEW_MAP).enter(view, true);
-
         }
+        getMainActivity().initSlider();
     }
-
 
     @Override
     public void leave() {
