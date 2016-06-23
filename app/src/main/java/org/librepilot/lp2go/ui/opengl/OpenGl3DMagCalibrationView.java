@@ -1,3 +1,19 @@
+/*
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+ * for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ */
+
 package org.librepilot.lp2go.ui.opengl;
 
 import android.content.Context;
@@ -166,7 +182,7 @@ class OpenGLRenderer implements GLSurfaceView.Renderer {
         Matrix.multiplyMM(rotate, 0, rotate, 0, transPlus, 0);
 
 
-        gl.glMultMatrixf(rotate,0);
+        gl.glMultMatrixf(rotate, 0);
 
         float lightpos1[] = {.5f, 1.f, 1.f, 0.f};
         gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_POSITION, lightpos1, 0);
@@ -665,7 +681,7 @@ class CartesianCoordinateSystemAxis {
     private final FloatBuffer mVertexBuffer;
     private final float[] vertices;
     private FloatBuffer mColorBuffer;
-    private  ByteBuffer mIndexBuffer;
+    private ByteBuffer mIndexBuffer;
 
     public CartesianCoordinateSystemAxis(float[] vertices, float[] colors) {
 

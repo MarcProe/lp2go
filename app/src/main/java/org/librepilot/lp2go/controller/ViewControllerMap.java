@@ -13,6 +13,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
+
 package org.librepilot.lp2go.controller;
 
 import android.widget.TextView;
@@ -90,8 +91,8 @@ public class ViewControllerMap extends ViewController {
         MainActivity ma = getMainActivity();
 
         ma.mFcDevice.requestObject("GPSSatellites");
-            ma.mFcDevice.requestObject("SystemAlarms");
-            ma.mFcDevice.requestObject("GPSPositionSensor");
+        ma.mFcDevice.requestObject("SystemAlarms");
+        ma.mFcDevice.requestObject("GPSPositionSensor");
 
 
         setText(txtMapGPSSatsInView,

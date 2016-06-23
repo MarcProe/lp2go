@@ -11,8 +11,8 @@ android {
 
         multiDexEnabled true
 
-        versionName '0.2.6.24'
-        versionCode 20624
+        versionName '0.2.6.25'
+        versionCode 20625
     }
 
     dexOptions {
@@ -49,8 +49,8 @@ android {
             resValue 'string', 'APP_NAME', 'LP2Go Beta'
             resValue 'string', 'ACTION_USB_PERMISSION', applicationId + '.USB_PERMISSION'
             targetSdkVersion 16
-            versionCode 40000
-            versionName '0.4.0.0'
+            versionCode 30000
+            versionName '0.3.0.1'
         }
         release_flavor_ {
             minSdkVersion 16

@@ -33,6 +33,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.librepilot.lp2go;
 
 import android.app.AlertDialog;
@@ -226,6 +227,10 @@ public class MainActivity extends AppCompatActivity {
         return null;
     }
 
+    public static void setPThread(boolean mHasPThread) {
+        MainActivity.mHasPThread = mHasPThread;
+    }
+
     public FcDevice getFcDevice() {
         return mFcDevice;
     }
@@ -260,10 +265,6 @@ public class MainActivity extends AppCompatActivity {
 
     public String getUavoLongHash() {
         return mUavoLongHash;
-    }
-
-    public static void setPThread(boolean mHasPThread) {
-        MainActivity.mHasPThread = mHasPThread;
     }
 
     public void setPollThreadObjectTree(UAVTalkObjectTree oTree) {

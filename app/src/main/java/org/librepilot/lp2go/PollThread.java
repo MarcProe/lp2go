@@ -13,6 +13,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
+
 package org.librepilot.lp2go;
 
 import android.graphics.Color;
@@ -193,20 +194,20 @@ public class PollThread extends Thread {
                 public void run() {
                     try {
 
-/**
- * We have 100 bytes for the whole description.
- *
- * Structure is:
- *   4 bytes: header: "OpFw".
- *   4 bytes: GIT commit tag (short version of SHA1).
- *   4 bytes: Unix timestamp of compile time.
- *   2 bytes: target platform. Should follow same rule as BOARD_TYPE and BOARD_REVISION in board define files.
- *  26 bytes: commit tag if it is there, otherwise branch name. '-dirty' may be added if needed. Zero-padded.
- *  20 bytes: SHA1 sum of the firmware.
- *  20 bytes: SHA1 sum of the uavo definitions.
- *  20 bytes: free for now.
- *
- */
+                        /**
+                         * We have 100 bytes for the whole description.
+                         *
+                         * Structure is:
+                         *   4 bytes: header: "OpFw".
+                         *   4 bytes: GIT commit tag (short version of SHA1).
+                         *   4 bytes: Unix timestamp of compile time.
+                         *   2 bytes: target platform. Should follow same rule as BOARD_TYPE and BOARD_REVISION in board define files.
+                         *  26 bytes: commit tag if it is there, otherwise branch name. '-dirty' may be added if needed. Zero-padded.
+                         *  20 bytes: SHA1 sum of the firmware.
+                         *  20 bytes: SHA1 sum of the uavo definitions.
+                         *  20 bytes: free for now.
+                         *
+                         */
                         String fcUavoHash =
                                 H.bytesToHex(getByteData("FirmwareIAPObj", "Description", 60, 20));
                         mA.setUavoLongHashFC(fcUavoHash.toLowerCase());

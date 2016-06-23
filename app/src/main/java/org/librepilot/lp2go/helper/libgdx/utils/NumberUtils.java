@@ -29,8 +29,10 @@ public final class NumberUtils {
         return Float.floatToRawIntBits(value);
     }
 
-    /** Encodes the ABGR int color as a float. The high bits are masked to avoid using floats in the NaN range, which unfortunately
-     * means the full range of alpha cannot be used. See {@link Float#intBitsToFloat(int)} javadocs. */
+    /**
+     * Encodes the ABGR int color as a float. The high bits are masked to avoid using floats in the NaN range, which unfortunately
+     * means the full range of alpha cannot be used. See {@link Float#intBitsToFloat(int)} javadocs.
+     */
     public static float intToFloatColor(int value) {
         return Float.intBitsToFloat(value & 0xfeffffff);
     }

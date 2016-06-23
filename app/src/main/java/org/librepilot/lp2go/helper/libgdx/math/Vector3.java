@@ -21,8 +21,11 @@ import org.librepilot.lp2go.helper.libgdx.utils.NumberUtils;
 
 import java.io.Serializable;
 
-/** Encapsulates a 3D vector. Allows chaining operations by returning a reference to itself in all modification methods.
- * @author badlogicgames@gmail.com */
+/**
+ * Encapsulates a 3D vector. Allows chaining operations by returning a reference to itself in all modification methods.
+ *
+ * @author badlogicgames@gmail.com
+ */
 public class Vector3 implements Serializable, Vector<Vector3> {
     public final static Vector3 X = new Vector3(1, 0, 0);
     public final static Vector3 Y = new Vector3(0, 1, 0);
@@ -30,42 +33,60 @@ public class Vector3 implements Serializable, Vector<Vector3> {
     public final static Vector3 Zero = new Vector3(0, 0, 0);
     private static final long serialVersionUID = 3840054589595372522L;
     private final static Matrix4 tmpMat = new Matrix4();
-    /** the x-component of this vector **/
+    /**
+     * the x-component of this vector
+     **/
     public float x;
-    /** the y-component of this vector **/
+    /**
+     * the y-component of this vector
+     **/
     public float y;
-    /** the z-component of this vector **/
+    /**
+     * the z-component of this vector
+     **/
     public float z;
 
-    /** Constructs a vector at (0,0,0) */
+    /**
+     * Constructs a vector at (0,0,0)
+     */
     public Vector3() {
     }
 
-    /** Creates a vector with the given components
+    /**
+     * Creates a vector with the given components
+     *
      * @param x The x-component
      * @param y The y-component
-     * @param z The z-component */
+     * @param z The z-component
+     */
     public Vector3(float x, float y, float z) {
         this.set(x, y, z);
     }
 
-    /** Creates a vector from the given vector
-     * @param vector The vector */
+    /**
+     * Creates a vector from the given vector
+     *
+     * @param vector The vector
+     */
     public Vector3(final Vector3 vector) {
         this.set(vector);
     }
 
-    /** Creates a vector from the given array. The array must have at least 3 elements.
+    /**
+     * Creates a vector from the given array. The array must have at least 3 elements.
      *
-     * @param values The array */
+     * @param values The array
+     */
     public Vector3(final float[] values) {
         this.set(values[0], values[1], values[2]);
     }
 
-    /** Creates a vector from the given vector and z-component
+    /**
+     * Creates a vector from the given vector and z-component
      *
      * @param vector The vector
-     * @param z The z-component */
+     * @param z      The z-component
+     */
     public Vector3(final Vector2 vector, float z) {
         this.set(vector.x, vector.y, z);
     }
@@ -395,10 +416,13 @@ public class Vector3 implements Serializable, Vector<Vector3> {
         return this.set(vector.x, vector.y, z);
     }
 
-    /** Sets the components from the given spherical coordinate
+    /**
+     * Sets the components from the given spherical coordinate
+     *
      * @param azimuthalAngle The angle between x-axis in radians [0, 2pi]
-     * @param polarAngle The angle between z-axis in radians [0, pi]
-     * @return This vector for chaining */
+     * @param polarAngle     The angle between z-axis in radians [0, pi]
+     * @return This vector for chaining
+     */
     public Vector3 setFromSpherical(float azimuthalAngle, float polarAngle) {
         float cosPolar = MathUtils.cos(polarAngle);
         float sinPolar = MathUtils.sin(polarAngle);
@@ -421,43 +445,54 @@ public class Vector3 implements Serializable, Vector<Vector3> {
         return this.set(this.x + x, this.y + y, this.z + z);
     }
 
-    /** Adds the given value to all three components of the vector.
+    /**
+     * Adds the given value to all three components of the vector.
      *
      * @param values The value
-     * @return This vector for chaining */
+     * @return This vector for chaining
+     */
     public Vector3 add(float values) {
         return this.set(this.x + values, this.y + values, this.z + values);
     }
 
-    /** Subtracts the other vector from this vector.
+    /**
+     * Subtracts the other vector from this vector.
      *
      * @param x The x-component of the other vector
      * @param y The y-component of the other vector
      * @param z The z-component of the other vector
-     * @return This vector for chaining */
+     * @return This vector for chaining
+     */
     public Vector3 sub(float x, float y, float z) {
         return this.set(this.x - x, this.y - y, this.z - z);
     }
 
-    /** Subtracts the given value from all components of this vector
+    /**
+     * Subtracts the given value from all components of this vector
      *
      * @param value The value
-     * @return This vector for chaining */
+     * @return This vector for chaining
+     */
     public Vector3 sub(float value) {
         return this.set(this.x - value, this.y - value, this.z - value);
     }
 
-    /** Scales this vector by the given values
+    /**
+     * Scales this vector by the given values
+     *
      * @param vx X value
      * @param vy Y value
      * @param vz Z value
-     * @return This vector for chaining */
+     * @return This vector for chaining
+     */
     public Vector3 scl(float vx, float vy, float vz) {
         return this.set(this.x * vx, this.y * vy, this.z * vz);
     }
 
-    /** @param vector The other vector
-     * @return Whether this and the other vector are equal */
+    /**
+     * @param vector The other vector
+     * @return Whether this and the other vector are equal
+     */
     public boolean idt(final Vector3 vector) {
         return x == vector.x && y == vector.y && z == vector.z;
     }
@@ -487,11 +522,14 @@ public class Vector3 implements Serializable, Vector<Vector3> {
         return a * a + b * b + c * c;
     }
 
-    /** Returns the dot product between this and the given vector.
+    /**
+     * Returns the dot product between this and the given vector.
+     *
      * @param x The x-component of the other vector
      * @param y The y-component of the other vector
      * @param z The z-component of the other vector
-     * @return The dot product */
+     * @return The dot product
+     */
     public float dot(float x, float y, float z) {
         return this.x * x + this.y * y + this.z * z;
     }
@@ -507,11 +545,14 @@ public class Vector3 implements Serializable, Vector<Vector3> {
                 x * vector.y - y * vector.x);
     }
 
-    /** Sets this vector to the cross product between it and the other vector.
+    /**
+     * Sets this vector to the cross product between it and the other vector.
+     *
      * @param x The x-component of the other vector
      * @param y The y-component of the other vector
      * @param z The z-component of the other vector
-     * @return This vector for chaining */
+     * @return This vector for chaining
+     */
     public Vector3 crs(float x, float y, float z) {
         return this.set(this.y * z - this.z * y, this.z * x - this.x * z, this.x * y - this.y * x);
     }
@@ -664,24 +705,28 @@ public class Vector3 implements Serializable, Vector<Vector3> {
                 x * l_mat[Matrix4.M02] + y * l_mat[Matrix4.M12] + z * l_mat[Matrix4.M22]);
     }
 
-    /** Rotates this vector by the given angle in degrees around the given axis.
+    /**
+     * Rotates this vector by the given angle in degrees around the given axis.
      *
      * @param degrees the angle in degrees
-     * @param axisX the x-component of the axis
-     * @param axisY the y-component of the axis
-     * @param axisZ the z-component of the axis
-     * @return This vector for chaining */
+     * @param axisX   the x-component of the axis
+     * @param axisY   the y-component of the axis
+     * @param axisZ   the z-component of the axis
+     * @return This vector for chaining
+     */
     public Vector3 rotate(float degrees, float axisX, float axisY, float axisZ) {
         return this.mul(tmpMat.setToRotation(axisX, axisY, axisZ, degrees));
     }
 
-    /** Rotates this vector by the given angle in radians around the given axis.
+    /**
+     * Rotates this vector by the given angle in radians around the given axis.
      *
      * @param radians the angle in radians
-     * @param axisX the x-component of the axis
-     * @param axisY the y-component of the axis
-     * @param axisZ the z-component of the axis
-     * @return This vector for chaining */
+     * @param axisX   the x-component of the axis
+     * @param axisY   the y-component of the axis
+     * @param axisZ   the z-component of the axis
+     * @return This vector for chaining
+     */
     public Vector3 rotateRad(float radians, float axisX, float axisY, float axisZ) {
         return this.mul(tmpMat.setToRotationRad(axisX, axisY, axisZ, radians));
     }
@@ -710,12 +755,14 @@ public class Vector3 implements Serializable, Vector<Vector3> {
         return this.mul(tmpMat);
     }
 
-    /** Spherically interpolates between this vector and the target vector by alpha which is in the range [0,1]. The result is
+    /**
+     * Spherically interpolates between this vector and the target vector by alpha which is in the range [0,1]. The result is
      * stored in this vector.
      *
      * @param target The target vector
-     * @param alpha The interpolation coefficient
-     * @return This vector for chaining. */
+     * @param alpha  The interpolation coefficient
+     * @return This vector for chaining.
+     */
     public Vector3 slerp(final Vector3 target, float alpha) {
         final float dot = dot(target);
         // If the inputs are too close for comfort, simply linearly interpolate.
@@ -791,15 +838,21 @@ public class Vector3 implements Serializable, Vector<Vector3> {
         return result;
     }
 
-    /** Converts this {@code Vector3} to a string in the format {@code (x,y,z)}.
-     * @return a string representation of this object. */
+    /**
+     * Converts this {@code Vector3} to a string in the format {@code (x,y,z)}.
+     *
+     * @return a string representation of this object.
+     */
     @Override
     public String toString() {
         return "(" + x + "," + y + "," + z + ")";
     }
 
-    /** Compares this vector with the other vector, using the supplied epsilon for fuzzy equality testing.
-     * @return whether the vectors are the same. */
+    /**
+     * Compares this vector with the other vector, using the supplied epsilon for fuzzy equality testing.
+     *
+     * @return whether the vectors are the same.
+     */
     public boolean epsilonEquals(float x, float y, float z, float epsilon) {
         if (Math.abs(x - this.x) > epsilon) {
             return false;

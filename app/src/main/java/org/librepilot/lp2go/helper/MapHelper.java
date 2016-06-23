@@ -75,14 +75,14 @@ public class MapHelper implements OnMapReadyCallback {
 
             double distance = H.calculationByDistance(s, e);
             //if (distance > 0.001) {
-                CameraUpdate cameraUpdate =
-                        CameraUpdateFactory.newLatLngZoom(e, 19);
+            CameraUpdate cameraUpdate =
+                    CameraUpdateFactory.newLatLngZoom(e, 19);
 
-                if (distance < 200) {
-                    mMap.animateCamera(cameraUpdate);
-                } else {
-                    mMap.moveCamera(cameraUpdate);
-                }
+            if (distance < 200) {
+                mMap.animateCamera(cameraUpdate);
+            } else {
+                mMap.moveCamera(cameraUpdate);
+            }
             //}
         }
     }

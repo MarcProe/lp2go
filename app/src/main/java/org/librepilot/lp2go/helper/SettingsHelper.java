@@ -42,22 +42,22 @@ public class SettingsHelper {
     public static void loadSettings(MainActivity mainActivity) {
         SharedPreferences sharedPref = mainActivity.getPreferences(Context.MODE_PRIVATE);
         mSerialModeUsed = sharedPref.getInt(mainActivity
-                        .getString(R.string.SETTINGS_SERIAL_MODE, R.string.APP_ID), 0);
+                .getString(R.string.SETTINGS_SERIAL_MODE, R.string.APP_ID), 0);
         mBluetoothDeviceUsed = sharedPref.getString(
-                        mainActivity.getString(R.string.SETTINGS_BT_NAME, R.string.APP_ID), null);
+                mainActivity.getString(R.string.SETTINGS_BT_NAME, R.string.APP_ID), null);
         mBluetoothDeviceAddress = sharedPref.getString(
-                        mainActivity.getString(R.string.SETTINGS_BT_MAC, R.string.APP_ID), null);
+                mainActivity.getString(R.string.SETTINGS_BT_MAC, R.string.APP_ID), null);
         mLoadedUavo = sharedPref
                 .getString(mainActivity.getString(R.string.SETTINGS_UAVO_SOURCE, R.string.APP_ID),
                         null);
         mColorfulPid = sharedPref.getBoolean(
                 mainActivity.getString(R.string.SETTINGS_COLORFUL_PID, R.string.APP_ID), false);
         mColorfulVPid = sharedPref.getBoolean(
-                        mainActivity.getString(R.string.SETTINGS_COLORFUL_VPID, R.string.APP_ID),
-                        false);
+                mainActivity.getString(R.string.SETTINGS_COLORFUL_VPID, R.string.APP_ID),
+                false);
         mText2SpeechEnabled = sharedPref.getBoolean(
                 mainActivity.getString(R.string.SETTINGS_TEXT2SPEECH_ENABLED, R.string.APP_ID),
-                        false);
+                false);
         mTopLeftLayout = sharedPref.getString(
                 mainActivity.getString(R.string.SETTINGS_TOP_LEFT_LAYOUT_RES, R.string.APP_ID),
                 mainActivity.getString(R.string.main_element_health));

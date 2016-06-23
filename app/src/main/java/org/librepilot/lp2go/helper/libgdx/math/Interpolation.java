@@ -16,8 +16,11 @@
 
 package org.librepilot.lp2go.helper.libgdx.math;
 
-/** Takes a linear value in the range of 0-1 and outputs a (usually) non-linear, interpolated value.
- * @author Nathan Sweet */
+/**
+ * Takes a linear value in the range of 0-1 and outputs a (usually) non-linear, interpolated value.
+ *
+ * @author Nathan Sweet
+ */
 public abstract class Interpolation {
     static public final Bounce bounce = new Bounce(4);
     static public final BounceIn bounceIn = new BounceIn(4);
@@ -66,9 +69,13 @@ public abstract class Interpolation {
         }
     };
     static public final Pow pow2 = new Pow(2);
-    /** Slow, then fast. */
+    /**
+     * Slow, then fast.
+     */
     static public final PowIn pow2In = new PowIn(2);
-    /** Fast, then slow. */
+    /**
+     * Fast, then slow.
+     */
     static public final PowOut pow2Out = new PowOut(2);
     static public final Pow pow3 = new Pow(3);
     static public final PowIn pow3In = new PowIn(3);
@@ -98,10 +105,14 @@ public abstract class Interpolation {
     static public final SwingIn swingIn = new SwingIn(2f);
     static public final SwingOut swingOut = new SwingOut(2f);
 
-    /** @param a Alpha value between 0 and 1. */
+    /**
+     * @param a Alpha value between 0 and 1.
+     */
     abstract public float apply(float a);
 
-    /** @param a Alpha value between 0 and 1. */
+    /**
+     * @param a Alpha value between 0 and 1.
+     */
     public float apply(float start, float end, float a) {
         return start + (end - start) * apply(a);
     }

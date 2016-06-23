@@ -13,6 +13,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
+
 package org.librepilot.lp2go.controller;
 
 import android.app.AlertDialog;
@@ -26,7 +27,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
-import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -143,7 +143,7 @@ public class ViewControllerMain extends ViewController implements View.OnClickLi
     private boolean isView(int layoutId) {
         if (mTopAnimator.getCurrentView().getId() == layoutId
                 || (mBottomAnimator.getCurrentView() != null
-                && mBottomAnimator.getCurrentView().getId() ==layoutId)) {
+                && mBottomAnimator.getCurrentView().getId() == layoutId)) {
             return true;
         } else {
             return false;

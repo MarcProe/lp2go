@@ -33,6 +33,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.librepilot.lp2go;
 
 import android.app.Activity;

@@ -16,9 +16,11 @@
 
 package org.librepilot.lp2go.helper.libgdx.utils;
 
-/** Typed runtime exception used throughout libgdx
+/**
+ * Typed runtime exception used throughout libgdx
  *
- * @author mzechner */
+ * @author mzechner
+ */
 public class GdxRuntimeException extends RuntimeException {
     private static final long serialVersionUID = 6735854402467673117L;
 

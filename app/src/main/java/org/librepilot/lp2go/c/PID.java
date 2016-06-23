@@ -104,5 +104,4 @@ public class PID {
     public static final String PID_YAW_PROP_DFS = "0.000";
     public static final int PID_YAW_PROP_MAX = 50;
     public static final int PID_YAW_PROP_STEP = 1;
-
 }

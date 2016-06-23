@@ -392,7 +392,7 @@ public class Quaternion implements Serializable {
     }
 
     // TODO : the matrix4 set(quaternion) doesnt set the last row+col of the matrix to 0,0,0,1 so... that's why there is this
-// method
+    // method
 
     /**
      * Multiplies this quaternion with another one in the form of this = this * other
@@ -847,7 +847,7 @@ public class Quaternion implements Serializable {
         float coeff = 0;
         if (Math.abs(theta) <
                 0.001) // If theta is small enough, use the limit of sin(alpha*theta) / sin(theta) instead of actual
-// value
+        // value
         {
             coeff = normExp * alpha / norm;
         } else {
