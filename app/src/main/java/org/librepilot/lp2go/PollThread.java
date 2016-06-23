@@ -19,7 +19,6 @@ package org.librepilot.lp2go;
 import android.graphics.Color;
 import android.support.v4.content.ContextCompat;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import org.librepilot.lp2go.helper.SettingsHelper;
 import org.librepilot.lp2go.uavtalk.UAVTalkMissingObjectException;
@@ -47,12 +46,6 @@ public class PollThread extends Thread {
         this.mObjectTree = mObjectTree;
     }
 
-    private void setText(TextView t, String text) {
-        if (text != null && t != null) {
-            t.setText(text);
-        }
-    }
-
     private void setImageColor(ImageView i, String color) {
         if (color == null || color.equals("")) {
             return;
@@ -69,48 +62,6 @@ public class PollThread extends Thread {
                 break;
             case "Disconnected":
                 i.setColorFilter(Color.argb(0xff, 0xd4, 0x00, 0x00));
-                break;
-        }
-    }
-
-    private void setTextBGColor(TextView t, String color) {
-        if (color == null || color.equals(mA.getString(R.string.EMPTY_STRING))) {
-            return;
-        }
-        switch (color) {
-            case "OK":
-            case "None":
-            case "Connected":
-                t.setBackground(ContextCompat.getDrawable(mA.getApplicationContext(),
-                        R.drawable.rounded_corner_ok));
-                break;
-            case "Warning":
-            case "HandshakeReq":
-            case "HandshakeAck":
-                t.setBackground(ContextCompat.getDrawable(mA.getApplicationContext(),
-                        R.drawable.rounded_corner_warning));
-                break;
-            case "Error":
-                t.setBackground(ContextCompat.getDrawable(mA.getApplicationContext(),
-                        R.drawable.rounded_corner_error));
-                break;
-            case "Critical":
-            case "RebootRequired":
-            case "Disconnected":
-                t.setBackground(ContextCompat.getDrawable(mA.getApplicationContext(),
-                        R.drawable.rounded_corner_critical));
-                break;
-            case "Uninitialised":
-                t.setBackground(ContextCompat.getDrawable(mA.getApplicationContext(),
-                        R.drawable.rounded_corner_unini));
-                break;
-            case "InProgress":
-                t.setBackground(ContextCompat.getDrawable(mA.getApplicationContext(),
-                        R.drawable.rounded_corner_inprogress));
-                break;
-            case "Completed":
-                t.setBackground(ContextCompat.getDrawable(mA.getApplicationContext(),
-                        R.drawable.rounded_corner_completed));
                 break;
         }
     }
@@ -246,14 +197,6 @@ public class PollThread extends Thread {
         }
     }
 
-    private Float toFloat(Object o) {
-        try {
-            return (Float) o;
-        } catch (ClassCastException e) {
-            return .0f;
-        }
-    }
-
     private void requestObjects() {
         try {
             if (mA.mFcDevice != null) {
@@ -297,49 +240,6 @@ public class PollThread extends Thread {
         return b;
     }
 
-    private String getStringData(String object, String field, int len) {
-        char[] b = new char[len];
-        try {
-            for (int i = 0; i < len; i++) {
-                String str = mObjectTree.getData(object, 0, field, i)
-                        .toString();
-                b[i] = (char) Byte.parseByte(str);
-
-            }
-        } catch (UAVTalkMissingObjectException | NumberFormatException e) {
-            try {
-                mA.mFcDevice.requestObject(object);
-            } catch (NullPointerException e2) {
-                e2.printStackTrace();
-            }
-        }
-        return new String(b);
-    }
-
-    Object getData(String objectname, String fieldname, String elementName, boolean request) {
-        try {
-            if (request) {
-                mA.mFcDevice.requestObject(objectname);
-            }
-            return getData(objectname, fieldname, elementName);
-        } catch (NullPointerException e) {
-            //e.printStackTrace();
-        }
-        return "";
-    }
-
-    private Object getData(String objectname, String fieldname, boolean request) {
-        try {
-            if (request) {
-                mA.mFcDevice.requestObject(objectname);
-            }
-            return getData(objectname, fieldname);
-        } catch (NullPointerException e) {
-            //e.printStackTrace();
-        }
-        return "";
-    }
-
     private Object getData(String objectname, String fieldname) {
         try {
             Object o = mObjectTree.getData(objectname, fieldname);
@@ -356,25 +256,5 @@ public class PollThread extends Thread {
             //e3.printStackTrace();
         }
         return "";
-    }
-
-    private Object getData(String objectname, String fieldname, String elementname) {
-        Object o = null;
-        try {
-            o = mObjectTree.getData(objectname, fieldname, elementname);
-        } catch (UAVTalkMissingObjectException e1) {
-            try {
-                mA.mFcDevice.requestObject(e1.getObjectname(), e1.getInstance());
-            } catch (NullPointerException e2) {
-                e2.printStackTrace();
-            }
-        } catch (NullPointerException e3) {
-            VisualLog.e("ERR", "Object Tree not loaded yet.");
-        }
-        if (o != null) {
-            return o;
-        } else {
-            return "";
-        }
     }
 }

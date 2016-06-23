@@ -79,6 +79,7 @@ class FcBluetoothWaiterThread extends FcWaiterThread {
             try {
 
                 while (seekbuffer[0] != 0x3c) {
+                    //noinspection ResultOfMethodCallIgnored
                     mmInStream.read(seekbuffer);
                 }
                 seekbuffer[0] = 0x00;

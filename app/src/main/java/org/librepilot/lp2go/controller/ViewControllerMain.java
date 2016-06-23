@@ -141,13 +141,9 @@ public class ViewControllerMain extends ViewController implements View.OnClickLi
     }
 
     private boolean isView(int layoutId) {
-        if (mTopAnimator.getCurrentView().getId() == layoutId
+        return mTopAnimator.getCurrentView().getId() == layoutId
                 || (mBottomAnimator.getCurrentView() != null
-                && mBottomAnimator.getCurrentView().getId() == layoutId)) {
-            return true;
-        } else {
-            return false;
-        }
+                && mBottomAnimator.getCurrentView().getId() == layoutId);
     }
 
     @Override
@@ -160,12 +156,6 @@ public class ViewControllerMain extends ViewController implements View.OnClickLi
     public void setTop(int topLayoutId) {
         setTopNoInit(topLayoutId);
         init();
-    }
-
-    @Override
-    public void setBoth(int topLayoutId, int bottomLayoutId) {
-        setTopNoInit(topLayoutId);
-        setBottom(bottomLayoutId);
     }
 
     @Override

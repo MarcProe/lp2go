@@ -231,7 +231,7 @@ public class NumberInputAlertDialog extends InputAlertDialog implements TextWatc
         }
 
 
-        if (mFcDevice != null && data.length > 0) {
+        if (data != null && mFcDevice != null && data.length > 0) {
             VisualLog.d("IntegerInputDialog",
                     "" + mFieldType + " " + input + " " + H.bytesToHex(data));
             mFcDevice.sendSettingsObject(mObject, 0, mField, mElement, data);

@@ -21,7 +21,6 @@ import org.librepilot.lp2go.VisualLog;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -31,7 +30,7 @@ public class UAVTalkObjectTree {
     private Map<String, UAVTalkXMLObject> xmlObjects;
 
     public UAVTalkObjectTree() {
-        objects = new ConcurrentHashMap<String, UAVTalkObject>();
+        objects = new ConcurrentHashMap<>();
     }
 
     public Map<String, UAVTalkXMLObject> getXmlObjects() {
@@ -56,9 +55,7 @@ public class UAVTalkObjectTree {
 
     public String toString() {
         String ret = "";
-        Iterator<String> i = xmlObjects.keySet().iterator();
-        while (i.hasNext()) {
-            String key = i.next();
+        for (String key : xmlObjects.keySet()) {
             ret += xmlObjects.get(key).getId() + " " + key + "\r\n";
         }
         return ret;
@@ -97,15 +94,6 @@ public class UAVTalkObjectTree {
         }
 
 
-    }
-
-    public byte[] getInstanceData(String objectname, int instance) {
-        UAVTalkObject obj = getObjectFromName(objectname);
-        UAVTalkObjectInstance ins = obj.getInstance(instance);
-        if (ins == null) {
-            return null;
-        }
-        return ins.getData();
     }
 
     public int getElementIndex(String objectname, String fieldname, String element) {
@@ -193,6 +181,7 @@ public class UAVTalkObjectTree {
                 case (UAVTalkXMLObject.FIELDTYPE_FLOAT32): {
                     byte[] fielddata = new byte[4];
                     System.arraycopy(data, pos + element * 4, fielddata, 0, 4);
+                    @SuppressWarnings("UnnecessaryLocalVariable")
                     float f = ByteBuffer.wrap(fielddata).order(ByteOrder.LITTLE_ENDIAN).getFloat();
                     retval = f;
                     break;

@@ -59,7 +59,7 @@ class FcUsbWaiterThread extends FcWaiterThread {
 
     public void run() {
 
-        queue = new ArrayDeque<Byte>();
+        queue = new ArrayDeque<>();
 
         byte[] syncbuffer = new byte[1];
         byte[] msgtypebuffer = new byte[1];

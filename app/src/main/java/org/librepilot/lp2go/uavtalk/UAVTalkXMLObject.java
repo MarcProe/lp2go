@@ -108,7 +108,7 @@ public class UAVTalkXMLObject {
         mIsSettings = e.getAttribute(XML_ATT_SETTINGS).equals(XML_TRUE);
 
         NodeList fieldNodeList = doc.getElementsByTagName(XML_TAG_FIELD);
-        mFields = new HashMap<String, UAVTalkXMLObjectField>();
+        mFields = new HashMap<>();
         mFieldArray = new UAVTalkXMLObjectField[fieldNodeList.getLength()];
         mFieldLengths = new int[fieldNodeList.getLength()];
         int x = 0;
@@ -132,7 +132,7 @@ public class UAVTalkXMLObject {
                 String elementString = f.getAttribute(XML_ATT_ELEMENTNAMES);
 
                 uavField.mElements =
-                        new ArrayList<String>(
+                        new ArrayList<>(
                                 Arrays.asList(elementString.split(XML_ATTRIBUTE_SPLITTER)));
 
                 String elementCountString = f.getAttribute(XML_ATT_ELEMENTS);
@@ -166,7 +166,7 @@ public class UAVTalkXMLObject {
                             NodeList optionnodes =
                                     f.getElementsByTagName(XML_TAG_OPTIONS).item(0).getChildNodes();
 
-                            ArrayList<String> options = new ArrayList<String>();
+                            ArrayList<String> options = new ArrayList<>();
                             for (int j = 0; j < optionnodes.getLength(); j++) {
                                 String content =
                                         optionnodes.item(j).getTextContent()

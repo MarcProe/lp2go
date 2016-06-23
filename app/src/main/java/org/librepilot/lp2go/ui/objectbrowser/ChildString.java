@@ -64,10 +64,6 @@ public class ChildString {
         return message;
     }
 
-    public String getMessage() {
-        return message;
-    }
-
     public String getValue() {
         return data;
     }

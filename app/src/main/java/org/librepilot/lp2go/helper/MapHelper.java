@@ -39,7 +39,6 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 
 public class MapHelper implements OnMapReadyCallback {
-    private final int MAX_LINES = 20;
     private MainActivity mActivity;
     private GoogleMap mMap;
     private Deque<Polyline> mMapLines;
@@ -58,6 +57,8 @@ public class MapHelper implements OnMapReadyCallback {
                     .color(Color.RED);
             Polyline pl = mMap.addPolyline(line);
             mMapLines.addFirst(pl);
+
+            int MAX_LINES = 20;
             if (mMapLines.size() > MAX_LINES) {
                 Polyline del = mMapLines.removeLast();
                 del.remove();

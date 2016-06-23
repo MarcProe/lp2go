@@ -212,7 +212,7 @@ public class FcBluetoothDevice extends FcDevice {
     }
 
     private void connectionFailed(Exception e) {
-        //VisualLog.d("BT","ConnectionFailed", e);
+        VisualLog.d("BT", "ConnectionFailed", e);
         setState(STATE_NONE);
     }
 

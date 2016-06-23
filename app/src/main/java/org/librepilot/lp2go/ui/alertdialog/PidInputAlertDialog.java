@@ -127,8 +127,6 @@ public class PidInputAlertDialog extends InputAlertDialog
         mEditText.setSelection(fText.length());
 
         mEditText.requestFocus();
-        //input.setFilters(new InputFilter[]{new InputFilterMinMax(getContext(), 0, (float)mValueMax/mDenom)});
-
 
         final SeekBar seekbar = (SeekBar) alertView.findViewById(R.id.seekBar);
         seekbar.setMax(mValueMax);
@@ -282,38 +280,6 @@ public class PidInputAlertDialog extends InputAlertDialog
         });
 
         dialogBuilder.show();
-    }
-
-    private void process(String input) {
-
-        byte[] data;
-        try {
-            switch (mFieldType) {
-                case UAVTalkXMLObject.FIELDTYPE_UINT8:
-                    data = new byte[1];
-                    data[0] = H.toBytes(Integer.parseInt(input))[3]; //want the lsb
-                    break;
-                case UAVTalkXMLObject.FIELDTYPE_UINT32:
-                    data = H.toBytes(Integer.parseInt(input));
-                    if (data.length == 4) {
-                        data = H.reverse4bytes(data);
-                    } else {
-                        data = H.toBytes(0);
-                    }
-                    break;
-                default:
-                    VisualLog.e("PidUnputAlertDialog", "Type not implemented!");
-                    data = H.toBytes(0);
-                    break;
-            }
-
-        } catch (NumberFormatException e) {
-            data = H.toBytes(0);
-        }
-
-        if (mFcDevice != null) {
-            mFcDevice.sendSettingsObject(mObject, 0, mField, 0, data);
-        }
     }
 
     private String getDecimalString(float v) {

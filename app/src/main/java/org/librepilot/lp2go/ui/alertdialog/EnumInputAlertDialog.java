@@ -57,11 +57,13 @@ public class EnumInputAlertDialog extends InputAlertDialog {
             String type =
                     mFcDevice.getObjectTree().getData(mObject, 0, mField, mElement).toString();
             if (type != null) {
-                for (String t : types) {
-                    if (t.equals(type)) {
-                        break;
+                if (types != null) {
+                    for (String t : types) {
+                        if (t.equals(type)) {
+                            break;
+                        }
+                        current++;
                     }
-                    current++;
                 }
             }
         } catch (UAVTalkMissingObjectException | NumberFormatException | NullPointerException ignored) {

@@ -37,10 +37,6 @@ public class TextToSpeechHelper implements TextToSpeech.OnInitListener {
         setEnabled(SettingsHelper.mText2SpeechEnabled);
     }
 
-    public boolean isEnabled() {
-        return this.mEnabled;
-    }
-
     public void setEnabled(boolean enabled) {
         mEnabled = enabled;
     }
@@ -51,7 +47,7 @@ public class TextToSpeechHelper implements TextToSpeech.OnInitListener {
         mActivity.startActivityForResult(checkIntent, MainActivity.CALLBACK_TTS);
     }
 
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, @SuppressWarnings("UnusedParameters") Intent data) {
         if (requestCode == MainActivity.CALLBACK_TTS) {
             if (resultCode == TextToSpeech.Engine.CHECK_VOICE_DATA_PASS) {
                 mTts = new TextToSpeech(mActivity, this);

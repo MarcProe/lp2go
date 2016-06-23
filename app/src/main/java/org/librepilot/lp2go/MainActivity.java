@@ -337,7 +337,7 @@ public class MainActivity extends AppCompatActivity {
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.list_slidermenu);
-        ArrayList<MenuItem> menuItems = new ArrayList<MenuItem>();
+        ArrayList<MenuItem> menuItems = new ArrayList<>();
 
         menuItems.add(new MenuItem(getString(R.string.menu_main),
                 R.drawable.ic_notifications_on_24dp));
@@ -393,7 +393,9 @@ public class MainActivity extends AppCompatActivity {
                 invalidateOptionsMenu();
             }
         };
-        mDrawerLayout.setDrawerListener(mDrawerToggle);
+
+        mDrawerLayout.removeDrawerListener(mDrawerToggle);
+        mDrawerLayout.addDrawerListener(mDrawerToggle);
 
         mDrawerList.setOnItemClickListener(new SlideMenuClickListener());
     }
@@ -475,7 +477,7 @@ public class MainActivity extends AppCompatActivity {
         ViewController mVcMain =
                 new ViewControllerMain(this, R.string.menu_main, View.VISIBLE, View.VISIBLE);
 
-        mVcList = new ArrayList<ViewController>();
+        mVcList = new ArrayList<>();
         mVcList.add(ViewController.VIEW_MAIN, mVcMain);
         mVcList.add(ViewController.VIEW_MAP, mVcMap);
         mVcList.add(ViewController.VIEW_OBJECTS, mVcObjects);
@@ -493,7 +495,7 @@ public class MainActivity extends AppCompatActivity {
         initSlider();
 
 
-        //initWarnDialog().show();
+        initWarnDialog().show();
 
     }
 
@@ -554,7 +556,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean loadXmlObjects(boolean overwrite) {
 
         if (mXmlObjects == null || (overwrite && SettingsHelper.mLoadedUavo != null)) {
-            mXmlObjects = new TreeMap<String, UAVTalkXMLObject>();
+            mXmlObjects = new TreeMap<>();
 
             String file = SettingsHelper.mLoadedUavo + getString(R.string.UAVO_FILE_EXTENSION);
             ZipInputStream zis = null;
@@ -567,7 +569,7 @@ public class MainActivity extends AppCompatActivity {
                 ZipEntry ze;
 
                 //we need to sort the files to generate the correct hash
-                SortedMap<String, String> files = new TreeMap<String, String>();
+                SortedMap<String, String> files = new TreeMap<>();
 
                 while ((ze = zis.getNextEntry()) != null) {
                     if (ze.getName().endsWith("xml")) {

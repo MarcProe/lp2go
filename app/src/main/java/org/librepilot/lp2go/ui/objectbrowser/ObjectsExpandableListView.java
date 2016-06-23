@@ -140,6 +140,7 @@ public class ObjectsExpandableListView extends ExpandableListView
         ChildString c = extParent.getListDataChild().get(objectname).get(childPosition);
         VisualLog.d("CHILD", c.toString());
 
+        //noinspection StatementWithEmptyBody
         if (c.isSettings) {
             switch (c.type) {
                 case UAVTalkXMLObject.FIELDTYPE_ENUM:

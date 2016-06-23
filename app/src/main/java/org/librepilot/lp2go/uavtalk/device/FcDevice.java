@@ -117,10 +117,6 @@ public abstract class FcDevice {
         }
     }
 
-    public void logRaw(byte[] b) {
-
-    }
-
     public void log(UAVTalkMessage m) {
         // byte[] type = new byte[1];
         //type[0] = m.getType();

@@ -66,7 +66,6 @@ class ConnectionThread extends Thread {
                     SingleToast.show(mA,
                             "UAVO load completed in " + submil + " milliseconds",
                             Toast.LENGTH_SHORT);
-
                 }
             });
         }
@@ -90,7 +89,6 @@ class ConnectionThread extends Thread {
                 } catch (UAVTalkMissingObjectException | NullPointerException e) {
                     VisualLog.d("ConnectionThread", "Error handshaking");
                 }
-
             }
 
             if (mA.mDoReconnect) {
@@ -120,6 +118,7 @@ class ConnectionThread extends Thread {
                         break;
                 }
             }
+
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException ignored) {

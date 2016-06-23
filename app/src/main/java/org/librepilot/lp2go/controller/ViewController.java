@@ -54,7 +54,7 @@ public abstract class ViewController {
     ViewController(MainActivity activity, int title, int localSettingsVisible,
                    int flightSettingsVisible) {
         this.mActivity = activity;
-        mOffset = new HashMap<String, Object>();
+        mOffset = new HashMap<>();
         mBlink = false;
         this.mLocalSettingsVisible = localSettingsVisible;
         this.mFlightSettingsVisible = flightSettingsVisible;

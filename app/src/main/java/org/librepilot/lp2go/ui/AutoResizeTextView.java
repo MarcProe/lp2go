@@ -52,6 +52,7 @@ import android.util.SparseIntArray;
 import android.util.TypedValue;
 import android.widget.TextView;
 
+@SuppressWarnings("unused")
 public class AutoResizeTextView extends TextView {
     private static final int NO_LINE_LIMIT = -1;
     private RectF mTextRect = new RectF();
@@ -134,7 +135,7 @@ public class AutoResizeTextView extends TextView {
         int lastBest = start;
         int lo = start;
         int hi = end - 1;
-        int mid = 0;
+        int mid;
         while (lo <= hi) {
             mid = (lo + hi) >>> 1;
             int midValCmp = sizeTester.onTestSize(mid, availableSpace);
@@ -289,6 +290,7 @@ public class AutoResizeTextView extends TextView {
             return binarySearch(start, end, sizeTester, availableSpace);
         }
         String text = getText().toString();
+        @SuppressWarnings("ConstantConditions")
         int key = text == null ? 0 : text.length();
         int size = mTextCachedSizes.get(key);
         if (size != 0) {

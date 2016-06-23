@@ -27,7 +27,6 @@ import org.librepilot.lp2go.VisualLog;
 import org.librepilot.lp2go.helper.MapHelper;
 import org.librepilot.lp2go.uavtalk.UAVTalkMissingObjectException;
 
-
 public class ViewControllerMap extends ViewController {
     private Float mFcCurrentLat = null;
     private Float mFcCurrentLng = null;

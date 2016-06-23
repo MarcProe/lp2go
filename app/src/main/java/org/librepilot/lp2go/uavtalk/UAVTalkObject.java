@@ -30,7 +30,7 @@ public class UAVTalkObject {
     public UAVTalkObject(String id) {
         this.mId = id;
 
-        mInstances = new HashMap<Integer, UAVTalkObjectInstance>();
+        mInstances = new HashMap<>();
     }
 
     public static byte[] getReqMsg(byte type, String objectId, int instance) {
