@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="MATERIAL_ICONS">The material icons are reproduced or modified from work created and shared by Google and used according to terms described in the Creative Commons 4.0 Attribution License.</string>
+    <string name="ANDROID_ROBOT">The Android robot is reproduced or modified from work created and shared by Google and used according to terms described in the Creative Commons 3.0 Attribution License.</string>
 </resources>
