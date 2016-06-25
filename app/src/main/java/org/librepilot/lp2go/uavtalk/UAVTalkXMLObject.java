@@ -86,7 +86,7 @@ public class UAVTalkXMLObject {
     public UAVTalkXMLObject(String xml)
             throws IOException, SAXException, ParserConfigurationException {
         //TODO: Make this final
-        HashMap<String, Integer> fieldNames = new HashMap<String, Integer>();
+        HashMap<String, Integer> fieldNames = new HashMap<>();
         fieldNames.put(FIELDNAME_INT8, FIELDTYPE_INT8);
         fieldNames.put(FIELDNAME_INT16, FIELDTYPE_INT16);
         fieldNames.put(FIELDNAME_INT32, FIELDTYPE_INT32);
@@ -184,7 +184,7 @@ public class UAVTalkXMLObject {
                     NodeList elementnodes =
                             f.getElementsByTagName(XML_TAG_ELEMENTNAMES).item(0).getChildNodes();
 
-                    uavField.mElements = new ArrayList<String>();
+                    uavField.mElements = new ArrayList<>();
                     for (int j = 0; j < elementnodes.getLength(); j++) {
                         String content = elementnodes.item(j).getTextContent()
                                 .replaceAll(REPLACE_ELEMENT_NODES, "");
@@ -284,20 +284,20 @@ public class UAVTalkXMLObject {
         hash = updateHash(this.mIsSettings ? 1 : 0, hash);
         hash = updateHash(this.mIsSingleInst ? 1 : 0, hash);
         // Hash field information
-        for (int n = 0; n < this.mFieldArray.length; n++) {
+        for (UAVTalkXMLObjectField aMFieldArray : this.mFieldArray) {
             if (DBG) {
-                VisualLog.d("HASH", this.mFieldArray[n].mName);
+                VisualLog.d("HASH", aMFieldArray.mName);
             }
-            hash = updateHash(this.mFieldArray[n].mName, hash);
-            hash = updateHash((this.mFieldArray[n].mElementCount), hash);
-            hash = updateHash(this.mFieldArray[n].mType, hash);
-            if (this.mFieldArray[n].mType == FIELDTYPE_ENUM) {
-                String[] options = this.mFieldArray[n].mOptions;
-                for (int m = 0; m < options.length; m++) {
+            hash = updateHash(aMFieldArray.mName, hash);
+            hash = updateHash((aMFieldArray.mElementCount), hash);
+            hash = updateHash(aMFieldArray.mType, hash);
+            if (aMFieldArray.mType == FIELDTYPE_ENUM) {
+                String[] options = aMFieldArray.mOptions;
+                for (String option : options) {
                     if (DBG) {
-                        VisualLog.d("HASH", options[m]);
+                        VisualLog.d("HASH", option);
                     }
-                    hash = updateHash(options[m], hash);
+                    hash = updateHash(option, hash);
                 }
             }
         }

@@ -67,7 +67,7 @@ public class ViewControllerVerticalPid extends ViewController implements View.On
             imgVPidSave.setOnClickListener(this);
         }
 
-        mVerticalPidTexts = new HashSet<PidTextView>();
+        mVerticalPidTexts = new HashSet<>();
 
         PidTextView txtVerticalAltitudeProportional =
                 (PidTextView) findViewById(R.id.txtVerticalAltitudeProportional);

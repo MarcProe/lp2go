@@ -2,7 +2,7 @@
 <resources>
     <string name="MATERIAL_ICONS">The material icons are reproduced or modified from work created and shared by Google and used according to terms described in the Creative Commons 4.0 Attribution License.</string>
     <string name="ANDROID_ROBOT">The Android robot is reproduced or modified from work created and shared by Google and used according to terms described in the Creative Commons 3.0 Attribution License.</string>
-    <string name="LIBREPILOT_2_GO">LibrePilot 2 Go</string>
+    <string name="LIBREPILOT_2_GO">LibrePilot 2 Go&#160;</string>
     <string name="LP_URL">http://www.librepilot.org</string>
     <string name="COPYRIGHT">© 2016 Marcus Proest. Based on work by the LibrePilot Project</string>
     <string name="GNU_LIC">GNU General Public License</string>

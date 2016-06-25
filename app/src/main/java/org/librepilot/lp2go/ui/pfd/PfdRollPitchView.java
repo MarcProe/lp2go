@@ -146,7 +146,7 @@ public class PfdRollPitchView extends View {
         mUiStrokedPaint.setColor(Color.WHITE);
         mUiStrokedPaint.setStrokeWidth(5);
         mUiStrokedPaint.setStyle(Paint.Style.STROKE);
-        mUiStrokedPaint.setPathEffect(new DashPathEffect(new float[]{10, 02}, 0));
+        mUiStrokedPaint.setPathEffect(new DashPathEffect(new float[]{10, 2}, 0));
 
         //draw RollScale
         mRadius = Math.round(mHorizon / 2);

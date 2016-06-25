@@ -66,7 +66,7 @@ public class ViewControllerPid extends ViewController implements View.OnClickLis
         imgPidDownload.setOnClickListener(this);
         imgPidSave.setOnClickListener(this);
 
-        mPidTexts = new HashSet<PidTextView>();
+        mPidTexts = new HashSet<>();
 
         PidTextView txtPidRateRollProportional =
                 (PidTextView) ma.findViewById(R.id.txtRateRollProportional);
