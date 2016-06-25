@@ -38,7 +38,6 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:contentDescription="Start Logging"
-                    android:onClick="onLogStartClick"
                     android:scaleType="fitCenter"
                     android:src="@drawable/ic_cloud_download_96dp"/>
 
@@ -48,7 +47,6 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:contentDescription="Stop Logging"
-                    android:onClick="onLogStopClick"
                     android:scaleType="fitCenter"
                     android:src="@drawable/ic_cloud_done_96dp"/>
 
@@ -58,7 +56,6 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:contentDescription="Share Log"
-                    android:onClick="onLogShare"
                     android:scaleType="fitCenter"
                     android:src="@drawable/ic_share_96dp"/>
             </LinearLayout>

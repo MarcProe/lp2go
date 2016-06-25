@@ -35,7 +35,7 @@
                     android:layout_height="140dp"
                     android:layout_gravity="center_horizontal"
                     android:layout_margin="2dp"
-                    android:contentDescription="LibrePilot"
+                    android:contentDescription="@string/librepilot"
                     android:src="@drawable/ic_librepilot_logo_450dp"/>
 
                 <TextView
@@ -44,8 +44,7 @@
                     android:layout_gravity="center_horizontal"
                     android:layout_margin="5dp"
                     android:autoLink="web"
-                    android:text="LibrePilot 2 Go "
-                    android:textAlignment="center"
+                    android:text="@string/LIBREPILOT_2_GO"
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:textStyle="bold|italic"
                     android:typeface="monospace"/>
@@ -55,7 +54,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:textAlignment="center"
                     android:textAppearance="?android:attr/textAppearanceLarge"/>
 
                 <TextView
@@ -63,7 +61,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:textAlignment="center"
                     android:textAppearance="?android:attr/textAppearanceLarge"/>
 
                 <TextView
@@ -71,16 +68,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:textAlignment="center"
                     android:textAppearance="?android:attr/textAppearanceLarge"/>
 
                 <TextView
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:layout_margin="5dp"
                     android:autoLink="web"
-                    android:text="http://www.librepilot.org"
-                    android:textAlignment="center"
+                    android:text="@string/LP_URL"
                     android:textAppearance="?android:attr/textAppearanceLarge"/>
 
                 <TextView
@@ -89,8 +85,17 @@
                     android:layout_gravity="center_horizontal"
                     android:layout_margin="5dp"
                     android:autoLink="web"
-                    android:text=" "
-                    android:textAlignment="center"
+                    android:text=""
+                    android:textAppearance="?android:attr/textAppearanceLarge"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="5dp"
+                    android:autoLink="web"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:text="@string/COPYRIGHT"
                     android:textAppearance="?android:attr/textAppearanceLarge"/>
 
                 <TextView
@@ -99,8 +104,8 @@
                     android:layout_gravity="center_horizontal"
                     android:layout_margin="5dp"
                     android:autoLink="web"
-                    android:text="(C) 2016 Marcus Proest. Based on work by the LibrePilot Project"
-                    android:textAlignment="center"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:text="@string/GNU_LIC"
                     android:textAppearance="?android:attr/textAppearanceLarge"/>
 
                 <TextView
@@ -109,8 +114,8 @@
                     android:layout_gravity="center_horizontal"
                     android:layout_margin="5dp"
                     android:autoLink="web"
-                    android:text="GNU General Public License"
-                    android:textAlignment="center"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:text="@string/GNU_VERSION"
                     android:textAppearance="?android:attr/textAppearanceLarge"/>
 
                 <TextView
@@ -119,8 +124,17 @@
                     android:layout_gravity="center_horizontal"
                     android:layout_margin="5dp"
                     android:autoLink="web"
-                    android:text="Version 3"
-                    android:textAlignment="center"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:text="@string/SOURCE_REPO"
+                    android:textAppearance="?android:attr/textAppearanceLarge"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:autoLink="web"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:text="@string/GNU_ANNOUNCEMENT"
                     android:textAppearance="?android:attr/textAppearanceLarge"/>
 
                 <TextView
@@ -129,27 +143,8 @@
                     android:layout_gravity="center_horizontal"
                     android:layout_margin="5dp"
                     android:autoLink="web"
-                    android:text="https://github.com/MarcProe/lp2go"
-                    android:textAlignment="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="5dp"
-                    android:autoLink="web"
-                    android:text="This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version. This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of or FITNESS FOR A PARTICULAR PURPOSE."
-                    android:textAlignment="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_margin="5dp"
-                    android:autoLink="web"
+                    android:gravity="center_vertical|center_horizontal"
                     android:text="@string/ANDROID_ROBOT"
-                    android:textAlignment="center"
                     android:textAppearance="?android:attr/textAppearanceLarge"/>
 
                 <TextView
@@ -158,8 +153,8 @@
                     android:layout_gravity="center_horizontal"
                     android:layout_margin="5dp"
                     android:autoLink="web"
+                    android:gravity="center_vertical|center_horizontal"
                     android:text="@string/MATERIAL_ICONS"
-                    android:textAlignment="center"
                     android:textAppearance="?android:attr/textAppearanceLarge"/>
 
                 <TextView
@@ -168,8 +163,8 @@
                     android:layout_gravity="center_horizontal"
                     android:layout_margin="5dp"
                     android:autoLink="web"
-                    android:text="libgdx (https://github.com/libgdx/libgdx) is licensed under the Apache 2 License"
-                    android:textAlignment="center"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:text="@string/C_LIBGDX"
                     android:textAppearance="?android:attr/textAppearanceLarge"/>
 
                 <TextView
@@ -178,8 +173,8 @@
                     android:layout_gravity="center_horizontal"
                     android:layout_margin="5dp"
                     android:autoLink="web"
-                    android:text="Material File Picker (https://github.com/nbsp-team/MaterialFilePicker) is licensed under the GNU GENERAL PUBLIC LICENSE Version 2."
-                    android:textAlignment="center"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:text="@string/C_MATERIAL_FILE_PICKER"
                     android:textAppearance="?android:attr/textAppearanceLarge"/>
 
                 <TextView
@@ -188,8 +183,8 @@
                     android:layout_gravity="center_horizontal"
                     android:layout_margin="5dp"
                     android:autoLink="web"
-                    android:text="SeekArc UI Element (https://github.com/neild001/SeekArc) is licensed under the MIT License."
-                    android:textAlignment="center"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:text="@string/C_SEEKARC"
                     android:textAppearance="?android:attr/textAppearanceLarge"/>
 
                 <TextView
@@ -198,8 +193,8 @@
                     android:layout_gravity="center_horizontal"
                     android:layout_margin="5dp"
                     android:autoLink="web"
-                    android:text="MPAndroidChart (https://github.com/PhilJay/MPAndroidChart) is licensed under the Apache License, Version 2."
-                    android:textAlignment="center"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:text="@string/C_MP_ANDROID_CHART"
                     android:textAppearance="?android:attr/textAppearanceLarge"/>
 
                 <ImageView
@@ -209,7 +204,7 @@
                     android:layout_gravity="center"
                     android:layout_marginBottom="15dp"
                     android:layout_marginTop="15dp"
-                    android:contentDescription="Activate Super Secret Stuff"
+                    android:contentDescription="@string/activate_super_secret_stuff"
                     android:src="@drawable/ic_robot"/>
             </LinearLayout>
         </ScrollView>
