@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="librepilot">LibrePilot</string>
-    <string name="activate_super_secret_stuff">Activate Super Secret Stuff</string>
+    <string name="LIBREPILOT">LibrePilot</string>
+    <string name="DEGUB_MODE">Activate Super Secret Stuff</string>
 </resources>

@@ -146,6 +146,7 @@
                                 android:layout_weight="1"
                                 android:gravity="center|center_vertical|center_horizontal"
                                 android:maxLines="1"
+                                android:text="@string/_0"
                                 android:textAppearance="?android:attr/textAppearanceLarge"
                                 android:textSize="25sp"/>
 
@@ -157,6 +158,7 @@
                                 android:layout_weight="1"
                                 android:gravity="center|center_vertical|center_horizontal"
                                 android:maxLines="1"
+                                android:text="@string/_0"
                                 android:textAppearance="?android:attr/textAppearanceLarge"
                                 android:textSize="25sp"/>
 
@@ -168,6 +170,7 @@
                                 android:layout_weight="1"
                                 android:gravity="center|center_vertical|center_horizontal"
                                 android:maxLines="1"
+                                android:text="@string/_0"
                                 android:textAppearance="?android:attr/textAppearanceLarge"
                                 android:textSize="25sp"/>
                         </LinearLayout>
@@ -196,6 +199,7 @@
                                 android:layout_weight="1"
                                 android:gravity="center|center_vertical|center_horizontal"
                                 android:maxLines="1"
+                                android:text="@string/_0"
                                 android:textAppearance="?android:attr/textAppearanceLarge"
                                 android:textSize="25sp"/>
 
@@ -207,6 +211,7 @@
                                 android:layout_weight="1"
                                 android:gravity="center|center_vertical|center_horizontal"
                                 android:maxLines="1"
+                                android:text="@string/_0"
                                 android:textAppearance="?android:attr/textAppearanceLarge"
                                 android:textSize="25sp"/>
 
@@ -218,6 +223,7 @@
                                 android:layout_weight="1"
                                 android:gravity="center|center_vertical|center_horizontal"
                                 android:maxLines="1"
+                                android:text="@string/_0"
                                 android:textAppearance="?android:attr/textAppearanceLarge"
                                 android:textSize="25sp"/>
 
@@ -247,6 +253,7 @@
                                 android:layout_weight="1"
                                 android:gravity="center|center_vertical|center_horizontal"
                                 android:maxLines="1"
+                                android:text="@string/_0"
                                 android:textAppearance="?android:attr/textAppearanceLarge"
                                 android:textSize="25sp"/>
 
@@ -258,6 +265,7 @@
                                 android:layout_weight="1"
                                 android:gravity="center|center_vertical|center_horizontal"
                                 android:maxLines="1"
+                                android:text="@string/_0"
                                 android:textAppearance="?android:attr/textAppearanceLarge"
                                 android:textSize="25sp"/>
 
@@ -269,6 +277,7 @@
                                 android:layout_weight="1"
                                 android:gravity="center|center_vertical|center_horizontal"
                                 android:maxLines="1"
+                                android:text="@string/_0"
                                 android:textAppearance="?android:attr/textAppearanceLarge"
                                 android:textSize="25sp"/>
 
@@ -337,6 +346,7 @@
                                 android:layout_weight="1"
                                 android:gravity="center|center_vertical|center_horizontal"
                                 android:maxLines="1"
+                                android:text="@string/_0"
                                 android:textAppearance="?android:attr/textAppearanceLarge"
                                 android:textSize="25sp"/>
 
@@ -348,6 +358,7 @@
                                 android:layout_weight="1"
                                 android:gravity="center|center_vertical|center_horizontal"
                                 android:maxLines="1"
+                                android:text="@string/_0"
                                 android:textAppearance="?android:attr/textAppearanceLarge"
                                 android:textSize="25sp"/>
 
@@ -359,6 +370,7 @@
                                 android:layout_weight="1"
                                 android:gravity="center|center_vertical|center_horizontal"
                                 android:maxLines="1"
+                                android:text="@string/_0"
                                 android:textAppearance="?android:attr/textAppearanceLarge"
                                 android:textSize="25sp"/>
                         </LinearLayout>
@@ -388,6 +400,7 @@
                                 android:layout_weight="1"
                                 android:gravity="center|center_vertical|center_horizontal"
                                 android:maxLines="1"
+                                android:text="@string/_0"
                                 android:textAppearance="?android:attr/textAppearanceLarge"
                                 android:textSize="25sp"/>
 
@@ -399,6 +412,7 @@
                                 android:layout_weight="1"
                                 android:gravity="center|center_vertical|center_horizontal"
                                 android:maxLines="1"
+                                android:text="@string/_0"
                                 android:textAppearance="?android:attr/textAppearanceLarge"
                                 android:textSize="25sp"/>
 
@@ -410,6 +424,7 @@
                                 android:layout_weight="1"
                                 android:gravity="center|center_vertical|center_horizontal"
                                 android:maxLines="1"
+                                android:text="@string/_0"
                                 android:textAppearance="?android:attr/textAppearanceLarge"
                                 android:textSize="25sp"/>
                         </LinearLayout>

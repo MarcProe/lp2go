@@ -35,7 +35,7 @@
                     android:layout_height="140dp"
                     android:layout_gravity="center_horizontal"
                     android:layout_margin="2dp"
-                    android:contentDescription="@string/librepilot"
+                    android:contentDescription="@string/LIBREPILOT"
                     android:src="@drawable/ic_librepilot_logo_450dp"/>
 
                 <TextView
@@ -204,7 +204,7 @@
                     android:layout_gravity="center"
                     android:layout_marginBottom="15dp"
                     android:layout_marginTop="15dp"
-                    android:contentDescription="@string/activate_super_secret_stuff"
+                    android:contentDescription="@string/DEGUB_MODE"
                     android:src="@drawable/ic_robot"/>
             </LinearLayout>
         </ScrollView>
