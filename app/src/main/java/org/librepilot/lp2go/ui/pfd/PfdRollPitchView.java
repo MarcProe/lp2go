@@ -84,6 +84,14 @@ public class PfdRollPitchView extends View {
     private Rect mSkyRect;
     private Paint mUiPaint;
     private Paint mUiStrokedPaint;
+    private Path mStaticTriangleBrightPath;
+    private Paint mStaticHorizonBrightPaint;
+    private Paint mStaticHorizonDarkPaint;
+    private Path mStaticTriangleDarkPath;
+    private Path mStaticLeftBarBrightPath;
+    private Path mStaticLeftBarDarkPath;
+    private Path mStaticRightBarBrightPath;
+    private Path mStaticRightBarDarkPath;
 
     public PfdRollPitchView(Context context) {
         super(context);
@@ -239,6 +247,58 @@ public class PfdRollPitchView extends View {
 
         mDashedPitchPath = new Path();
 
+        //bright yellow triangle
+        mStaticHorizonBrightPaint = new Paint();
+        mStaticHorizonBrightPaint.setColor(Color.argb(0xff, 0xff, 0xff, 0x0));
+        mStaticHorizonBrightPaint.setStrokeWidth(8);
+
+        mStaticTriangleBrightPath = new Path();
+        mStaticTriangleBrightPath.moveTo(mMiddle, mHorizon);
+        mStaticTriangleBrightPath.lineTo(mMiddle - (mMiddle * .15f), mHorizon + (mMiddle * .1f));
+        mStaticTriangleBrightPath.lineTo(mMiddle, mHorizon + (mMiddle * .04f));
+        mStaticTriangleBrightPath.lineTo(mMiddle + (mMiddle * .15f), mHorizon + (mMiddle * .1f));
+        mStaticTriangleBrightPath.lineTo(mMiddle, mHorizon);
+
+        mStaticLeftBarBrightPath = new Path();
+        mStaticLeftBarBrightPath.moveTo(mMiddle - mRadius * .55f, mHorizon);
+        mStaticLeftBarBrightPath.lineTo(mMiddle - mRadius * .6f, mHorizon * 0.98f);
+        mStaticLeftBarBrightPath.lineTo(mMiddle - mRadius, mHorizon * 0.98f);
+        mStaticLeftBarBrightPath.lineTo(mMiddle - mRadius, mHorizon);
+        mStaticLeftBarBrightPath.lineTo(mMiddle - mRadius * .55f, mHorizon);
+
+        mStaticLeftBarDarkPath = new Path();
+        mStaticLeftBarDarkPath.moveTo(mMiddle - mRadius * .55f, mHorizon);
+        mStaticLeftBarDarkPath.lineTo(mMiddle - mRadius * .6f, mHorizon * 1.02f);
+        mStaticLeftBarDarkPath.lineTo(mMiddle - mRadius, mHorizon * 1.02f);
+        mStaticLeftBarDarkPath.lineTo(mMiddle - mRadius, mHorizon);
+        mStaticLeftBarDarkPath.lineTo(mMiddle - mRadius * .55f, mHorizon);
+
+        //dark yellow triangle
+        mStaticHorizonDarkPaint = new Paint();
+        mStaticHorizonDarkPaint.setColor(Color.argb(0xff, 0x80, 0x80, 0x0));
+        mStaticHorizonDarkPaint.setStrokeWidth(8);
+
+        mStaticTriangleDarkPath = new Path();
+        mStaticTriangleDarkPath.moveTo(mMiddle, mHorizon + (mMiddle * .04f));
+        mStaticTriangleDarkPath.lineTo(mMiddle - (mMiddle * .15f), mHorizon + (mMiddle * .1f));
+        mStaticTriangleDarkPath.lineTo(mMiddle, mHorizon + (mMiddle * .06f));
+        mStaticTriangleDarkPath.lineTo(mMiddle + (mMiddle * .15f), mHorizon + (mMiddle * .1f));
+        mStaticTriangleDarkPath.lineTo(mMiddle, mHorizon + (mMiddle * .04f));
+
+        mStaticRightBarBrightPath = new Path();
+        mStaticRightBarBrightPath.moveTo(mMiddle + mRadius * .55f, mHorizon);
+        mStaticRightBarBrightPath.lineTo(mMiddle + mRadius * .6f, mHorizon * 0.98f);
+        mStaticRightBarBrightPath.lineTo(mMiddle + mRadius, mHorizon * 0.98f);
+        mStaticRightBarBrightPath.lineTo(mMiddle + mRadius, mHorizon);
+        mStaticRightBarBrightPath.lineTo(mMiddle + mRadius * .55f, mHorizon);
+
+        mStaticRightBarDarkPath = new Path();
+        mStaticRightBarDarkPath.moveTo(mMiddle + mRadius * .55f, mHorizon);
+        mStaticRightBarDarkPath.lineTo(mMiddle + mRadius * .6f, mHorizon * 1.02f);
+        mStaticRightBarDarkPath.lineTo(mMiddle + mRadius, mHorizon * 1.02f);
+        mStaticRightBarDarkPath.lineTo(mMiddle + mRadius, mHorizon);
+        mStaticRightBarDarkPath.lineTo(mMiddle + mRadius * .55f, mHorizon);
+
         isInitialized = true;
     }
 
@@ -369,6 +429,15 @@ public class PfdRollPitchView extends View {
 
         //draw everything that does not move
         canvas.drawPath(mRollScaleBottomTrianglePath, mRollScalePaint);
+
+        canvas.drawPath(mStaticTriangleBrightPath, mStaticHorizonBrightPaint);
+        canvas.drawPath(mStaticTriangleDarkPath, mStaticHorizonDarkPaint);
+
+        canvas.drawPath(mStaticLeftBarBrightPath, mStaticHorizonBrightPaint);
+        canvas.drawPath(mStaticLeftBarDarkPath, mStaticHorizonDarkPaint);
+
+        canvas.drawPath(mStaticRightBarBrightPath, mStaticHorizonBrightPaint);
+        canvas.drawPath(mStaticRightBarDarkPath, mStaticHorizonDarkPaint);
 
     }
 
