@@ -255,7 +255,7 @@ public class PfdRollPitchView extends View {
         mStaticTriangleBrightPath = new Path();
         mStaticTriangleBrightPath.moveTo(mMiddle, mHorizon);
         mStaticTriangleBrightPath.lineTo(mMiddle - (mMiddle * .15f), mHorizon + (mMiddle * .1f));
-        mStaticTriangleBrightPath.lineTo(mMiddle, mHorizon + (mMiddle * .04f));
+        mStaticTriangleBrightPath.lineTo(mMiddle, mHorizon + (mMiddle * .035f));
         mStaticTriangleBrightPath.lineTo(mMiddle + (mMiddle * .15f), mHorizon + (mMiddle * .1f));
         mStaticTriangleBrightPath.lineTo(mMiddle, mHorizon);
 
@@ -279,11 +279,11 @@ public class PfdRollPitchView extends View {
         mStaticHorizonDarkPaint.setStrokeWidth(8);
 
         mStaticTriangleDarkPath = new Path();
-        mStaticTriangleDarkPath.moveTo(mMiddle, mHorizon + (mMiddle * .04f));
+        mStaticTriangleDarkPath.moveTo(mMiddle, mHorizon + (mMiddle * .035f));
         mStaticTriangleDarkPath.lineTo(mMiddle - (mMiddle * .15f), mHorizon + (mMiddle * .1f));
         mStaticTriangleDarkPath.lineTo(mMiddle, mHorizon + (mMiddle * .06f));
         mStaticTriangleDarkPath.lineTo(mMiddle + (mMiddle * .15f), mHorizon + (mMiddle * .1f));
-        mStaticTriangleDarkPath.lineTo(mMiddle, mHorizon + (mMiddle * .04f));
+        mStaticTriangleDarkPath.lineTo(mMiddle, mHorizon + (mMiddle * .035f));
 
         mStaticRightBarBrightPath = new Path();
         mStaticRightBarBrightPath.moveTo(mMiddle + mRadius * .55f, mHorizon);
