@@ -69,7 +69,7 @@ public class ViewControllerLogs extends ViewController implements View.OnClickLi
 
     @Override
     public int getID() {
-        return ViewController.VIEW_DEBUG;
+        return ViewController.VIEW_LOGS;
     }
 
     @Override
