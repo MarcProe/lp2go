@@ -16,6 +16,7 @@
 
 package org.librepilot.lp2go.helper;
 
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.os.Build;
 import android.speech.tts.TextToSpeech;
@@ -44,7 +45,11 @@ public class TextToSpeechHelper implements TextToSpeech.OnInitListener {
     public void checkForTTS() {
         Intent checkIntent = new Intent();
         checkIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
-        mActivity.startActivityForResult(checkIntent, MainActivity.CALLBACK_TTS);
+        try {
+            mActivity.startActivityForResult(checkIntent, MainActivity.CALLBACK_TTS);
+        } catch (ActivityNotFoundException e) {
+            mTts = null;
+        }
     }
 
     public void onActivityResult(int requestCode, int resultCode, @SuppressWarnings("UnusedParameters") Intent data) {
