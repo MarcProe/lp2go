@@ -55,9 +55,9 @@ public class ViewControllerSettings extends ViewController
     private Spinner spnConnectionTypeSpinner;
     private Spinner spnUavoSource;
 
-    public ViewControllerSettings(MainActivity activity, int title, int localSettingsVisible,
+    public ViewControllerSettings(MainActivity activity, int title, int icon, int localSettingsVisible,
                                   int flightSettingsVisible) {
-        super(activity, title, localSettingsVisible, flightSettingsVisible);
+        super(activity, title, icon, localSettingsVisible, flightSettingsVisible);
         activity.mViews.put(VIEW_SETTINGS,
                 activity.getLayoutInflater().inflate(R.layout.activity_settings, null));
 
@@ -125,6 +125,11 @@ public class ViewControllerSettings extends ViewController
             btnLoadUavo.setOnClickListener(this);
         }
 
+    }
+
+    @Override
+    public int getID() {
+        return ViewController.VIEW_SETTINGS;
     }
 
     @Override

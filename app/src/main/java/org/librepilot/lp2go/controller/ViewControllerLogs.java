@@ -46,9 +46,9 @@ public class ViewControllerLogs extends ViewController implements View.OnClickLi
     private TextView txtLogObjects;
     private TextView txtLogSize;
 
-    public ViewControllerLogs(MainActivity activity, int title, int localSettingsVisible,
+    public ViewControllerLogs(MainActivity activity, int title, int icon, int localSettingsVisible,
                               int flightSettingsVisible) {
-        super(activity, title, localSettingsVisible, flightSettingsVisible);
+        super(activity, title, icon, localSettingsVisible, flightSettingsVisible);
         activity.mViews
                 .put(VIEW_LOGS, activity.getLayoutInflater().inflate(R.layout.activity_logs, null));
         activity.setContentView(activity.mViews.get(VIEW_LOGS)); //Logs
@@ -65,6 +65,11 @@ public class ViewControllerLogs extends ViewController implements View.OnClickLi
         imgLogStart.setOnClickListener(this);
         imgLogStop.setOnClickListener(this);
         imgLogShare.setOnClickListener(this);
+    }
+
+    @Override
+    public int getID() {
+        return ViewController.VIEW_DEBUG;
     }
 
     @Override

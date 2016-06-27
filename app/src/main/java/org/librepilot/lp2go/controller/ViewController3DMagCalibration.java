@@ -34,9 +34,9 @@ public class ViewController3DMagCalibration extends ViewController implements
     private OpenGl3DMagCalibrationView glv3DMagCalibration;
     private List<Vector3> mSample = new ArrayList<>();
 
-    public ViewController3DMagCalibration(MainActivity activity, int title,
+    public ViewController3DMagCalibration(MainActivity activity, int title, int icon,
                                           int localSettingsVisible, int flightSettingsVisible) {
-        super(activity, title, localSettingsVisible, flightSettingsVisible);
+        super(activity, title, icon, localSettingsVisible, flightSettingsVisible);
         activity.mViews.put(VIEW_3DMAG,
                 activity.getLayoutInflater().inflate(R.layout.activity_3dmagcalibration, null));
         activity.setContentView(activity.mViews.get(VIEW_3DMAG));
@@ -44,6 +44,11 @@ public class ViewController3DMagCalibration extends ViewController implements
         this.glv3DMagCalibration =
                 (OpenGl3DMagCalibrationView) activity.findViewById(R.id.glv_3d_mag_calibration);
 
+    }
+
+    @Override
+    public int getID() {
+        return ViewController.VIEW_3DMAG;
     }
 
     @Override

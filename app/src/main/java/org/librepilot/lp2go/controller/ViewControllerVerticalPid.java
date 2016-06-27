@@ -44,9 +44,9 @@ public class ViewControllerVerticalPid extends ViewController implements View.On
     private final ImageView imgVPidUpload;
     private final HashSet<PidTextView> mVerticalPidTexts;
 
-    public ViewControllerVerticalPid(MainActivity activity, int title, int localSettingsVisible,
+    public ViewControllerVerticalPid(MainActivity activity, int title, int icon, int localSettingsVisible,
                                      int flightSettingsVisible) {
-        super(activity, title, localSettingsVisible, flightSettingsVisible);
+        super(activity, title, icon, localSettingsVisible, flightSettingsVisible);
 
         final MainActivity ma = getMainActivity();
 
@@ -378,5 +378,10 @@ public class ViewControllerVerticalPid extends ViewController implements View.On
                 .withElement(p.getElement())
                 .withFieldType(p.getFieldType())
                 .show();
+    }
+
+    @Override
+    public int getID() {
+        return ViewController.VIEW_VPID;
     }
 }

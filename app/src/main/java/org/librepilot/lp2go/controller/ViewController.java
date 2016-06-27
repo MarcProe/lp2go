@@ -27,31 +27,34 @@ import org.librepilot.lp2go.H;
 import org.librepilot.lp2go.MainActivity;
 import org.librepilot.lp2go.R;
 import org.librepilot.lp2go.VisualLog;
+import org.librepilot.lp2go.menu.MenuItem;
 import org.librepilot.lp2go.uavtalk.UAVTalkMissingObjectException;
 
 import java.util.HashMap;
 
 public abstract class ViewController {
 
-    public static final int VIEW_3DMAG = 10;
-    public static final int VIEW_ABOUT = 7;
-    public static final int VIEW_DEBUG = 8;
-    public static final int VIEW_LOGS = 5;
+    public static final int VIEW_3DMAG = 100;
+    public static final int VIEW_ABOUT = 70;
+    public static final int VIEW_DEBUG = 80;
+    public static final int VIEW_LOGS = 50;
     public static final int VIEW_MAIN = 0;
-    public static final int VIEW_MAP = 1;
-    public static final int VIEW_OBJECTS = 2;
-    public static final int VIEW_PID = 3;
-    public static final int VIEW_SCOPE = 9;
-    public static final int VIEW_SETTINGS = 6;
-    public static final int VIEW_VPID = 4;
+    public static final int VIEW_MAP = 10;
+    public static final int VIEW_OBJECTS = 20;
+    public static final int VIEW_PID = 30;
+    public static final int VIEW_SCOPE = 90;
+    public static final int VIEW_SETTINGS = 60;
+    public static final int VIEW_VPID = 40;
     protected final HashMap<String, Object> mOffset;
     protected boolean mBlink;
     protected int mFlightSettingsVisible;
     protected int mLocalSettingsVisible;
     protected int mTitle;
     private MainActivity mActivity;
+    private int mIcon;
+    private MenuItem mMenuItem;
 
-    ViewController(MainActivity activity, int title, int localSettingsVisible,
+    ViewController(MainActivity activity, int title, int icon, int localSettingsVisible,
                    int flightSettingsVisible) {
         this.mActivity = activity;
         mOffset = new HashMap<>();
@@ -59,7 +62,11 @@ public abstract class ViewController {
         this.mLocalSettingsVisible = localSettingsVisible;
         this.mFlightSettingsVisible = flightSettingsVisible;
         this.mTitle = title;
+        this.mIcon = icon;
+        this.mMenuItem = new MenuItem(getString(mTitle), mIcon);
     }
+
+    public abstract int getID();
 
     protected MainActivity getMainActivity() {
         return this.mActivity;
@@ -111,6 +118,10 @@ public abstract class ViewController {
 
     public void init() {
 
+    }
+
+    public MenuItem getMenuItem() {
+        return mMenuItem;
     }
 
     public void update() {

@@ -46,7 +46,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.AssetManager;
 import android.content.res.Configuration;
-import android.content.res.TypedArray;
 import android.hardware.usb.UsbConstants;
 import android.hardware.usb.UsbDeviceConnection;
 import android.hardware.usb.UsbInterface;
@@ -132,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean mDoReconnect = false;
     public FcDevice mFcDevice;
     public PollThread mPollThread = null;
-    public ArrayList<ViewController> mVcList;
+    public Map<Integer, ViewController> mVcList;
     public Map<Integer, View> mViews;
     public Map<String, UAVTalkXMLObject> mXmlObjects = null;
     public MenuItem menDebug = null;
@@ -208,6 +207,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     };
+    private ArrayList<Integer> mViewPos;
 
     public static boolean hasPThread() {
         return mHasPThread;
@@ -332,38 +332,19 @@ public class MainActivity extends AppCompatActivity {
 
     public void initSlider() {
         mTitle = mDrawerTitle = getTitle();
-        TypedArray navMenuIcons = getResources()
-                .obtainTypedArray(R.array.nav_drawer_icons);
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.list_slidermenu);
         ArrayList<MenuItem> menuItems = new ArrayList<>();
 
-        menuItems.add(new MenuItem(getString(R.string.menu_main),
-                R.drawable.ic_notifications_on_24dp));
-        menuItems.add(new MenuItem(getString(R.string.menu_map),
-                R.drawable.ic_public_24dp));
-        menuItems.add(new MenuItem(getString(R.string.menu_objects),
-                R.drawable.ic_now_widgets_24dp));
-        menuItems.add(new MenuItem(getString(R.string.menu_pid),
-                R.drawable.ic_tune_128dp));
-        menuItems.add(new MenuItem(getString(R.string.menu_vpid),
-                R.drawable.ic_vertical_align_center_black_128dp));
-        menuItems.add(new MenuItem(getString(R.string.menu_logs),
-                R.drawable.ic_rate_review_24dp));
-        menuItems.add(new MenuItem(getString(R.string.menu_settings),
-                R.drawable.ic_settings_24dp));
-        menuItems.add(new MenuItem(getString(R.string.menu_about),
-                R.drawable.ic_info_outline_24dp));
-        if (menDebug != null) {
-            menuItems.add(menDebug);
-            menuItems.add(new MenuItem(getString(R.string.menu_3dmag),
-                    R.drawable.ic_info_outline_24dp));
-            menuItems.add(new MenuItem(getString(R.string.menu_scope),
-                    R.drawable.ic_info_outline_24dp));
+
+        mViewPos = new ArrayList<>();
+
+        for (ViewController vc : mVcList.values()) {
+            menuItems.add(vc.getMenuItem());
+            mViewPos.add(vc.getID());
         }
 
-        navMenuIcons.recycle();
         MenuListAdapter drawListAdapter = new MenuListAdapter(getApplicationContext(),
                 menuItems);
         mDrawerList.setAdapter(drawListAdapter);
@@ -444,7 +425,7 @@ public class MainActivity extends AppCompatActivity {
 
         mViews = new HashMap<>(NUM_OF_VIEWS);
         ViewController mVcDebug =
-                new ViewControllerDebug(this, R.string.menu_debug, View.INVISIBLE, View.INVISIBLE);
+                new ViewControllerDebug(this, R.string.menu_debug, R.drawable.ic_cancel_128dp, View.INVISIBLE, View.INVISIBLE);
 
         copyAssets();
         SettingsHelper.loadSettings(this);
@@ -452,48 +433,34 @@ public class MainActivity extends AppCompatActivity {
         mTtsHelper = new TextToSpeechHelper(this);
 
         //debug view is initialized above
-        ViewController mVcPid =
-                new ViewControllerPid(this, R.string.menu_pid, View.VISIBLE, View.INVISIBLE);
-        ViewController mVcVPid =
-                new ViewControllerVerticalPid(this, R.string.menu_vpid, View.VISIBLE,
-                        View.INVISIBLE);
-        ViewController mVcScope =
-                new ViewControllerScope(this, R.string.menu_scope, View.INVISIBLE, View.INVISIBLE);
-        ViewController mVcAbout =
-                new ViewControllerAbout(this, R.string.menu_about, View.INVISIBLE, View.INVISIBLE);
-        ViewController mVcLogs =
-                new ViewControllerLogs(this, R.string.menu_logs, View.VISIBLE, View.VISIBLE);
-        ViewController mVcSettings =
-                new ViewControllerSettings(this, R.string.menu_settings, View.INVISIBLE,
-                        View.INVISIBLE);
-        ViewController mVcMap =
-                new ViewControllerMap(this, R.string.menu_map, View.INVISIBLE, View.INVISIBLE);
-        ViewController mVcObjects =
-                new ViewControllerObjects(this, R.string.menu_objects, View.INVISIBLE,
-                        View.INVISIBLE);
-        ViewController mVc3DMagCalibration =
-                new ViewController3DMagCalibration(this, R.string.menu_3dmag, View.INVISIBLE,
-                        View.INVISIBLE);
-        ViewController mVcMain =
-                new ViewControllerMain(this, R.string.menu_main, View.VISIBLE, View.VISIBLE);
+        ViewController mVcPid = new ViewControllerPid(this, R.string.menu_pid, R.drawable.ic_tune_128dp, View.VISIBLE, View.INVISIBLE);
+        ViewController mVcVPid = new ViewControllerVerticalPid(this, R.string.menu_vpid, R.drawable.ic_vertical_align_center_black_128dp, View.VISIBLE, View.INVISIBLE);
+        ViewController mVcScope = new ViewControllerScope(this, R.string.menu_scope, R.drawable.ic_info_outline_24dp, View.INVISIBLE, View.INVISIBLE);
+        ViewController mVcAbout = new ViewControllerAbout(this, R.string.menu_about, R.drawable.ic_info_outline_24dp, View.INVISIBLE, View.INVISIBLE);
+        ViewController mVcLogs = new ViewControllerLogs(this, R.string.menu_logs, R.drawable.ic_rate_review_24dp, View.VISIBLE, View.VISIBLE);
+        ViewController mVcSettings = new ViewControllerSettings(this, R.string.menu_settings, R.drawable.ic_settings_24dp, View.INVISIBLE, View.INVISIBLE);
+        ViewController mVcMap = new ViewControllerMap(this, R.string.menu_map, R.drawable.ic_public_24dp, View.INVISIBLE, View.INVISIBLE);
+        ViewController mVcObjects = new ViewControllerObjects(this, R.string.menu_objects, R.drawable.ic_now_widgets_24dp, View.INVISIBLE, View.INVISIBLE);
+        ViewController mVc3DMagCalibration = new ViewController3DMagCalibration(this, R.string.menu_3dmag, R.drawable.ic_info_outline_24dp, View.INVISIBLE, View.INVISIBLE);
+        ViewController mVcMain = new ViewControllerMain(this, R.string.menu_main, R.drawable.ic_notifications_on_24dp, View.VISIBLE, View.VISIBLE);
 
-        mVcList = new ArrayList<>();
-        mVcList.add(ViewController.VIEW_MAIN, mVcMain);
-        mVcList.add(ViewController.VIEW_MAP, mVcMap);
-        mVcList.add(ViewController.VIEW_OBJECTS, mVcObjects);
-        mVcList.add(ViewController.VIEW_PID, mVcPid);
-        mVcList.add(ViewController.VIEW_VPID, mVcVPid);
-        mVcList.add(ViewController.VIEW_LOGS, mVcLogs);
-        mVcList.add(ViewController.VIEW_SETTINGS, mVcSettings);
-        mVcList.add(ViewController.VIEW_ABOUT, mVcAbout);
-        mVcList.add(ViewController.VIEW_DEBUG, mVcDebug);
-        mVcList.add(ViewController.VIEW_SCOPE, mVcScope);
-        mVcList.add(ViewController.VIEW_3DMAG, mVc3DMagCalibration);
+        mVcList = new TreeMap<>();
+        mVcList.put(ViewController.VIEW_MAIN, mVcMain);
+        mVcList.put(ViewController.VIEW_MAP, mVcMap);
+        mVcList.put(ViewController.VIEW_OBJECTS, mVcObjects);
+        mVcList.put(ViewController.VIEW_PID, mVcPid);
+        mVcList.put(ViewController.VIEW_VPID, mVcVPid);
+        mVcList.put(ViewController.VIEW_LOGS, mVcLogs);
+        mVcList.put(ViewController.VIEW_SETTINGS, mVcSettings);
+        mVcList.put(ViewController.VIEW_ABOUT, mVcAbout);
+        //mVcList.put(ViewController.VIEW_DEBUG, mVcDebug);
+        //mVcList.put(ViewController.VIEW_3DMAG, mVc3DMagCalibration);
+        //mVcList.put(ViewController.VIEW_SCOPE, mVcScope);
+
 
         ((ViewControllerMainAnimatorViewSetter) mVcMain).setLayout();
 
         initSlider();
-
 
         initWarnDialog().show();
 
@@ -903,7 +870,7 @@ public class MainActivity extends AppCompatActivity {
     private class SlideMenuClickListener implements ListView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            displayView(position);
+            displayView(mViewPos.get(position));
         }
     }
 }

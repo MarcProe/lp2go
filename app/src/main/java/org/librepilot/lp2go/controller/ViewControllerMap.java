@@ -37,9 +37,9 @@ public class ViewControllerMap extends ViewController {
     private TextView txtMapGPS;
     private TextView txtMapGPSSatsInView;
 
-    public ViewControllerMap(MainActivity activity, int title, int localSettingsVisible,
+    public ViewControllerMap(MainActivity activity, int title, int icon, int localSettingsVisible,
                              int flightSettingsVisible) {
-        super(activity, title, localSettingsVisible, flightSettingsVisible);
+        super(activity, title, icon, localSettingsVisible, flightSettingsVisible);
 
         getMainActivity().mViews
                 .put(VIEW_MAP, activity.getLayoutInflater().inflate(R.layout.activity_map, null));
@@ -64,6 +64,11 @@ public class ViewControllerMap extends ViewController {
     public void leave() {
         super.leave();
         mMapView.onPause();
+    }
+
+    @Override
+    public int getID() {
+        return ViewController.VIEW_MAP;
     }
 
     @Override

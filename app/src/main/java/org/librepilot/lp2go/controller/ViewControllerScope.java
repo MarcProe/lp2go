@@ -24,9 +24,9 @@ import org.librepilot.lp2go.R;
 public class ViewControllerScope extends ViewController {
     LineChart lchScope;
 
-    public ViewControllerScope(MainActivity activity, int title, int localSettingsVisible,
+    public ViewControllerScope(MainActivity activity, int title, int icon, int localSettingsVisible,
                                int flightSettingsVisible) {
-        super(activity, title, localSettingsVisible, flightSettingsVisible);
+        super(activity, title, icon, localSettingsVisible, flightSettingsVisible);
         activity.mViews.put(VIEW_SCOPE,
                 activity.getLayoutInflater().inflate(R.layout.activity_scope, null));
         activity.setContentView(activity.mViews.get(VIEW_SCOPE));
@@ -34,5 +34,10 @@ public class ViewControllerScope extends ViewController {
             lchScope = (LineChart) findViewById(R.id.scope_chart);
             lchScope.setDrawGridBackground(false);
         }
+    }
+
+    @Override
+    public int getID() {
+        return ViewController.VIEW_SCOPE;
     }
 }

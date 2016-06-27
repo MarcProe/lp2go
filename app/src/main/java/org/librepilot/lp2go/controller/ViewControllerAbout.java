@@ -29,9 +29,9 @@ import org.librepilot.lp2go.menu.MenuItem;
 
 public class ViewControllerAbout extends ViewController implements View.OnClickListener {
 
-    public ViewControllerAbout(MainActivity activity, int title, int localSettingsVisible,
+    public ViewControllerAbout(MainActivity activity, int title, int icon, int localSettingsVisible,
                                int flightSettingsVisible) {
-        super(activity, title, localSettingsVisible, flightSettingsVisible);
+        super(activity, title, icon, localSettingsVisible, flightSettingsVisible);
         final MainActivity ma = getMainActivity();
         ma.mViews.put(VIEW_ABOUT, ma.getLayoutInflater().inflate(R.layout.activity_about, null));
         ma.setContentView(ma.mViews.get(VIEW_ABOUT));  //About
@@ -68,6 +68,11 @@ public class ViewControllerAbout extends ViewController implements View.OnClickL
         }
         findViewById(R.id.imgDebugLogo).setOnClickListener(this);
 
+    }
+
+    @Override
+    public int getID() {
+        return ViewController.VIEW_ABOUT;
     }
 
     public void onDebugLogoClick() {

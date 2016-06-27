@@ -46,9 +46,9 @@ public class ViewControllerPid extends ViewController implements View.OnClickLis
     private ImageView imgPidUpload;
     private String mCurrentStabilizationBank;
 
-    public ViewControllerPid(MainActivity activity, int title, int localSettingsVisible,
+    public ViewControllerPid(MainActivity activity, int title, int icon, int localSettingsVisible,
                              int flightSettingsVisible) {
-        super(activity, title, localSettingsVisible, flightSettingsVisible);
+        super(activity, title, icon, localSettingsVisible, flightSettingsVisible);
 
         final MainActivity ma = getMainActivity();
         SingleToast.show(ma, R.string.CHECK_PID_WARNING, Toast.LENGTH_SHORT);
@@ -266,6 +266,11 @@ public class ViewControllerPid extends ViewController implements View.OnClickLis
         for (PidTextView ptv : mPidTexts) {
             ptv.setOnClickListener(this);
         }
+    }
+
+    @Override
+    public int getID() {
+        return ViewController.VIEW_PID;
     }
 
     @Override
