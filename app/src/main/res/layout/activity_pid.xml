@@ -102,7 +102,7 @@
                         android:layout_marginBottom="3dp"
                         android:layout_marginLeft="3dp"
                         android:layout_marginTop="3dp"
-                        android:contentDescription="Rate Stabilizastion"
+                        android:contentDescription="Rate Stabilization"
                         android:gravity="center|center_vertical|center_horizontal"
                         android:src="@drawable/text_rate_stabilization"/>
 
