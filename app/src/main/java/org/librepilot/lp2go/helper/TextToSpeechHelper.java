@@ -18,6 +18,8 @@ package org.librepilot.lp2go.helper;
 
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.os.Build;
 import android.speech.tts.TextToSpeech;
 
@@ -46,22 +48,36 @@ public class TextToSpeechHelper implements TextToSpeech.OnInitListener {
         Intent checkIntent = new Intent();
         checkIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
         try {
-            mActivity.startActivityForResult(checkIntent, MainActivity.CALLBACK_TTS);
+            Intent installIntent = new Intent();
+            installIntent.setAction(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
+            ResolveInfo resolveInfo = mActivity.getPackageManager()
+                    .resolveActivity(installIntent, PackageManager.MATCH_DEFAULT_ONLY);
+
+            if (resolveInfo == null) {
+                VisualLog.d("TTS", "Activity not supported");
+                mTts = null;
+            } else {
+                VisualLog.d("TTS", "Calling Activity");
+                mActivity.startActivityForResult(checkIntent, MainActivity.CALLBACK_TTS);
+            }
         } catch (ActivityNotFoundException e) {
+            VisualLog.d("TTS", "TTS call threw ActivityNotFoundException");
             mTts = null;
         }
     }
 
-    public void onActivityResult(int requestCode, int resultCode, @SuppressWarnings("UnusedParameters") Intent data) {
+    public void onActivityResult(int requestCode, int resultCode,
+                                 @SuppressWarnings("UnusedParameters") Intent data) {
         if (requestCode == MainActivity.CALLBACK_TTS) {
             if (resultCode == TextToSpeech.Engine.CHECK_VOICE_DATA_PASS) {
                 mTts = new TextToSpeech(mActivity, this);
+                VisualLog.d("TTS", "Call successful");
             } else {
                 //Intent installIntent = new Intent();
                 //installIntent.setAction(
                 //        TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
                 //mActivity.startActivity(installIntent);
-
+                VisualLog.d("TTS", "Call successful, but bad result");
                 mTts = null;
             }
         }
