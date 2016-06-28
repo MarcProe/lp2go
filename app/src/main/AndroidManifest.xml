@@ -43,7 +43,8 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher_release"
         android:label="@string/APP_NAME"
-        android:theme="@style/AppTheme">
+        android:largeHeap="true"
+        android:theme="@style/AppTheme"
         tools:replace="android:icon,android:label">
 
         <uses-library android:name="com.google.android.maps"/>
