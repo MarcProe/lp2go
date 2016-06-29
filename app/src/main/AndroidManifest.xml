@@ -43,6 +43,7 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher_release"
         android:label="@string/APP_NAME"
+        android:largeHeap="true"
         android:theme="@style/AppTheme">
         tools:replace="android:icon,android:label">
 
