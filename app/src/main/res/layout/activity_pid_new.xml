@@ -1,0 +1,486 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                        xmlns:tools="http://schemas.android.com/tools"
+                                        android:id="@+id/drawer_layout"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        tools:context="org.librepilot.lp2go.MainActivity">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                  xmlns:tools="http://schemas.android.com/tools"
+                  android:id="@+id/frame_container"
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  android:orientation="vertical"
+                  tools:context="org.librepilot.lp2go.MainActivity">
+
+        <include
+            layout="@layout/activity_toolbar_inc_settings"
+            android:layout_width="fill_parent"
+            android:layout_height="64dp"
+            android:layout_marginLeft="0dp"
+            android:layout_marginTop="0dp"/>
+
+        <android.support.percent.PercentRelativeLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="5dp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                app:layout_heightPercent="10%"
+                app:layout_widthPercent="25%"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="5dp"
+                android:gravity="center|center_vertical|center_horizontal"
+                android:text="Roll"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                app:layout_heightPercent="10%"
+                app:layout_marginLeftPercent="25%"
+                app:layout_marginTopPercent="0%"
+                app:layout_widthPercent="25%"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center|center_vertical|center_horizontal"
+                android:text="Pitch"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                app:layout_heightPercent="10%"
+                app:layout_marginLeftPercent="50%"
+                app:layout_marginTopPercent="0%"
+                app:layout_widthPercent="25%"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center|center_vertical|center_horizontal"
+                android:text="Yaw"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                app:layout_heightPercent="10%"
+                app:layout_marginLeftPercent="75%"
+                app:layout_marginTopPercent="0%"
+                app:layout_widthPercent="25%"/>
+
+
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:contentDescription="Rate Stabilization"
+                android:gravity="center|center_vertical|center_horizontal"
+                android:src="@drawable/text_rate_stabilization"
+                app:layout_heightPercent="45%"
+                app:layout_marginLeftPercent="0%"
+                app:layout_marginTopPercent="10%"
+                app:layout_widthPercent="12%"/>
+
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:contentDescription="Inner Loop"
+                android:gravity="center|center_vertical|center_horizontal"
+                android:paddingRight="1dp"
+                android:src="@drawable/text_inner_loop"
+                app:layout_heightPercent="45%"
+                app:layout_marginLeftPercent="10%"
+                app:layout_marginTopPercent="10%"
+                app:layout_widthPercent="6%"/>
+
+            <ImageView
+                android:layout_width="32dp"
+                android:layout_height="fill_parent"
+                android:layout_gravity="center"
+                android:layout_marginBottom="2dp"
+                android:layout_marginTop="2dp"
+                android:contentDescription="Proportional"
+                android:src="@drawable/pid_p"
+                app:layout_heightPercent="15%"
+                app:layout_marginLeftPercent="18%"
+                app:layout_marginTopPercent="10%"
+                app:layout_widthPercent="7%"/>
+
+            <org.librepilot.lp2go.ui.PidTextView
+                android:id="@+id/txtRateRollProportional"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center|center_vertical|center_horizontal"
+                android:maxLines="1"
+                android:text="@string/_0"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textSize="25sp"
+                app:layout_heightPercent="15%"
+                app:layout_marginLeftPercent="25%"
+                app:layout_marginTopPercent="10%"
+                app:layout_widthPercent="25%"/>
+
+            <org.librepilot.lp2go.ui.PidTextView
+                android:id="@+id/txtRatePitchProportional"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center|center_vertical|center_horizontal"
+                android:maxLines="1"
+                android:text="@string/_0"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textSize="25sp"
+                app:layout_heightPercent="15%"
+                app:layout_marginLeftPercent="50%"
+                app:layout_marginTopPercent="10%"
+                app:layout_widthPercent="25%"/>
+
+            <org.librepilot.lp2go.ui.PidTextView
+                android:id="@+id/txtRateYawProportional"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center|center_vertical|center_horizontal"
+                android:maxLines="1"
+                android:text="@string/_0"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textSize="25sp"
+                app:layout_heightPercent="15%"
+                app:layout_marginLeftPercent="75%"
+                app:layout_marginTopPercent="10%"
+                app:layout_widthPercent="25%"/>
+
+
+            <ImageView
+                android:layout_width="32dp"
+                android:layout_height="fill_parent"
+                android:layout_gravity="center"
+                android:layout_marginBottom="2dp"
+                android:layout_marginTop="2dp"
+                android:contentDescription="Integral"
+                android:src="@drawable/pid_i"
+                app:layout_heightPercent="15%"
+                app:layout_marginLeftPercent="18%"
+                app:layout_marginTopPercent="25%"
+                app:layout_widthPercent="7%"/>
+
+            <org.librepilot.lp2go.ui.PidTextView
+                android:id="@+id/txtRateRollIntegral"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center|center_vertical|center_horizontal"
+                android:maxLines="1"
+                android:text="@string/_0"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textSize="25sp"
+                app:layout_heightPercent="15%"
+                app:layout_marginLeftPercent="25%"
+                app:layout_marginTopPercent="25%"
+                app:layout_widthPercent="25%"/>
+
+            <org.librepilot.lp2go.ui.PidTextView
+                android:id="@+id/txtRatePitchIntegral"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="center|center_vertical|center_horizontal"
+                android:maxLines="1"
+                android:text="@string/_0"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textSize="25sp"
+                app:layout_heightPercent="15%"
+                app:layout_marginLeftPercent="50%"
+                app:layout_marginTopPercent="25%"
+                app:layout_widthPercent="25%"/>
+
+            <org.librepilot.lp2go.ui.PidTextView
+                android:id="@+id/txtRateYawIntegral"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center|center_vertical|center_horizontal"
+                android:maxLines="1"
+                android:text="@string/_0"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textSize="25sp"
+                app:layout_heightPercent="15%"
+                app:layout_marginLeftPercent="75%"
+                app:layout_marginTopPercent="25%"
+                app:layout_widthPercent="25%"/>
+
+            <ImageView
+                android:layout_width="32dp"
+                android:layout_height="fill_parent"
+                android:layout_gravity="center"
+                android:layout_marginBottom="2dp"
+                android:layout_marginTop="2dp"
+                android:contentDescription="Derivative"
+                android:src="@drawable/pid_d"
+                app:layout_heightPercent="15%"
+                app:layout_marginLeftPercent="18%"
+                app:layout_marginTopPercent="40%"
+                app:layout_widthPercent="7%"/>
+
+            <org.librepilot.lp2go.ui.PidTextView
+                android:id="@+id/txtRateRollDerivative"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center|center_vertical|center_horizontal"
+                android:maxLines="1"
+                android:text="@string/_0"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textSize="25sp"
+                app:layout_heightPercent="15%"
+                app:layout_marginLeftPercent="25%"
+                app:layout_marginTopPercent="40%"
+                app:layout_widthPercent="25%"/>
+
+            <org.librepilot.lp2go.ui.PidTextView
+                android:id="@+id/txtRatePitchDerivative"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center|center_vertical|center_horizontal"
+                android:maxLines="1"
+                android:text="@string/_0"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textSize="25sp"
+                app:layout_heightPercent="15%"
+                app:layout_marginLeftPercent="50%"
+                app:layout_marginTopPercent="40%"
+                app:layout_widthPercent="25%"/>
+
+            <org.librepilot.lp2go.ui.PidTextView
+                android:id="@+id/txtRateYawDerivative"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center|center_vertical|center_horizontal"
+                android:maxLines="1"
+                android:text="@string/_0"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textSize="25sp"
+                app:layout_heightPercent="15%"
+                app:layout_marginLeftPercent="75%"
+                app:layout_marginTopPercent="40%"
+                app:layout_widthPercent="25%"/>
+
+
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:contentDescription="Attitude Stabilization"
+                android:gravity="center|center_vertical|center_horizontal"
+                android:src="@drawable/text_attitude_stabilization"
+                app:layout_heightPercent="30%"
+                app:layout_marginLeftPercent="0%"
+                app:layout_marginTopPercent="55%"
+                app:layout_widthPercent="12%"/>
+
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:contentDescription="Outer Loop"
+                android:gravity="center|center_vertical|center_horizontal"
+                android:paddingRight="1dp"
+                android:src="@drawable/text_outer_loop"
+                app:layout_heightPercent="30%"
+                app:layout_marginLeftPercent="9%"
+                app:layout_marginTopPercent="55%"
+                app:layout_widthPercent="6%"/>
+
+
+            <ImageView
+                android:layout_width="32dp"
+                android:layout_height="fill_parent"
+                android:layout_gravity="center"
+                android:layout_marginBottom="2dp"
+                android:layout_marginTop="2dp"
+                android:contentDescription="Proportional"
+                android:src="@drawable/pid_p"
+                app:layout_heightPercent="15%"
+                app:layout_marginLeftPercent="18%"
+                app:layout_marginTopPercent="55%"
+                app:layout_widthPercent="7%"
+                />
+
+            <org.librepilot.lp2go.ui.PidTextView
+                android:id="@+id/txtAttitudeRollProportional"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center|center_vertical|center_horizontal"
+                android:maxLines="1"
+                android:text="@string/_0"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textSize="25sp"
+                app:layout_heightPercent="15%"
+                app:layout_marginLeftPercent="25%"
+                app:layout_marginTopPercent="55%"
+                app:layout_widthPercent="25%"/>
+
+            <org.librepilot.lp2go.ui.PidTextView
+                android:id="@+id/txtAttitudePitchProportional"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="center|center_vertical|center_horizontal"
+                android:maxLines="1"
+                android:text="@string/_0"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textSize="25sp"
+                app:layout_heightPercent="15%"
+                app:layout_marginLeftPercent="50%"
+                app:layout_marginTopPercent="55%"
+                app:layout_widthPercent="25%"/>
+
+            <org.librepilot.lp2go.ui.PidTextView
+                android:id="@+id/txtAttitudeYawProportional"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center|center_vertical|center_horizontal"
+                android:maxLines="1"
+                android:text="@string/_0"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textSize="25sp"
+                app:layout_heightPercent="15%"
+                app:layout_marginLeftPercent="75%"
+                app:layout_marginTopPercent="55%"
+                app:layout_widthPercent="25%"/>
+
+
+            <ImageView
+                android:layout_width="32dp"
+                android:layout_height="fill_parent"
+                android:layout_gravity="center"
+                android:contentDescription="Integral"
+                android:src="@drawable/pid_i"
+                app:layout_heightPercent="15%"
+                app:layout_marginLeftPercent="18%"
+                app:layout_marginTopPercent="70%"
+                app:layout_widthPercent="7%"/>
+
+            <org.librepilot.lp2go.ui.PidTextView
+                android:id="@+id/txtAttitudeRollIntegral"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center|center_vertical|center_horizontal"
+                android:maxLines="1"
+                android:text="@string/_0"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textSize="25sp"
+                app:layout_heightPercent="15%"
+                app:layout_marginLeftPercent="25%"
+                app:layout_marginTopPercent="70%"
+                app:layout_widthPercent="25%"/>
+
+            <org.librepilot.lp2go.ui.PidTextView
+                android:id="@+id/txtAttitudePitchIntegral"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="center|center_vertical|center_horizontal"
+                android:maxLines="1"
+                android:text="@string/_0"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textSize="25sp"
+                app:layout_heightPercent="15%"
+                app:layout_marginLeftPercent="50%"
+                app:layout_marginTopPercent="70%"
+                app:layout_widthPercent="25%"/>
+
+            <org.librepilot.lp2go.ui.PidTextView
+                android:id="@+id/txtAttitudeYawIntegral"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="center|center_vertical|center_horizontal"
+                android:maxLines="1"
+                android:text="@string/_0"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textSize="25sp"
+                app:layout_heightPercent="15%"
+                app:layout_marginLeftPercent="75%"
+                app:layout_marginTopPercent="70%"
+                app:layout_widthPercent="25%"/>
+
+
+            <ImageView
+                android:id="@+id/imgPidDownload"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/DOWNLOAD_PID_FROM_FC"
+                android:src="@drawable/ic_cloud_download_96dp"
+                app:layout_heightPercent="15%"
+                app:layout_marginLeftPercent="0%"
+                app:layout_marginTopPercent="85%"
+                app:layout_widthPercent="25%"/>
+
+            <ImageView
+                android:id="@+id/imgPidUpload"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/UPLOAD_PID_TO_FC"
+                android:src="@drawable/ic_cloud_upload_128dp"
+                app:layout_heightPercent="15%"
+                app:layout_marginLeftPercent="25%"
+                app:layout_marginTopPercent="85%"
+                app:layout_widthPercent="25%"/>
+
+            <ImageView
+                android:id="@+id/imgPidSave"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/SAVE_PID_PERSISTENT"
+                android:src="@drawable/ic_cloud_done_96dp"
+                app:layout_heightPercent="15%"
+                app:layout_marginLeftPercent="50%"
+                app:layout_marginTopPercent="85%"
+                app:layout_widthPercent="25%"/>
+
+            <ImageView
+                android:id="@+id/imgPidBank"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/PID_BANK"
+                android:src="@drawable/ic_filter_none_128dp"
+                app:layout_heightPercent="15%"
+                app:layout_marginLeftPercent="75%"
+                app:layout_marginTopPercent="85%"
+                app:layout_widthPercent="25%"/>
+
+        </android.support.percent.PercentRelativeLayout>
+
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/list_slidermenu"
+        android:layout_width="240dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:background="@color/transparent"
+        android:choiceMode="singleChoice"
+        android:divider="@drawable/list_divider"
+        android:dividerHeight="1dp"
+        android:listSelector="@drawable/list_selector"/>
+
+</android.support.v4.widget.DrawerLayout>
