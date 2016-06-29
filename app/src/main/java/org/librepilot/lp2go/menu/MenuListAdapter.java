@@ -66,7 +66,7 @@ public class MenuListAdapter extends BaseAdapter {
         TextView txtTitle = (TextView) convertView.findViewById(R.id.title);
 
         //if ((imgIcon.getDrawable()) != null) {
-        //    ((BitmapDrawable) imgIcon.getDrawable()).getBitmap().recycle();
+        //    ((BitmapDrawable)imgIcon.getDrawable()).getBitmap().recycle();
         //}
 
         imgIcon.setImageResource(menuItems.get(position).getIcon());
