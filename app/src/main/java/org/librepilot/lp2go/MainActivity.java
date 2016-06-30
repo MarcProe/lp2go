@@ -68,16 +68,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.librepilot.lp2go.controller.ViewController;
-import org.librepilot.lp2go.controller.ViewController3DMagCalibration;
 import org.librepilot.lp2go.controller.ViewControllerAbout;
-import org.librepilot.lp2go.controller.ViewControllerDebug;
 import org.librepilot.lp2go.controller.ViewControllerLogs;
 import org.librepilot.lp2go.controller.ViewControllerMain;
 import org.librepilot.lp2go.controller.ViewControllerMainAnimatorViewSetter;
 import org.librepilot.lp2go.controller.ViewControllerMap;
 import org.librepilot.lp2go.controller.ViewControllerObjects;
 import org.librepilot.lp2go.controller.ViewControllerPid;
-import org.librepilot.lp2go.controller.ViewControllerScope;
 import org.librepilot.lp2go.controller.ViewControllerSettings;
 import org.librepilot.lp2go.controller.ViewControllerVerticalPid;
 import org.librepilot.lp2go.helper.SettingsHelper;
@@ -424,8 +421,8 @@ public class MainActivity extends AppCompatActivity {
         VisualLog.setActivity(this);
 
         mViews = new HashMap<>(NUM_OF_VIEWS);
-        ViewController mVcDebug =
-                new ViewControllerDebug(this, R.string.menu_debug, R.drawable.ic_cancel_128dp, View.INVISIBLE, View.INVISIBLE);
+        //ViewController mVcDebug =
+        //        new ViewControllerDebug(this, R.string.menu_debug, R.drawable.ic_cancel_128dp, View.INVISIBLE, View.INVISIBLE);
 
         copyAssets();
         SettingsHelper.loadSettings(this);
@@ -435,13 +432,13 @@ public class MainActivity extends AppCompatActivity {
         //debug view is initialized above
         ViewController mVcPid = new ViewControllerPid(this, R.string.menu_pid, R.drawable.ic_tune_128dp, View.VISIBLE, View.INVISIBLE);
         ViewController mVcVPid = new ViewControllerVerticalPid(this, R.string.menu_vpid, R.drawable.ic_vertical_align_center_black_128dp, View.VISIBLE, View.INVISIBLE);
-        ViewController mVcScope = new ViewControllerScope(this, R.string.menu_scope, R.drawable.ic_info_outline_24dp, View.INVISIBLE, View.INVISIBLE);
+        //ViewController mVcScope = new ViewControllerScope(this, R.string.menu_scope, R.drawable.ic_info_outline_24dp, View.INVISIBLE, View.INVISIBLE);
         ViewController mVcAbout = new ViewControllerAbout(this, R.string.menu_about, R.drawable.ic_info_outline_24dp, View.INVISIBLE, View.INVISIBLE);
         ViewController mVcLogs = new ViewControllerLogs(this, R.string.menu_logs, R.drawable.ic_rate_review_24dp, View.VISIBLE, View.VISIBLE);
         ViewController mVcSettings = new ViewControllerSettings(this, R.string.menu_settings, R.drawable.ic_settings_24dp, View.INVISIBLE, View.INVISIBLE);
         ViewController mVcMap = new ViewControllerMap(this, R.string.menu_map, R.drawable.ic_public_24dp, View.INVISIBLE, View.INVISIBLE);
         ViewController mVcObjects = new ViewControllerObjects(this, R.string.menu_objects, R.drawable.ic_now_widgets_24dp, View.INVISIBLE, View.INVISIBLE);
-        ViewController mVc3DMagCalibration = new ViewController3DMagCalibration(this, R.string.menu_3dmag, R.drawable.ic_info_outline_24dp, View.INVISIBLE, View.INVISIBLE);
+        //ViewController mVc3DMagCalibration = new ViewController3DMagCalibration(this, R.string.menu_3dmag, R.drawable.ic_info_outline_24dp, View.INVISIBLE, View.INVISIBLE);
         ViewController mVcMain = new ViewControllerMain(this, R.string.menu_main, R.drawable.ic_notifications_on_24dp, View.VISIBLE, View.VISIBLE);
 
         mVcList = new TreeMap<>();
