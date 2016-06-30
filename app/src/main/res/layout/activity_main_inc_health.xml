@@ -20,7 +20,6 @@
             android:background="@drawable/rounded_corner_unini"
             android:gravity="center_vertical|center_horizontal"
             android:text="@string/ATTI"
-            android:textAlignment="center"
             android:textColor="@color/light"/>
 
         <TextView
@@ -31,7 +30,6 @@
             android:background="@drawable/rounded_corner_unini"
             android:gravity="center_vertical|center_horizontal"
             android:text="@string/STAB"
-            android:textAlignment="center"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="@color/light"/>
 
@@ -43,7 +41,6 @@
             android:background="@drawable/rounded_corner_unini"
             android:gravity="center_vertical|center_horizontal"
             android:text="@string/PATH"
-            android:textAlignment="center"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="@color/light"/>
 
@@ -55,7 +52,6 @@
             android:background="@drawable/rounded_corner_unini"
             android:gravity="center_vertical|center_horizontal"
             android:text="@string/PLAN"
-            android:textAlignment="center"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="@color/light"/>
     </LinearLayout>
@@ -75,7 +71,6 @@
             android:background="@drawable/rounded_corner_unini"
             android:gravity="center_vertical|center_horizontal"
             android:text="@string/GPS"
-            android:textAlignment="center"
             android:textColor="@color/light"/>
 
         <TextView
@@ -86,7 +81,6 @@
             android:layout_weight="0.25"
             android:background="@drawable/rounded_corner_right"
             android:gravity="center_vertical|center_horizontal"
-            android:textAlignment="center"
             android:textColor="@color/dark"/>
 
         <TextView
@@ -97,7 +91,6 @@
             android:background="@drawable/rounded_corner_unini"
             android:gravity="center_vertical|center_horizontal"
             android:text="@string/SENSOR"
-            android:textAlignment="center"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="@color/light"/>
 
@@ -109,7 +102,6 @@
             android:background="@drawable/rounded_corner_unini"
             android:gravity="center_vertical|center_horizontal"
             android:text="@string/AIRSPD"
-            android:textAlignment="center"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="@color/light"/>
 
@@ -121,7 +113,6 @@
             android:background="@drawable/rounded_corner_unini"
             android:gravity="center_vertical|center_horizontal"
             android:text="@string/MAG"
-            android:textAlignment="center"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="@color/light"/>
 
@@ -142,7 +133,6 @@
             android:background="@drawable/rounded_corner_unini"
             android:gravity="center_vertical|center_horizontal"
             android:text="@string/INPUT"
-            android:textAlignment="center"
             android:textColor="@color/light"/>
 
         <TextView
@@ -153,7 +143,6 @@
             android:background="@drawable/rounded_corner_unini"
             android:gravity="center_vertical|center_horizontal"
             android:text="@string/OUTPUT"
-            android:textAlignment="center"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="@color/light"/>
 
@@ -165,7 +154,6 @@
             android:background="@drawable/rounded_corner_unini"
             android:gravity="center_vertical|center_horizontal"
             android:text="@string/I2C"
-            android:textAlignment="center"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="@color/light"/>
 
@@ -177,7 +165,6 @@
             android:background="@drawable/rounded_corner_unini"
             android:gravity="center_vertical|center_horizontal"
             android:text="@string/TELEMETRY"
-            android:textAlignment="center"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="@color/light"/>
     </LinearLayout>
@@ -197,7 +184,6 @@
             android:background="@drawable/rounded_corner_unini"
             android:gravity="center_vertical|center_horizontal"
             android:text="@string/BATT"
-            android:textAlignment="center"
             android:textColor="@color/light"/>
 
         <TextView
@@ -208,7 +194,6 @@
             android:background="@drawable/rounded_corner_unini"
             android:gravity="center_vertical|center_horizontal"
             android:text="@string/TIME"
-            android:textAlignment="center"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="@color/light"/>
 
@@ -220,7 +205,6 @@
             android:background="@drawable/rounded_corner_unini"
             android:gravity="center_vertical|center_horizontal"
             android:text="@string/CONFIG"
-            android:textAlignment="center"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="@color/light"/>
 
@@ -297,7 +281,6 @@
             android:background="@drawable/rounded_corner_unini"
             android:gravity="center_vertical|center_horizontal"
             android:text="@string/BOOT"
-            android:textAlignment="center"
             android:textColor="@color/light"/>
 
         <TextView
@@ -308,7 +291,6 @@
             android:background="@drawable/rounded_corner_unini"
             android:gravity="center_vertical|center_horizontal"
             android:text="@string/MEM"
-            android:textAlignment="center"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="@color/light"/>
 
@@ -320,7 +302,6 @@
             android:background="@drawable/rounded_corner_unini"
             android:gravity="center_vertical|center_horizontal"
             android:text="@string/STACK"
-            android:textAlignment="center"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="@color/light"/>
 
@@ -332,7 +313,6 @@
             android:background="@drawable/rounded_corner_unini"
             android:gravity="center_vertical|center_horizontal"
             android:text="@string/EVENT"
-            android:textAlignment="center"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="@color/light"/>
 
@@ -344,7 +324,6 @@
             android:background="@drawable/rounded_corner_unini"
             android:gravity="center_vertical|center_horizontal"
             android:text="@string/CPU"
-            android:textAlignment="center"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="@color/light"/>
     </LinearLayout>

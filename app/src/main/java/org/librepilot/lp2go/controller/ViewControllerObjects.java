@@ -35,9 +35,9 @@ public class ViewControllerObjects extends ViewController {
     private ObjectsExpandableListViewAdapter mListAdapter;
     private TextView txtObjects;
 
-    public ViewControllerObjects(MainActivity activity, int title, int localSettingsVisible,
+    public ViewControllerObjects(MainActivity activity, int title, int icon, int localSettingsVisible,
                                  int flightSettingsVisible) {
-        super(activity, title, localSettingsVisible, flightSettingsVisible);
+        super(activity, title, icon, localSettingsVisible, flightSettingsVisible);
         activity.mViews.put(VIEW_OBJECTS,
                 activity.getLayoutInflater().inflate(R.layout.activity_objects, null));
         activity.setContentView(activity.mViews.get(VIEW_OBJECTS)); //Objects
@@ -54,6 +54,11 @@ public class ViewControllerObjects extends ViewController {
     public void enter(int view) {
         super.enter(view);
         initObjectListData();
+    }
+
+    @Override
+    public int getID() {
+        return ViewController.VIEW_OBJECTS;
     }
 
     @Override

@@ -104,9 +104,9 @@ public class ViewControllerMain extends ViewController implements View.OnClickLi
     private TextView txtVolt;
     private TextView txtmAh;
 
-    public ViewControllerMain(MainActivity activity, int title, int localSettingsVisible,
+    public ViewControllerMain(MainActivity activity, int title, int icon, int localSettingsVisible,
                               int flightSettingsVisible) {
-        super(activity, title, localSettingsVisible, flightSettingsVisible);
+        super(activity, title, icon, localSettingsVisible, flightSettingsVisible);
 
         final MainActivity ma = getMainActivity();
 
@@ -144,6 +144,11 @@ public class ViewControllerMain extends ViewController implements View.OnClickLi
         return mTopAnimator.getCurrentView().getId() == layoutId
                 || (mBottomAnimator.getCurrentView() != null
                 && mBottomAnimator.getCurrentView().getId() == layoutId);
+    }
+
+    @Override
+    public int getID() {
+        return ViewController.VIEW_MAIN;
     }
 
     @Override

@@ -97,6 +97,9 @@ public class SettingsHelper {
         editor.putBoolean(
                 mainActivity.getString(R.string.SETTINGS_TIMESTAMPS_FROM_FC, R.string.APP_ID),
                 SettingsHelper.mUseTimestampsFromFc);
+        editor.putBoolean(
+                mainActivity.getString(R.string.SETTINGS_TEXT2SPEECH_ENABLED, R.string.APP_ID),
+                SettingsHelper.mText2SpeechEnabled);
 
         editor.commit();
     }

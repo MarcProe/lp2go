@@ -21,4 +21,11 @@
     <string name="VPID_NAME_VED">Vertical Velocity Derivative</string>
     <string name="VPID_NAME_VEI">Vertical Velocity Integral</string>
     <string name="VPID_NAME_VEP">Vertical Velocity Proportional</string>
+    <string name="VPID_ALTITUDE_P">Altitude P</string>
+    <string name="VPID_VELOCITY_P">Velocity P</string>
+    <string name="VPID_VELOCITY_I">Velocity I</string>
+    <string name="verlocity_d">Verlocity D</string>
+    <string name="VPID_VELOCITY_BETA">Velocity β</string>
+    <string name="VPID_EXPONETNIAL">Exponential</string>
+    <string name="VPID_THRUST_RATE">Thrust Rate</string>
 </resources>

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Nav Drawer Menu Items -->
+
     <string name="menu_main">Health</string>
     <string name="menu_map">Map</string>
     <string name="menu_objects">Objects</string>
@@ -11,19 +12,5 @@
     <string name="menu_vpid">Altitude Hold</string>
     <string name="menu_debug">Debug</string>
     <string name="menu_scope">Scope</string>
-
-    <!-- Nav Drawer List Item Icons -->
-    <!-- Keep them in order as the titles are in -->
-
-    <array name="nav_drawer_icons">
-        <item>@drawable/ic_notifications_on_24dp</item>
-        <item>@drawable/ic_public_24dp</item>
-        <item>@drawable/ic_now_widgets_24dp</item>
-        <item>@drawable/ic_settings_24dp</item>
-        <item>@drawable/ic_rate_review_24dp</item>
-        <item>@drawable/ic_info_outline_24dp</item>
-        <item>@drawable/ic_tune_24dp</item>
-        <item>@drawable/ic_vertical_align_center_black_128dp</item>
-        <item>@drawable/ic_cancel_128dp</item>
-    </array>
+    <string name="menu_3dmag">Test Mag Cal</string>
 </resources>

@@ -52,7 +52,7 @@ class ConnectionThread extends Thread {
             mA.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    for (ViewController vc : mA.mVcList) {
+                    for (ViewController vc : mA.mVcList.values()) {
                         vc.reset();
                     }
                 }
@@ -100,7 +100,7 @@ class ConnectionThread extends Thread {
                 mA.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        for (ViewController vc : mA.mVcList) {
+                        for (ViewController vc : mA.mVcList.values()) {
                             vc.reset();
                         }
                     }
