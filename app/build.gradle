@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 23
+    compileSdkVersion 24
     buildToolsVersion '23.0.3'
 
     defaultConfig {
@@ -11,8 +11,8 @@ android {
 
         multiDexEnabled true
 
-        versionName '0.3.0.2'
-        versionCode 30002
+        versionName '0.3.0.14'
+        versionCode 30014
     }
 
     dexOptions {
@@ -37,7 +37,7 @@ android {
         alpha_flavor_ {
             applicationId 'net.proest.lp2go3'
             resValue 'string', 'APP_ID', applicationId
-            resValue 'string', 'google_api_key', 'AIzaSyCE91uHoVzA_-mxPer8g5sU7WL2jTdQDzo'
+            resValue 'string', 'google_maps_api_key', 'AIzaSyCE91uHoVzA_-mxPer8g5sU7WL2jTdQDzo'
             resValue 'string', 'APP_NAME', 'LibrePilot2Go Alpha'
             resValue 'string', 'ACTION_USB_PERMISSION', applicationId + '.USB_PERMISSION'
         }
@@ -45,7 +45,7 @@ android {
             minSdkVersion 16
             applicationId 'org.librepilot.lp2go.beta'
             resValue 'string', 'APP_ID', applicationId
-            resValue 'string', 'google_api_key', 'AIzaSyCE91uHoVzA_-mxPer8g5sU7WL2jTdQDzo'
+            resValue 'string', 'google_maps_api_key', 'AIzaSyCE91uHoVzA_-mxPer8g5sU7WL2jTdQDzo'
             resValue 'string', 'APP_NAME', 'LibrePilot2Go Beta'
             resValue 'string', 'ACTION_USB_PERMISSION', applicationId + '.USB_PERMISSION'
             targetSdkVersion 16
@@ -56,7 +56,7 @@ android {
             minSdkVersion 16
             applicationId 'org.librepilot.lp2go.release'
             resValue 'string', 'APP_ID', applicationId
-            resValue 'string', 'google_api_key', 'AIzaSyCE91uHoVzA_-mxPer8g5sU7WL2jTdQDzo'
+            resValue 'string', 'google_maps_api_key', 'AIzaSyCE91uHoVzA_-mxPer8g5sU7WL2jTdQDzo'
             resValue 'string', 'APP_NAME', 'LibrePilot2Go'
             resValue 'string', 'ACTION_USB_PERMISSION', applicationId + '.USB_PERMISSION'
             targetSdkVersion 16
@@ -81,14 +81,19 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:23.4.0'
+    compile 'com.android.support:appcompat-v7:24.0.0'
     compile 'com.android.support:multidex:1.0.1'
-    //compile 'com.google.android.gms:play-services-maps:9.0.0'
-    //compile 'com.google.android.gms:play-services-appindexing:9.0.0'
-    //compile 'com.google.android.gms:play-services:9.0.0'
-    compile 'com.google.android.gms:play-services-maps:8.4.0'
-    compile 'com.google.android.gms:play-services-appindexing:8.4.0'
-    compile 'com.google.android.gms:play-services:8.4.0'
+    compile 'com.android.support:percent:24.0.0'
+    compile 'com.google.android.gms:play-services-maps:9.0.2'
+    compile 'com.google.android.gms:play-services-appindexing:9.0.2'
+    compile 'com.google.android.gms:play-services:9.0.2'
+    //compile 'com.google.android.gms:play-services-maps:8.4.0'
+    //compile 'com.google.android.gms:play-services-appindexing:8.4.0'
+    //compile 'com.google.android.gms:play-services:8.4.0'
     compile 'com.nbsp:library:1.08'
     compile 'com.github.PhilJay:MPAndroidChart:v2.2.4'
+    compile 'com.google.firebase:firebase-core:9.0.2'
+    compile 'com.google.firebase:firebase-crash:9.0.2'
 }
+
+apply plugin: 'com.google.gms.google-services'
