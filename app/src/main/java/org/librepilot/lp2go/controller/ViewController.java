@@ -42,7 +42,7 @@ public abstract class ViewController {
     public static final int VIEW_MAP = 10;
     public static final int VIEW_OBJECTS = 20;
     public static final int VIEW_PID = 30;
-    public static final int VIEW_SCOPE = 90;
+    public static final int VIEW_SCOPE = 25;
     public static final int VIEW_SETTINGS = 60;
     public static final int VIEW_VPID = 40;
     protected final HashMap<String, Object> mOffset;

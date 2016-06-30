@@ -25,6 +25,8 @@ import android.widget.Toast;
 import org.librepilot.lp2go.MainActivity;
 import org.librepilot.lp2go.R;
 import org.librepilot.lp2go.VisualLog;
+import org.librepilot.lp2go.controller.ViewController;
+import org.librepilot.lp2go.helper.ScopeHelper;
 import org.librepilot.lp2go.uavtalk.UAVTalkMissingObjectException;
 import org.librepilot.lp2go.uavtalk.UAVTalkObject;
 import org.librepilot.lp2go.uavtalk.UAVTalkObjectInstance;
@@ -175,7 +177,12 @@ public class ObjectsExpandableListView extends ExpandableListView
                     break;
             }
         } else {  //start graphing
+            ScopeHelper.object = c.objectname;
+            ScopeHelper.field = c.fieldname;
+            ScopeHelper.element = c.element;
 
+            MainActivity ma = (MainActivity) getContext();
+            ma.displayView(ViewController.VIEW_SCOPE);
         }
 
         return false;

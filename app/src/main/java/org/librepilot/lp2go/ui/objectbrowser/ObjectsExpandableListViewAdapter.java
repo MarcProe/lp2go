@@ -136,9 +136,8 @@ public class ObjectsExpandableListViewAdapter extends BaseExpandableListAdapter 
         } else {
             txtListChildLabel.setBackgroundColor(Color.TRANSPARENT);
             txtListChildValue.setBackgroundColor(Color.TRANSPARENT);
-            //imgListChildIcon.setImageDrawable(ContextCompat.getDrawable(mContext,
-            //        R.drawable.ic_timeline_black_48dp));
-            imgListChildIcon.setImageResource(android.R.color.transparent);
+            imgListChildIcon.setImageDrawable(ContextCompat.getDrawable(mContext,
+                    R.drawable.ic_timeline_black_48dp));
         }
 
         String fText;

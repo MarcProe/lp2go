@@ -16,3 +16,4 @@
 #   public *;
 #}
 -keep class !android.support.v7.internal.view.menu.**,android.support.** {*;}
+-keep class com.github.mikephil.charting.** { *; }

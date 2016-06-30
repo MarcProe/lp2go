@@ -75,6 +75,7 @@ import org.librepilot.lp2go.controller.ViewControllerMainAnimatorViewSetter;
 import org.librepilot.lp2go.controller.ViewControllerMap;
 import org.librepilot.lp2go.controller.ViewControllerObjects;
 import org.librepilot.lp2go.controller.ViewControllerPid;
+import org.librepilot.lp2go.controller.ViewControllerScope;
 import org.librepilot.lp2go.controller.ViewControllerSettings;
 import org.librepilot.lp2go.controller.ViewControllerVerticalPid;
 import org.librepilot.lp2go.helper.SettingsHelper;
@@ -432,7 +433,7 @@ public class MainActivity extends AppCompatActivity {
         //debug view is initialized above
         ViewController mVcPid = new ViewControllerPid(this, R.string.menu_pid, R.drawable.ic_tune_128dp, View.VISIBLE, View.INVISIBLE);
         ViewController mVcVPid = new ViewControllerVerticalPid(this, R.string.menu_vpid, R.drawable.ic_vertical_align_center_black_128dp, View.VISIBLE, View.INVISIBLE);
-        //ViewController mVcScope = new ViewControllerScope(this, R.string.menu_scope, R.drawable.ic_info_outline_24dp, View.INVISIBLE, View.INVISIBLE);
+        ViewController mVcScope = new ViewControllerScope(this, R.string.menu_scope, R.drawable.ic_timeline_black_48dp, View.INVISIBLE, View.INVISIBLE);
         ViewController mVcAbout = new ViewControllerAbout(this, R.string.menu_about, R.drawable.ic_info_outline_24dp, View.INVISIBLE, View.INVISIBLE);
         ViewController mVcLogs = new ViewControllerLogs(this, R.string.menu_logs, R.drawable.ic_rate_review_24dp, View.VISIBLE, View.VISIBLE);
         ViewController mVcSettings = new ViewControllerSettings(this, R.string.menu_settings, R.drawable.ic_settings_24dp, View.INVISIBLE, View.INVISIBLE);
@@ -445,6 +446,7 @@ public class MainActivity extends AppCompatActivity {
         mVcList.put(ViewController.VIEW_MAIN, mVcMain);
         mVcList.put(ViewController.VIEW_MAP, mVcMap);
         mVcList.put(ViewController.VIEW_OBJECTS, mVcObjects);
+        mVcList.put(ViewController.VIEW_SCOPE, mVcScope);
         mVcList.put(ViewController.VIEW_PID, mVcPid);
         mVcList.put(ViewController.VIEW_VPID, mVcVPid);
         mVcList.put(ViewController.VIEW_LOGS, mVcLogs);
@@ -452,7 +454,6 @@ public class MainActivity extends AppCompatActivity {
         mVcList.put(ViewController.VIEW_ABOUT, mVcAbout);
         //mVcList.put(ViewController.VIEW_DEBUG, mVcDebug);
         //mVcList.put(ViewController.VIEW_3DMAG, mVc3DMagCalibration);
-        //mVcList.put(ViewController.VIEW_SCOPE, mVcScope);
 
 
         ((ViewControllerMainAnimatorViewSetter) mVcMain).setLayout();
