@@ -35,11 +35,10 @@ public class PollThread extends Thread {
 
     public PollThread(MainActivity activity) {
         this.setName("LP2GoPollThread");
-        if (MainActivity.hasPThread()) {
-            throw new IllegalStateException("double mPollThread");
+        if (!MainActivity.hasPThread()) {
+            MainActivity.setPThread(true);
+            this.mA = activity;
         }
-        MainActivity.setPThread(true);
-        this.mA = activity;
     }
 
     public void setObjectTree(UAVTalkObjectTree mObjectTree) {
