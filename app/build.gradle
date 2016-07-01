@@ -5,14 +5,14 @@ android {
     buildToolsVersion '23.0.3'
 
     defaultConfig {
-        minSdkVersion 16
+        minSdkVersion 14
         //noinspection OldTargetApi
-        targetSdkVersion 16
+        targetSdkVersion 14
 
         multiDexEnabled true
 
-        versionName '0.3.0.14'
-        versionCode 30014
+        versionName '0.3.0.17'
+        versionCode 30017
     }
 
     dexOptions {
@@ -42,24 +42,25 @@ android {
             resValue 'string', 'ACTION_USB_PERMISSION', applicationId + '.USB_PERMISSION'
         }
         beta_flavor_ {
-            minSdkVersion 16
+            minSdkVersion 14
+            targetSdkVersion 14
             applicationId 'org.librepilot.lp2go.beta'
             resValue 'string', 'APP_ID', applicationId
             resValue 'string', 'google_maps_api_key', 'AIzaSyCE91uHoVzA_-mxPer8g5sU7WL2jTdQDzo'
             resValue 'string', 'APP_NAME', 'LibrePilot2Go Beta'
             resValue 'string', 'ACTION_USB_PERMISSION', applicationId + '.USB_PERMISSION'
-            targetSdkVersion 16
-            versionCode 30104
-            versionName '0.3.1.4'
+
+            versionCode 30105
+            versionName '0.3.1.5'
         }
         release_flavor_ {
-            minSdkVersion 16
+            minSdkVersion 14
+            targetSdkVersion 14
             applicationId 'org.librepilot.lp2go.release'
             resValue 'string', 'APP_ID', applicationId
             resValue 'string', 'google_maps_api_key', 'AIzaSyCE91uHoVzA_-mxPer8g5sU7WL2jTdQDzo'
             resValue 'string', 'APP_NAME', 'LibrePilot2Go'
             resValue 'string', 'ACTION_USB_PERMISSION', applicationId + '.USB_PERMISSION'
-            targetSdkVersion 16
             versionCode 1000000
             versionName '1.0.0.0'
         }
