@@ -42,20 +42,20 @@ android {
             resValue 'string', 'ACTION_USB_PERMISSION', applicationId + '.USB_PERMISSION'
         }
         beta_flavor_ {
-            minSdkVersion 16
-            targetSdkVersion 16
+            minSdkVersion 14
+            targetSdkVersion 14
             applicationId 'org.librepilot.lp2go.beta'
             resValue 'string', 'APP_ID', applicationId
             resValue 'string', 'google_maps_api_key', 'AIzaSyCE91uHoVzA_-mxPer8g5sU7WL2jTdQDzo'
             resValue 'string', 'APP_NAME', 'LibrePilot2Go Beta'
             resValue 'string', 'ACTION_USB_PERMISSION', applicationId + '.USB_PERMISSION'
 
-            versionCode 30104
-            versionName '0.3.1.4'
+            versionCode 30105
+            versionName '0.3.1.5'
         }
         release_flavor_ {
-            minSdkVersion 16
-            targetSdkVersion 16
+            minSdkVersion 14
+            targetSdkVersion 14
             applicationId 'org.librepilot.lp2go.release'
             resValue 'string', 'APP_ID', applicationId
             resValue 'string', 'google_maps_api_key', 'AIzaSyCE91uHoVzA_-mxPer8g5sU7WL2jTdQDzo'
