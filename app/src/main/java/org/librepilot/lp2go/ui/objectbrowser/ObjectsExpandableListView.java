@@ -177,9 +177,9 @@ public class ObjectsExpandableListView extends ExpandableListView
                     break;
             }
         } else {  //start graphing
-            ScopeHelper.object = c.objectname;
-            ScopeHelper.field = c.fieldname;
-            ScopeHelper.element = c.element;
+            ScopeHelper.object1 = c.objectname;
+            ScopeHelper.field1 = c.fieldname;
+            ScopeHelper.element1 = c.element;
 
             MainActivity ma = (MainActivity) getContext();
             ma.displayView(ViewController.VIEW_SCOPE);

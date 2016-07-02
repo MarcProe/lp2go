@@ -39,6 +39,7 @@ import org.librepilot.lp2go.VisualLog;
 import org.librepilot.lp2go.helper.CompatHelper;
 import org.librepilot.lp2go.helper.SettingsHelper;
 import org.librepilot.lp2go.uavtalk.UAVTalkMissingObjectException;
+import org.librepilot.lp2go.uavtalk.UAVTalkObject;
 import org.librepilot.lp2go.uavtalk.UAVTalkObjectListener;
 import org.librepilot.lp2go.uavtalk.UAVTalkXMLObject;
 import org.librepilot.lp2go.ui.SingleToast;

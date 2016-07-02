@@ -38,9 +38,14 @@ public class ViewControllerScope extends ViewController implements
     LineChart lchScope;
     TextView txtScopeLastValue;
     TextView txtScopeObjectName;
-    String mObject;
-    String mField;
-    String mElement;
+    String mObject1;
+    String mField1;
+    String mElement1;
+
+    String mObject2;
+    String mField2;
+    String mElement2;
+
     private LineData mData;
     private long relTime;
     private long curTime = 0;
@@ -64,23 +69,31 @@ public class ViewControllerScope extends ViewController implements
         mData.setValueTextColor(Color.GREEN);
 
         // add empty data
-        if (mObject != null) lchScope.setData(mData);
+        if (mObject1 != null) lchScope.setData(mData);
 
         txtScopeLastValue = (TextView) findViewById(R.id.txtScopeLastValue);
         txtScopeObjectName = (TextView) findViewById(R.id.txtScopeObjectName);
 
-        mObject = ScopeHelper.object;
-        mField = ScopeHelper.field;
-        mElement = ScopeHelper.element;
+        mObject1 = ScopeHelper.object1;
+        mField1 = ScopeHelper.field1;
+        mElement1 = ScopeHelper.element1;
 
-        if (mObject != null) {
-            setScopeMetric(mObject, mField, mElement);
-            lchScope.setDescription(mObject + "/" + mField + "/" + mElement);
+        mObject2 = ScopeHelper.object2;
+        mField2 = ScopeHelper.field2;
+        mElement2 = ScopeHelper.element2;
+
+        if (mObject1 != null) {
+            setScopeMetric(mObject1, mField1, mElement1);
+            //lchScope.setDescription(mObject1 + "/" + mField1 + "/" + mElement1);
         }
-        txtScopeObjectName.setText(mObject);
+
+        if (mObject2 != null) {
+            setScopeMetric(mObject2, mField2, mElement2);
+            //lchScope.setDescription(mObject1 + "/" + mField1 + "/" + mElement1);
+        }
+
+        txtScopeObjectName.setText(mObject1);
         relTime = System.currentTimeMillis();
-
-
 
     }
 
@@ -88,7 +101,7 @@ public class ViewControllerScope extends ViewController implements
     public void leave() {
         super.leave();
         try {
-            getMainActivity().mFcDevice.getObjectTree().removeListener(mObject);
+            getMainActivity().mFcDevice.getObjectTree().removeListener(mObject1);
         } catch (NullPointerException ignored) {
 
         }
@@ -98,11 +111,8 @@ public class ViewControllerScope extends ViewController implements
     }
 
     public void setScopeMetric(String object, String field, String element) {
-        this.mObject = object;
-        this.mField = field;
-        this.mElement = element;
         try {
-            getMainActivity().mFcDevice.getObjectTree().removeListener(mObject);
+            getMainActivity().mFcDevice.getObjectTree().removeListener(object);
             try {
                 getMainActivity().mFcDevice.getObjectTree().setListener(object, this);
             } catch (IllegalStateException e) {
@@ -116,8 +126,9 @@ public class ViewControllerScope extends ViewController implements
 
     @Override
     public void onObjectUpdate(UAVTalkObject o) {
+
         if (txtScopeLastValue != null) {
-            String data = getData(mObject, mField, mElement).toString();
+            String data = getData(mObject1, mField1, mElement1).toString();
             float entry = .0f;
             try {
                 entry = Float.parseFloat(data);
@@ -151,7 +162,6 @@ public class ViewControllerScope extends ViewController implements
                 data.addDataSet(set);
             }
 
-            // add a new x-value first
             Long tsLong = (System.currentTimeMillis() - relTime) / 1000;
             // if(tsLong != curTime) {
             data.addXValue(tsLong.toString());
@@ -160,20 +170,10 @@ public class ViewControllerScope extends ViewController implements
 
             data.addEntry(new Entry(entry, set.getEntryCount()), 0);
 
-
-            // let the chart know it's data has changed
             lchScope.notifyDataSetChanged();
-
-            // limit the number of visible entries
             lchScope.setVisibleXRangeMaximum(60);
-            // mChart.setVisibleYRange(30, AxisDependency.LEFT);
 
-            // move to the latest entry
             lchScope.moveViewToX(data.getXValCount() - 61);
-
-            // this automatically refreshes the chart (calls invalidate())
-            // mChart.moveViewTo(data.getXValCount()-7, 55f,
-            // AxisDependency.LEFT);
         }
     }
 
