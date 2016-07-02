@@ -22,7 +22,6 @@ import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
-import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,9 +36,9 @@ import org.librepilot.lp2go.H;
 import org.librepilot.lp2go.MainActivity;
 import org.librepilot.lp2go.R;
 import org.librepilot.lp2go.VisualLog;
+import org.librepilot.lp2go.helper.CompatHelper;
 import org.librepilot.lp2go.helper.SettingsHelper;
 import org.librepilot.lp2go.uavtalk.UAVTalkMissingObjectException;
-import org.librepilot.lp2go.uavtalk.UAVTalkObject;
 import org.librepilot.lp2go.uavtalk.UAVTalkObjectListener;
 import org.librepilot.lp2go.uavtalk.UAVTalkXMLObject;
 import org.librepilot.lp2go.ui.SingleToast;
@@ -536,32 +535,32 @@ public class ViewControllerMain extends ViewController implements View.OnClickLi
 
         if (isView(R.id.root_main_inc_health)) {
 
-            txtAtti.setBackground(ContextCompat.getDrawable(c, R.drawable.rounded_corner_unini));
-            txtStab.setBackground(ContextCompat.getDrawable(c, R.drawable.rounded_corner_unini));
-            txtPath.setBackground(ContextCompat.getDrawable(c, R.drawable.rounded_corner_unini));
-            txtPlan.setBackground(ContextCompat.getDrawable(c, R.drawable.rounded_corner_unini));
+            CompatHelper.setBackground(txtAtti, c, R.drawable.rounded_corner_unini);
+
+            CompatHelper.setBackground(txtStab, c, R.drawable.rounded_corner_unini);
+            CompatHelper.setBackground(txtPath, c, R.drawable.rounded_corner_unini);
+            CompatHelper.setBackground(txtPlan, c, R.drawable.rounded_corner_unini);
 
             txtGPSSatsInView.setText(R.string.EMPTY_STRING);
-            txtGPS.setBackground(ContextCompat.getDrawable(c, R.drawable.rounded_corner_unini));
-            txtSensor.setBackground(ContextCompat.getDrawable(c, R.drawable.rounded_corner_unini));
-            txtAirspd.setBackground(ContextCompat.getDrawable(c, R.drawable.rounded_corner_unini));
-            txtMag.setBackground(ContextCompat.getDrawable(c, R.drawable.rounded_corner_unini));
+            CompatHelper.setBackground(txtGPS, c, R.drawable.rounded_corner_unini);
+            CompatHelper.setBackground(txtSensor, c, R.drawable.rounded_corner_unini);
+            CompatHelper.setBackground(txtAirspd, c, R.drawable.rounded_corner_unini);
+            CompatHelper.setBackground(txtMag, c, R.drawable.rounded_corner_unini);
 
-            txtInput.setBackground(ContextCompat.getDrawable(c, R.drawable.rounded_corner_unini));
-            txtOutput.setBackground(ContextCompat.getDrawable(c, R.drawable.rounded_corner_unini));
-            txtI2C.setBackground(ContextCompat.getDrawable(c, R.drawable.rounded_corner_unini));
-            txtTelemetry
-                    .setBackground(ContextCompat.getDrawable(c, R.drawable.rounded_corner_unini));
+            CompatHelper.setBackground(txtInput, c, R.drawable.rounded_corner_unini);
+            CompatHelper.setBackground(txtOutput, c, R.drawable.rounded_corner_unini);
+            CompatHelper.setBackground(txtI2C, c, R.drawable.rounded_corner_unini);
+            CompatHelper.setBackground(txtTelemetry, c, R.drawable.rounded_corner_unini);
 
-            txtBatt.setBackground(ContextCompat.getDrawable(c, R.drawable.rounded_corner_unini));
-            txtTime.setBackground(ContextCompat.getDrawable(c, R.drawable.rounded_corner_unini));
-            txtConfig.setBackground(ContextCompat.getDrawable(c, R.drawable.rounded_corner_unini));
+            CompatHelper.setBackground(txtBatt, c, R.drawable.rounded_corner_unini);
+            CompatHelper.setBackground(txtTime, c, R.drawable.rounded_corner_unini);
+            CompatHelper.setBackground(txtConfig, c, R.drawable.rounded_corner_unini);
 
-            txtBoot.setBackground(ContextCompat.getDrawable(c, R.drawable.rounded_corner_unini));
-            txtMem.setBackground(ContextCompat.getDrawable(c, R.drawable.rounded_corner_unini));
-            txtStack.setBackground(ContextCompat.getDrawable(c, R.drawable.rounded_corner_unini));
-            txtEvent.setBackground(ContextCompat.getDrawable(c, R.drawable.rounded_corner_unini));
-            txtCPU.setBackground(ContextCompat.getDrawable(c, R.drawable.rounded_corner_unini));
+            CompatHelper.setBackground(txtBoot, c, R.drawable.rounded_corner_unini);
+            CompatHelper.setBackground(txtMem, c, R.drawable.rounded_corner_unini);
+            CompatHelper.setBackground(txtStack, c, R.drawable.rounded_corner_unini);
+            CompatHelper.setBackground(txtEvent, c, R.drawable.rounded_corner_unini);
+            CompatHelper.setBackground(txtCPU, c, R.drawable.rounded_corner_unini);
 
         }
         if (isView(R.id.root_main_inc_info)) {

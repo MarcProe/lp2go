@@ -28,6 +28,7 @@ import org.librepilot.lp2go.MainActivity;
 import org.librepilot.lp2go.R;
 import org.librepilot.lp2go.VisualLog;
 import org.librepilot.lp2go.c.PID;
+import org.librepilot.lp2go.helper.CompatHelper;
 import org.librepilot.lp2go.helper.SettingsHelper;
 import org.librepilot.lp2go.uavtalk.UAVTalkDeviceHelper;
 import org.librepilot.lp2go.uavtalk.UAVTalkObjectTree;
@@ -284,13 +285,15 @@ public class ViewControllerPid extends ViewController implements View.OnClickLis
 
             if (lloInnerPid != null && lloOuterPid != null) {
                 if (SettingsHelper.mColorfulPid) {
-                    lloOuterPid.setBackground(
-                            ContextCompat.getDrawable(ma, R.drawable.border_top_yellow));
-                    lloInnerPid.setBackground(
-                            ContextCompat.getDrawable(ma, R.drawable.border_top_blue));
+                    CompatHelper.setBackground(lloOuterPid, ma.getApplicationContext(),
+                            R.drawable.border_top_yellow);
+                    CompatHelper.setBackground(lloInnerPid, ma.getApplicationContext(),
+                            R.drawable.border_top_blue);
                 } else {
-                    lloOuterPid.setBackground(ContextCompat.getDrawable(ma, R.drawable.border_top));
-                    lloInnerPid.setBackground(ContextCompat.getDrawable(ma, R.drawable.border_top));
+                    CompatHelper.setBackground(lloOuterPid, ma.getApplicationContext(),
+                            R.drawable.border_top);
+                    CompatHelper.setBackground(lloInnerPid, ma.getApplicationContext(),
+                            R.drawable.border_top);
                 }
             }
         } catch (NullPointerException e1) {

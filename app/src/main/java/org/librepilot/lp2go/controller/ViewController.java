@@ -16,8 +16,8 @@
 
 package org.librepilot.lp2go.controller;
 
+import android.content.Context;
 import android.content.Intent;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.view.View;
 import android.widget.ImageView;
@@ -27,6 +27,7 @@ import org.librepilot.lp2go.H;
 import org.librepilot.lp2go.MainActivity;
 import org.librepilot.lp2go.R;
 import org.librepilot.lp2go.VisualLog;
+import org.librepilot.lp2go.helper.CompatHelper;
 import org.librepilot.lp2go.menu.MenuItem;
 import org.librepilot.lp2go.uavtalk.UAVTalkMissingObjectException;
 
@@ -171,40 +172,36 @@ public abstract class ViewController {
         if (color == null || color.equals(getString(R.string.EMPTY_STRING))) {
             return;
         }
+
+        final Context c = mActivity.getApplicationContext();
+
         switch (color) {
             case "OK":
             case "None":
             case "Connected":
-                t.setBackground(ContextCompat.getDrawable(mActivity,
-                        R.drawable.rounded_corner_ok));
+                CompatHelper.setBackground(t, c, R.drawable.rounded_corner_ok);
                 break;
             case "Warning":
             case "HandshakeReq":
             case "HandshakeAck":
-                t.setBackground(ContextCompat.getDrawable(mActivity,
-                        R.drawable.rounded_corner_warning));
+                CompatHelper.setBackground(t, c, R.drawable.rounded_corner_warning);
                 break;
             case "Error":
-                t.setBackground(ContextCompat.getDrawable(mActivity,
-                        R.drawable.rounded_corner_error));
+                CompatHelper.setBackground(t, c, R.drawable.rounded_corner_error);
                 break;
             case "Critical":
             case "RebootRequired":
             case "Disconnected":
-                t.setBackground(ContextCompat.getDrawable(mActivity,
-                        R.drawable.rounded_corner_critical));
+                CompatHelper.setBackground(t, c, R.drawable.rounded_corner_critical);
                 break;
             case "Uninitialised":
-                t.setBackground(ContextCompat.getDrawable(mActivity,
-                        R.drawable.rounded_corner_unini));
+                CompatHelper.setBackground(t, c, R.drawable.rounded_corner_unini);
                 break;
             case "InProgress":
-                t.setBackground(ContextCompat.getDrawable(mActivity,
-                        R.drawable.rounded_corner_inprogress));
+                CompatHelper.setBackground(t, c, R.drawable.rounded_corner_inprogress);
                 break;
             case "Completed":
-                t.setBackground(ContextCompat.getDrawable(mActivity,
-                        R.drawable.rounded_corner_completed));
+                CompatHelper.setBackground(t, c, R.drawable.rounded_corner_completed);
                 break;
         }
     }
