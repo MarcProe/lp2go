@@ -18,7 +18,6 @@ package org.librepilot.lp2go.controller;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -28,6 +27,7 @@ import org.librepilot.lp2go.MainActivity;
 import org.librepilot.lp2go.R;
 import org.librepilot.lp2go.VisualLog;
 import org.librepilot.lp2go.c.PID;
+import org.librepilot.lp2go.helper.CompatHelper;
 import org.librepilot.lp2go.helper.SettingsHelper;
 import org.librepilot.lp2go.uavtalk.UAVTalkDeviceHelper;
 import org.librepilot.lp2go.uavtalk.UAVTalkObjectTree;
@@ -181,15 +181,15 @@ public class ViewControllerVerticalPid extends ViewController implements View.On
 
             if (lloStickResponse != null && lloControllCoeff != null) {
                 if (SettingsHelper.mColorfulVPid) {
-                    lloStickResponse.setBackground(
-                            ContextCompat.getDrawable(ma, R.drawable.border_top_yellow));
-                    lloControllCoeff.setBackground(
-                            ContextCompat.getDrawable(ma, R.drawable.border_top_blue));
+                    CompatHelper.setBackground(lloStickResponse, ma.getApplicationContext(),
+                            R.drawable.border_top_yellow);
+                    CompatHelper.setBackground(lloControllCoeff, ma.getApplicationContext(),
+                            R.drawable.border_top_blue);
                 } else {
-                    lloStickResponse.setBackground(
-                            ContextCompat.getDrawable(ma, R.drawable.border_top));
-                    lloControllCoeff.setBackground(
-                            ContextCompat.getDrawable(ma, R.drawable.border_top));
+                    CompatHelper.setBackground(lloStickResponse, ma.getApplicationContext(),
+                            R.drawable.border_top);
+                    CompatHelper.setBackground(lloControllCoeff, ma.getApplicationContext(),
+                            R.drawable.border_top);
                 }
             }
         } catch (NullPointerException e2) {
