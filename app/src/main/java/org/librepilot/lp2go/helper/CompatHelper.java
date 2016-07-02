@@ -8,11 +8,10 @@ import android.view.View;
 public class CompatHelper {
     public static void setBackground(View v, Context mActivity, int bg) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            v.setBackground(ContextCompat.getDrawable(mActivity,
-                    bg));
+            v.setBackground(ContextCompat.getDrawable(mActivity, bg));
         } else {
-            v.setBackgroundDrawable(ContextCompat.getDrawable(mActivity,
-                    bg));
+            //noinspection deprecation
+            v.setBackgroundDrawable(ContextCompat.getDrawable(mActivity, bg));
         }
     }
 }
