@@ -219,7 +219,7 @@ public class ViewControllerSettings extends ViewController
         MainActivity ma = getMainActivity();
 
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == MainActivity.CALLBACK_FILEPICKER && resultCode == Activity.RESULT_OK) {
+        if (requestCode == MainActivity.CALLBACK_FILEPICKER_UAVO && resultCode == Activity.RESULT_OK) {
             String filePath = data.getStringExtra(FilePickerActivity.RESULT_FILE_PATH);
             SingleToast.show(ma, filePath, Toast.LENGTH_LONG);
 
@@ -228,7 +228,7 @@ public class ViewControllerSettings extends ViewController
                 Uri uri = Uri.parse(filePath);
                 String strFileName = uri.getLastPathSegment();
                 ma.copyFile(in, strFileName);
-                VisualLog.d("FNF", "FNF");
+                VisualLog.d("OK", "OK");
             } catch (FileNotFoundException e) {
                 VisualLog.d("FNF", "FNF");
                 SingleToast.show(ma, filePath + " not found", Toast.LENGTH_LONG);
@@ -296,7 +296,7 @@ public class ViewControllerSettings extends ViewController
     private void onLoadUavObjectFile() {
         new MaterialFilePicker()
                 .withActivity(getMainActivity())
-                .withRequestCode(MainActivity.CALLBACK_FILEPICKER)
+                .withRequestCode(MainActivity.CALLBACK_FILEPICKER_UAVO)
                 .withFilter(Pattern.compile(".*\\.zip$"))
                 .withFilterDirectories(false)
                 .withHiddenFiles(false)

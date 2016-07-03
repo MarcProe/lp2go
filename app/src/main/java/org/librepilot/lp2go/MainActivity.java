@@ -110,7 +110,7 @@ import java.util.zip.ZipInputStream;
 import javax.xml.parsers.ParserConfigurationException;
 
 public class MainActivity extends AppCompatActivity {
-    public static final int CALLBACK_FILEPICKER = 3456;
+    public static final int CALLBACK_FILEPICKER_UAVO = 3456;
     public static final int CALLBACK_TTS = 6574;
     public static final int POLL_WAIT_TIME = 500;
     public static final int POLL_SECOND_FACTOR = 1000 / POLL_WAIT_TIME;
