@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="MATERIAL_ICONS">The material icons are reproduced or modified from work created and shared by Google and used according to terms described in the Creative Commons 4.0 Attribution License.</string>
-    <string name="ANDROID_ROBOT">The Android robot is reproduced or modified from work created and shared by Google and used according to terms described in the Creative Commons 3.0 Attribution License.</string>
+    <string name="MATERIAL_ICONS">The material icons are reproduced or modified from work created and shared by Google and used according to terms described in the Creative Commons 4.0 Attribution License\r\n(https://creativecommons.org/licenses/by-sa/4.0) .</string>
+    <string name="ANDROID_ROBOT">The Android robot is reproduced or modified from work created and shared by Google and used according to terms described in the Creative Commons 3.0 Attribution License\r\n(https://creativecommons.org/licenses/by-sa/3.0) .</string>
     <string name="LIBREPILOT_2_GO">LibrePilot 2 Go&#160;</string>
     <string name="LP_URL">http://www.librepilot.org</string>
     <string name="COPYRIGHT">© 2016 Marcus Proest. Based on work by the LibrePilot Project</string>
@@ -13,5 +13,5 @@
     <string name="C_MATERIAL_FILE_PICKER">Material File Picker\r\n(https://github.com/nbsp-team/MaterialFilePicker)\r\nis licensed under the GNU GENERAL PUBLIC LICENSE Version 2.</string>
     <string name="C_SEEKARC">SeekArc\r\n(https://github.com/neild001/SeekArc)\r\nis licensed under the MIT License.</string>
     <string name="C_MP_ANDROID_CHART">MPAndroidChart\r\n(https://github.com/PhilJay/MPAndroidChart)\r\nis licensed under the Apache License, Version 2.</string>
-    <string name="LP_LOGO">The LibrePilot logo is licensed under the Creative Commons BY-SA v3 license.</string>
+    <string name="C_LP_LOGO">The LibrePilot Logo\r\nis licensed under the\r\nCreative Commons BY-SA v3 license\r\n(https://creativecommons.org/licenses/by-sa/3.0) .</string>
 </resources>
