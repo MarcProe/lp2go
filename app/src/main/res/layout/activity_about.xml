@@ -144,6 +144,16 @@
                     android:layout_margin="5dp"
                     android:autoLink="web"
                     android:gravity="center_vertical|center_horizontal"
+                    android:text="@string/LP_LOGO"
+                    android:textAppearance="?android:attr/textAppearanceLarge"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_margin="5dp"
+                    android:autoLink="web"
+                    android:gravity="center_vertical|center_horizontal"
                     android:text="@string/ANDROID_ROBOT"
                     android:textAppearance="?android:attr/textAppearanceLarge"/>
 
