@@ -102,14 +102,16 @@ public class ViewControllerSettings extends ViewController
                     int btpd = 0;
                     for (android.bluetooth.BluetoothDevice device : pairedDevices) {
                         // Add the name and address to an array adapter to show in a ListView
-                        btPairedDeviceAdapter.add(device.getName());
-                        if (device.getName().equals(SettingsHelper.mBluetoothDeviceUsed)) {
-                            spnBluetoothPairedDevice.setSelection(btpd);
+                        if (device != null) {
+                            if (device.getName() != null) {
+                                btPairedDeviceAdapter.add(device.getName());
+                                if (device.getName().equals(SettingsHelper.mBluetoothDeviceUsed)) {
+                                    spnBluetoothPairedDevice.setSelection(btpd);
+                                }
+                                btpd++;
+                            }
+                            VisualLog.d("BTE", device.getName() + " " + device.getAddress());
                         }
-                        btpd++;
-
-                        VisualLog.d("BTE", device.getName() + " " + device.getAddress());
-
                     }
                 }
             }
