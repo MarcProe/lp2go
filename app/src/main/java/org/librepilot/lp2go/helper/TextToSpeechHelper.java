@@ -22,9 +22,11 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.Build;
 import android.speech.tts.TextToSpeech;
+import android.widget.Toast;
 
 import org.librepilot.lp2go.MainActivity;
 import org.librepilot.lp2go.VisualLog;
+import org.librepilot.lp2go.ui.SingleToast;
 
 import java.util.Locale;
 
@@ -36,15 +38,17 @@ public class TextToSpeechHelper implements TextToSpeech.OnInitListener {
 
     public TextToSpeechHelper(MainActivity mActivity) {
         this.mActivity = mActivity;
-        checkForTTS();
         setEnabled(SettingsHelper.mText2SpeechEnabled);
     }
 
     public void setEnabled(boolean enabled) {
+        if (enabled) {
+            checkForTTS();
+        }
         mEnabled = enabled;
     }
 
-    public void checkForTTS() {
+    private void checkForTTS() {
         Intent checkIntent = new Intent();
         checkIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
         try {
@@ -54,14 +58,14 @@ public class TextToSpeechHelper implements TextToSpeech.OnInitListener {
                     .resolveActivity(installIntent, PackageManager.MATCH_DEFAULT_ONLY);
 
             if (resolveInfo == null) {
-                VisualLog.d("TTS", "Activity not supported");
+                SingleToast.show(mActivity, "Text2Speech not supported on your device. (1)", Toast.LENGTH_LONG);
                 mTts = null;
             } else {
                 VisualLog.d("TTS", "Calling Activity");
                 mActivity.startActivityForResult(checkIntent, MainActivity.CALLBACK_TTS);
             }
         } catch (ActivityNotFoundException e) {
-            VisualLog.d("TTS", "TTS call threw ActivityNotFoundException");
+            SingleToast.show(mActivity, "Text2Speech not supported on your device. (2)", Toast.LENGTH_LONG);
             mTts = null;
         }
     }
@@ -77,7 +81,7 @@ public class TextToSpeechHelper implements TextToSpeech.OnInitListener {
                 //installIntent.setAction(
                 //        TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
                 //mActivity.startActivity(installIntent);
-                VisualLog.d("TTS", "Call successful, but bad result");
+                SingleToast.show(mActivity, "Text2Speech not supported on your device. (3)", Toast.LENGTH_LONG);
                 mTts = null;
             }
         }
