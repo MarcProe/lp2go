@@ -67,7 +67,7 @@
                                 android:maxLines="1"
                                 android:text="@string/VPID_ALTITUDE_P"
                                 android:textColor="@android:color/black"
-                                android:textSize="100sp" />
+                                android:textSize="30sp"/>
 
                             <org.librepilot.lp2go.ui.PidTextView
                                 android:id="@+id/txtVerticalAltitudeProportional"
@@ -101,7 +101,7 @@
                                 android:maxLines="1"
                                 android:text="@string/VPID_VELOCITY_P"
                                 android:textColor="@android:color/black"
-                                android:textSize="100sp" />
+                                android:textSize="30sp"/>
 
                             <org.librepilot.lp2go.ui.PidTextView
                                 android:id="@+id/txtVerticalVelocityProportional"
@@ -136,7 +136,7 @@
                                 android:maxLines="1"
                                 android:text="@string/VPID_VELOCITY_I"
                                 android:textColor="@android:color/black"
-                                android:textSize="100sp" />
+                                android:textSize="30sp"/>
 
                             <org.librepilot.lp2go.ui.PidTextView
                                 android:id="@+id/txtVerticalVelocityIntegral"
@@ -168,9 +168,9 @@
                                 android:layout_weight="0.5"
                                 android:gravity="center_vertical|center_horizontal"
                                 android:maxLines="1"
-                                android:text="@string/verlocity_d"
+                                android:text="@string/VPID_VELOCITY_D"
                                 android:textColor="@android:color/black"
-                                android:textSize="100sp" />
+                                android:textSize="30sp"/>
 
                             <org.librepilot.lp2go.ui.PidTextView
                                 android:id="@+id/txtVerticalVelocityDerivative"
@@ -204,7 +204,7 @@
                                 android:maxLines="1"
                                 android:text="@string/VPID_VELOCITY_BETA"
                                 android:textColor="@android:color/black"
-                                android:textSize="100sp" />
+                                android:textSize="30sp"/>
 
                             <org.librepilot.lp2go.ui.PidTextView
                                 android:id="@+id/txtVerticalVelocityBeta"
@@ -256,7 +256,7 @@
                                 android:maxLines="1"
                                 android:text="@string/VPID_EXPONETNIAL"
                                 android:textColor="@android:color/black"
-                                android:textSize="100sp" />
+                                android:textSize="30sp"/>
 
                             <org.librepilot.lp2go.ui.PidTextView
                                 android:id="@+id/txtVerticalExponential"
@@ -291,7 +291,7 @@
                                 android:maxLines="1"
                                 android:text="@string/VPID_THRUST_RATE"
                                 android:textColor="@android:color/black"
-                                android:textSize="100sp" />
+                                android:textSize="30sp"/>
 
                             <org.librepilot.lp2go.ui.PidTextView
                                 android:id="@+id/txtVerticalThrustRate"
