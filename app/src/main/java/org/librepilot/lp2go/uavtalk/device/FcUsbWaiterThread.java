@@ -43,6 +43,7 @@ class FcUsbWaiterThread extends FcWaiterThread {
         this.setName("LP2GoDeviceUsbWaiterThread");
     }
 
+    @Override
     protected void stopThread() {
         this.mStop = true;
     }
