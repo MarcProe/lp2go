@@ -168,7 +168,7 @@
                                 android:layout_weight="0.5"
                                 android:gravity="center_vertical|center_horizontal"
                                 android:maxLines="1"
-                                android:text="@string/verlocity_d"
+                                android:text="@string/VPID_VELOCITY_D"
                                 android:textColor="@android:color/black"
                                 android:textSize="100sp" />
 
