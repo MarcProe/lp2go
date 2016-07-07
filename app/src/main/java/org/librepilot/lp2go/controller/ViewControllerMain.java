@@ -723,7 +723,7 @@ public class ViewControllerMain extends ViewController implements View.OnClickLi
             try {
                 armingState =
                         ma.mFcDevice.getObjectTree().getData("FlightStatus", "Armed").toString();
-            } catch (UAVTalkMissingObjectException e) {
+            } catch (UAVTalkMissingObjectException | NullPointerException e) {
                 armingState = "";
                 ma.mFcDevice.requestObject("FlightStatus");
             }
