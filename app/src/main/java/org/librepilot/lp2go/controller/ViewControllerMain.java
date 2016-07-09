@@ -452,11 +452,7 @@ public class ViewControllerMain extends ViewController implements View.OnClickLi
 
         if (isView(R.id.root_main_inc_info)) {
 
-            String statusArmed = getData("FlightStatus", "Armed").toString();
-            if (!txtArmed.getText().toString().equals(statusArmed)) {
-                getMainActivity().getTtsHelper().speakFlush(statusArmed);
-                setText(txtArmed, statusArmed);
-            }
+            setText(txtArmed, getData("FlightStatus", "Armed").toString());
 
             setText(txtFlightTime, H.getDateFromMilliSeconds(
                     getData("SystemStats", "FlightTime").toString()));

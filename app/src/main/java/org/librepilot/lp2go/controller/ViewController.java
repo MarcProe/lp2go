@@ -28,6 +28,7 @@ import org.librepilot.lp2go.MainActivity;
 import org.librepilot.lp2go.R;
 import org.librepilot.lp2go.VisualLog;
 import org.librepilot.lp2go.helper.CompatHelper;
+import org.librepilot.lp2go.helper.SettingsHelper;
 import org.librepilot.lp2go.menu.MenuItem;
 import org.librepilot.lp2go.uavtalk.UAVTalkMissingObjectException;
 
@@ -54,6 +55,7 @@ public abstract class ViewController {
     private MainActivity mActivity;
     private int mIcon;
     private MenuItem mMenuItem;
+    private String mPreviousArmedStatus = "";
 
     ViewController(MainActivity activity, int title, int icon, int localSettingsVisible,
                    int flightSettingsVisible) {
@@ -127,6 +129,16 @@ public abstract class ViewController {
 
     public void update() {
         mBlink = !mBlink;
+
+        //TTS
+        if (SettingsHelper.mText2SpeechEnabled) {
+            String statusArmed = getData("FlightStatus", "Armed").toString();
+            if (!mPreviousArmedStatus.equals(statusArmed)) {
+                mPreviousArmedStatus = statusArmed;
+                getMainActivity().getTtsHelper().speakFlush(statusArmed);
+            }
+        }
+
     }
 
     public void reset() {
