@@ -62,8 +62,8 @@
 
             <TableLayout
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="4">
+                android:layout_height="wrap_content"
+                >
 
                 <TableRow
                     android:layout_width="match_parent"
@@ -157,12 +157,17 @@
 
             </TableLayout>
 
+            <ListView
+                android:id="@+id/listView"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="2"/>
+
             <TextView
                 android:id="@+id/textView3"
                 android:layout_width="fill_parent"
-                android:layout_height="0dp"
-                android:layout_weight="2"
-                android:text="Please be advised that all toolbar options are highly experimental. Don&apos;t use them if you do not really know why you should."
+                android:layout_height="wrap_content"
+                android:text="Please be advised that all toolbar options are highly experimental. Don&apos;t use them if you do not really know why you should and/or read the wiki."
                 android:textAppearance="?android:attr/textAppearanceMedium"/>
 
         </LinearLayout>

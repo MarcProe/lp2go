@@ -162,8 +162,21 @@ public class PollThread extends Thread {
                                 H.bytesToHex(getByteData("FirmwareIAPObj", "Description", 60, 20));
                         mA.setUavoLongHashFC(fcUavoHash.toLowerCase());
                         if (fcUavoHash.toLowerCase().equals(mA.getUavoLongHash().toLowerCase())) {
-                            mA.imgUavoSanity.setColorFilter(Color.argb(0xff, 0, 0x80, 0));
-                            mA.imgUavoSanity.setRotation(0f);
+                            if (mA.getFcDevice() != null) {
+                                if (mA.getFcDevice().isLogging()) {
+                                    if (mBlink) {
+                                        mA.imgUavoSanity.setColorFilter(Color.argb(0xff, 0, 0x00, 0x80));
+                                        mA.imgUavoSanity.setRotation(90f);
+                                    } else {
+                                        mA.imgUavoSanity.setColorFilter(Color.argb(0xff, 0, 0x00, 0x80));
+                                        mA.imgUavoSanity.setRotation(180f);
+                                    }
+                                } else {
+                                    mA.imgUavoSanity.setColorFilter(Color.argb(0xff, 0, 0x80, 0));
+                                    mA.imgUavoSanity.setRotation(0f);
+                                }
+                            }
+
                         } else {
                             if (mBlink) {
                                 mA.imgUavoSanity.setColorFilter(Color.argb(0xff, 0xd4, 0, 0));
