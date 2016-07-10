@@ -100,4 +100,13 @@ public class ViewControllerAbout extends ViewController implements View.OnClickL
     public void onClick(View v) {
         onDebugLogoClick();
     }
+
+    @Override
+    public void enter(int view) {
+        super.enter(view);
+        final TextView txtNewVersion = (TextView) getMainActivity().findViewById(R.id.txtNewVersion);
+        if (txtNewVersion != null) {
+            txtNewVersion.setText(getMainActivity().getNewVersionAvailable());
+        }
+    }
 }

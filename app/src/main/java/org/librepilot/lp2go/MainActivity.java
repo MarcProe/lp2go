@@ -44,8 +44,11 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.hardware.usb.UsbConstants;
 import android.hardware.usb.UsbDeviceConnection;
 import android.hardware.usb.UsbInterface;
@@ -66,6 +69,12 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import org.librepilot.lp2go.controller.ViewController;
 import org.librepilot.lp2go.controller.ViewControllerAbout;
@@ -202,6 +211,7 @@ public class MainActivity extends AppCompatActivity {
         }
     };
     private ArrayList<Integer> mViewPos;
+    private String mNewVersionAvailable = null;
 
     public static boolean hasPThread() {
         return mHasPThread;
@@ -223,6 +233,14 @@ public class MainActivity extends AppCompatActivity {
 
     public static void setPThread(boolean mHasPThread) {
         MainActivity.mHasPThread = mHasPThread;
+    }
+
+    public String getNewVersionAvailable() {
+        if (mNewVersionAvailable != null) {
+            return mNewVersionAvailable;
+        } else {
+            return "";
+        }
     }
 
     public FcDevice getFcDevice() {
@@ -466,6 +484,61 @@ public class MainActivity extends AppCompatActivity {
         initSlider();
 
         initWarnDialog().show();
+
+        checkVersion();
+    }
+
+    private void checkVersion() {
+
+        final Resources res = this.getResources();
+        PackageInfo pInfo = null;
+
+        final Integer versionThis;
+        final String packageName;
+        try {
+            pInfo = this.getPackageManager().getPackageInfo(this.getPackageName(), 0);
+
+
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        if (pInfo != null) {
+            versionThis = pInfo.versionCode;
+            packageName = pInfo.packageName.replace(".", "-"); //firebase does not allow "."
+        } else {
+            versionThis = 0;
+            packageName = null;
+        }
+
+        final MainActivity ma = this;
+
+        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
+        if (packageName != null && versionThis > 0) {
+            mDatabase.child("version").child(packageName).addListenerForSingleValueEvent(
+                    new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            try {
+                                Integer versionCurrent = dataSnapshot.getValue(Integer.class);
+                                if (versionThis != null && versionCurrent > versionThis) {
+                                    mNewVersionAvailable = "There is a new Version available! (" + versionThis + " < " + versionCurrent + ")";
+                                    VisualLog.i("VersionCheck", mNewVersionAvailable);
+                                } else {
+                                    mNewVersionAvailable = "Newest Version installed! (" + versionThis + " >= " + versionCurrent + ")";
+                                    VisualLog.i("VersionCheck", mNewVersionAvailable);
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            VisualLog.d("FBD", "getUser:onCancelled", databaseError.toException());
+                        }
+                    });
+        }
     }
 
     @Override
