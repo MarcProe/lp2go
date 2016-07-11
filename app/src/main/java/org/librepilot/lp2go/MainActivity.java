@@ -466,8 +466,6 @@ public class MainActivity extends AppCompatActivity {
         initSlider();
 
         initWarnDialog().show();
-
-
     }
 
     @Override
