@@ -23,11 +23,20 @@ import android.os.Build;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import org.librepilot.lp2go.MainActivity;
 import org.librepilot.lp2go.R;
+import org.librepilot.lp2go.VisualLog;
 import org.librepilot.lp2go.menu.MenuItem;
 
 public class ViewControllerAbout extends ViewController implements View.OnClickListener {
+
+    private String mNewVersionAvailable;
 
     public ViewControllerAbout(MainActivity activity, int title, int icon, int localSettingsVisible,
                                int flightSettingsVisible) {
@@ -68,6 +77,7 @@ public class ViewControllerAbout extends ViewController implements View.OnClickL
         }
         findViewById(R.id.imgDebugLogo).setOnClickListener(this);
 
+        checkVersion();
     }
 
     @Override
@@ -99,5 +109,66 @@ public class ViewControllerAbout extends ViewController implements View.OnClickL
     @Override
     public void onClick(View v) {
         onDebugLogoClick();
+    }
+
+    @Override
+    public void enter(int view) {
+        super.enter(view);
+        final TextView txtNewVersion = (TextView) getMainActivity().findViewById(R.id.txtNewVersion);
+        if (txtNewVersion != null) {
+            txtNewVersion.setText(mNewVersionAvailable);
+        }
+    }
+
+    private void checkVersion() {
+
+        final MainActivity ma = getMainActivity();
+        PackageInfo pInfo;
+
+        final Integer versionThis;
+        final String packageName;
+        try {
+            pInfo = ma.getPackageManager().getPackageInfo(ma.getPackageName(), 0);
+        } catch (PackageManager.NameNotFoundException e) {
+            VisualLog.e("VersionCheck", "PackageInfo not instantiated");
+            return;
+        }
+
+        if (pInfo != null) {
+            versionThis = pInfo.versionCode;
+            packageName = pInfo.packageName.replace(".", "-"); //firebase does not allow "."
+        } else {
+            versionThis = 0;
+            packageName = null;
+        }
+
+        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
+        if (packageName != null && versionThis > 0) {
+            mDatabase.child("version").child(packageName).addListenerForSingleValueEvent(
+                    new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            try {
+                                Integer versionCurrent = dataSnapshot.getValue(Integer.class);
+                                if (versionCurrent > versionThis) {
+                                    mNewVersionAvailable = "There is a new Version available! (" + versionThis + " < " + versionCurrent + ")";
+                                    VisualLog.i("VersionCheck", mNewVersionAvailable);
+                                } else {
+                                    mNewVersionAvailable = "Newest Version installed! (" + versionThis + " >= " + versionCurrent + ")";
+                                    VisualLog.i("VersionCheck", mNewVersionAvailable);
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                mNewVersionAvailable = "";
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            VisualLog.d("VersionCheck", "onCancelled", databaseError.toException());
+                        }
+                    }
+            );
+        }
     }
 }
