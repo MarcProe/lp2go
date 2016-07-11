@@ -78,7 +78,6 @@ public class ViewControllerAbout extends ViewController implements View.OnClickL
         findViewById(R.id.imgDebugLogo).setOnClickListener(this);
 
         checkVersion();
-
     }
 
     @Override
@@ -124,18 +123,15 @@ public class ViewControllerAbout extends ViewController implements View.OnClickL
     private void checkVersion() {
 
         final MainActivity ma = getMainActivity();
-
-        final Resources res = ma.getResources();
-        PackageInfo pInfo = null;
+        PackageInfo pInfo;
 
         final Integer versionThis;
         final String packageName;
         try {
             pInfo = ma.getPackageManager().getPackageInfo(ma.getPackageName(), 0);
-
-
         } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
+            VisualLog.e("VersionCheck", "PackageInfo not instantiated");
+            return;
         }
 
         if (pInfo != null) {
@@ -154,7 +150,7 @@ public class ViewControllerAbout extends ViewController implements View.OnClickL
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             try {
                                 Integer versionCurrent = dataSnapshot.getValue(Integer.class);
-                                if (versionThis != null && versionCurrent > versionThis) {
+                                if (versionCurrent > versionThis) {
                                     mNewVersionAvailable = "There is a new Version available! (" + versionThis + " < " + versionCurrent + ")";
                                     VisualLog.i("VersionCheck", mNewVersionAvailable);
                                 } else {
@@ -163,14 +159,16 @@ public class ViewControllerAbout extends ViewController implements View.OnClickL
                                 }
                             } catch (Exception e) {
                                 e.printStackTrace();
+                                mNewVersionAvailable = "";
                             }
                         }
 
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
-                            VisualLog.d("FBD", "getUser:onCancelled", databaseError.toException());
+                            VisualLog.d("VersionCheck", "onCancelled", databaseError.toException());
                         }
-                    });
+                    }
+            );
         }
     }
 }
