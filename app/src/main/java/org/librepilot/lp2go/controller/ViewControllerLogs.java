@@ -22,7 +22,10 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.v4.content.FileProvider;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,28 +38,48 @@ import org.librepilot.lp2go.ui.SingleToast;
 import org.librepilot.lp2go.ui.alertdialog.EnumInputAlertDialog;
 
 import java.io.File;
+import java.io.FilenameFilter;
+import java.util.ArrayList;
 
-public class ViewControllerLogs extends ViewController implements View.OnClickListener {
+public class ViewControllerLogs extends ViewController implements View.OnClickListener, AdapterView.OnItemClickListener {
 
-    private final ImageView imgLogShare;
-    private final ImageView imgLogStart;
-    private final ImageView imgLogStop;
+    private ImageView imgLogShare;
+    private ImageView imgLogStart;
+    private ImageView imgLogStop;
+    private ArrayList<String> mFileList;
     private TextView txtLogDuration;
     private TextView txtLogFilename;
     private TextView txtLogObjects;
     private TextView txtLogSize;
 
+    private ListView mLogListView;
+    private ArrayAdapter mLogListAdapter;
+
     public ViewControllerLogs(MainActivity activity, int title, int icon, int localSettingsVisible,
                               int flightSettingsVisible) {
         super(activity, title, icon, localSettingsVisible, flightSettingsVisible);
-        activity.mViews
-                .put(VIEW_LOGS, activity.getLayoutInflater().inflate(R.layout.activity_logs, null));
-        activity.setContentView(activity.mViews.get(VIEW_LOGS)); //Logs
 
-        txtLogFilename = (TextView) activity.findViewById(R.id.txtLogFilename);
-        txtLogSize = (TextView) activity.findViewById(R.id.txtLogSize);
-        txtLogObjects = (TextView) activity.findViewById(R.id.txtLogObjects);
-        txtLogDuration = (TextView) activity.findViewById(R.id.txtLogDuration);
+        mFileList = new ArrayList<>();
+
+        init();
+
+
+    }
+
+    @Override
+    public void init() {
+        super.init();
+
+        final MainActivity ma = getMainActivity();
+
+        // this will set the layout according to device orientation
+        ma.mViews.put(VIEW_LOGS, ma.getLayoutInflater().inflate(R.layout.activity_logs, null));
+        ma.setContentView(ma.mViews.get(VIEW_LOGS));
+
+        txtLogFilename = (TextView) ma.findViewById(R.id.txtLogFilename);
+        txtLogSize = (TextView) ma.findViewById(R.id.txtLogSize);
+        txtLogObjects = (TextView) ma.findViewById(R.id.txtLogObjects);
+        txtLogDuration = (TextView) ma.findViewById(R.id.txtLogDuration);
 
         imgLogStart = (ImageView) findViewById(R.id.imgLogStart);
         imgLogStop = (ImageView) findViewById(R.id.imgLogStop);
@@ -65,6 +88,32 @@ public class ViewControllerLogs extends ViewController implements View.OnClickLi
         imgLogStart.setOnClickListener(this);
         imgLogStop.setOnClickListener(this);
         imgLogShare.setOnClickListener(this);
+
+        mLogListView = (ListView) findViewById(R.id.lsvLogList);
+        mLogListAdapter = new ArrayAdapter(getMainActivity(), android.R.layout.simple_list_item_1, mFileList);
+        mLogListView.setAdapter(mLogListAdapter);
+        mLogListView.setOnItemClickListener(this);
+
+        loadFileList(true);
+    }
+
+    private void loadFileList(boolean notify) {
+        mFileList.clear();
+        File f = getMainActivity().getFilesDir();
+        File file[] = f.listFiles(new FilenameFilter() {
+            @Override
+            public boolean accept(File file, String s) {
+                return s.endsWith(".opl");
+            }
+        });
+
+        for (int i = 0; i < file.length; i++) {
+            mFileList.add(file[i].getName());
+            VisualLog.d("FILE", file[i].getName());
+        }
+        if (notify) {
+            mLogListAdapter.notifyDataSetChanged();
+        }
     }
 
     @Override
@@ -154,6 +203,7 @@ public class ViewControllerLogs extends ViewController implements View.OnClickLi
     private void onLogStop(View v) {
         try {
             getMainActivity().mFcDevice.setLogging(false);
+            loadFileList(true);
         } catch (NullPointerException e) {
             VisualLog.i("INFO", "Device is null");
         }
@@ -198,6 +248,19 @@ public class ViewControllerLogs extends ViewController implements View.OnClickLi
         }
     }
 
+    @Override
+    public void leave() {
+        super.leave();
+        mFileList.clear();
+        mLogListAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void enter(int view) {
+        super.enter(view);
+        loadFileList(true);
+    }
+
     private void onTelemetryTimestampsClick() {
         final MainActivity ma = getMainActivity();
         if (ma.mFcDevice != null) {
@@ -224,5 +287,10 @@ public class ViewControllerLogs extends ViewController implements View.OnClickLi
         } else {
             SingleToast.show(ma, R.string.SEND_FAILED, Toast.LENGTH_SHORT);
         }
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        VisualLog.d("CLICK", mFileList.get(i));
     }
 }
