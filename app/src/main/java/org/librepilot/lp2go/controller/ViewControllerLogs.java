@@ -22,7 +22,10 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.v4.content.FileProvider;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,28 +38,51 @@ import org.librepilot.lp2go.ui.SingleToast;
 import org.librepilot.lp2go.ui.alertdialog.EnumInputAlertDialog;
 
 import java.io.File;
+import java.io.FilenameFilter;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-public class ViewControllerLogs extends ViewController implements View.OnClickListener {
+public class ViewControllerLogs extends ViewController implements View.OnClickListener, AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener {
 
-    private final ImageView imgLogShare;
-    private final ImageView imgLogStart;
-    private final ImageView imgLogStop;
+    private ImageView imgLogShare;
+    private ImageView imgLogStart;
+    private ImageView imgLogStop;
+    private List<String> mFileList;
     private TextView txtLogDuration;
     private TextView txtLogFilename;
     private TextView txtLogObjects;
     private TextView txtLogSize;
 
+    private ListView mLogListView;
+    private ArrayAdapter mLogListAdapter;
+    private Integer mCurrentLogListPos = null;
+
     public ViewControllerLogs(MainActivity activity, int title, int icon, int localSettingsVisible,
                               int flightSettingsVisible) {
         super(activity, title, icon, localSettingsVisible, flightSettingsVisible);
-        activity.mViews
-                .put(VIEW_LOGS, activity.getLayoutInflater().inflate(R.layout.activity_logs, null));
-        activity.setContentView(activity.mViews.get(VIEW_LOGS)); //Logs
 
-        txtLogFilename = (TextView) activity.findViewById(R.id.txtLogFilename);
-        txtLogSize = (TextView) activity.findViewById(R.id.txtLogSize);
-        txtLogObjects = (TextView) activity.findViewById(R.id.txtLogObjects);
-        txtLogDuration = (TextView) activity.findViewById(R.id.txtLogDuration);
+        mFileList = new ArrayList<>();
+
+        init();
+
+
+    }
+
+    @Override
+    public void init() {
+        super.init();
+
+        final MainActivity ma = getMainActivity();
+
+        // this will set the layout according to device orientation
+        ma.mViews.put(VIEW_LOGS, ma.getLayoutInflater().inflate(R.layout.activity_logs, null));
+        ma.setContentView(ma.mViews.get(VIEW_LOGS));
+
+        txtLogFilename = (TextView) ma.findViewById(R.id.txtLogFilename);
+        txtLogSize = (TextView) ma.findViewById(R.id.txtLogSize);
+        txtLogObjects = (TextView) ma.findViewById(R.id.txtLogObjects);
+        txtLogDuration = (TextView) ma.findViewById(R.id.txtLogDuration);
 
         imgLogStart = (ImageView) findViewById(R.id.imgLogStart);
         imgLogStop = (ImageView) findViewById(R.id.imgLogStop);
@@ -65,6 +91,49 @@ public class ViewControllerLogs extends ViewController implements View.OnClickLi
         imgLogStart.setOnClickListener(this);
         imgLogStop.setOnClickListener(this);
         imgLogShare.setOnClickListener(this);
+
+        mLogListView = (ListView) findViewById(R.id.lsvLogList);
+        mLogListAdapter = new ArrayAdapter(getMainActivity(), android.R.layout.simple_list_item_1, mFileList);
+        mLogListView.setAdapter(mLogListAdapter);
+        mLogListView.setClickable(true);
+        mLogListView.setLongClickable(true);
+        mLogListView.setOnItemClickListener(this);
+        mLogListView.setOnItemLongClickListener(this);
+
+        loadFileList(true);
+    }
+
+    private void loadFileList(boolean notify) {
+        mFileList.clear();
+        File f = getMainActivity().getFilesDir();
+        File file[] = f.listFiles(new FilenameFilter() {
+            @Override
+            public boolean accept(File file, String s) {
+                return s.endsWith(".opl");
+            }
+        });
+
+        for (File aFile : file) {
+            mFileList.add(aFile.getName() + " (" + String.format("%.1f", (float) aFile.length() / 1024) + " KB) ");
+
+            VisualLog.d("FILE", aFile.getName());
+        }
+        if (mFileList.size() == 0) {
+            mFileList.add("<no logs found>");
+        }
+
+        Collections.sort(mFileList);
+        Collections.reverse(mFileList);
+
+        if (notify) {
+            mLogListAdapter.notifyDataSetChanged();
+        }
+
+        //clear current choice...
+        mLogListView.setChoiceMode(ListView.CHOICE_MODE_NONE);
+        mLogListView.setAdapter(mLogListAdapter);
+        mLogListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+
     }
 
     @Override
@@ -154,9 +223,14 @@ public class ViewControllerLogs extends ViewController implements View.OnClickLi
     private void onLogStop(View v) {
         try {
             getMainActivity().mFcDevice.setLogging(false);
+            loadFileList(true);
         } catch (NullPointerException e) {
             VisualLog.i("INFO", "Device is null");
         }
+    }
+
+    private String getFilename(String string) {
+        return string == null ? null : string.substring(0, string.indexOf(" "));
     }
 
     private void onLogShare(View v) {
@@ -169,15 +243,27 @@ public class ViewControllerLogs extends ViewController implements View.OnClickLi
 
         share.setType(getString(R.string.MIME_APPLICATION_OCTETSTREAM));
 
+        String filename;
+        if (mCurrentLogListPos != null) {
+            filename = getFilename((String) mLogListView.getItemAtPosition(mCurrentLogListPos));
+            VisualLog.d("LOOOOG", "" + mCurrentLogListPos);
+            if (filename == null) {
+                SingleToast.show(getMainActivity(), "Please select a log from the list", Toast.LENGTH_LONG);
+                return;
+            }
+            VisualLog.d("LOOuOG", filename);
+        } else {
+            SingleToast.show(getMainActivity(), "Please select a log from the list", Toast.LENGTH_LONG);
+            return;
+        }
+
         File logPath = new File(getMainActivity().getFilesDir(), "");
-        File logFile = new File(logPath, getMainActivity().mFcDevice.getLogFileName());
-        Uri contentUri =
-                FileProvider.getUriForFile(getMainActivity(),
-                        getString(R.string.APP_ID) + ".logfileprovider", logFile);
+        File logFile = new File(logPath, filename);
+        Uri contentUri = FileProvider.getUriForFile(getMainActivity(),
+                getString(R.string.APP_ID) + ".logfileprovider", logFile);
 
         share.putExtra(Intent.EXTRA_STREAM, contentUri);
-        getMainActivity()
-                .startActivity(Intent.createChooser(share, getString(R.string.SHARE_LOG_TITLE)));
+        getMainActivity().startActivity(Intent.createChooser(share, getString(R.string.SHARE_LOG_TITLE)));
     }
 
     @Override
@@ -196,6 +282,19 @@ public class ViewControllerLogs extends ViewController implements View.OnClickLi
                 break;
             }
         }
+    }
+
+    @Override
+    public void leave() {
+        super.leave();
+        mFileList.clear();
+        mLogListAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void enter(int view) {
+        super.enter(view);
+        loadFileList(true);
     }
 
     private void onTelemetryTimestampsClick() {
@@ -224,5 +323,60 @@ public class ViewControllerLogs extends ViewController implements View.OnClickLi
         } else {
             SingleToast.show(ma, R.string.SEND_FAILED, Toast.LENGTH_SHORT);
         }
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int pos, long id) {
+        VisualLog.d("CLICK", mFileList.get(pos));
+        view.setSelected(true);
+        mCurrentLogListPos = pos;
+    }
+
+    @Override
+    public boolean onItemLongClick(AdapterView<?> adapterView, View view, int pos, long id) {
+        VisualLog.d("LONGCLICK", mFileList.get(pos));
+        final int j = pos;
+
+        AlertDialog dialog = new AlertDialog.Builder(getMainActivity())
+                .setTitle("Delete File?")
+                .setMessage("Are you sure to delete the log " + mFileList.get(pos) + "?")
+                .setPositiveButton(R.string.OK_BUTTON, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        final File logFile = new File(getMainActivity().getFilesDir(),
+                                getFilename(mFileList.get(j)));
+                        final boolean del = logFile.delete();
+                        SingleToast.show(getMainActivity(), del ? "File deleted" : "Error deleting File",
+                                Toast.LENGTH_LONG);
+                        mCurrentLogListPos = null;
+                        loadFileList(true);
+                        dialog.dismiss();
+                    }
+                })
+                .setNegativeButton(R.string.CANCEL_BUTTON, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                })
+                .setNeutralButton(R.string.DELETE_ALL_BUTTON, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        boolean del = true;
+                        for (int i = 0; i < mFileList.size(); i++) {
+                            final File logFile = new File(getMainActivity().getFilesDir(),
+                                    getFilename(mFileList.get(i)));
+                            del = del & logFile.delete();
+                        }
+                        SingleToast.show(getMainActivity(),
+                                del ? "Files deleted" : "Error deleting Files", Toast.LENGTH_LONG);
+                        loadFileList(true);
+                        dialog.dismiss();
+                    }
+                })
+                .create();
+        dialog.show();
+
+        return true;
     }
 }

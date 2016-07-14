@@ -87,7 +87,7 @@ public abstract class FcDevice {
     }
 
     public void setLogging(boolean logNow) {
-        if (mIsLogging == logNow) {   //if we are already logging, and we should start, just return
+        if (mIsLogging == logNow) { //if we are already logging, and we should start, just return
             return;                 //if we are not logging and should stop, nothing to do as well
         }
 
@@ -100,7 +100,7 @@ public abstract class FcDevice {
         }
 
         if (mIsLogging) {  //if logging should start, create new stream
-            mActivity.deleteFile(mLogFileName); //delete old log
+            //mActivity.deleteFile(mLogFileName); //delete old log
             mLogFileName = H.getLogFilename();
 
             try {
