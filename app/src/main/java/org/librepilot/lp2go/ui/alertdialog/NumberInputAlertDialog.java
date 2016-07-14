@@ -129,7 +129,6 @@ public class NumberInputAlertDialog extends InputAlertDialog implements TextWatc
 
 
         input.setText(fText);
-        input.setSelection(fText.length());
         input.setSelection(0);
         input.requestFocus();
         if (mMin >= 0 && mMax >= 0) {
