@@ -98,12 +98,9 @@ public class ViewController3DMagCalibration extends ViewController implements
             final float magx = Float.parseFloat(getData("MagState", "x").toString());
             final float magy = Float.parseFloat(getData("MagState", "y").toString());
             final float magz = Float.parseFloat(getData("MagState", "z").toString());
-
-            //Vector3 v = new Vector3(magx, magy, magz).nor();
-            Vector3 v = new Vector3(magx, magy, magz);
-            glv3DMagCalibration.addSample(v.x, v.y, v.z);
-        } catch (NumberFormatException ignored) {
-
+            glv3DMagCalibration.addSample(magx, magy, magz);
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
         }
     }
 
@@ -119,12 +116,9 @@ public class ViewController3DMagCalibration extends ViewController implements
         //final float q4 = Float.parseFloat(getData("AttitudeState", "q1").toString());
 
         try {
-            glv3DMagCalibration
-                    .setRoll(roll);
-            glv3DMagCalibration
-                    .setPitch(pitch);
-            glv3DMagCalibration
-                    .setYaw(yaw);
+            glv3DMagCalibration.setRoll(roll);
+            glv3DMagCalibration.setPitch(pitch);
+            glv3DMagCalibration.setYaw(yaw);
             final MainActivity m = getMainActivity();
             m.runOnUiThread(new Runnable() {
 
@@ -133,6 +127,7 @@ public class ViewController3DMagCalibration extends ViewController implements
                     try {
                         ((TextView) m.findViewById(R.id.faceName))
                                 .setText("" + glv3DMagCalibration.PitchRollToString(pitch, roll));
+
                         ((TextView) m.findViewById(R.id.magx)).setText("" + Math.floor(magx));
                         ((TextView) m.findViewById(R.id.magy)).setText("" + Math.floor(magy));
                         ((TextView) m.findViewById(R.id.magz)).setText("" + Math.floor(magz));
