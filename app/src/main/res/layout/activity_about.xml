@@ -216,6 +216,16 @@
                     android:layout_margin="5dp"
                     android:autoLink="web"
                     android:gravity="center_vertical|center_horizontal"
+                    android:text="@string/C_ELLIPSOID_FIT"
+                    android:textAppearance="?android:attr/textAppearanceLarge"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_margin="5dp"
+                    android:autoLink="web"
+                    android:gravity="center_vertical|center_horizontal"
                     android:text="@string/C_MP_ANDROID_CHART"
                     android:textAppearance="?android:attr/textAppearanceLarge"/>
 

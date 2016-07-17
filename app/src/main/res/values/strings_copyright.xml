@@ -13,5 +13,6 @@
     <string name="C_MATERIAL_FILE_PICKER">Material File Picker\r\n(https://github.com/nbsp-team/MaterialFilePicker)\r\nis licensed under the GNU GENERAL PUBLIC LICENSE Version 2.</string>
     <string name="C_SEEKARC">SeekArc\r\n(https://github.com/neild001/SeekArc)\r\nis licensed under the MIT License.</string>
     <string name="C_MP_ANDROID_CHART">MPAndroidChart\r\n(https://github.com/PhilJay/MPAndroidChart)\r\nis licensed under the Apache License, Version 2.</string>
+    <string name="C_ELLIPSOID_FIT">EllipsoidFit\r\n(https://github.com/KEOpenSource/EllipsoidFit)\r\nis licensed under the Apache License, Version 2.</string>
     <string name="C_LP_LOGO">The LibrePilot Logo\r\nis licensed under the\r\nCreative Commons BY-SA v3 license\r\n(https://creativecommons.org/licenses/by-sa/3.0) .</string>
 </resources>
