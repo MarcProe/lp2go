@@ -24,6 +24,7 @@ import android.support.v4.content.FileProvider;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -48,6 +49,11 @@ public class ViewControllerLogs extends ViewController implements View.OnClickLi
     private ImageView imgLogShare;
     private ImageView imgLogStart;
     private ImageView imgLogStop;
+    private ImageButton imgLogRepBack;
+    private ImageButton imgLogRepForward;
+    private ImageButton imgLogRepPlay;
+    private ImageButton imgLogRepStop;
+    private ImageButton imgLogRepPause;
     private List<String> mFileList;
     private TextView txtLogDuration;
     private TextView txtLogFilename;
@@ -84,13 +90,25 @@ public class ViewControllerLogs extends ViewController implements View.OnClickLi
         txtLogObjects = (TextView) ma.findViewById(R.id.txtLogObjects);
         txtLogDuration = (TextView) ma.findViewById(R.id.txtLogDuration);
 
-        imgLogStart = (ImageView) findViewById(R.id.imgLogStart);
-        imgLogStop = (ImageView) findViewById(R.id.imgLogStop);
-        imgLogShare = (ImageView) findViewById(R.id.imgLogShare);
+        imgLogStart = (ImageButton) findViewById(R.id.imgLogStart);
+        imgLogStop = (ImageButton) findViewById(R.id.imgLogStop);
+        imgLogShare = (ImageButton) findViewById(R.id.imgLogShare);
+
+        imgLogRepBack = (ImageButton) findViewById(R.id.imgLogRepBack);
+        imgLogRepForward = (ImageButton) findViewById(R.id.imgLogRepForward);
+        imgLogRepPlay = (ImageButton) findViewById(R.id.imgLogRepPlay);
+        imgLogRepStop = (ImageButton) findViewById(R.id.imgLogRepStop);
+        imgLogRepPause = (ImageButton) findViewById(R.id.imgLogRepPause);
 
         imgLogStart.setOnClickListener(this);
         imgLogStop.setOnClickListener(this);
         imgLogShare.setOnClickListener(this);
+
+        imgLogRepBack.setOnClickListener(this);
+        imgLogRepForward.setOnClickListener(this);
+        imgLogRepPlay.setOnClickListener(this);
+        imgLogRepStop.setOnClickListener(this);
+        imgLogRepPause.setOnClickListener(this);
 
         mLogListView = (ListView) findViewById(R.id.lsvLogList);
         mLogListAdapter = new ArrayAdapter(getMainActivity(), android.R.layout.simple_list_item_1, mFileList);
