@@ -11,8 +11,8 @@ android {
 
         multiDexEnabled true
 
-        versionName '0.3.0.25'
-        versionCode 30025
+        versionName '0.3.0.26'
+        versionCode 30026
     }
 
     dexOptions {
@@ -50,8 +50,8 @@ android {
             resValue 'string', 'APP_NAME', 'LibrePilot2Go Beta'
             resValue 'string', 'ACTION_USB_PERMISSION', applicationId + '.USB_PERMISSION'
 
-            versionCode 30112
-            versionName '0.3.1.12'
+            versionCode 30113
+            versionName '0.3.1.13'
         }
         release_flavor_ {
             minSdkVersion 14
@@ -85,9 +85,9 @@ dependencies {
     compile 'com.android.support:appcompat-v7:24.0.0'
     compile 'com.android.support:multidex:1.0.1'
     compile 'com.android.support:percent:24.0.0'
-    compile 'com.google.android.gms:play-services-maps:9.2.0'
-    compile 'com.google.android.gms:play-services-appindexing:9.2.0'
-    compile 'com.google.android.gms:play-services:9.2.0'
+    compile 'com.google.android.gms:play-services-maps:9.2.1'
+    compile 'com.google.android.gms:play-services-appindexing:9.2.1'
+    compile 'com.google.android.gms:play-services:9.2.1'
     compile 'com.nbsp:library:1.08'
     compile 'com.github.PhilJay:MPAndroidChart:v2.2.4'
     compile 'com.google.firebase:firebase-core:9.2.0'
