@@ -22,6 +22,7 @@ import android.opengl.GLU;
 import android.opengl.Matrix;
 import android.util.AttributeSet;
 
+import org.librepilot.lp2go.helper.ellipsoidFit.FitPoints;
 import org.librepilot.lp2go.helper.libgdx.math.Quaternion;
 import org.librepilot.lp2go.helper.libgdx.math.Vector3;
 import org.librepilot.lp2go.ui.opengl.shapes.Cube;
@@ -50,6 +51,17 @@ public class OpenGl3DMagCalibrationView extends GLSurfaceView {
         setRenderer(mRenderer);
     }
 
+    public void resetSamples() {
+        this.mRenderer.mCubes.clear();
+
+    }
+
+    public String fit() {
+        FitPoints fp = new FitPoints();
+        fp.fitEllipsoid(mRenderer.mCubes);
+        return fp.toString();
+    }
+
     public void setPitch(float pitch) {
         this.mRenderer.mPitch = pitch;
     }
@@ -63,8 +75,9 @@ public class OpenGl3DMagCalibrationView extends GLSurfaceView {
     }
 
 
-    public void addSample(float x, float y, float z) {
-        Cube c = new Cube(-y, -x, z);
+    public int addSample(float x, float y, float z) {
+
+        Cube c = new Cube(x, y, z);
 
         int alpha = (int) (c.alpha / OpenGLRenderer.ANGLE_DEG);
         int beta = (int) (c.beta / OpenGLRenderer.ANGLE_DEG);
@@ -85,6 +98,7 @@ public class OpenGl3DMagCalibrationView extends GLSurfaceView {
         } else {
             //VisualLog.d("DBG", "Won't add because " + num + " " + alpha +" " + beta + " ");
         }
+        return this.mRenderer.mCubes.size();
     }
 
     public String PitchRollToString(float pitch, float roll) {

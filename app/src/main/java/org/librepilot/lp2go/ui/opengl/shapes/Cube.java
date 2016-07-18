@@ -16,16 +16,20 @@
 
 package org.librepilot.lp2go.ui.opengl.shapes;
 
+import org.librepilot.lp2go.helper.ellipsoidFit.ThreeSpacePoint;
+
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
 import javax.microedition.khronos.opengles.GL10;
 
-public class Cube {
+public class Cube implements ThreeSpacePoint {
 
     final public double alpha, beta;
-    final public float x, y, z;
+    final private float x, y, z;
+    final private float rawX, rawY, rawZ;
+
     private final float colors[] = {
             1.0f, 0.0f, 0.0f, 1.0f,
             1.0f, 0.0f, 0.0f, 1.0f,
@@ -62,13 +66,16 @@ public class Cube {
 
     public Cube(float x, float y, float z) {
 
-        this.x = x / 300;
-        this.y = y / 300;
+        rawX = x;
+        rawY = y;
+        rawZ = z;
+
+        this.x = -x / 300;
+        this.y = -y / 300;
         this.z = z / 300;
 
-
-        this.alpha = Math.atan2(x, y) * 180 / Math.PI + 180;
-        this.beta = Math.atan2(x, z) * 180 / Math.PI + 180;
+        this.alpha = Math.atan2(this.y, this.x) * 180 / Math.PI + 180;
+        this.beta = Math.atan2(this.y, this.z) * 180 / Math.PI + 180;
 
         ByteBuffer byteBuf = ByteBuffer.allocateDirect(vertices.length * 4);
         byteBuf.order(ByteOrder.nativeOrder());
@@ -122,5 +129,20 @@ public class Cube {
         gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
         gl.glDisableClientState(GL10.GL_COLOR_ARRAY);
         gl.glPopMatrix();
+    }
+
+    @Override
+    public double getX() {
+        return rawX;
+    }
+
+    @Override
+    public double getY() {
+        return rawY;
+    }
+
+    @Override
+    public double getZ() {
+        return rawZ;
     }
 }

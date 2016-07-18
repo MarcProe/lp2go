@@ -16,23 +16,20 @@
 
 package org.librepilot.lp2go.controller;
 
+import android.view.View;
 import android.widget.TextView;
 
 import org.librepilot.lp2go.MainActivity;
 import org.librepilot.lp2go.R;
-import org.librepilot.lp2go.helper.libgdx.math.Vector3;
+import org.librepilot.lp2go.VisualLog;
 import org.librepilot.lp2go.uavtalk.UAVTalkObject;
 import org.librepilot.lp2go.uavtalk.UAVTalkObjectListener;
 import org.librepilot.lp2go.ui.opengl.OpenGl3DMagCalibrationView;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class ViewController3DMagCalibration extends ViewController implements
-        UAVTalkObjectListener {
+        UAVTalkObjectListener, View.OnClickListener {
 
     private OpenGl3DMagCalibrationView glv3DMagCalibration;
-    private List<Vector3> mSample = new ArrayList<>();
 
     public ViewController3DMagCalibration(MainActivity activity, int title, int icon,
                                           int localSettingsVisible, int flightSettingsVisible) {
@@ -44,6 +41,8 @@ public class ViewController3DMagCalibration extends ViewController implements
         this.glv3DMagCalibration =
                 (OpenGl3DMagCalibrationView) activity.findViewById(R.id.glv_3d_mag_calibration);
 
+        activity.findViewById(R.id.startFit).setOnClickListener(this);
+
     }
 
     @Override
@@ -54,7 +53,6 @@ public class ViewController3DMagCalibration extends ViewController implements
     @Override
     public void enter(int view) {
         super.enter(view);
-        mSample = new ArrayList<>();
 
     }
 
@@ -93,15 +91,17 @@ public class ViewController3DMagCalibration extends ViewController implements
 
     }
 
-    private void addSample() {
+    private int addSample() {
         try {
             final float magx = Float.parseFloat(getData("MagState", "x").toString());
             final float magy = Float.parseFloat(getData("MagState", "y").toString());
             final float magz = Float.parseFloat(getData("MagState", "z").toString());
-            glv3DMagCalibration.addSample(magx, magy, magz);
+            return glv3DMagCalibration.addSample(magx, magy, magz);
+
         } catch (NumberFormatException e) {
             e.printStackTrace();
         }
+        return 0;
     }
 
     @Override
@@ -115,11 +115,15 @@ public class ViewController3DMagCalibration extends ViewController implements
         final float magz = Float.parseFloat(getData("MagState", "z").toString());
         //final float q4 = Float.parseFloat(getData("AttitudeState", "q1").toString());
 
+        final MainActivity m = getMainActivity();
+
+        final int samples = addSample();        //saving the current sample
+
         try {
             glv3DMagCalibration.setRoll(roll);
             glv3DMagCalibration.setPitch(pitch);
             glv3DMagCalibration.setYaw(yaw);
-            final MainActivity m = getMainActivity();
+
             m.runOnUiThread(new Runnable() {
 
                 @Override
@@ -136,6 +140,8 @@ public class ViewController3DMagCalibration extends ViewController implements
                                 .setText("" + Math.floor(pitch));
                         ((TextView) m.findViewById(R.id.txt3droll)).setText("" + Math.floor(roll));
                         ((TextView) m.findViewById(R.id.txt3dyaw)).setText("" + Math.floor(yaw));
+
+                        ((TextView) m.findViewById(R.id.collectedSamples)).setText("" + samples);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -145,7 +151,11 @@ public class ViewController3DMagCalibration extends ViewController implements
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
 
-        addSample();
+    @Override
+    public void onClick(View view) {
+        String result = this.glv3DMagCalibration.fit();
+        VisualLog.d("FIT", result);
     }
 }
