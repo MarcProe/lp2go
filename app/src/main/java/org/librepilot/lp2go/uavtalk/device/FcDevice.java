@@ -233,6 +233,10 @@ public abstract class FcDevice {
 
     public void handleHandshake(byte flightTelemtryStatusField) {
 
+        //if(SettingsHelper.mSerialModeUsed == MainActivity.SERIAL_LOG_FILE) {
+        //    return;
+        //}
+
         if (mFailedHandshakes > MAX_HANDSHAKE_FAILURE_CYCLES) {
             mUavTalkConnectionState = UAVTALK_DISCONNECTED;
             mFailedHandshakes = 0;

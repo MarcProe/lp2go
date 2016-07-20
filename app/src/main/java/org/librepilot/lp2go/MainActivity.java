@@ -86,6 +86,7 @@ import org.librepilot.lp2go.uavtalk.UAVTalkObjectTree;
 import org.librepilot.lp2go.uavtalk.UAVTalkXMLObject;
 import org.librepilot.lp2go.uavtalk.device.FcBluetoothDevice;
 import org.librepilot.lp2go.uavtalk.device.FcDevice;
+import org.librepilot.lp2go.uavtalk.device.FcLogfileDevice;
 import org.librepilot.lp2go.uavtalk.device.FcUsbDevice;
 import org.librepilot.lp2go.ui.SingleToast;
 import org.xml.sax.SAXException;
@@ -116,6 +117,7 @@ public class MainActivity extends AppCompatActivity {
     public static final int POLL_SECOND_FACTOR = 1000 / POLL_WAIT_TIME;
     public static final int SERIAL_BLUETOOTH = 2;
     public static final int SERIAL_NONE = 0;
+    public static final int SERIAL_LOG_FILE = 3;
     protected static final int SERIAL_USB = 1;
     private static final int NUM_OF_VIEWS = 11;
     private static final String UAVO_INTERNAL_PATH = "uavo";
@@ -259,6 +261,10 @@ public class MainActivity extends AppCompatActivity {
 
     public String getUavoLongHash() {
         return mUavoLongHash;
+    }
+
+    public ConnectionThread getConnectionThread() {
+        return mConnectionThread;
     }
 
     public void setPollThreadObjectTree(UAVTalkObjectTree oTree) {
@@ -614,6 +620,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    protected void connectLogFile(String filename) {
+        setFileLogInterface(filename);
+    }
+
     public void setContentView(View v, int p) {
         if (mCurrentView != p) {
             mCurrentView = p;
@@ -728,6 +738,17 @@ public class MainActivity extends AppCompatActivity {
 
     public void onToolbarLocalSettingsClick(View v) {
         mVcList.get(mCurrentView).onToolbarLocalSettingsClick(v);
+    }
+
+    private boolean setFileLogInterface(String filename) {
+        if (mFcDevice != null) {
+            mFcDevice.stop();
+        }
+        mFcDevice = null;
+        mFcDevice = new FcLogfileDevice(this, filename, mXmlObjects);
+        mFcDevice.start();
+
+        return mFcDevice != null;
     }
 
     private boolean setBluetoothInterface() {

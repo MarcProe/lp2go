@@ -299,6 +299,19 @@ public class ViewControllerLogs extends ViewController implements View.OnClickLi
                 onLogShare(v);
                 break;
             }
+            case R.id.imgLogRepPlay: {
+                onReplayStart(v);
+                break;
+            }
+        }
+    }
+
+    private void onReplayStart(View v) {
+        if (mCurrentLogListPos != null) {
+            String filename = getFilename((String) mLogListView.getItemAtPosition(mCurrentLogListPos));
+            getMainActivity().getConnectionThread().setReplayLogFile(filename);
+            SettingsHelper.mSerialModeUsed = MainActivity.SERIAL_LOG_FILE;
+            getMainActivity().reconnect();
         }
     }
 

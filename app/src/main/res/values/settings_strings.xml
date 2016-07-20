@@ -4,6 +4,7 @@
         <item>None</item>
         <item>USB</item>
         <item>Bluetooth</item>
+        <item>Logfile</item>
     </string-array>
 
     <string name="main_element_health">Health</string>

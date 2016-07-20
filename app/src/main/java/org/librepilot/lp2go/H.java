@@ -77,6 +77,18 @@ public class H {
         return 0xff & b;
     }
 
+    public static int toInt(byte[] bytes) {
+        return bytes[0] << 24 | (bytes[1] & 0xFF) << 16 | (bytes[2] & 0xFF) << 8 | (bytes[3] & 0xFF);
+    }
+
+    public static long toLong(byte[] bytes) {
+        long value = 0;
+        for (byte aByte : bytes) {
+            value = (value << 8) + (aByte & 0xff);
+        }
+        return value;
+    }
+
     public static String bytesToHex(byte[] bytes) {
         if (bytes == null) {
             return "null";

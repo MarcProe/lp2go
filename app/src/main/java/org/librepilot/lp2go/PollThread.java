@@ -122,6 +122,15 @@ public class PollThread extends Thread {
                         } else {
                             mA.imgSerial.setColorFilter(Color.argb(0xff, 0xd4, 0x00, 0x00));
                         }
+                    } else if (SettingsHelper.mSerialModeUsed == MainActivity.SERIAL_LOG_FILE) {
+                        mA.imgSerial.setImageDrawable(
+                                ContextCompat.getDrawable(mA.getApplicationContext(),
+                                        R.drawable.ic_rate_review_24dp));
+                        if (mBlink) {
+                            mA.imgSerial.setColorFilter(Color.argb(0xff, 0xff, 0xff, 0xff));
+                        } else {
+                            mA.imgSerial.setColorFilter(Color.argb(0xff, 0x00, 0x00, 0x00));
+                        }
                     } else {
                         mA.imgSerial.setImageDrawable(
                                 ContextCompat.getDrawable(mA.getApplicationContext(),

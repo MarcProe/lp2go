@@ -23,13 +23,18 @@ import org.librepilot.lp2go.helper.SettingsHelper;
 import org.librepilot.lp2go.uavtalk.UAVTalkMissingObjectException;
 import org.librepilot.lp2go.ui.SingleToast;
 
-class ConnectionThread extends Thread {
+public class ConnectionThread extends Thread {
     private final MainActivity mA;
     private boolean mIsValid = true;
+    private String mReplayLogFile = null;
 
     public ConnectionThread(MainActivity activity) {
         this.setName("LP2GoConnectionThread");
         this.mA = activity;
+    }
+
+    public void setReplayLogFile(String mReplayLogFile) {
+        this.mReplayLogFile = mReplayLogFile;
     }
 
     public void setInvalid() {
@@ -72,7 +77,9 @@ class ConnectionThread extends Thread {
 
         while (mIsValid) {
 
-            if (mA.mFcDevice != null && mA.mFcDevice.isConnected()) {
+            if (mA.mFcDevice != null
+                    && mA.mFcDevice.isConnected()
+                    && SettingsHelper.mSerialModeUsed != MainActivity.SERIAL_LOG_FILE) {
                 try {
                     String status = (String) mA.mFcDevice.getObjectTree()
                             .getData("FlightTelemetryStats", "Status");
@@ -115,6 +122,11 @@ class ConnectionThread extends Thread {
                         break;
                     case MainActivity.SERIAL_USB:
                         mA.connectUSB();
+                        break;
+                    case MainActivity.SERIAL_LOG_FILE:
+                        if (mReplayLogFile != null) {
+                            mA.connectLogFile(mReplayLogFile);
+                        }
                         break;
                 }
             }
