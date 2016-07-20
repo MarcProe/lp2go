@@ -36,7 +36,7 @@ import java.util.HashMap;
 
 public abstract class ViewController {
 
-    public static final int VIEW_3DMAG = 100;
+    public static final int VIEW_3DMAG = 45;
     public static final int VIEW_ABOUT = 70;
     public static final int VIEW_DEBUG = 80;
     public static final int VIEW_LOGS = 50;

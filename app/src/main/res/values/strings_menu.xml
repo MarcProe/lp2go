@@ -12,5 +12,5 @@
     <string name="menu_vpid">Altitude Hold</string>
     <string name="menu_debug">Debug</string>
     <string name="menu_scope">Scope</string>
-    <string name="menu_3dmag">Test Mag Cal</string>
+    <string name="menu_3dmag">Compass Calibration</string>
 </resources>
