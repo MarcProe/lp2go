@@ -277,9 +277,10 @@ public class FitPoints {
     public String toString() {
         String retval = "";
 
-        for (int i = 0; i < evals.length; i++) {
-            retval += " " + Arrays.toString(evals);
-        }
+        //        for (int i = 0; i < evals.length; i++) {
+        //            retval += " " + Arrays.toString(evals);
+        //        }
+
         retval += " " + evecs.toString();
         retval += " " + evecs1.toString();
         retval += " " + evecs2.toString();
