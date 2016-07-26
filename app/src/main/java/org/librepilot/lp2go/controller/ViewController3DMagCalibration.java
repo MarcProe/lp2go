@@ -24,6 +24,7 @@ import org.librepilot.lp2go.MainActivity;
 import org.librepilot.lp2go.R;
 import org.librepilot.lp2go.VisualLog;
 import org.librepilot.lp2go.helper.ellipsoidFit.FitPoints;
+import org.librepilot.lp2go.uavtalk.UAVTalkMetaData;
 import org.librepilot.lp2go.uavtalk.UAVTalkObject;
 import org.librepilot.lp2go.uavtalk.UAVTalkObjectListener;
 import org.librepilot.lp2go.uavtalk.device.FcDevice;
@@ -143,14 +144,19 @@ public class ViewController3DMagCalibration extends ViewController implements
         try {
 
             requestMetaData("MagState");
-            //requestMetaData("AttitudeState");
-            UAVTalkObject o = getMetaObject("MagState");
+            UAVTalkMetaData o = getMetaData("MagState");
             VisualLog.d("META MAG", o.toString());
 
-            //o = getMetaObject("AttitudeState");
-            //VisualLog.d("META ATT", o.toString());
+            byte[] magmetadata = o.getData();
+
+            requestMetaData("AttitudeState");
+            o = getMetaData("AttitudeState");
+            VisualLog.d("META ATT", o.toString());
+
+            byte[] attmetadata = o.getData();
+
         } catch (Exception e) {
-            VisualLog.d("TTT", e.getMessage());
+            VisualLog.e("TTT", e.getMessage(), e);
         }
 
     }

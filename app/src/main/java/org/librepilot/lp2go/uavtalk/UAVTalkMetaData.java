@@ -17,6 +17,10 @@
 
 package org.librepilot.lp2go.uavtalk;
 
+import android.util.Log;
+
+import org.librepilot.lp2go.H;
+
 import java.util.Arrays;
 
 public class UAVTalkMetaData {
@@ -57,65 +61,131 @@ public class UAVTalkMetaData {
     private int mLoggingUpdatePeriod;
 
     public UAVTalkMetaData(byte[] data) {
-        byte[] bFlags = Arrays.copyOfRange(data, 0, 2);
-        byte[] bFlightTelemetryUpdatePeriod = Arrays.copyOfRange(data, 2, 2);
-        byte[] bGcsTelemetryUpdatePeriod = Arrays.copyOfRange(data, 4, 2);
-        byte[] bLoggingUpdatePeriod = Arrays.copyOfRange(data, 6, 2);
+        Log.d("TTT", "" + data.length);
+        Log.d("TTT", H.bytesToHex(data));
+        final byte[] bFlags = Arrays.copyOfRange(data, 0, 2);
+        final byte[] bFlightTelemetryUpdatePeriod = Arrays.copyOfRange(data, 2, 4);
+        final byte[] bGcsTelemetryUpdatePeriod = Arrays.copyOfRange(data, 4, 6);
+        final byte[] bLoggingUpdatePeriod = Arrays.copyOfRange(data, 6, 8);
 
-        int flags = ((bFlags[0] << 8) | bFlags[1]);
+        int flags = (((bFlags[1] & 0xff) << 8) | (bFlags[0] & 0xff));
         mFlightTelemetryUpdatePeriod =
-                ((bFlightTelemetryUpdatePeriod[0] << 8) | bFlightTelemetryUpdatePeriod[1]);
+                (((bFlightTelemetryUpdatePeriod[1] & 0xff) << 8) |
+                        (bFlightTelemetryUpdatePeriod[0] & 0xff));
         mGcsTelemetryUpdatePeriod =
-                ((bGcsTelemetryUpdatePeriod[0] << 8) | bGcsTelemetryUpdatePeriod[1]);
-        mLoggingUpdatePeriod = ((bLoggingUpdatePeriod[0] << 8) | bLoggingUpdatePeriod[1]);
+                (((bGcsTelemetryUpdatePeriod[1] & 0xff) << 8) |
+                        (bGcsTelemetryUpdatePeriod[0] & 0xff));
+        mLoggingUpdatePeriod = (((bLoggingUpdatePeriod[1] & 0xff) << 8) |
+                (bLoggingUpdatePeriod[0] & 0xff));
 
         mAccess = flags & 0b0000000000000001;
-        mGcsAccess = flags & 0b0000000000000010;
-        mTelemetryAcked = flags & 0b0000000000000100;
-        mGcsTelementryAcked = flags & 0b0000000000001000;
-        mTelemetryUpdateMode = flags & 0b0000000000110000;
-        mGcsTelemetryUpdateMode = flags & 0b0000000011000000;
-        mLoggingUpdateMode = flags & 0b0000001100000000;
+        mGcsAccess = (flags & 0b0000000000000010) >>> 1;
+        mTelemetryAcked = (flags & 0b0000000000000100) >>> 2;
+        mGcsTelementryAcked = (flags & 0b0000000000001000) >>> 3;
+        mTelemetryUpdateMode = (flags & 0b0000000000110000) >>> 4;
+        mGcsTelemetryUpdateMode = (flags & 0b0000000011000000) >>> 6;
+        mLoggingUpdateMode = (flags & 0b0000001100000000) >>> 8;
     }
 
     public int getAccess() {
         return mAccess;
     }
 
+    public void setAccess(int mAccess) {
+        this.mAccess = mAccess;
+    }
+
     public int getGcsAccess() {
         return mGcsAccess;
+    }
+
+    public void setGcsAccess(int mGcsAccess) {
+        this.mGcsAccess = mGcsAccess;
     }
 
     public int getTelemetryAcked() {
         return mTelemetryAcked;
     }
 
+    public void setTelemetryAcked(int mTelemetryAcked) {
+        this.mTelemetryAcked = mTelemetryAcked;
+    }
+
     public int getGcsTelementryAcked() {
         return mGcsTelementryAcked;
+    }
+
+    public void setGcsTelementryAcked(int mGcsTelementryAcked) {
+        this.mGcsTelementryAcked = mGcsTelementryAcked;
     }
 
     public int getTelemetryUpdateMode() {
         return mTelemetryUpdateMode;
     }
 
+    public void setTelemetryUpdateMode(int mTelemetryUpdateMode) {
+        this.mTelemetryUpdateMode = mTelemetryUpdateMode;
+    }
+
     public int getGcsTelemetryUpdateMode() {
         return mGcsTelemetryUpdateMode;
+    }
+
+    public void setGcsTelemetryUpdateMode(int mGcsTelemetryUpdateMode) {
+        this.mGcsTelemetryUpdateMode = mGcsTelemetryUpdateMode;
     }
 
     public int getLoggingUpdateMode() {
         return mLoggingUpdateMode;
     }
 
-    public int getmLoggingUpdatePeriod() {
+    public void setLoggingUpdateMode(int mLoggingUpdateMode) {
+        this.mLoggingUpdateMode = mLoggingUpdateMode;
+    }
+
+    public int getLoggingUpdatePeriod() {
         return mLoggingUpdatePeriod;
     }
 
-    public int getmGcsTelemetryUpdatePeriod() {
+    public void setLoggingUpdatePeriod(int mLoggingUpdatePeriod) {
+        this.mLoggingUpdatePeriod = mLoggingUpdatePeriod;
+    }
+
+    public int getGcsTelemetryUpdatePeriod() {
         return mGcsTelemetryUpdatePeriod;
     }
 
-    public int getmFlightTelemetryUpdatePeriod() {
+    public void setGcsTelemetryUpdatePeriod(int mGcsTelemetryUpdatePeriod) {
+        this.mGcsTelemetryUpdatePeriod = mGcsTelemetryUpdatePeriod;
+    }
+
+    public int getFlightTelemetryUpdatePeriod() {
         return mFlightTelemetryUpdatePeriod;
+    }
+
+    public void setFlightTelemetryUpdatePeriod(int mFlightTelemetryUpdatePeriod) {
+        this.mFlightTelemetryUpdatePeriod = mFlightTelemetryUpdatePeriod;
+    }
+
+    public String toString() {
+        return "" + getAccess() + " " + getGcsAccess() + " " + getTelemetryAcked() + " " +
+                getGcsTelementryAcked() + " " + getTelemetryUpdateMode() + " " +
+                getGcsTelemetryUpdateMode() + " " + getLoggingUpdateMode() + " " +
+                getLoggingUpdatePeriod() + " " + getGcsTelemetryUpdatePeriod() + " " +
+                getFlightTelemetryUpdatePeriod();
+    }
+
+    public byte[] getData() {
+        /*
+        final byte[] bFlags                           = Arrays.copyOfRange(data, 0, 2);
+        final byte[] bFlightTelemetryUpdatePeriod     = Arrays.copyOfRange(data, 2, 4);
+        final byte[] bGcsTelemetryUpdatePeriod        = Arrays.copyOfRange(data, 4, 6);
+        final byte[] bLoggingUpdatePeriod             = Arrays.copyOfRange(data, 6, 8);
+         */
+        byte[] retval = new byte[8];
+
+        return retval;
+
     }
 
     /**

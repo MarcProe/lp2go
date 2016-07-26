@@ -30,8 +30,8 @@ import org.librepilot.lp2go.VisualLog;
 import org.librepilot.lp2go.helper.CompatHelper;
 import org.librepilot.lp2go.helper.SettingsHelper;
 import org.librepilot.lp2go.menu.MenuItem;
+import org.librepilot.lp2go.uavtalk.UAVTalkMetaData;
 import org.librepilot.lp2go.uavtalk.UAVTalkMissingObjectException;
-import org.librepilot.lp2go.uavtalk.UAVTalkObject;
 
 import java.util.HashMap;
 
@@ -231,14 +231,15 @@ public abstract class ViewController {
         return "";
     }
 
-    void requestMetaData(String objectName) {
-        mActivity.mFcDevice.requestMetaObject(objectName);
+    boolean requestMetaData(String objectName) {
+        return mActivity.mFcDevice.requestMetaObject(objectName);
     }
 
-    UAVTalkObject getMetaObject(String objectName) {
+    UAVTalkMetaData getMetaData(String objectName) throws NullPointerException {
         String oId = mActivity.mFcDevice.getObjectTree().getXmlObjects().get(objectName).getId();
-        String metaId = Long.toString((Long.decode("0x" + oId) + 1));
-        return mActivity.mPollThread.mObjectTree.getObjectFromID(metaId);
+        String metaId = H.intToHex((int) (Long.decode("0x" + oId) + 1));  //oID + 1
+        return new UAVTalkMetaData(mActivity.mPollThread.
+                mObjectTree.getObjectFromID(metaId).getInstance(0).getData());
     }
 
     Object getData(String objectname, String fieldname, boolean request) {
@@ -250,7 +251,7 @@ public abstract class ViewController {
         } catch (NullPointerException e) {
             //e.printStackTrace();
         }
-        return "";
+        return null;
     }
 
     Object getData(String objectname, String fieldname) {
