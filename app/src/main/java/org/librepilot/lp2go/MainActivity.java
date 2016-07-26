@@ -169,7 +169,11 @@ public class MainActivity extends AppCompatActivity {
                         getString(R.string.SPACE) + device.getDeviceProtocol());
 
                 if (device.getDeviceClass() == UsbConstants.USB_CLASS_MISC) {
-                    mUsbManager.requestPermission(device, mPermissionIntent);
+                    try {
+                        mUsbManager.requestPermission(device, mPermissionIntent);
+                    } catch (SecurityException e) {
+                        VisualLog.e("MAINACTIVITY", e.getMessage(), e);
+                    }
                 }
 
             } else if (SettingsHelper.mSerialModeUsed == SERIAL_USB

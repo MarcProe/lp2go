@@ -50,7 +50,11 @@ public class SingleToast {
         if (mToast != null) {
             mToast.cancel();
         }
-        mToast = Toast.makeText(context, text, duration);
+        try {
+            mToast = Toast.makeText(context, text, duration);
+        } catch (RuntimeException e) {
+            VisualLog.e("SINGLETOAST", e.getMessage(), e);
+        }
         mToast.show();
     }
 
