@@ -201,6 +201,28 @@ public class FcUsbDevice extends FcDevice {
     }
 
     @Override
+    public boolean requestMetaObject(String objectName) {
+        UAVTalkXMLObject xmlObj = mObjectTree.getXmlObjects().get(objectName);
+        if (xmlObj == null) {
+            return false;
+        }
+
+        if (nackedObjects.contains(xmlObj.getId())) {
+            VisualLog.d("NACKED", xmlObj.getId());
+            return false;  //if it was already nacked, don't try to get it again
+        }
+
+        //metadataid is id +1... yes, this is hacky.
+        String metaId = Long.toString((Long.decode("0x" + xmlObj.getId()) + 1));
+
+        byte[] send = UAVTalkObject.getReqMsg((byte) 0x21, metaId, 0);
+        mActivity.incTxObjects();
+        writeByteArray(send);
+
+        return true;
+    }
+
+    @Override
     public boolean requestObject(String objectName, int instance) {
         UAVTalkXMLObject xmlObj = mObjectTree.getXmlObjects().get(objectName);
 

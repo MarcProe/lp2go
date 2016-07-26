@@ -31,6 +31,7 @@ import org.librepilot.lp2go.helper.CompatHelper;
 import org.librepilot.lp2go.helper.SettingsHelper;
 import org.librepilot.lp2go.menu.MenuItem;
 import org.librepilot.lp2go.uavtalk.UAVTalkMissingObjectException;
+import org.librepilot.lp2go.uavtalk.UAVTalkObject;
 
 import java.util.HashMap;
 
@@ -230,6 +231,16 @@ public abstract class ViewController {
         return "";
     }
 
+    void requestMetaData(String objectName) {
+        mActivity.mFcDevice.requestMetaObject(objectName);
+    }
+
+    UAVTalkObject getMetaObject(String objectName) {
+        String oId = mActivity.mFcDevice.getObjectTree().getXmlObjects().get(objectName).getId();
+        String metaId = Long.toString((Long.decode("0x" + oId) + 1));
+        return mActivity.mPollThread.mObjectTree.getObjectFromID(metaId);
+    }
+
     Object getData(String objectname, String fieldname, boolean request) {
         try {
             if (request) {
@@ -258,6 +269,26 @@ public abstract class ViewController {
             //e3.printStackTrace();
         }
         return "";
+    }
+
+    Object getData(String objectname, String fieldname, int elementindex) {
+        Object o = null;
+        try {
+            o = mActivity.mPollThread.mObjectTree.getData(objectname, 0, fieldname, elementindex);
+        } catch (UAVTalkMissingObjectException e1) {
+            try {
+                mActivity.mFcDevice.requestObject(e1.getObjectname(), e1.getInstance());
+            } catch (NullPointerException e2) {
+                e2.printStackTrace();
+            }
+        } catch (NullPointerException e3) {
+            VisualLog.e("ERR", "Object Tree not loaded yet.");
+        }
+        if (o != null) {
+            return o;
+        } else {
+            return "";
+        }
     }
 
     Object getData(String objectname, String fieldname, String elementname) {

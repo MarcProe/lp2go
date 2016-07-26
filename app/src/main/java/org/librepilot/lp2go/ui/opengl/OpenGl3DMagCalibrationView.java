@@ -56,10 +56,10 @@ public class OpenGl3DMagCalibrationView extends GLSurfaceView {
 
     }
 
-    public String fit() {
+    public FitPoints fit() {
         FitPoints fp = new FitPoints();
         fp.fitEllipsoid(mRenderer.mCubes);
-        return fp.toString();
+        return fp;
     }
 
     public void setPitch(float pitch) {

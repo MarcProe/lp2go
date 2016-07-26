@@ -27,6 +27,8 @@ public class UAVTalkObject {
     private UAVTalkObjectListener mListener = null;
     private boolean mWriteBlocked = false;
 
+    private UAVTalkMetaData mMetaData = null;
+
     public UAVTalkObject(String id) {
         this.mId = id;
 
@@ -57,6 +59,22 @@ public class UAVTalkObject {
         retval[10] = (byte) (H.crc8(retval, 0, 10) & 0xff);
 
         return retval;
+    }
+
+    public UAVTalkMetaData getMetaData() {
+        return mMetaData;
+    }
+
+    public void setMetaData(byte[] data) {
+        this.mMetaData = new UAVTalkMetaData(data);
+    }
+
+    public void setMetaData(UAVTalkMetaData mMetaData) {
+        this.mMetaData = mMetaData;
+    }
+
+    public void clearMetaData() {
+        mMetaData = null;
     }
 
     public String getId() {
@@ -99,7 +117,7 @@ public class UAVTalkObject {
     }
 
     public String toString() {
-        return mId;
+        return mId + " " + H.bytesToHex(getInstance(0).getData());
     }
 
     public UAVTalkObjectInstance getInstance(int id) {

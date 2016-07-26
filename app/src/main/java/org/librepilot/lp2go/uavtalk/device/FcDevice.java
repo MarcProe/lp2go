@@ -202,6 +202,8 @@ public abstract class FcDevice {
 
     public abstract boolean requestObject(String objectName);
 
+    public abstract boolean requestMetaObject(String objectName);
+
     public abstract boolean requestObject(String objectName, int instance);
 
     public void savePersistent(String saveObjectName) {
