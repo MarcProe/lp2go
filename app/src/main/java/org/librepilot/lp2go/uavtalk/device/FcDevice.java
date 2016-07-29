@@ -263,6 +263,19 @@ public abstract class FcDevice {
         mObjectTree.getObjectFromName("ObjectPersistence").setWriteBlocked(false);
     }
 
+    public boolean sendMetaObject(byte[] data) {
+
+        if (data != null) {
+            mActivity.incTxObjects();
+
+            writeByteArray(data);
+
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public void handleHandshake(byte flightTelemtryStatusField) {
 
         if (mFailedHandshakes > MAX_HANDSHAKE_FAILURE_CYCLES) {

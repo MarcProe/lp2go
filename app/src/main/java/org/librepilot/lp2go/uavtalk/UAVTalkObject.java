@@ -61,22 +61,6 @@ public class UAVTalkObject {
         return retval;
     }
 
-    public UAVTalkMetaData getMetaData() {
-        return mMetaData;
-    }
-
-    public void setMetaData(byte[] data) {
-        this.mMetaData = new UAVTalkMetaData(data);
-    }
-
-    public void setMetaData(UAVTalkMetaData mMetaData) {
-        this.mMetaData = mMetaData;
-    }
-
-    public void clearMetaData() {
-        mMetaData = null;
-    }
-
     public String getId() {
         return mId;
     }

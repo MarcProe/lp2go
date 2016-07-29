@@ -235,10 +235,14 @@ public abstract class ViewController {
         return mActivity.mFcDevice.requestMetaObject(objectName);
     }
 
+    boolean sendMetaObject(byte[] data) {
+        return mActivity.mFcDevice.sendMetaObject(data);
+    }
+
     UAVTalkMetaData getMetaData(String objectName) throws NullPointerException {
         String oId = mActivity.mFcDevice.getObjectTree().getXmlObjects().get(objectName).getId();
         String metaId = H.intToHex((int) (Long.decode("0x" + oId) + 1));  //oID + 1
-        return new UAVTalkMetaData(mActivity.mPollThread.
+        return new UAVTalkMetaData(metaId, mActivity.mPollThread.
                 mObjectTree.getObjectFromID(metaId).getInstance(0).getData());
     }
 

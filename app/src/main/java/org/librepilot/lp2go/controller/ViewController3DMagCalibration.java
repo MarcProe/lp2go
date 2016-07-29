@@ -147,13 +147,13 @@ public class ViewController3DMagCalibration extends ViewController implements
             UAVTalkMetaData o = getMetaData("MagState");
             VisualLog.d("META MAG", o.toString());
 
-            byte[] magmetadata = o.getData();
+            o.setFlightTelemetryUpdatePeriod(300);
 
-            requestMetaData("AttitudeState");
-            o = getMetaData("AttitudeState");
-            VisualLog.d("META ATT", o.toString());
+            byte[] magmetadata = o.toMessage((byte) 0x22, false);
 
-            byte[] attmetadata = o.getData();
+            VisualLog.d("XXX", H.bytesToHex(magmetadata));
+
+            sendMetaObject(magmetadata);
 
         } catch (Exception e) {
             VisualLog.e("TTT", e.getMessage(), e);

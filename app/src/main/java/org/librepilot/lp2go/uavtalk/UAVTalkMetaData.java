@@ -21,16 +21,16 @@ import android.util.Log;
 
 import org.librepilot.lp2go.H;
 
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.Arrays;
 
 public class UAVTalkMetaData {
 
     public static int READONLY = 0;
     public static int READWRITE = 1;
-
     public static int ACKED_ACK = 1;
     public static int ACKED_NACK = 0;
-
     public static int UPDATEMODE_MANUAL = 0;
     /**
      * Manually update object, by calling the updated() function
@@ -44,6 +44,7 @@ public class UAVTalkMetaData {
      * Only update object when its data changes
      */
     public static int UPDATEMODE_THROTTLED = 3;
+    private final String mMetaId;
     /**
      * Object is updated on change, but not more often than the interval time
      */
@@ -60,7 +61,10 @@ public class UAVTalkMetaData {
     private int mGcsTelemetryUpdatePeriod;
     private int mLoggingUpdatePeriod;
 
-    public UAVTalkMetaData(byte[] data) {
+    public UAVTalkMetaData(String metaId, byte[] data) {
+
+        mMetaId = metaId;
+
         Log.d("TTT", "" + data.length);
         Log.d("TTT", H.bytesToHex(data));
         final byte[] bFlags = Arrays.copyOfRange(data, 0, 2);
@@ -168,26 +172,81 @@ public class UAVTalkMetaData {
     }
 
     public String toString() {
-        return "" + getAccess() + " " + getGcsAccess() + " " + getTelemetryAcked() + " " +
+        return H.bytesToHex(getData()) + " # " + getAccess() + " " + getGcsAccess() + " " + getTelemetryAcked() + " " +
                 getGcsTelementryAcked() + " " + getTelemetryUpdateMode() + " " +
                 getGcsTelemetryUpdateMode() + " " + getLoggingUpdateMode() + " " +
                 getLoggingUpdatePeriod() + " " + getGcsTelemetryUpdatePeriod() + " " +
                 getFlightTelemetryUpdatePeriod();
     }
 
-    public byte[] getData() {
-        /*
-        final byte[] bFlags                           = Arrays.copyOfRange(data, 0, 2);
-        final byte[] bFlightTelemetryUpdatePeriod     = Arrays.copyOfRange(data, 2, 4);
-        final byte[] bGcsTelemetryUpdatePeriod        = Arrays.copyOfRange(data, 4, 6);
-        final byte[] bLoggingUpdatePeriod             = Arrays.copyOfRange(data, 6, 8);
-         */
-        byte[] retval = new byte[8];
+    private byte[] getData() {
+        final byte[] retval = new byte[8];
+
+        final int iFlags = mAccess |
+                (mGcsAccess << 1) |
+                (mTelemetryAcked << 2) |
+                (mGcsTelementryAcked << 3) |
+                (mTelemetryUpdateMode << 4) |
+                (mGcsTelemetryUpdateMode << 6) |
+                (mLoggingUpdateMode << 8);
+
+        final byte[] bFlags = ByteBuffer.allocate(4).
+                order(ByteOrder.LITTLE_ENDIAN).putInt(iFlags).array();
+        final byte[] bFlightTelemetryUpdatePeriod = ByteBuffer.allocate(4).
+                order(ByteOrder.LITTLE_ENDIAN).putInt(mFlightTelemetryUpdatePeriod).array();
+        final byte[] bGcsTelemetryUpdatePeriod = ByteBuffer.allocate(4).
+                order(ByteOrder.LITTLE_ENDIAN).putInt(mGcsTelemetryUpdatePeriod).array();
+        final byte[] bLoggingUpdatePeriod = ByteBuffer.allocate(4).
+                order(ByteOrder.LITTLE_ENDIAN).putInt(mLoggingUpdatePeriod).array();
+
+
+        retval[0] = bFlags[0];
+        retval[1] = bFlags[1];
+        retval[2] = bFlightTelemetryUpdatePeriod[0];
+        retval[3] = bFlightTelemetryUpdatePeriod[1];
+        retval[4] = bGcsTelemetryUpdatePeriod[0];
+        retval[5] = bGcsTelemetryUpdatePeriod[1];
+        retval[6] = bLoggingUpdatePeriod[0];
+        retval[7] = bLoggingUpdatePeriod[1];
 
         return retval;
-
     }
 
+    public byte[] toMessage(byte type, boolean asAck) {
+
+        byte[] instData = getData();
+        byte[] retval;
+
+        if (asAck) {
+            retval = new byte[11]; //only the header and CRC
+        } else {
+            retval = new byte[instData.length + 11]; // data as well
+            System.arraycopy(instData, 0, retval, 10, instData.length); // copy the data
+        }
+
+        retval[0] = 0x3c;
+        retval[1] = type;
+
+        byte[] len = H.toBytes(instData.length + 10);
+        retval[2] = len[3];
+        retval[3] = len[2];
+
+        byte[] objId = H.hexStringToByteArray(this.mMetaId);
+
+        retval[4] = objId[3];
+        retval[5] = objId[2];
+        retval[6] = objId[1];
+        retval[7] = objId[0];
+
+        byte[] iid = H.toBytes(0);
+
+        retval[8] = iid[3];
+        retval[9] = iid[2];
+
+        retval[retval.length - 1] = (byte) (H.crc8(retval, 0, retval.length - 1) & 0xff);
+
+        return retval;
+    }
     /**
      * Object metadata, each object has a meta object that holds its metadata. The metadata define
      * properties for each object and can be used by multiple modules (e.g. telemetry and logger)
