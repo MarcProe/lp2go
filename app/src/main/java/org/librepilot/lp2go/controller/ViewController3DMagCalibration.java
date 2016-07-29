@@ -47,6 +47,8 @@ public class ViewController3DMagCalibration extends ViewController implements
     private float mag_transform_r1c1;
     private float mag_transform_r2c2;
 
+    private int mMagStateUpdatePeriod = 1000;
+
     public ViewController3DMagCalibration(MainActivity activity, int title, int icon,
                                           int localSettingsVisible, int flightSettingsVisible) {
         super(activity, title, icon, localSettingsVisible, flightSettingsVisible);
@@ -70,7 +72,6 @@ public class ViewController3DMagCalibration extends ViewController implements
     @Override
     public void enter(int view) {
         super.enter(view);
-
     }
 
     @Override
@@ -80,6 +81,15 @@ public class ViewController3DMagCalibration extends ViewController implements
             getMainActivity().mFcDevice.getObjectTree().removeListener("AttitudeState");
         } catch (NullPointerException ignored) {
 
+        }
+
+        try {
+            UAVTalkMetaData o = getMetaData("MagState");
+            o.setFlightTelemetryUpdatePeriod(mMagStateUpdatePeriod);
+            sendMetaObject(o);
+
+        } catch (Exception e) {
+            VisualLog.e("TTT", e.getMessage(), e);
         }
     }
 
@@ -142,23 +152,21 @@ public class ViewController3DMagCalibration extends ViewController implements
         }
 
         try {
-
-            requestMetaData("MagState");
             UAVTalkMetaData o = getMetaData("MagState");
-            VisualLog.d("META MAG", o.toString());
-
-            o.setFlightTelemetryUpdatePeriod(300);
-
-            byte[] magmetadata = o.toMessage((byte) 0x22, false);
-
-            VisualLog.d("XXX", H.bytesToHex(magmetadata));
-
-            sendMetaObject(magmetadata);
+            if (o == null) {
+                requestMetaData("MagState");
+            } else if (o.getFlightTelemetryUpdatePeriod() != 300) {
+                mMagStateUpdatePeriod = o.getFlightTelemetryUpdatePeriod();
+                if (mMagStateUpdatePeriod == 0) {
+                    mMagStateUpdatePeriod = 1000;
+                }
+                o.setFlightTelemetryUpdatePeriod(300);
+                sendMetaObject(o);
+            }
 
         } catch (Exception e) {
             VisualLog.e("TTT", e.getMessage(), e);
         }
-
     }
 
     private int addSample() {
