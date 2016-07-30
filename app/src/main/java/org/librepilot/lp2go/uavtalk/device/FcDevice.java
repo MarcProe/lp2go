@@ -20,10 +20,13 @@ import android.content.Context;
 
 import org.librepilot.lp2go.H;
 import org.librepilot.lp2go.MainActivity;
+import org.librepilot.lp2go.VisualLog;
 import org.librepilot.lp2go.helper.SettingsHelper;
 import org.librepilot.lp2go.uavtalk.UAVTalkDeviceHelper;
 import org.librepilot.lp2go.uavtalk.UAVTalkMessage;
+import org.librepilot.lp2go.uavtalk.UAVTalkObject;
 import org.librepilot.lp2go.uavtalk.UAVTalkObjectTree;
+import org.librepilot.lp2go.uavtalk.UAVTalkXMLObject;
 
 import java.io.FileOutputStream;
 import java.util.Arrays;
@@ -202,6 +205,35 @@ public abstract class FcDevice {
 
     public abstract boolean requestObject(String objectName);
 
+    public boolean requestMetaObject(String objectName) {
+        try {
+            UAVTalkXMLObject xmlObj = mObjectTree.getXmlObjects().get(objectName);
+            if (xmlObj == null) {
+                return false;
+            }
+
+            if (nackedObjects.contains(xmlObj.getId())) {
+                VisualLog.d("NACKED META", xmlObj.getId());
+                return false;   //if it was already nacked, don't try to get it again
+                //If the original object was nacked, there is no metadata as well
+            }
+
+            //metadataid is id +1... yes, this is hacky.
+            String metaId = H.intToHex((int) (Long.decode("0x" + xmlObj.getId()) + 1));
+            //FIXME:Too hacky....
+
+            byte[] send = UAVTalkObject.getReqMsg((byte) 0x21, metaId, 0);
+
+            writeByteArray(send);
+            mActivity.incTxObjects();
+            return true;
+        } catch (Exception e) {
+            VisualLog.d("FcDevice", "Could not request MetaData for " + objectName);
+            return false;
+        }
+    }
+
+
     public abstract boolean requestObject(String objectName, int instance);
 
     public void savePersistent(String saveObjectName) {
@@ -229,6 +261,19 @@ public abstract class FcDevice {
         sendSettingsObject("ObjectPersistence", 0);
 
         mObjectTree.getObjectFromName("ObjectPersistence").setWriteBlocked(false);
+    }
+
+    public boolean sendMetaObject(byte[] data) {
+
+        if (data != null) {
+            mActivity.incTxObjects();
+
+            writeByteArray(data);
+
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public void handleHandshake(byte flightTelemtryStatusField) {

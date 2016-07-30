@@ -30,13 +30,14 @@ import org.librepilot.lp2go.VisualLog;
 import org.librepilot.lp2go.helper.CompatHelper;
 import org.librepilot.lp2go.helper.SettingsHelper;
 import org.librepilot.lp2go.menu.MenuItem;
+import org.librepilot.lp2go.uavtalk.UAVTalkMetaData;
 import org.librepilot.lp2go.uavtalk.UAVTalkMissingObjectException;
 
 import java.util.HashMap;
 
 public abstract class ViewController {
 
-    public static final int VIEW_3DMAG = 100;
+    public static final int VIEW_3DMAG = 45;
     public static final int VIEW_ABOUT = 70;
     public static final int VIEW_DEBUG = 80;
     public static final int VIEW_LOGS = 50;
@@ -230,6 +231,29 @@ public abstract class ViewController {
         return "";
     }
 
+    boolean requestMetaData(String objectName) {
+        try {
+            return mActivity.mFcDevice.requestMetaObject(objectName);
+        } catch (NullPointerException e) {
+            return false;
+        }
+    }
+
+    boolean sendMetaObject(UAVTalkMetaData o) {
+        return mActivity.mFcDevice.sendMetaObject(o.toMessage((byte) 0x22, false));
+    }
+
+    UAVTalkMetaData getMetaData(String objectName) throws NullPointerException {
+        try {
+            String oId = mActivity.mFcDevice.getObjectTree().getXmlObjects().get(objectName).getId();
+            String metaId = H.intToHex((int) (Long.decode("0x" + oId) + 1));  //oID + 1
+            return new UAVTalkMetaData(metaId, mActivity.mPollThread.
+                    mObjectTree.getObjectFromID(metaId).getInstance(0).getData());
+        } catch (NullPointerException e) {
+            return null;
+        }
+    }
+
     Object getData(String objectname, String fieldname, boolean request) {
         try {
             if (request) {
@@ -239,7 +263,7 @@ public abstract class ViewController {
         } catch (NullPointerException e) {
             //e.printStackTrace();
         }
-        return "";
+        return null;
     }
 
     Object getData(String objectname, String fieldname) {
@@ -258,6 +282,26 @@ public abstract class ViewController {
             //e3.printStackTrace();
         }
         return "";
+    }
+
+    Object getData(String objectname, String fieldname, int elementindex) {
+        Object o = null;
+        try {
+            o = mActivity.mPollThread.mObjectTree.getData(objectname, 0, fieldname, elementindex);
+        } catch (UAVTalkMissingObjectException e1) {
+            try {
+                mActivity.mFcDevice.requestObject(e1.getObjectname(), e1.getInstance());
+            } catch (NullPointerException e2) {
+                e2.printStackTrace();
+            }
+        } catch (NullPointerException e3) {
+            VisualLog.e("ERR", "Object Tree not loaded yet.");
+        }
+        if (o != null) {
+            return o;
+        } else {
+            return "";
+        }
     }
 
     Object getData(String objectname, String fieldname, String elementname) {

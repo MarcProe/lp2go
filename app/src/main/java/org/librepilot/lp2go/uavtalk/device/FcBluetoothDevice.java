@@ -184,7 +184,7 @@ public class FcBluetoothDevice extends FcDevice {
         byte[] send = UAVTalkObject.getReqMsg((byte) 0x21, xmlObj.getId(), instance);
 
         writeByteArray(send);
-
+        mActivity.incTxObjects();
         return true;
     }
 

@@ -46,7 +46,11 @@ public class UAVTalkObjectTree {
     }
 
     public UAVTalkObjectListener getListener(String objName) {
-        return objects.get(xmlObjects.get(objName).getId()).getListener();
+        if (objects.get(xmlObjects.get(objName)) != null) {
+            return objects.get(xmlObjects.get(objName).getId()).getListener();
+        } else {
+            return null;
+        }
     }
 
     public void removeListener(String objName) {

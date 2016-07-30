@@ -27,6 +27,8 @@ public class UAVTalkObject {
     private UAVTalkObjectListener mListener = null;
     private boolean mWriteBlocked = false;
 
+    private UAVTalkMetaData mMetaData = null;
+
     public UAVTalkObject(String id) {
         this.mId = id;
 
@@ -99,7 +101,7 @@ public class UAVTalkObject {
     }
 
     public String toString() {
-        return mId;
+        return mId + " " + H.bytesToHex(getInstance(0).getData());
     }
 
     public UAVTalkObjectInstance getInstance(int id) {

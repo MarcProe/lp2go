@@ -93,6 +93,7 @@ dependencies {
     compile 'com.google.firebase:firebase-core:9.2.0'
     compile 'com.google.firebase:firebase-crash:9.2.0'
     compile 'com.google.firebase:firebase-database:9.2.0'
+    compile 'org.apache.commons:commons-math3:3.6.1'
 }
 
 apply plugin: 'com.google.gms.google-services'

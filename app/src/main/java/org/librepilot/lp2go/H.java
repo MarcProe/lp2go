@@ -260,6 +260,10 @@ public class H {
         return s;
     }
 
+    public static byte[] floatToByteArrayRev(float value) {
+        return H.reverse4bytes(floatToByteArray(value));
+    }
+
     public static byte[] floatToByteArray(float value) {
         return ByteBuffer.allocate(4).putFloat(value).array();
     }
