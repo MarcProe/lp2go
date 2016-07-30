@@ -232,7 +232,11 @@ public abstract class ViewController {
     }
 
     boolean requestMetaData(String objectName) {
-        return mActivity.mFcDevice.requestMetaObject(objectName);
+        try {
+            return mActivity.mFcDevice.requestMetaObject(objectName);
+        } catch (NullPointerException e) {
+            return false;
+        }
     }
 
     boolean sendMetaObject(UAVTalkMetaData o) {

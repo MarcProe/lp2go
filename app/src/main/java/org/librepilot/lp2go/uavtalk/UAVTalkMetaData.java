@@ -32,22 +32,11 @@ public class UAVTalkMetaData {
     public static int ACKED_ACK = 1;
     public static int ACKED_NACK = 0;
     public static int UPDATEMODE_MANUAL = 0;
-    /**
-     * Manually update object, by calling the updated() function
-     */
     public static int UPDATEMODE_PERIODIC = 1;
-    /**
-     * Automatically update object at periodic intervals
-     */
     public static int UPDATEMODE_ONCHANGE = 2;
-    /**
-     * Only update object when its data changes
-     */
     public static int UPDATEMODE_THROTTLED = 3;
+
     private final String mMetaId;
-    /**
-     * Object is updated on change, but not more often than the interval time
-     */
 
     private int mAccess;
     private int mGcsAccess;
@@ -247,29 +236,4 @@ public class UAVTalkMetaData {
 
         return retval;
     }
-    /**
-     * Object metadata, each object has a meta object that holds its metadata. The metadata define
-     * properties for each object and can be used by multiple modules (e.g. telemetry and logger)
-     *
-     * The object metadata flags are packed into a single 16 bit integer.
-     * The bits in the flag field are defined as:
-     *
-     *   Bit(s)  Name                       Meaning
-     *   ------  ----                       -------
-     *      0    access                     Defines the access level for the local transactions (readonly=0 and readwrite=1)
-     *      1    gcsAccess                  Defines the access level for the local GCS transactions (readonly=0 and readwrite=1), not used in the flight s/w
-     *      2    telemetryAcked             Defines if an ack is required for the transactions of this object (1:acked, 0:not acked)
-     *      3    gcsTelemetryAcked          Defines if an ack is required for the transactions of this object (1:acked, 0:not acked)
-     *    4-5    telemetryUpdateMode        Update mode used by the telemetry module (UAVObjUpdateMode)
-     *    6-7    gcsTelemetryUpdateMode     Update mode used by the GCS (UAVObjUpdateMode)
-     *    8-9    mLoggingUpdateMode          Update mode used by the logging module (UAVObjUpdateMode)
-     */
-    //typedef struct {
-    //   quint16 flags; /** Defines flags for update and logging modes and whether an update should be ACK'd (bits defined above) */
-    //   quint16 flightTelemetryUpdatePeriod; /** Update period used by the telemetry module (only if telemetry mode is PERIODIC) */
-    //   quint16 gcsTelemetryUpdatePeriod; /** Update period used by the GCS (only if telemetry mode is PERIODIC) */
-    //   quint16 loggingUpdatePeriod; /** Update period used by the logging module (only if logging mode is PERIODIC) */
-    //} __attribute__((packed)) Metadata;
-
-
 }

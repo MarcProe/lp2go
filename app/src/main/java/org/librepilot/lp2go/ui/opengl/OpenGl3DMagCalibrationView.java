@@ -109,7 +109,7 @@ public class OpenGl3DMagCalibrationView extends GLSurfaceView {
 
         final static int ANGLE_DEG = 15;
         final static int ANGLES = (int) (360 / ANGLE_DEG);
-        final static int SAMPLES = 3;
+        final static int SAMPLES = 6;
         public ArrayList<Cube> mCubes;
         protected float mPitch = 0;
         protected float mRoll = 0;

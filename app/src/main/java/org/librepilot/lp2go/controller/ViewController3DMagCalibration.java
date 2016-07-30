@@ -17,6 +17,7 @@
 package org.librepilot.lp2go.controller;
 
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.librepilot.lp2go.H;
@@ -28,26 +29,24 @@ import org.librepilot.lp2go.uavtalk.UAVTalkMetaData;
 import org.librepilot.lp2go.uavtalk.UAVTalkObject;
 import org.librepilot.lp2go.uavtalk.UAVTalkObjectListener;
 import org.librepilot.lp2go.uavtalk.device.FcDevice;
+import org.librepilot.lp2go.ui.SingleToast;
 import org.librepilot.lp2go.ui.opengl.OpenGl3DMagCalibrationView;
 
 public class ViewController3DMagCalibration extends ViewController implements
         UAVTalkObjectListener, View.OnClickListener {
 
+    ImageView imgCompass;
     private OpenGl3DMagCalibrationView glv3DMagCalibration;
-
     private float be_0;
     private float be_1;
     private float be_2;
-
     private float mag_bias_x;
     private float mag_bias_y;
     private float mag_bias_z;
-
     private float mag_transform_r0c0;
     private float mag_transform_r1c1;
     private float mag_transform_r2c2;
-
-    private int mMagStateUpdatePeriod = 1000;
+    private boolean mCalibrationRunning = false;
 
     public ViewController3DMagCalibration(MainActivity activity, int title, int icon,
                                           int localSettingsVisible, int flightSettingsVisible) {
@@ -59,9 +58,103 @@ public class ViewController3DMagCalibration extends ViewController implements
         this.glv3DMagCalibration =
                 (OpenGl3DMagCalibrationView) activity.findViewById(R.id.glv_3d_mag_calibration);
 
-        activity.findViewById(R.id.startFit).setOnClickListener(this);
-        activity.findViewById(R.id.resetFit).setOnClickListener(this);
+        imgCompass = (ImageView) findViewById(R.id.imgStartStopCalibration);
 
+        activity.findViewById(R.id.imgStartStopCalibration).setOnClickListener(this);
+
+    }
+
+    private boolean isCalibrationRunning() {
+        return mCalibrationRunning;
+    }
+
+    private void resetCalibrationOnFc() {
+        final String O = "RevoCalibration";
+        final String B = "mag_bias";
+        final String X = "X";
+        final String Y = "Y";
+        final String Z = "Z";
+        final String T = "mag_transform";
+        final String R0 = "r0c0";
+        final String R1 = "r1c1";
+        final String R2 = "r2c2";
+
+        getMainActivity().getFcDevice().sendSettingsObject(O, 0, B, X, H.floatToByteArrayRev(.0f));
+        getMainActivity().getFcDevice().sendSettingsObject(O, 0, B, Y, H.floatToByteArrayRev(.0f));
+        getMainActivity().getFcDevice().sendSettingsObject(O, 0, B, Z, H.floatToByteArrayRev(.0f));
+
+        getMainActivity().getFcDevice().sendSettingsObject(O, 0, T, R0, H.floatToByteArrayRev(1f));
+        getMainActivity().getFcDevice().sendSettingsObject(O, 0, T, R1, H.floatToByteArrayRev(1f));
+        getMainActivity().getFcDevice().sendSettingsObject(O, 0, T, R2, H.floatToByteArrayRev(1f));
+    }
+
+    private boolean setMetaUpdateRate(String objectname, int updaterate) {
+        try {
+            UAVTalkMetaData o = getMetaData(objectname);
+            if (o == null) {
+                requestMetaData(objectname);
+                return false;
+            } else if (o.getFlightTelemetryUpdatePeriod() != updaterate) {
+                o.setFlightTelemetryUpdatePeriod(updaterate);
+                sendMetaObject(o);
+            }
+
+        } catch (Exception e) {
+            VisualLog.e("TTT", e.getMessage(), e);
+        }
+        return true;
+    }
+
+    private boolean startCalibration() {
+        imgCompass.setRotation(90);
+
+        //reset calibration on FC
+        resetCalibrationOnFc();
+
+        //increase magstate update rate
+        final boolean setUR = setMetaUpdateRate("MagState", 300);
+        if (!setUR) {
+            return false;
+        }
+
+        //hook on to object listener and start collecting samples
+        try {
+            try {
+                getMainActivity().mFcDevice.getObjectTree().setListener("AttitudeState", this);
+            } catch (IllegalStateException e) {
+                getMainActivity().mFcDevice.getObjectTree().removeListener("AttitudeState");
+                getMainActivity().mFcDevice.getObjectTree().setListener("AttitudeState", this);
+            }
+        } catch (NullPointerException ignored) {
+
+        }
+
+        mCalibrationRunning = true;
+        return true;
+    }
+
+    private void stopCalibration() {
+        imgCompass.setRotation(0);
+        mCalibrationRunning = false;
+
+        //remove listener
+        getMainActivity().mFcDevice.getObjectTree().removeListener("MagState");
+
+        //reset magstate update rate
+        final boolean setUR = setMetaUpdateRate("MagState", 1000);
+
+        //make fit and upload calibration to FC
+        fitAndUpload();
+
+    }
+
+    private void toggleCalibration() {
+        if (isCalibrationRunning()) {
+            stopCalibration();
+        } else {
+            final boolean s = startCalibration();
+            SingleToast.show(getMainActivity(), "Start: " + s);
+        }
     }
 
     @Override
@@ -72,6 +165,7 @@ public class ViewController3DMagCalibration extends ViewController implements
     @Override
     public void enter(int view) {
         super.enter(view);
+        requestMetaData("MagState");
     }
 
     @Override
@@ -85,7 +179,7 @@ public class ViewController3DMagCalibration extends ViewController implements
 
         try {
             UAVTalkMetaData o = getMetaData("MagState");
-            o.setFlightTelemetryUpdatePeriod(mMagStateUpdatePeriod);
+            o.setFlightTelemetryUpdatePeriod(1000);
             sendMetaObject(o);
 
         } catch (Exception e) {
@@ -96,8 +190,6 @@ public class ViewController3DMagCalibration extends ViewController implements
     @Override
     public void init() {
         super.init();
-        //glv3DMagCalibration.setRenderer(new OpenGLRenderer());
-
     }
 
     @Override
@@ -138,35 +230,6 @@ public class ViewController3DMagCalibration extends ViewController implements
         ((TextView) m.findViewById(R.id.txtR1c1)).setText("" + mag_transform_r1c1);
         ((TextView) m.findViewById(R.id.txtR2c2)).setText("" + mag_transform_r2c2);
 
-        if (getMainActivity().mFcDevice.getObjectTree().getListener("AttitudeState") == null) {
-            try {
-                try {
-                    getMainActivity().mFcDevice.getObjectTree().setListener("AttitudeState", this);
-                } catch (IllegalStateException e) {
-                    getMainActivity().mFcDevice.getObjectTree().removeListener("AttitudeState");
-                    getMainActivity().mFcDevice.getObjectTree().setListener("AttitudeState", this);
-                }
-            } catch (NullPointerException ignored) {
-
-            }
-        }
-
-        try {
-            UAVTalkMetaData o = getMetaData("MagState");
-            if (o == null) {
-                requestMetaData("MagState");
-            } else if (o.getFlightTelemetryUpdatePeriod() != 300) {
-                mMagStateUpdatePeriod = o.getFlightTelemetryUpdatePeriod();
-                if (mMagStateUpdatePeriod == 0) {
-                    mMagStateUpdatePeriod = 1000;
-                }
-                o.setFlightTelemetryUpdatePeriod(300);
-                sendMetaObject(o);
-            }
-
-        } catch (Exception e) {
-            VisualLog.e("TTT", e.getMessage(), e);
-        }
     }
 
     private int addSample() {
@@ -232,21 +295,7 @@ public class ViewController3DMagCalibration extends ViewController implements
         }
     }
 
-    private void resetFit() {
-        if (getMainActivity().getFcDevice() != null
-                && getMainActivity().getFcDevice().getObjectTree() != null) {
-
-            getMainActivity().getFcDevice().sendSettingsObject("RevoCalibration", 0, "mag_bias", "X", H.floatToByteArray(.0f));
-            getMainActivity().getFcDevice().sendSettingsObject("RevoCalibration", 0, "mag_bias", "Y", H.floatToByteArray(.0f));
-            getMainActivity().getFcDevice().sendSettingsObject("RevoCalibration", 0, "mag_bias", "Z", H.floatToByteArray(.0f));
-
-            be_0 = 0;
-            be_1 = 0;
-            be_2 = 0;
-        }
-    }
-
-    private void startFit() {
+    private void fitAndUpload() {
         FitPoints fp = glv3DMagCalibration.fit();
         String result = fp.toString();
 
@@ -260,36 +309,36 @@ public class ViewController3DMagCalibration extends ViewController implements
         if (fcDev != null) {
 
             //send fix results to fx
-            fcDev.sendSettingsObject("RevoCalibration", 0, "mag_bias", "X", H.floatToByteArray(biasx));
-            fcDev.sendSettingsObject("RevoCalibration", 0, "mag_bias", "Y", H.floatToByteArray(biasy));
-            fcDev.sendSettingsObject("RevoCalibration", 0, "mag_bias", "Z", H.floatToByteArray(biasz));
+            fcDev.sendSettingsObject("RevoCalibration", 0, "mag_bias", "X", H.floatToByteArrayRev(biasx));
+            fcDev.sendSettingsObject("RevoCalibration", 0, "mag_bias", "Y", H.floatToByteArrayRev(biasy));
+            fcDev.sendSettingsObject("RevoCalibration", 0, "mag_bias", "Z", H.floatToByteArrayRev(biasz));
 
             float beVecLen = (float) Math.sqrt(Math.pow(be_0, 2) + Math.pow(be_1, 2) + Math.pow(be_2, 2));
 
-            float r0c0 = (float) fp.radii.getEntry(0) / beVecLen;
-            float r1c1 = (float) fp.radii.getEntry(1) / beVecLen;
-            float r2c2 = (float) fp.radii.getEntry(2) / beVecLen;
+            float r0c0 = beVecLen / (float) fp.radii.getEntry(0);
+            float r1c1 = beVecLen / (float) fp.radii.getEntry(1);
+            float r2c2 = beVecLen / (float) fp.radii.getEntry(2);
 
-            fcDev.sendSettingsObject("RevoCalibration", 0, "mag_transform", "r0c0", H.floatToByteArray(r0c0));
-            fcDev.sendSettingsObject("RevoCalibration", 0, "mag_transform", "r1c1", H.floatToByteArray(r1c1));
-            fcDev.sendSettingsObject("RevoCalibration", 0, "mag_transform", "r2c2", H.floatToByteArray(r2c2));
+            fcDev.sendSettingsObject("RevoCalibration", 0, "mag_transform", "r0c0", H.floatToByteArrayRev(r0c0));
+            fcDev.sendSettingsObject("RevoCalibration", 0, "mag_transform", "r1c1", H.floatToByteArrayRev(r1c1));
+            fcDev.sendSettingsObject("RevoCalibration", 0, "mag_transform", "r2c2", H.floatToByteArrayRev(r2c2));
+
+            fcDev.savePersistent("RevoCalibration");
+
+            VisualLog.d("FIT", "" + r0c0 + " " + r1c1 + " " + r2c2 + " " + biasx + " " + biasy + " " + biasz);
         }
 
         be_0 = 0; //resetting one value will re-receive all values
 
         VisualLog.d("FIT", result);
+
     }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.startFit: {
-                startFit();
-                break;
-            }
-            case R.id.resetFit: {
-                resetFit();
-                break;
+            case R.id.imgStartStopCalibration: {
+                toggleCalibration();
             }
         }
     }

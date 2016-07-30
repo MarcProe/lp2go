@@ -62,4 +62,8 @@ public class SingleToast {
         mToast = Toast.makeText(context, text, duration);
         mToast.show();
     }
+
+    public static void show(Context context, String text) {
+        show(context, text, Toast.LENGTH_LONG);
+    }
 }
