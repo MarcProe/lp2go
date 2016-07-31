@@ -68,7 +68,7 @@ public class ViewController3DMagCalibration extends ViewController implements
         return mCalibrationRunning;
     }
 
-    private void resetCalibrationOnFc() {
+    private boolean resetCalibrationOnFc() {
         final String O = "RevoCalibration";
         final String B = "mag_bias";
         final String X = "X";
@@ -79,13 +79,19 @@ public class ViewController3DMagCalibration extends ViewController implements
         final String R1 = "r1c1";
         final String R2 = "r2c2";
 
-        getMainActivity().getFcDevice().sendSettingsObject(O, 0, B, X, H.floatToByteArrayRev(.0f));
-        getMainActivity().getFcDevice().sendSettingsObject(O, 0, B, Y, H.floatToByteArrayRev(.0f));
-        getMainActivity().getFcDevice().sendSettingsObject(O, 0, B, Z, H.floatToByteArrayRev(.0f));
+        try {
 
-        getMainActivity().getFcDevice().sendSettingsObject(O, 0, T, R0, H.floatToByteArrayRev(1f));
-        getMainActivity().getFcDevice().sendSettingsObject(O, 0, T, R1, H.floatToByteArrayRev(1f));
-        getMainActivity().getFcDevice().sendSettingsObject(O, 0, T, R2, H.floatToByteArrayRev(1f));
+            getMainActivity().getFcDevice().sendSettingsObject(O, 0, B, X, H.floatToByteArrayRev(.0f));
+            getMainActivity().getFcDevice().sendSettingsObject(O, 0, B, Y, H.floatToByteArrayRev(.0f));
+            getMainActivity().getFcDevice().sendSettingsObject(O, 0, B, Z, H.floatToByteArrayRev(.0f));
+
+            getMainActivity().getFcDevice().sendSettingsObject(O, 0, T, R0, H.floatToByteArrayRev(1f));
+            getMainActivity().getFcDevice().sendSettingsObject(O, 0, T, R1, H.floatToByteArrayRev(1f));
+            getMainActivity().getFcDevice().sendSettingsObject(O, 0, T, R2, H.floatToByteArrayRev(1f));
+        } catch (NullPointerException e) {
+            return false;
+        }
+        return true;
     }
 
     private boolean setMetaUpdateRate(String objectname, int updaterate) {
@@ -108,12 +114,17 @@ public class ViewController3DMagCalibration extends ViewController implements
     private boolean startCalibration() {
         imgCompass.setRotation(90);
 
+        boolean success = true;
+
         //reset calibration on FC
-        resetCalibrationOnFc();
+        success = resetCalibrationOnFc();
+        if (!success) {
+            return false;
+        }
 
         //increase magstate update rate
-        final boolean setUR = setMetaUpdateRate("MagState", 300);
-        if (!setUR) {
+        success = setMetaUpdateRate("MagState", 300);
+        if (!success) {
             return false;
         }
 
@@ -126,7 +137,7 @@ public class ViewController3DMagCalibration extends ViewController implements
                 getMainActivity().mFcDevice.getObjectTree().setListener("AttitudeState", this);
             }
         } catch (NullPointerException ignored) {
-
+            return false;
         }
 
         mCalibrationRunning = true;
@@ -153,7 +164,7 @@ public class ViewController3DMagCalibration extends ViewController implements
             stopCalibration();
         } else {
             final boolean s = startCalibration();
-            SingleToast.show(getMainActivity(), "Start: " + s);
+            SingleToast.show(getMainActivity(), "Start successful " + s);
         }
     }
 
