@@ -124,7 +124,11 @@ public class PidInputAlertDialog extends InputAlertDialog
         }
 
         mEditText.setText(fText);
-        mEditText.setSelection(fText.length());
+        try {
+            mEditText.setSelection(fText.length());
+        } catch (IndexOutOfBoundsException e) {
+            VisualLog.e("PidInputAlertDialog", e.getMessage(), e);
+        }
 
         mEditText.requestFocus();
 
