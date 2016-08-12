@@ -31,6 +31,6 @@
     <string name="SETTINGS_BOTTOM_RIGHT_LAYOUT_RES">%1$s.bottom_right_layout</string>
     <string name="SETTINGS_LOG_RAW">%1$s.log_raw</string>
     <string name="SETTINGS_TIMESTAMPS_FROM_FC">%1$s.fc_timestamps</string>
-
+    <string name="SETTINGS_OBJECT_FAVORITES">%1$s.object_favorites</string>
 
 </resources>

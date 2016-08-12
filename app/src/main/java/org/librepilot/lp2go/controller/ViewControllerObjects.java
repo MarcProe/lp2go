@@ -21,6 +21,7 @@ import android.widget.TextView;
 
 import org.librepilot.lp2go.MainActivity;
 import org.librepilot.lp2go.R;
+import org.librepilot.lp2go.helper.SettingsHelper;
 import org.librepilot.lp2go.uavtalk.UAVTalkXMLObject;
 import org.librepilot.lp2go.ui.objectbrowser.ChildString;
 import org.librepilot.lp2go.ui.objectbrowser.ObjectsExpandableListView;
@@ -47,6 +48,7 @@ public class ViewControllerObjects extends ViewController {
         if (mExpListView != null) {
             mExpListView.setOnGroupExpandListener(mExpListView);
             mExpListView.setOnChildClickListener(mExpListView);
+            mExpListView.setOnItemLongClickListener(mExpListView);
         }
     }
 
@@ -54,6 +56,12 @@ public class ViewControllerObjects extends ViewController {
     public void enter(int view) {
         super.enter(view);
         initObjectListData();
+    }
+
+    @Override
+    public void leave() {
+        super.leave();
+        SettingsHelper.saveSettings(getMainActivity());
     }
 
     @Override
@@ -87,25 +95,24 @@ public class ViewControllerObjects extends ViewController {
                 @Override
                 public void run() {
 
-                    mExpListView
-                            .init(new ArrayList<String>(),
-                                    new HashMap<String, List<ChildString>>());
+                    mExpListView.init(new ArrayList<String>(),
+                            new HashMap<String, List<ChildString>>());
 
-
+                    int favs = 0;
                     for (UAVTalkXMLObject xmlobj : ma.mXmlObjects.values()) {
-                        mExpListView.getListDataHeader()
-                                //.add(xmlobj.getName() + " (" + xmlobj.getId() + ")");
-                                .add(xmlobj.getName());
-                        //VisualLog.d("OBJ", xmlobj.getName());
+                        String name = xmlobj.getName();
+                        if (SettingsHelper.mObjectFavorites.contains(name)) {
+                            mExpListView.getListDataHeader().add(favs++, name);
+                        } else {
+                            mExpListView.getListDataHeader().add(name);
+                        }
                     }
 
-                    mListAdapter =
-                            new ObjectsExpandableListViewAdapter(ma,
+                    mListAdapter = new ObjectsExpandableListViewAdapter(ma,
                                     mExpListView.getListDataHeader(),
                                     mExpListView.getListDataChild());
 
-                    // setting list adapter
-                    mExpListView.setmAdapter(mListAdapter);
+                    mExpListView.setCustomAdapter(mListAdapter);
 
                 }
             });

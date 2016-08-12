@@ -17,9 +17,12 @@
 package org.librepilot.lp2go.ui.objectbrowser;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ExpandableListView;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import org.librepilot.lp2go.MainActivity;
@@ -27,6 +30,7 @@ import org.librepilot.lp2go.R;
 import org.librepilot.lp2go.VisualLog;
 import org.librepilot.lp2go.controller.ViewController;
 import org.librepilot.lp2go.helper.ScopeHelper;
+import org.librepilot.lp2go.helper.SettingsHelper;
 import org.librepilot.lp2go.uavtalk.UAVTalkMissingObjectException;
 import org.librepilot.lp2go.uavtalk.UAVTalkObject;
 import org.librepilot.lp2go.uavtalk.UAVTalkObjectInstance;
@@ -42,7 +46,7 @@ import java.util.List;
 
 public class ObjectsExpandableListView extends ExpandableListView
         implements ExpandableListView.OnGroupExpandListener,
-        ExpandableListView.OnChildClickListener {
+        ExpandableListView.OnChildClickListener, AdapterView.OnItemLongClickListener {
     private ObjectsExpandableListViewAdapter mAdapter;
     private String mExpandedObjectName;
     private int mGroupPosition;
@@ -73,7 +77,7 @@ public class ObjectsExpandableListView extends ExpandableListView
         return mListDataHeader;
     }
 
-    public void setmAdapter(ObjectsExpandableListViewAdapter mAdapter) {
+    public void setCustomAdapter(ObjectsExpandableListViewAdapter mAdapter) {
         super.setAdapter(mAdapter);
         this.mAdapter = mAdapter;
     }
@@ -186,5 +190,33 @@ public class ObjectsExpandableListView extends ExpandableListView
         }
 
         return false;
+    }
+
+    @Override
+    public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long id) {
+        int itemType = ExpandableListView.getPackedPositionType(id);
+
+        if (itemType == ExpandableListView.PACKED_POSITION_TYPE_GROUP) {
+            int groupPosition = ExpandableListView.getPackedPositionGroup(id);
+
+            String name = adapterView.getAdapter().getItem(groupPosition).toString();
+            ImageView imgFav = ((ImageView) view.findViewById(R.id.imgListHeaderFavIcon));
+
+            if (SettingsHelper.mObjectFavorites.contains(name)) {
+                SettingsHelper.mObjectFavorites.remove(name);
+                imgFav.setImageDrawable(ContextCompat.getDrawable(view.getContext(),
+                        android.R.color.transparent));
+            } else {
+                SettingsHelper.mObjectFavorites.add(name);
+                imgFav.setImageDrawable(ContextCompat.getDrawable(view.getContext(),
+                        R.drawable.ic_star_black_128dp));
+            }
+
+            VisualLog.d("GHEAD", "" + groupPosition + " " + name);
+
+            return true;
+        } else {
+            return false;
+        }
     }
 }

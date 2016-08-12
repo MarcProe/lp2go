@@ -29,6 +29,7 @@ import android.widget.TextView;
 
 import org.librepilot.lp2go.H;
 import org.librepilot.lp2go.R;
+import org.librepilot.lp2go.helper.SettingsHelper;
 import org.librepilot.lp2go.uavtalk.UAVTalkXMLObject;
 
 import java.text.DecimalFormat;
@@ -102,6 +103,15 @@ public class ObjectsExpandableListViewAdapter extends BaseExpandableListAdapter 
         TextView lblListHeader = (TextView) convertView.findViewById(R.id.lblListHeader);
         lblListHeader.setTypeface(null, Typeface.BOLD);
         lblListHeader.setText(headerTitle);
+
+        ImageView imgListHeaderFavIcon = (ImageView) convertView.findViewById(R.id.imgListHeaderFavIcon);
+        if (SettingsHelper.mObjectFavorites.contains(headerTitle)) {
+            imgListHeaderFavIcon.setImageDrawable(ContextCompat.getDrawable(mContext,
+                    R.drawable.ic_star_black_128dp));
+        } else {
+            imgListHeaderFavIcon.setImageDrawable(ContextCompat.getDrawable(mContext,
+                    android.R.color.transparent));
+        }
 
         return convertView;
     }

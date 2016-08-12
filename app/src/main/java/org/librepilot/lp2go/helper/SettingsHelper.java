@@ -16,6 +16,7 @@
 
 package org.librepilot.lp2go.helper;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.view.View;
@@ -25,6 +26,10 @@ import android.widget.Spinner;
 
 import org.librepilot.lp2go.MainActivity;
 import org.librepilot.lp2go.R;
+import org.librepilot.lp2go.VisualLog;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class SettingsHelper {
     public static String mBluetoothDeviceAddress = null;
@@ -38,6 +43,7 @@ public class SettingsHelper {
     public static boolean mText2SpeechEnabled = false;
     public static String mTopLeftLayout;
     public static boolean mUseTimestampsFromFc;
+    public static Set<String> mObjectFavorites;
 
     public static void loadSettings(MainActivity mainActivity) {
         SharedPreferences sharedPref = mainActivity.getPreferences(Context.MODE_PRIVATE);
@@ -64,18 +70,30 @@ public class SettingsHelper {
         mBottomRightLayout = sharedPref.getString(
                 mainActivity.getString(R.string.SETTINGS_BOTTOM_RIGHT_LAYOUT_RES, R.string.APP_ID),
                 mainActivity.getString(R.string.main_element_info));
-
         mLogAsRawUavTalk = sharedPref.getBoolean(
                 mainActivity.getString(R.string.SETTINGS_LOG_RAW, R.string.APP_ID),
                 false);
         mUseTimestampsFromFc = sharedPref.getBoolean(
                 mainActivity.getString(R.string.SETTINGS_TIMESTAMPS_FROM_FC, R.string.APP_ID),
                 false);
+        mObjectFavorites = sharedPref.getStringSet(
+                mainActivity.getString(R.string.SETTINGS_OBJECT_FAVORITES, R.string.APP_ID),
+                new HashSet<String>());
+
+        String listString = "";
+
+        for (String s : mObjectFavorites) {
+            listString += s + "\t";
+        }
+        VisualLog.d("DSFG L", listString);
     }
 
-    public static void saveSettings(MainActivity mainActivity) {
+    @SuppressLint("CommitPrefEdits")
+    public static void saveSettings(MainActivity mainActivity, boolean async) {
         SharedPreferences sharedPref = mainActivity.getPreferences(Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
+        editor.clear();
+
         editor.putString(mainActivity.getString(R.string.SETTINGS_BT_MAC, R.string.APP_ID),
                 mBluetoothDeviceAddress);
         editor.putString(mainActivity.getString(R.string.SETTINGS_BT_NAME, R.string.APP_ID),
@@ -100,8 +118,27 @@ public class SettingsHelper {
         editor.putBoolean(
                 mainActivity.getString(R.string.SETTINGS_TEXT2SPEECH_ENABLED, R.string.APP_ID),
                 SettingsHelper.mText2SpeechEnabled);
+        editor.putStringSet(
+                mainActivity.getString(R.string.SETTINGS_OBJECT_FAVORITES, R.string.APP_ID),
+                SettingsHelper.mObjectFavorites);
 
-        editor.commit();
+        String listString = "";
+
+        for (String s : mObjectFavorites) {
+            listString += s + "\t";
+        }
+        VisualLog.d("DSFG S", listString);
+
+        if (async) {
+            editor.apply();
+        } else {
+            editor.commit();
+        }
+        VisualLog.d("SETTINGS", "Saving.... (" + async + ")");
+    }
+
+    public static void saveSettings(MainActivity mainActivity) {
+        saveSettings(mainActivity, false);
     }
 
     public static Spinner initSpinner(int spinnerRes, View parent,

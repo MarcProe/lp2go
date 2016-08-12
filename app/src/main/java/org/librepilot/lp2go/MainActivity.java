@@ -492,6 +492,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
 
+        SettingsHelper.saveSettings(this, true);
+
         if (mFcDevice != null) {
             mFcDevice.setLogging(false);
         }
