@@ -85,7 +85,7 @@ public class UAVTalkXMLObject {
 
     public UAVTalkXMLObject(String xml)
             throws IOException, SAXException, ParserConfigurationException {
-        //TODO: Make this final
+
         HashMap<String, Integer> fieldNames = new HashMap<>();
         fieldNames.put(FIELDNAME_INT8, FIELDTYPE_INT8);
         fieldNames.put(FIELDNAME_INT16, FIELDTYPE_INT16);
@@ -102,10 +102,15 @@ public class UAVTalkXMLObject {
         Node objectNode = objectNodeList.item(0);
         Element e = (Element) objectNode;
 
-        mName = e.getAttribute(XML_ATT_NAME);
-        mCategory = e.getAttribute(XML_ATT_CATEGORY);
-        mIsSingleInst = e.getAttribute(XML_ATT_SINGLEINSTANCE).equals(XML_TRUE);
-        mIsSettings = e.getAttribute(XML_ATT_SETTINGS).equals(XML_TRUE);
+        try {
+            mName = e.getAttribute(XML_ATT_NAME);
+            mCategory = e.getAttribute(XML_ATT_CATEGORY);
+            mIsSingleInst = e.getAttribute(XML_ATT_SINGLEINSTANCE).equals(XML_TRUE);
+            mIsSettings = e.getAttribute(XML_ATT_SETTINGS).equals(XML_TRUE);
+        } catch (NullPointerException ex) {
+            VisualLog.e("XML", "Attribute Error");
+            return;
+        }
 
         NodeList fieldNodeList = doc.getElementsByTagName(XML_TAG_FIELD);
         mFields = new HashMap<>();

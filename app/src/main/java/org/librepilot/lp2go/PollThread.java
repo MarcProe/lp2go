@@ -77,6 +77,10 @@ public class PollThread extends Thread {
             } catch (InterruptedException ignored) {
             }
 
+            if (mA == null) {
+                return;
+            }
+
             mA.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
