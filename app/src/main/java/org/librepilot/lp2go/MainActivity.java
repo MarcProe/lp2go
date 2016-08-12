@@ -592,18 +592,22 @@ public class MainActivity extends AppCompatActivity {
     }
 
     protected void connectUSB() {
-        if (SettingsHelper.mSerialModeUsed == SERIAL_USB) {
-            for (android.hardware.usb.UsbDevice device : mUsbManager.getDeviceList().values()) {
-                if (device.getDeviceClass() == UsbConstants.USB_CLASS_MISC) {
-                    try {
-                        mUsbManager.requestPermission(device, mPermissionIntent);
-                    } catch (SecurityException e) {
-                        SingleToast.show(this,
-                                "USB Security Error. Please try again." + e.getMessage(),
-                                Toast.LENGTH_LONG);
+        try {
+            if (SettingsHelper.mSerialModeUsed == SERIAL_USB) {
+                for (android.hardware.usb.UsbDevice device : mUsbManager.getDeviceList().values()) {
+                    if (device.getDeviceClass() == UsbConstants.USB_CLASS_MISC) {
+                        try {
+                            mUsbManager.requestPermission(device, mPermissionIntent);
+                        } catch (SecurityException e) {
+                            SingleToast.show(this,
+                                    "USB Security Error. Please try again." + e.getMessage(),
+                                    Toast.LENGTH_LONG);
+                        }
                     }
                 }
             }
+        } catch (NullPointerException e) {
+            SingleToast.show(this, "Fatal error connecting USB", Toast.LENGTH_LONG);
         }
     }
 
