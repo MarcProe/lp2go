@@ -1,5 +1,6 @@
 package org.librepilot.lp2go.helper.ellipsoidFit;
 
+import org.apache.commons.math3.exception.NotStrictlyPositiveException;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.linear.DecompositionSolver;
@@ -8,6 +9,7 @@ import org.apache.commons.math3.linear.MatrixUtils;
 import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.math3.linear.RealVector;
 import org.apache.commons.math3.linear.SingularValueDecomposition;
+import org.librepilot.lp2go.VisualLog;
 
 import java.util.Arrays;
 import java.util.List;
@@ -59,11 +61,15 @@ public class FitPoints {
      *
      * @param points the points to be fit to the ellipsoid.
      */
-    public void fitEllipsoid(List<? extends ThreeSpacePoint> points) {
+    public boolean fitEllipsoid(List<? extends ThreeSpacePoint> points) {
         // Fit the points to Ax^2 + By^2 + Cz^2 + 2Dxy + 2Exz
         // + 2Fyz + 2Gx + 2Hy + 2Iz = 1 and solve the system.
         // v = (( d' * d )^-1) * ( d' * ones.mapAddToSelf(1));
         RealVector v = solveSystem(points);
+
+        if (v == null) {
+            return false;
+        }
 
         // Form the algebraic form of the ellipsoid.
         RealMatrix a = formAlgebraicMatrix(v);
@@ -94,6 +100,7 @@ public class FitPoints {
 
         // Find the radii of the ellipsoid.
         radii = findRadii(evals);
+        return true;
     }
 
     /**
@@ -109,7 +116,13 @@ public class FitPoints {
 
         // the design matrix
         // size: numPoints x 9
-        RealMatrix d = new Array2DRowRealMatrix(numPoints, 9);
+        RealMatrix d = null;
+        try {
+            d = new Array2DRowRealMatrix(numPoints, 9);
+        } catch (NotStrictlyPositiveException e) {
+            VisualLog.e("FitPoints", e.getMessage(), e);
+            return null;
+        }
 
         // Fit the ellipsoid in the form of
         // Ax^2 + By^2 + Cz^2 + 2Dxy + 2Exz + 2Fyz + 2Gx + 2Hy + 2Iz

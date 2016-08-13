@@ -19,6 +19,7 @@ package org.librepilot.lp2go.controller;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.librepilot.lp2go.H;
 import org.librepilot.lp2go.MainActivity;
@@ -308,7 +309,13 @@ public class ViewController3DMagCalibration extends ViewController implements
 
     private void fitAndUpload() {
         FitPoints fp = glv3DMagCalibration.fit();
-        String result = fp.toString();
+
+        String result = "";
+        try {
+            result = fp.toString();
+        } catch (NullPointerException e) {
+            SingleToast.show(getMainActivity(), "Error fitting points.", Toast.LENGTH_LONG);
+        }
 
         //get fit results
         float biasx = (float) fp.center.getEntry(0);
