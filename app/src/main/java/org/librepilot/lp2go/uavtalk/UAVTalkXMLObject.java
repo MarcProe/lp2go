@@ -16,8 +16,6 @@
 
 package org.librepilot.lp2go.uavtalk;
 
-import android.support.annotation.NonNull;
-
 import org.librepilot.lp2go.H;
 import org.librepilot.lp2go.VisualLog;
 import org.w3c.dom.Document;
@@ -157,11 +155,10 @@ public class UAVTalkXMLObject {
 
                     String optionsString = f.getAttribute(XML_ATT_OPTIONS);
                     try {
-                        uavField.mOptions =
-                                (String[]) Arrays
-                                        .asList(optionsString.split(XML_ATTRIBUTE_SPLITTER))
-                                        .toArray();
-                    } catch (Exception ignored) {
+                        Object[] oa = Arrays.asList(optionsString.split(XML_ATTRIBUTE_SPLITTER)).toArray();
+                        uavField.mOptions = Arrays.copyOf(oa, oa.length, String[].class);
+                    } catch (Exception e1) {
+                        e1.printStackTrace();
                     }
 
                     if (uavField.mOptions == null || uavField.mOptions.length == 0
@@ -279,10 +276,10 @@ public class UAVTalkXMLObject {
     private int calculateID() {
         // Hash object name
         if (DBG) {
-            VisualLog.d("HASH", " ");
+            VisualLog.d("HASH 1 ", " ");
         }
         if (DBG) {
-            VisualLog.d("HASH", this.mName);
+            VisualLog.d("HASH 2 ", this.mName);
         }
         int hash = updateHash(this.mName, 0);
         // Hash object attributes
@@ -291,16 +288,19 @@ public class UAVTalkXMLObject {
         // Hash field information
         for (UAVTalkXMLObjectField aMFieldArray : this.mFieldArray) {
             if (DBG) {
-                VisualLog.d("HASH", aMFieldArray.mName);
+                VisualLog.d("HASH 3 ", aMFieldArray.mName);
             }
             hash = updateHash(aMFieldArray.mName, hash);
             hash = updateHash((aMFieldArray.mElementCount), hash);
             hash = updateHash(aMFieldArray.mType, hash);
             if (aMFieldArray.mType == FIELDTYPE_ENUM) {
                 String[] options = aMFieldArray.mOptions;
+                if (DBG) {
+                    VisualLog.d("HASH 6 ", "" + (options == null));
+                }
                 for (String option : options) {
                     if (DBG) {
-                        VisualLog.d("HASH", option);
+                        VisualLog.d("HASH 4 ", option);
                     }
                     hash = updateHash(option, hash);
                 }
@@ -314,7 +314,7 @@ public class UAVTalkXMLObject {
         if (DBG) {
             long y = ret & 0x00000000ffffffffL;
             long in = value & 0x00000000ffffffffL;
-            VisualLog.d("HASH", "" + in + "=>" + y);
+            VisualLog.d("HASH 5 ", "" + in + "=>" + y);
         }
         return ret;
     }
@@ -360,7 +360,7 @@ public class UAVTalkXMLObject {
         }
 
         @Override
-        public int compareTo(@NonNull UAVTalkXMLObjectField another) {
+        public int compareTo(UAVTalkXMLObjectField another) {
             return another.mTypelength - mTypelength;
         }
 
