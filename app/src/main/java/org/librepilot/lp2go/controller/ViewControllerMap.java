@@ -97,7 +97,19 @@ public class ViewControllerMap extends ViewController {
         ma.mFcDevice.requestObject("GPSSatellites");
         ma.mFcDevice.requestObject("SystemAlarms");
         ma.mFcDevice.requestObject("GPSPositionSensor");
+        ma.mFcDevice.requestMetaObject("HomeLocation");
 
+        try {
+            Integer homeLat = (Integer) getData("HomeLocation", "Latitude");
+            Integer homeLng = (Integer) getData("HomeLocation", "Longitude");
+            Float fHomeLat = homeLat * 0.0000001f;
+            Float fHomeLng = homeLng * 0.0000001f;
+            VisualLog.d("HOMELOC", "" + fHomeLat + " " + fHomeLng);
+            if (fHomeLat != null && fHomeLng != null && fHomeLat != 0 && fHomeLng != 0) {
+                mMapHelper.showHome(new LatLng(fHomeLat, fHomeLng));
+            }
+        } catch (Exception ignored) {
+        }
 
         setText(txtMapGPSSatsInView,
                 getData("GPSSatellites", "SatsInView").toString());

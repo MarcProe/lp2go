@@ -17,15 +17,22 @@
 package org.librepilot.lp2go.helper;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationManager;
+import android.support.v4.content.ContextCompat;
 
+import com.github.mikephil.charting.utils.Utils;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -34,6 +41,7 @@ import com.google.android.gms.maps.model.PolylineOptions;
 
 import org.librepilot.lp2go.H;
 import org.librepilot.lp2go.MainActivity;
+import org.librepilot.lp2go.R;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -43,6 +51,7 @@ public class MapHelper implements OnMapReadyCallback {
     private GoogleMap mMap;
     private Deque<Polyline> mMapLines;
     private Marker mPosMarker;
+    private Marker mHome;
 
     public MapHelper(MainActivity activity) {
         this.mActivity = activity;
@@ -86,6 +95,30 @@ public class MapHelper implements OnMapReadyCallback {
             }
             //}
         }
+    }
+
+    public void showHome(LatLng homeLoc) {
+        if (mHome == null) {
+            mHome = mMap.addMarker(new MarkerOptions()
+                    .position(homeLoc)
+                    .title("Home")
+                    .snippet("HomePos as read from the FC")
+                    .icon(getBitmapDescriptor(R.drawable.ic_home_black_24dp)));
+        } else {
+            mHome.setPosition(homeLoc);
+        }
+    }
+
+    private BitmapDescriptor getBitmapDescriptor(int id) {
+        Context context = mActivity.getBaseContext();
+        Drawable vectorDrawable = ContextCompat.getDrawable(context, id);
+        int h = ((int) Utils.convertDpToPixel(50));
+        int w = ((int) Utils.convertDpToPixel(50));
+        vectorDrawable.setBounds(0, 0, w, h);
+        Bitmap bm = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bm);
+        vectorDrawable.draw(canvas);
+        return BitmapDescriptorFactory.fromBitmap(bm);
     }
 
     @Override
