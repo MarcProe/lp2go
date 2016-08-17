@@ -260,7 +260,11 @@ public class ViewControllerMain extends ViewController implements View.OnClickLi
         MainActivity ma = getMainActivity();
 
         ma.mViews.put(VIEW_MAIN, ma.getLayoutInflater().inflate(R.layout.activity_main, null));
-        ma.setContentView(ma.mViews.get(VIEW_MAIN));  //Main
+        try {
+            ma.setContentView(ma.mViews.get(VIEW_MAIN));  //Main
+        } catch (NullPointerException e) {
+            SingleToast.show(getMainActivity(), "Internal error. Please restart the app and/or your phone.", Toast.LENGTH_LONG);
+        }
 
         mTopAnimator = (ViewAnimator) findViewById(R.id.main_top);
         mBottomAnimator = (ViewAnimator) findViewById(R.id.main_bottom);
