@@ -157,7 +157,7 @@ public abstract class ViewController {
             Float f1 = H.stringToFloat(getData(obj, field).toString());
             Float f2 = (Float) mOffset.get(soffset);
             return String.valueOf(H.round(f1 - f2, 2));
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException | ClassCastException e) {
             return "";
         }
     }
