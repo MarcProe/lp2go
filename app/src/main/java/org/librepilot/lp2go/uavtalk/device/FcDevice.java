@@ -297,6 +297,8 @@ public abstract class FcDevice {
 
         void reportObjectCount(int objectCount);
 
+        void reportRuntime(long ms);
+
         void incObjectsReceived(int objRec);
 
         void incObjectsSent(int objSent);

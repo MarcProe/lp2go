@@ -42,23 +42,18 @@ import org.librepilot.lp2go.ui.alertdialog.EnumInputAlertDialog;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class ViewControllerLogs extends ViewController implements
         View.OnClickListener, AdapterView.OnItemClickListener,
         AdapterView.OnItemLongClickListener, FcDevice.GuiEventListener {
 
-    private ImageView imgLogShare;
-    private ImageView imgLogStart;
-    private ImageView imgLogStop;
-    private ImageButton imgLogRepForward;
-    private ImageButton imgLogRepPlay;
-    private ImageButton imgLogRepStop;
-    private ImageButton imgLogRepPause;
     private List<String> mFileList;
     private TextView txtLogDuration;
     private TextView txtLogFilename;
@@ -69,9 +64,10 @@ public class ViewControllerLogs extends ViewController implements
     private ListView mLogListView;
     private ArrayAdapter mLogListAdapter;
     private Integer mCurrentLogListPos = null;
-    private AtomicReference<String> mDataSource;
-    private AtomicReference<Float> mDataSize;
-    private AtomicInteger mObjectCount;
+    private AtomicReference<String> mDataSource = new AtomicReference<>("");
+    private AtomicReference<Float> mDataSize = new AtomicReference<>(.0f);
+    private AtomicInteger mObjectCount = new AtomicInteger(0);
+    private AtomicLong mRuntime = new AtomicLong(0);
 
     public ViewControllerLogs(MainActivity activity, int title, int icon, int localSettingsVisible,
                               int flightSettingsVisible) {
@@ -100,14 +96,14 @@ public class ViewControllerLogs extends ViewController implements
         txtLogObjects = (TextView) ma.findViewById(R.id.txtLogObjects);
         txtLogDuration = (TextView) ma.findViewById(R.id.txtLogDuration);
 
-        imgLogStart = (ImageButton) findViewById(R.id.imgLogStart);
-        imgLogStop = (ImageButton) findViewById(R.id.imgLogStop);
-        imgLogShare = (ImageButton) findViewById(R.id.imgLogShare);
+        ImageView imgLogStart = (ImageButton) findViewById(R.id.imgLogStart);
+        ImageView imgLogStop = (ImageButton) findViewById(R.id.imgLogStop);
+        ImageView imgLogShare = (ImageButton) findViewById(R.id.imgLogShare);
 
-        imgLogRepForward = (ImageButton) findViewById(R.id.imgLogRepForward);
-        imgLogRepPlay = (ImageButton) findViewById(R.id.imgLogRepPlay);
-        imgLogRepPause = (ImageButton) findViewById(R.id.imgLogRepPause);
-        imgLogRepStop = (ImageButton) findViewById(R.id.imgLogRepStop);
+        ImageButton imgLogRepForward = (ImageButton) findViewById(R.id.imgLogRepForward);
+        ImageButton imgLogRepPlay = (ImageButton) findViewById(R.id.imgLogRepPlay);
+        ImageButton imgLogRepPause = (ImageButton) findViewById(R.id.imgLogRepPause);
+        ImageButton imgLogRepStop = (ImageButton) findViewById(R.id.imgLogRepStop);
 
         imgLogStart.setOnClickListener(this);
         imgLogStop.setOnClickListener(this);
@@ -140,7 +136,8 @@ public class ViewControllerLogs extends ViewController implements
         });
 
         for (File aFile : file) {
-            mFileList.add(aFile.getName() + " (" + String.format("%.1f", (float) aFile.length() / 1024) + " KB) ");
+            mFileList.add(MessageFormat.format("{0} ({1} KB) "
+                    , aFile.getName(), (float) aFile.length() / 1024));
 
             VisualLog.d("FILE", aFile.getName());
         }
@@ -178,18 +175,21 @@ public class ViewControllerLogs extends ViewController implements
                         / 102.4) / 10.;
                 double lOPL = Math.round(ma.mFcDevice.getLogBytesLoggedOPL()
                         / 102.4) / 10.;
-                txtLogSize.setText(String.valueOf(lUAV)
-                        + getString(R.string.TAB) + "("
-                        + String.valueOf(lOPL) + ") KB");
-                txtLogObjects.setText(
-                        String.valueOf(ma.mFcDevice.getLogObjectsLogged()));
-                txtLogDuration.setText(
+                txtLogSize.setText(MessageFormat.format("{0}{1}({2}) KB", String.valueOf(lUAV),
+                        getString(R.string.TAB), String.valueOf(lOPL)));
+                txtLogObjects.setText(String.valueOf(ma.mFcDevice.getLogObjectsLogged()));
+                txtLogDuration.setText(MessageFormat.format("{0} s",
                         String.valueOf((System.currentTimeMillis()
-                                - ma.mFcDevice.getLogStartTimeStamp())
-                                / 1000) + " s");
+                                - ma.mFcDevice.getLogStartTimeStamp()) / 1000)));
             } catch (Exception ignored) {
             }
         }
+
+        if (SettingsHelper.mSerialModeUsed == MainActivity.SERIAL_LOG_FILE) {
+            txtLogObjects.setText(MessageFormat.format("{0}", mObjectCount.get()));
+            txtLogDuration.setText(MessageFormat.format("{0}", Math.floor(mRuntime.get() / 1000.f)));
+        }
+
     }
 
     @Override
@@ -238,7 +238,7 @@ public class ViewControllerLogs extends ViewController implements
         }
     }
 
-    private void onLogStart(View v) {
+    private void onLogStart() {
         try {
             if (SettingsHelper.mSerialModeUsed != MainActivity.SERIAL_LOG_FILE) {
                 getMainActivity().mFcDevice.setLogging(true);
@@ -250,7 +250,7 @@ public class ViewControllerLogs extends ViewController implements
         }
     }
 
-    private void onLogStop(View v) {
+    private void onLogStop() {
         try {
             getMainActivity().mFcDevice.setLogging(false);
             loadFileList(true);
@@ -263,7 +263,7 @@ public class ViewControllerLogs extends ViewController implements
         return string == null ? null : string.substring(0, string.indexOf(" "));
     }
 
-    private void onLogShare(View v) {
+    private void onLogShare() {
         try {
             getMainActivity().mFcDevice.setLogging(false);
         } catch (NullPointerException e) {
@@ -300,19 +300,19 @@ public class ViewControllerLogs extends ViewController implements
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.imgLogStart: {
-                onLogStart(v);
+                onLogStart();
                 break;
             }
             case R.id.imgLogStop: {
-                onLogStop(v);
+                onLogStop();
                 break;
             }
             case R.id.imgLogShare: {
-                onLogShare(v);
+                onLogShare();
                 break;
             }
             case R.id.imgLogRepPlay: {
-                onReplayStart(v);
+                onReplayStart();
                 break;
             }
             case R.id.imgLogRepForward: {
@@ -320,17 +320,17 @@ public class ViewControllerLogs extends ViewController implements
                 break;
             }
             case R.id.imgLogRepPause: {
-                onReplayPause(v);
+                onReplayPause();
                 break;
             }
             case R.id.imgLogRepStop: {
-                onReplayStop(v);
+                onReplayStop();
                 break;
             }
         }
     }
 
-    private void onReplayStop(View v) {
+    private void onReplayStop() {
         if (getMainActivity().getFcDevice() != null &&
                 !getMainActivity().getFcDevice().isLogging() &&
                 SettingsHelper.mSerialModeUsed == MainActivity.SERIAL_LOG_FILE) {
@@ -355,7 +355,7 @@ public class ViewControllerLogs extends ViewController implements
         }
     }
 
-    private void onReplayPause(View v) {
+    private void onReplayPause() {
         if (!getMainActivity().getFcDevice().isLogging()) {
             togglePaused();
         }
@@ -375,7 +375,7 @@ public class ViewControllerLogs extends ViewController implements
         }
     }
 
-    private void onReplayStart(View v) {
+    private void onReplayStart() {
         //if replay is paused, resume
         if (isPaused()) {
             togglePaused();
@@ -534,6 +534,11 @@ public class ViewControllerLogs extends ViewController implements
     @Override
     public void reportObjectCount(int objectCount) {
         mObjectCount.set(objectCount);
+    }
+
+    @Override
+    public void reportRuntime(long ms) {
+        mRuntime.set(ms);
     }
 
     @Override

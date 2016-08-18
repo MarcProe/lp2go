@@ -33,6 +33,7 @@ import java.util.Queue;
 public class FcLogfileWaiterThread extends FcWaiterThread {
     protected int mSkipForward = 0;
     protected int mState;
+    int mObjectCount = 0;
     private String mFilename = null;
     private boolean mStop;
     private boolean mPaused = false;
@@ -61,6 +62,13 @@ public class FcLogfileWaiterThread extends FcWaiterThread {
         return retval;
     }
 
+    private void reportObjectCount(int i) {
+        if (mGuiEventListener != null) {
+            mGuiEventListener.reportObjectCount(i);
+        }
+        mState = i;
+    }
+
     private void reportState(int i) {
         if (mGuiEventListener != null) {
             mGuiEventListener.reportState(i);
@@ -72,6 +80,7 @@ public class FcLogfileWaiterThread extends FcWaiterThread {
 
         reportState(FcDevice.GEL_RUNNING);
         queue = new ArrayDeque<>();
+        mObjectCount = 0;
 
         byte[] logtimestampbuffer = new byte[4];
         byte[] logdatasizebuffer = new byte[8];
@@ -161,6 +170,7 @@ public class FcLogfileWaiterThread extends FcWaiterThread {
 
             logtimestampbuffer = bufferRead(4);
             int ts = H.toInt(H.reverse4bytes(logtimestampbuffer));
+            reportRuntime(ts);
             VisualLog.d("SYNC", "logtimestampbuffer! " + H.bytesToHex(logtimestampbuffer) + " " + ts);
 
             logdatasizebuffer = bufferRead(8); //since this is a redundant information, ignore.
@@ -203,6 +213,8 @@ public class FcLogfileWaiterThread extends FcWaiterThread {
                 mDevice.mActivity.incRxObjectsBad();
                 continue; // maximum possible packet size
             }
+
+            mObjectCount++;
 
             oidbuffer = bufferRead(oidbuffer.length);
             iidbuffer = bufferRead(iidbuffer.length);
@@ -259,6 +271,14 @@ public class FcLogfileWaiterThread extends FcWaiterThread {
             } catch (Exception e) {
                 VisualLog.e(e);
             }
+
+            reportObjectCount(mObjectCount);
+        }
+    }
+
+    private void reportRuntime(int ts) {
+        if (mGuiEventListener != null) {
+            mGuiEventListener.reportRuntime(ts);
         }
     }
 
