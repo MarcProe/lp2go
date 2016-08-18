@@ -620,8 +620,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    protected void connectLogFile(String filename) {
-        setFileLogInterface(filename);
+    protected void connectLogFile(String filename, FcDevice.GuiEventListener gel) {
+        setFileLogInterface(filename, gel);
     }
 
     public void setContentView(View v, int p) {
@@ -740,12 +740,13 @@ public class MainActivity extends AppCompatActivity {
         mVcList.get(mCurrentView).onToolbarLocalSettingsClick(v);
     }
 
-    private boolean setFileLogInterface(String filename) {
+    private boolean setFileLogInterface(String filename, FcDevice.GuiEventListener gel) {
         if (mFcDevice != null) {
             mFcDevice.stop();
         }
         mFcDevice = null;
         mFcDevice = new FcLogfileDevice(this, filename, mXmlObjects);
+        mFcDevice.setGuiEventListener(gel);
         mFcDevice.start();
 
         return mFcDevice != null;

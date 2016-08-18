@@ -21,12 +21,14 @@ import android.widget.Toast;
 import org.librepilot.lp2go.controller.ViewController;
 import org.librepilot.lp2go.helper.SettingsHelper;
 import org.librepilot.lp2go.uavtalk.UAVTalkMissingObjectException;
+import org.librepilot.lp2go.uavtalk.device.FcDevice;
 import org.librepilot.lp2go.ui.SingleToast;
 
 public class ConnectionThread extends Thread {
     private final MainActivity mA;
     private boolean mIsValid = true;
     private String mReplayLogFile = null;
+    private FcDevice.GuiEventListener mGuiEventListener = null;
 
     public ConnectionThread(MainActivity activity) {
         this.setName("LP2GoConnectionThread");
@@ -125,7 +127,7 @@ public class ConnectionThread extends Thread {
                         break;
                     case MainActivity.SERIAL_LOG_FILE:
                         if (mReplayLogFile != null) {
-                            mA.connectLogFile(mReplayLogFile);
+                            mA.connectLogFile(mReplayLogFile, mGuiEventListener);
                         }
                         break;
                 }
@@ -136,5 +138,9 @@ public class ConnectionThread extends Thread {
             } catch (InterruptedException ignored) {
             }
         }
+    }
+
+    public void setGuiEventListener(FcDevice.GuiEventListener gel) {
+        mGuiEventListener = gel;
     }
 }

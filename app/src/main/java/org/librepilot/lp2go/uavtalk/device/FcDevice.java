@@ -31,6 +31,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 public abstract class FcDevice {
+
+    public static final int GEL_DONE = 0;
     public static final byte UAVTALK_CONNECTED = 0x03;
     public static final byte UAVTALK_DISCONNECTED = 0x00;
     public static final byte UAVTALK_HANDSHAKE_ACKNOWLEDGED = 0x02;
@@ -48,10 +50,13 @@ public abstract class FcDevice {
     private FileOutputStream mLogOutputStream;
     private long mLogStartTimeStamp;
     private int mUavTalkConnectionState = 0x00;
-
     FcDevice(MainActivity mActivity) throws IllegalStateException {
         this.mActivity = mActivity;
         nackedObjects = new HashSet<>();
+    }
+
+    public void setGuiEventListener(GuiEventListener gel) {
+        throw new UnsupportedOperationException("Not Implemented");
     }
 
     public long getLogBytesLoggedOPL() {
@@ -277,5 +282,9 @@ public abstract class FcDevice {
         UAVTalkDeviceHelper
                 .updateSettingsObject(mObjectTree, "GCSTelemetryStats", 0, "Status", 0, myb);
         requestObject("FlightTelemetryStats");
+    }
+
+    public interface GuiEventListener {
+        void reportState(int i);
     }
 }

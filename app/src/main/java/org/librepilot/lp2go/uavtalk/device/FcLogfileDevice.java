@@ -24,6 +24,12 @@ public class FcLogfileDevice extends FcDevice {
         mWaiterThread = new FcLogfileWaiterThread(this, filename);
     }
 
+    public void setSkip(int skip) {
+        if (mWaiterThread != null) {
+            ((FcLogfileWaiterThread) mWaiterThread).mSkipForward = skip;
+        }
+    }
+
     @Override
     public boolean isConnected() {
         return mWaiterThread != null;
@@ -74,5 +80,10 @@ public class FcLogfileDevice extends FcDevice {
     @Override
     protected boolean writeByteArray(byte[] bytes) {
         return true;
+    }
+
+    @Override
+    public void setGuiEventListener(GuiEventListener gel) {
+        mWaiterThread.setGuiEventListener(gel);
     }
 }

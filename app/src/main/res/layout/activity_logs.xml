@@ -67,15 +67,6 @@
                 android:orientation="horizontal">
 
                 <ImageButton
-                    android:id="@+id/imgLogRepBack"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:contentDescription="Share Log"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/ic_replay_10_black_128dp"/>
-
-                <ImageButton
                     android:id="@+id/imgLogRepPlay"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
@@ -91,7 +82,7 @@
                     android:layout_weight="1"
                     android:contentDescription="Stop Logging"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/ic_forward_10_black_128dp"/>
+                    android:src="@drawable/ic_fast_forward_black_128dp"/>
 
                 <ImageButton
                     android:id="@+id/imgLogRepPause"
@@ -100,7 +91,7 @@
                     android:layout_weight="1"
                     android:contentDescription="Start Logging"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/ic_pause_light"/>
+                    android:src="@drawable/ic_pause_black_128dp"/>
 
                 <ImageButton
                     android:id="@+id/imgLogRepStop"

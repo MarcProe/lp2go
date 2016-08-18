@@ -23,9 +23,14 @@ import org.librepilot.lp2go.uavtalk.UAVTalkObject;
 public abstract class FcWaiterThread extends Thread {
     public final static byte MASK_TIMESTAMP = (byte) 0x80;
     final FcDevice mDevice;
+    FcDevice.GuiEventListener mGuiEventListener;
 
     FcWaiterThread(FcDevice device) {
         this.mDevice = device;
+    }
+
+    public void setGuiEventListener(FcDevice.GuiEventListener gel) {
+        mGuiEventListener = gel;
     }
 
     protected abstract void stopThread();

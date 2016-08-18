@@ -35,6 +35,8 @@ import org.librepilot.lp2go.R;
 import org.librepilot.lp2go.VisualLog;
 import org.librepilot.lp2go.helper.SettingsHelper;
 import org.librepilot.lp2go.uavtalk.UAVTalkMissingObjectException;
+import org.librepilot.lp2go.uavtalk.device.FcDevice;
+import org.librepilot.lp2go.uavtalk.device.FcLogfileDevice;
 import org.librepilot.lp2go.ui.SingleToast;
 import org.librepilot.lp2go.ui.alertdialog.EnumInputAlertDialog;
 
@@ -44,12 +46,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class ViewControllerLogs extends ViewController implements View.OnClickListener, AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener {
+public class ViewControllerLogs extends ViewController implements
+        View.OnClickListener, AdapterView.OnItemClickListener,
+        AdapterView.OnItemLongClickListener, FcDevice.GuiEventListener {
 
     private ImageView imgLogShare;
     private ImageView imgLogStart;
     private ImageView imgLogStop;
-    private ImageButton imgLogRepBack;
     private ImageButton imgLogRepForward;
     private ImageButton imgLogRepPlay;
     private ImageButton imgLogRepStop;
@@ -94,17 +97,15 @@ public class ViewControllerLogs extends ViewController implements View.OnClickLi
         imgLogStop = (ImageButton) findViewById(R.id.imgLogStop);
         imgLogShare = (ImageButton) findViewById(R.id.imgLogShare);
 
-        imgLogRepBack = (ImageButton) findViewById(R.id.imgLogRepBack);
         imgLogRepForward = (ImageButton) findViewById(R.id.imgLogRepForward);
         imgLogRepPlay = (ImageButton) findViewById(R.id.imgLogRepPlay);
-        imgLogRepStop = (ImageButton) findViewById(R.id.imgLogRepStop);
         imgLogRepPause = (ImageButton) findViewById(R.id.imgLogRepPause);
+        imgLogRepStop = (ImageButton) findViewById(R.id.imgLogRepStop);
 
         imgLogStart.setOnClickListener(this);
         imgLogStop.setOnClickListener(this);
         imgLogShare.setOnClickListener(this);
 
-        imgLogRepBack.setOnClickListener(this);
         imgLogRepForward.setOnClickListener(this);
         imgLogRepPlay.setOnClickListener(this);
         imgLogRepStop.setOnClickListener(this);
@@ -303,6 +304,19 @@ public class ViewControllerLogs extends ViewController implements View.OnClickLi
                 onReplayStart(v);
                 break;
             }
+            case R.id.imgLogRepForward: {
+                onReplayForward(v);
+                break;
+            }
+        }
+    }
+
+    private void onReplayForward(View v) {
+        if (SettingsHelper.mSerialModeUsed == MainActivity.SERIAL_LOG_FILE) {
+            SingleToast.show(getMainActivity(),
+                    String.format(getMainActivity().getString(R.string.SKIPPING_OBJECTS),
+                            SettingsHelper.mLogReplaySkipObjects), Toast.LENGTH_SHORT);
+            ((FcLogfileDevice) getMainActivity().getFcDevice()).setSkip(SettingsHelper.mLogReplaySkipObjects);
         }
     }
 
@@ -310,6 +324,7 @@ public class ViewControllerLogs extends ViewController implements View.OnClickLi
         if (mCurrentLogListPos != null) {
             String filename = getFilename((String) mLogListView.getItemAtPosition(mCurrentLogListPos));
             getMainActivity().getConnectionThread().setReplayLogFile(filename);
+            getMainActivity().getConnectionThread().setGuiEventListener(this);
             SettingsHelper.mSerialModeUsed = MainActivity.SERIAL_LOG_FILE;
             getMainActivity().reconnect();
         }
@@ -409,5 +424,16 @@ public class ViewControllerLogs extends ViewController implements View.OnClickLi
         dialog.show();
 
         return true;
+    }
+
+    @Override
+    public void reportState(int i) {
+        if (i == FcDevice.GEL_DONE) {
+            getMainActivity().runOnUiThread(new Runnable() {
+                public void run() {
+                    SingleToast.show(getMainActivity(), "Log Replay done!", Toast.LENGTH_LONG);
+                }
+            });
+        }
     }
 }

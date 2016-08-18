@@ -15,6 +15,7 @@ import java.util.ArrayDeque;
 import java.util.Queue;
 
 public class FcLogfileWaiterThread extends FcWaiterThread {
+    protected int mSkipForward = 0;
     private String mFilename = null;
     private boolean mStop;
     private Queue<Byte> queue;
@@ -74,7 +75,6 @@ public class FcLogfileWaiterThread extends FcWaiterThread {
         int previousTimestamp = 0;
 
         while (true) {
-
             byte[] buffer = new byte[64];
             int read = 0;
             try {
@@ -106,6 +106,10 @@ public class FcLogfileWaiterThread extends FcWaiterThread {
 
             if (mStop || queue.size() == 0) {
                 VisualLog.i("LOGFILE", "Done.");
+                if (mGuiEventListener != null) {
+                    mGuiEventListener.reportState(FcDevice.GEL_DONE);
+                }
+                this.stopThread();
                 return;
             }
 
@@ -117,8 +121,18 @@ public class FcLogfileWaiterThread extends FcWaiterThread {
             //we will need this, however, once we implement skipping of frames.
 
             //wait for the timestamp
-            final int wait = ts - previousTimestamp;
+            final int wait;
+
+            if (mSkipForward > 0) {      //just don't wait if skipforward is set
+                wait = 0;               //however, we will read the data and save it, to
+                mSkipForward--;         //maintain the ObjectTree state
+            } else {
+                wait = ts - previousTimestamp;
+            }
+
+            VisualLog.d("TS", "" + ts + " " + previousTimestamp + " " + wait);
             previousTimestamp = ts;
+
             if (wait > 0) {
                 try {
                     Thread.sleep(wait);
@@ -130,13 +144,6 @@ public class FcLogfileWaiterThread extends FcWaiterThread {
             syncbuffer[0] = 0x00;
             while (syncbuffer[0] != 0x3c) {
                 syncbuffer = bufferRead(1);
-            }
-
-            if (syncbuffer[0] == 0x3c) {
-                VisualLog.d("SYNC", "GOOD! " + H.bytesToHex(syncbuffer) + " " + queue.size());
-            } else {
-                VisualLog.d("SYNC", "BAD! " + H.bytesToHex(syncbuffer) + " " + queue.size());
-                continue;
             }
 
             msgtypebuffer = bufferRead(msgtypebuffer.length);
