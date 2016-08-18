@@ -46,6 +46,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class ViewControllerLogs extends ViewController implements
         View.OnClickListener, AdapterView.OnItemClickListener,
@@ -68,6 +69,9 @@ public class ViewControllerLogs extends ViewController implements
     private ListView mLogListView;
     private ArrayAdapter mLogListAdapter;
     private Integer mCurrentLogListPos = null;
+    private AtomicReference<String> mDataSource;
+    private AtomicReference<Float> mDataSize;
+    private AtomicInteger mObjectCount;
 
     public ViewControllerLogs(MainActivity activity, int title, int icon, int localSettingsVisible,
                               int flightSettingsVisible) {
@@ -186,24 +190,6 @@ public class ViewControllerLogs extends ViewController implements
             } catch (Exception ignored) {
             }
         }
-
-        switch (mLogReplayState.get()) {
-            case FcDevice.GEL_STOPPED: {
-                getMainActivity().runOnUiThread(new Runnable() {
-                    public void run() {
-                        SingleToast.show(getMainActivity(), "Log Replay done!", Toast.LENGTH_LONG);
-                    }
-                });
-                break;
-            }
-            case FcDevice.GEL_PAUSED: {
-                break;
-            }
-            case FcDevice.GEL_RUNNING: {
-                break;
-            }
-        }
-
     }
 
     @Override
@@ -254,7 +240,11 @@ public class ViewControllerLogs extends ViewController implements
 
     private void onLogStart(View v) {
         try {
-            getMainActivity().mFcDevice.setLogging(true);
+            if (SettingsHelper.mSerialModeUsed != MainActivity.SERIAL_LOG_FILE) {
+                getMainActivity().mFcDevice.setLogging(true);
+            } else {
+                SingleToast.show(getMainActivity(), "Not connected", Toast.LENGTH_SHORT);
+            }
         } catch (NullPointerException e) {
             VisualLog.i("INFO", "Device is null");
         }
@@ -342,6 +332,7 @@ public class ViewControllerLogs extends ViewController implements
 
     private void onReplayStop(View v) {
         if (getMainActivity().getFcDevice() != null &&
+                !getMainActivity().getFcDevice().isLogging() &&
                 SettingsHelper.mSerialModeUsed == MainActivity.SERIAL_LOG_FILE) {
             (getMainActivity().getFcDevice()).stop();
         } else {
@@ -365,12 +356,15 @@ public class ViewControllerLogs extends ViewController implements
     }
 
     private void onReplayPause(View v) {
-        togglePaused();
+        if (!getMainActivity().getFcDevice().isLogging()) {
+            togglePaused();
+        }
         //TODO: make this visible on the button
     }
 
     private void onReplayForward(View v) {
         if (getMainActivity().getFcDevice() != null &&
+                !getMainActivity().getFcDevice().isLogging() &&
                 SettingsHelper.mSerialModeUsed == MainActivity.SERIAL_LOG_FILE) {
             SingleToast.show(getMainActivity(),
                     String.format(getMainActivity().getString(R.string.SKIPPING_OBJECTS),
@@ -387,13 +381,15 @@ public class ViewControllerLogs extends ViewController implements
             togglePaused();
         } else {
             //else, start replay
-            if (mCurrentLogListPos != null) {
+            if (mCurrentLogListPos != null && !getMainActivity().getFcDevice().isLogging()) {
                 String filename = getFilename((String) mLogListView.getItemAtPosition(mCurrentLogListPos));
                 getMainActivity().getConnectionThread().setReplayLogFile(filename);
                 getMainActivity().getConnectionThread().setGuiEventListener(this);
                 SettingsHelper.mSerialModeUsed = MainActivity.SERIAL_LOG_FILE;
                 getMainActivity().reconnect();
                 //TODO: make this visible on the button
+            } else if (getMainActivity().getFcDevice().isLogging()) {
+                SingleToast.show(getMainActivity(), "A log is currently being recorded", Toast.LENGTH_SHORT);
             } else {
                 SingleToast.show(getMainActivity(), "Please select a logfile", Toast.LENGTH_SHORT);
             }
@@ -446,6 +442,13 @@ public class ViewControllerLogs extends ViewController implements
         VisualLog.d("CLICK", mFileList.get(pos));
         view.setSelected(true);
         mCurrentLogListPos = pos;
+        String selected = mFileList.get(pos);
+        String[] sa = selected.split(" ", 2);
+        txtLogFilename.setText(sa[0]);
+        txtLogSize.setText(sa[1]);
+        txtLogDuration.setText("-");
+        txtLogObjects.setText("-");
+
     }
 
     @Override
@@ -499,5 +502,52 @@ public class ViewControllerLogs extends ViewController implements
     @Override
     public void reportState(int i) {
         mLogReplayState.set(i);
+
+        switch (mLogReplayState.get()) {
+            case FcDevice.GEL_STOPPED: {
+                getMainActivity().runOnUiThread(new Runnable() {
+                    public void run() {
+                        SingleToast.show(getMainActivity(), "Log Replay done!", Toast.LENGTH_LONG);
+                    }
+                });
+                break;
+            }
+            case FcDevice.GEL_PAUSED: {
+                break;
+            }
+            case FcDevice.GEL_RUNNING: {
+                break;
+            }
+        }
+    }
+
+    @Override
+    public void reportDataSource(String dataSource) {
+        mDataSource.set(dataSource);
+    }
+
+    @Override
+    public void reportDataSize(float dataSize) {
+        mDataSize.set(dataSize);
+    }
+
+    @Override
+    public void reportObjectCount(int objectCount) {
+        mObjectCount.set(objectCount);
+    }
+
+    @Override
+    public void incObjectsReceived(int objRec) {
+
+    }
+
+    @Override
+    public void incObjectsSent(int objSent) {
+
+    }
+
+    @Override
+    public void incObjectsBad(int ObjBad) {
+
     }
 }

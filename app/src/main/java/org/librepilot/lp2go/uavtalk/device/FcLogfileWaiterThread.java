@@ -1,3 +1,19 @@
+/*
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+ * for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ */
+
 package org.librepilot.lp2go.uavtalk.device;
 
 import org.librepilot.lp2go.H;
@@ -16,6 +32,7 @@ import java.util.Queue;
 
 public class FcLogfileWaiterThread extends FcWaiterThread {
     protected int mSkipForward = 0;
+    protected int mState;
     private String mFilename = null;
     private boolean mStop;
     private boolean mPaused = false;
@@ -48,6 +65,7 @@ public class FcLogfileWaiterThread extends FcWaiterThread {
         if (mGuiEventListener != null) {
             mGuiEventListener.reportState(i);
         }
+        mState = i;
     }
 
     public void run() {
@@ -93,17 +111,16 @@ public class FcLogfileWaiterThread extends FcWaiterThread {
         while (true) {
 
             if (mPaused) {
-                mGuiEventListener.reportState(FcDevice.GEL_PAUSED);
+                reportState(FcDevice.GEL_PAUSED);
                 //wait a second before starting
                 try {
                     Thread.sleep(500);
 
-                } catch (InterruptedException e) {
-
+                } catch (InterruptedException ignored) {
                 }
                 continue;
             } else {
-                mGuiEventListener.reportState(FcDevice.GEL_RUNNING);
+                reportState(FcDevice.GEL_RUNNING);
             }
 
             byte[] buffer = new byte[64];
@@ -113,7 +130,7 @@ public class FcLogfileWaiterThread extends FcWaiterThread {
 
                     read = fis.read(buffer);
 
-                    if (read == 0) {
+                    if (read <= 0) {
                         break;
                     }
 
@@ -247,6 +264,7 @@ public class FcLogfileWaiterThread extends FcWaiterThread {
 
     @Override
     protected void stopThread() {
+        this.mPaused = false;
         this.mStop = true;
     }
 }

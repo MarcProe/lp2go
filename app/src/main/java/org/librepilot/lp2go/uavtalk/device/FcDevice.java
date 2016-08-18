@@ -290,5 +290,17 @@ public abstract class FcDevice {
 
     public interface GuiEventListener {
         void reportState(int i);
+
+        void reportDataSource(String dataSource);
+
+        void reportDataSize(float dataSize);
+
+        void reportObjectCount(int objectCount);
+
+        void incObjectsReceived(int objRec);
+
+        void incObjectsSent(int objSent);
+
+        void incObjectsBad(int ObjBad);
     }
 }
