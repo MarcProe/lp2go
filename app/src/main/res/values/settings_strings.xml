@@ -4,6 +4,7 @@
         <item>None</item>
         <item>USB</item>
         <item>Bluetooth</item>
+        <item>Logfile</item>
     </string-array>
 
     <string name="main_element_health">Health</string>
@@ -32,5 +33,7 @@
     <string name="SETTINGS_LOG_RAW">%1$s.log_raw</string>
     <string name="SETTINGS_TIMESTAMPS_FROM_FC">%1$s.fc_timestamps</string>
     <string name="SETTINGS_OBJECT_FAVORITES">%1$s.object_favorites</string>
+    <string name="SETTINGS_LOG_REPLAY_SKIP_OBJECTS">%1$s.log_replay_skip_objects</string>
+
 
 </resources>

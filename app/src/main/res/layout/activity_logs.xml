@@ -29,7 +29,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1"
+                android:layout_weight="0.5"
                 android:orientation="horizontal">
 
                 <ImageButton
@@ -58,6 +58,50 @@
                     android:contentDescription="Share Log"
                     android:scaleType="fitCenter"
                     android:src="@drawable/ic_share_96dp"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="0.5"
+                android:orientation="horizontal">
+
+                <ImageButton
+                    android:id="@+id/imgLogRepPlay"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:contentDescription="Start Logging"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_play_arrow_128dp"/>
+
+                <ImageButton
+                    android:id="@+id/imgLogRepForward"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:contentDescription="Stop Logging"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_fast_forward_black_128dp"/>
+
+                <ImageButton
+                    android:id="@+id/imgLogRepPause"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:contentDescription="Start Logging"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_pause_black_128dp"/>
+
+                <ImageButton
+                    android:id="@+id/imgLogRepStop"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:contentDescription="Start Logging"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_stop_black_128dp"/>
+
             </LinearLayout>
 
             <TableLayout

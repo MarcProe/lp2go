@@ -84,48 +84,9 @@ public class PollThread extends Thread {
             mA.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    if (SettingsHelper.mSerialModeUsed == MainActivity.SERIAL_BLUETOOTH) {
-                        if (mA.mFcDevice != null && mA.mFcDevice.isConnected()) {
-                            mA.imgSerial.setColorFilter(Color.argb(0xff, 0x00, 0x80, 0x00));
-                            mA.imgSerial.setImageDrawable(
-                                    ContextCompat.getDrawable(mA.getApplicationContext(),
-                                            R.drawable.ic_bluetooth_connected_128dp));
-
-                        } else if (mA.mFcDevice != null && mA.mFcDevice.isConnecting()) {
-                            if (mBlink) {
-                                mA.imgSerial.setColorFilter(Color.argb(0xff, 0xff, 0x66, 0x00));
-                                mA.imgSerial.setImageDrawable(
-                                        ContextCompat.getDrawable(mA.getApplicationContext(),
-                                                R.drawable.ic_bluetooth_128dp));
-                            } else {
-                                mA.imgSerial.setColorFilter(Color.argb(0xff, 0xff, 0x66, 0x00));
-                                mA.imgSerial.setImageDrawable(
-                                        ContextCompat.getDrawable(mA.getApplicationContext(),
-                                                R.drawable.ic_bluetooth_connected_128dp));
-                            }
-                        } else {
-                            mA.imgSerial.setColorFilter(Color.argb(0xff, 0xd4, 0x00, 0x00));
-                            mA.imgSerial.setImageDrawable(
-                                    ContextCompat.getDrawable(mA.getApplicationContext(),
-                                            R.drawable.ic_bluetooth_disabled_128dp));
-                        }
-                    } else if (SettingsHelper.mSerialModeUsed == MainActivity.SERIAL_USB) {
-                        mA.imgSerial.setImageDrawable(
-                                ContextCompat.getDrawable(mA.getApplicationContext(),
-                                        R.drawable.ic_usb_128dp));
-                        if (mA.mFcDevice != null && mA.mFcDevice.isConnected()) {
-                            mA.imgSerial.setColorFilter(Color.argb(0xff, 0x00, 0x80, 0x00));
-
-
-                        } else if (mA.mFcDevice != null && mA.mFcDevice.isConnecting()) {
-                            if (mBlink) {
-                                mA.imgSerial.setColorFilter(Color.argb(0xff, 0xff, 0x66, 0x00));
-                            } else {
-                                mA.imgSerial.setColorFilter(Color.argb(0xff, 0xff, 0x88, 0x00));
-                            }
-                        } else {
-                            mA.imgSerial.setColorFilter(Color.argb(0xff, 0xd4, 0x00, 0x00));
-                        }
+                    if (mA.getFcDevice() != null &&
+                            SettingsHelper.mSerialModeUsed != MainActivity.SERIAL_NONE) {
+                        mA.getFcDevice().drawConnectionLogo(mBlink);
                     } else {
                         mA.imgSerial.setImageDrawable(
                                 ContextCompat.getDrawable(mA.getApplicationContext(),

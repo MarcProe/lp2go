@@ -34,10 +34,14 @@ import java.util.HashSet;
 import java.util.Set;
 
 public abstract class FcDevice {
+
+    public static final int GEL_STOPPED = 0;
     public static final byte UAVTALK_CONNECTED = 0x03;
     public static final byte UAVTALK_DISCONNECTED = 0x00;
     public static final byte UAVTALK_HANDSHAKE_ACKNOWLEDGED = 0x02;
     public static final byte UAVTALK_HANDSHAKE_REQUESTED = 0x01;
+    public static final int GEL_PAUSED = 1;
+    public static final int GEL_RUNNING = -1;
     private static final int MAX_HANDSHAKE_FAILURE_CYCLES = 3;
     public final Set<String> nackedObjects;
     final MainActivity mActivity;
@@ -51,10 +55,13 @@ public abstract class FcDevice {
     private FileOutputStream mLogOutputStream;
     private long mLogStartTimeStamp;
     private int mUavTalkConnectionState = 0x00;
-
     FcDevice(MainActivity mActivity) throws IllegalStateException {
         this.mActivity = mActivity;
         nackedObjects = new HashSet<>();
+    }
+
+    public void setGuiEventListener(GuiEventListener gel) {
+        throw new UnsupportedOperationException("Not Implemented");
     }
 
     public long getLogBytesLoggedOPL() {
@@ -278,6 +285,10 @@ public abstract class FcDevice {
 
     public void handleHandshake(byte flightTelemtryStatusField) {
 
+        //if(SettingsHelper.mSerialModeUsed == MainActivity.SERIAL_LOG_FILE) {
+        //    return;
+        //}
+
         if (mFailedHandshakes > MAX_HANDSHAKE_FAILURE_CYCLES) {
             mUavTalkConnectionState = UAVTALK_DISCONNECTED;
             mFailedHandshakes = 0;
@@ -318,5 +329,25 @@ public abstract class FcDevice {
         UAVTalkDeviceHelper
                 .updateSettingsObject(mObjectTree, "GCSTelemetryStats", 0, "Status", 0, myb);
         requestObject("FlightTelemetryStats");
+    }
+
+    public abstract void drawConnectionLogo(boolean blink);
+
+    public interface GuiEventListener {
+        void reportState(int i);
+
+        void reportDataSource(String dataSource);
+
+        void reportDataSize(float dataSize);
+
+        void reportObjectCount(int objectCount);
+
+        void reportRuntime(long ms);
+
+        void incObjectsReceived(int objRec);
+
+        void incObjectsSent(int objSent);
+
+        void incObjectsBad(int ObjBad);
     }
 }

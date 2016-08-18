@@ -44,6 +44,7 @@ public class SettingsHelper {
     public static String mTopLeftLayout;
     public static boolean mUseTimestampsFromFc;
     public static Set<String> mObjectFavorites;
+    public static int mLogReplaySkipObjects;
 
     public static void loadSettings(MainActivity mainActivity) {
         SharedPreferences sharedPref = mainActivity.getPreferences(Context.MODE_PRIVATE);
@@ -76,6 +77,9 @@ public class SettingsHelper {
         mUseTimestampsFromFc = sharedPref.getBoolean(
                 mainActivity.getString(R.string.SETTINGS_TIMESTAMPS_FROM_FC, R.string.APP_ID),
                 false);
+        mLogReplaySkipObjects = sharedPref.getInt(
+                mainActivity.getString(R.string.SETTINGS_LOG_REPLAY_SKIP_OBJECTS, R.string.APP_ID),
+                100);
         mObjectFavorites = sharedPref.getStringSet(
                 mainActivity.getString(R.string.SETTINGS_OBJECT_FAVORITES, R.string.APP_ID),
                 new HashSet<String>());
@@ -118,6 +122,9 @@ public class SettingsHelper {
         editor.putBoolean(
                 mainActivity.getString(R.string.SETTINGS_TEXT2SPEECH_ENABLED, R.string.APP_ID),
                 SettingsHelper.mText2SpeechEnabled);
+        editor.putInt(
+                mainActivity.getString(R.string.SETTINGS_LOG_REPLAY_SKIP_OBJECTS, R.string.APP_ID),
+                SettingsHelper.mLogReplaySkipObjects);
         editor.putStringSet(
                 mainActivity.getString(R.string.SETTINGS_OBJECT_FAVORITES, R.string.APP_ID),
                 SettingsHelper.mObjectFavorites);
