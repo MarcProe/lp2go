@@ -1,6 +1,10 @@
 package org.librepilot.lp2go.uavtalk.device;
 
+import android.graphics.Color;
+import android.support.v4.content.ContextCompat;
+
 import org.librepilot.lp2go.MainActivity;
+import org.librepilot.lp2go.R;
 import org.librepilot.lp2go.uavtalk.UAVTalkObjectTree;
 import org.librepilot.lp2go.uavtalk.UAVTalkXMLObject;
 
@@ -78,6 +82,19 @@ public class FcLogfileDevice extends FcDevice {
     }
 
     @Override
+    public void drawConnectionLogo(boolean blink) {
+        final MainActivity mA = mActivity;
+        mA.imgSerial.setImageDrawable(
+                ContextCompat.getDrawable(mA.getApplicationContext(),
+                        R.drawable.ic_rate_review_24dp));
+        if (blink) {
+            mA.imgSerial.setColorFilter(Color.argb(0xff, 0xff, 0xff, 0xff));
+        } else {
+            mA.imgSerial.setColorFilter(Color.argb(0xff, 0x00, 0x00, 0x00));
+        }
+    }
+
+    @Override
     protected boolean writeByteArray(byte[] bytes) {
         return true;
     }
@@ -85,5 +102,13 @@ public class FcLogfileDevice extends FcDevice {
     @Override
     public void setGuiEventListener(GuiEventListener gel) {
         mWaiterThread.setGuiEventListener(gel);
+    }
+
+    public boolean isPaused() {
+        return ((FcLogfileWaiterThread) mWaiterThread).isPaused();
+    }
+
+    public void setPaused(boolean p) {
+        ((FcLogfileWaiterThread) mWaiterThread).setPaused(p);
     }
 }

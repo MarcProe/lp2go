@@ -45,6 +45,7 @@ import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class ViewControllerLogs extends ViewController implements
         View.OnClickListener, AdapterView.OnItemClickListener,
@@ -62,6 +63,7 @@ public class ViewControllerLogs extends ViewController implements
     private TextView txtLogFilename;
     private TextView txtLogObjects;
     private TextView txtLogSize;
+    private AtomicInteger mLogReplayState;
 
     private ListView mLogListView;
     private ArrayAdapter mLogListAdapter;
@@ -73,8 +75,9 @@ public class ViewControllerLogs extends ViewController implements
 
         mFileList = new ArrayList<>();
 
-        init();
+        mLogReplayState = new AtomicInteger(FcDevice.GEL_STOPPED);
 
+        init();
 
     }
 
@@ -183,6 +186,24 @@ public class ViewControllerLogs extends ViewController implements
             } catch (Exception ignored) {
             }
         }
+
+        switch (mLogReplayState.get()) {
+            case FcDevice.GEL_STOPPED: {
+                getMainActivity().runOnUiThread(new Runnable() {
+                    public void run() {
+                        SingleToast.show(getMainActivity(), "Log Replay done!", Toast.LENGTH_LONG);
+                    }
+                });
+                break;
+            }
+            case FcDevice.GEL_PAUSED: {
+                break;
+            }
+            case FcDevice.GEL_RUNNING: {
+                break;
+            }
+        }
+
     }
 
     @Override
@@ -308,25 +329,74 @@ public class ViewControllerLogs extends ViewController implements
                 onReplayForward(v);
                 break;
             }
+            case R.id.imgLogRepPause: {
+                onReplayPause(v);
+                break;
+            }
+            case R.id.imgLogRepStop: {
+                onReplayStop(v);
+                break;
+            }
         }
     }
 
+    private void onReplayStop(View v) {
+        if (getMainActivity().getFcDevice() != null &&
+                SettingsHelper.mSerialModeUsed == MainActivity.SERIAL_LOG_FILE) {
+            (getMainActivity().getFcDevice()).stop();
+        } else {
+            SingleToast.show(getMainActivity(), "Replay not running", Toast.LENGTH_SHORT);
+        }
+    }
+
+    private boolean isPaused() {
+        return SettingsHelper.mSerialModeUsed == MainActivity.SERIAL_LOG_FILE &&
+                getMainActivity().getFcDevice() != null &&
+                ((FcLogfileDevice) getMainActivity().getFcDevice()).isPaused();
+    }
+
+    private void togglePaused() {
+        if (SettingsHelper.mSerialModeUsed == MainActivity.SERIAL_LOG_FILE &&
+                getMainActivity().getFcDevice() != null) {
+            ((FcLogfileDevice) getMainActivity().getFcDevice()).setPaused(!isPaused());
+        } else {
+            SingleToast.show(getMainActivity(), "Replay not running", Toast.LENGTH_SHORT);
+        }
+    }
+
+    private void onReplayPause(View v) {
+        togglePaused();
+        //TODO: make this visible on the button
+    }
+
     private void onReplayForward(View v) {
-        if (SettingsHelper.mSerialModeUsed == MainActivity.SERIAL_LOG_FILE) {
+        if (getMainActivity().getFcDevice() != null &&
+                SettingsHelper.mSerialModeUsed == MainActivity.SERIAL_LOG_FILE) {
             SingleToast.show(getMainActivity(),
                     String.format(getMainActivity().getString(R.string.SKIPPING_OBJECTS),
                             SettingsHelper.mLogReplaySkipObjects), Toast.LENGTH_SHORT);
             ((FcLogfileDevice) getMainActivity().getFcDevice()).setSkip(SettingsHelper.mLogReplaySkipObjects);
+        } else {
+            SingleToast.show(getMainActivity(), "Replay not running", Toast.LENGTH_SHORT);
         }
     }
 
     private void onReplayStart(View v) {
-        if (mCurrentLogListPos != null) {
-            String filename = getFilename((String) mLogListView.getItemAtPosition(mCurrentLogListPos));
-            getMainActivity().getConnectionThread().setReplayLogFile(filename);
-            getMainActivity().getConnectionThread().setGuiEventListener(this);
-            SettingsHelper.mSerialModeUsed = MainActivity.SERIAL_LOG_FILE;
-            getMainActivity().reconnect();
+        //if replay is paused, resume
+        if (isPaused()) {
+            togglePaused();
+        } else {
+            //else, start replay
+            if (mCurrentLogListPos != null) {
+                String filename = getFilename((String) mLogListView.getItemAtPosition(mCurrentLogListPos));
+                getMainActivity().getConnectionThread().setReplayLogFile(filename);
+                getMainActivity().getConnectionThread().setGuiEventListener(this);
+                SettingsHelper.mSerialModeUsed = MainActivity.SERIAL_LOG_FILE;
+                getMainActivity().reconnect();
+                //TODO: make this visible on the button
+            } else {
+                SingleToast.show(getMainActivity(), "Please select a logfile", Toast.LENGTH_SHORT);
+            }
         }
     }
 
@@ -428,12 +498,6 @@ public class ViewControllerLogs extends ViewController implements
 
     @Override
     public void reportState(int i) {
-        if (i == FcDevice.GEL_DONE) {
-            getMainActivity().runOnUiThread(new Runnable() {
-                public void run() {
-                    SingleToast.show(getMainActivity(), "Log Replay done!", Toast.LENGTH_LONG);
-                }
-            });
-        }
+        mLogReplayState.set(i);
     }
 }

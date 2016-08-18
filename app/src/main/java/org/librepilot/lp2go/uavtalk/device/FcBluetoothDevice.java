@@ -18,9 +18,12 @@ package org.librepilot.lp2go.uavtalk.device;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothSocket;
+import android.graphics.Color;
+import android.support.v4.content.ContextCompat;
 
 import org.librepilot.lp2go.H;
 import org.librepilot.lp2go.MainActivity;
+import org.librepilot.lp2go.R;
 import org.librepilot.lp2go.VisualLog;
 import org.librepilot.lp2go.helper.SettingsHelper;
 import org.librepilot.lp2go.uavtalk.UAVTalkDeviceHelper;
@@ -186,6 +189,35 @@ public class FcBluetoothDevice extends FcDevice {
         writeByteArray(send);
 
         return true;
+    }
+
+    @Override
+    public void drawConnectionLogo(boolean blink) {
+        MainActivity mA = mActivity;
+        if (this != null && this.isConnected()) {
+            mA.imgSerial.setColorFilter(Color.argb(0xff, 0x00, 0x80, 0x00));
+            mA.imgSerial.setImageDrawable(
+                    ContextCompat.getDrawable(mA.getApplicationContext(),
+                            R.drawable.ic_bluetooth_connected_128dp));
+
+        } else if (mA.mFcDevice != null && mA.mFcDevice.isConnecting()) {
+            if (blink) {
+                mA.imgSerial.setColorFilter(Color.argb(0xff, 0xff, 0x66, 0x00));
+                mA.imgSerial.setImageDrawable(
+                        ContextCompat.getDrawable(mA.getApplicationContext(),
+                                R.drawable.ic_bluetooth_128dp));
+            } else {
+                mA.imgSerial.setColorFilter(Color.argb(0xff, 0xff, 0x66, 0x00));
+                mA.imgSerial.setImageDrawable(
+                        ContextCompat.getDrawable(mA.getApplicationContext(),
+                                R.drawable.ic_bluetooth_connected_128dp));
+            }
+        } else {
+            mA.imgSerial.setColorFilter(Color.argb(0xff, 0xd4, 0x00, 0x00));
+            mA.imgSerial.setImageDrawable(
+                    ContextCompat.getDrawable(mA.getApplicationContext(),
+                            R.drawable.ic_bluetooth_disabled_128dp));
+        }
     }
 
     private synchronized void setState(int state) {

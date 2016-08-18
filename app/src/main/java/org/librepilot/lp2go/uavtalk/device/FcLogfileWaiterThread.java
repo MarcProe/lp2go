@@ -18,11 +18,20 @@ public class FcLogfileWaiterThread extends FcWaiterThread {
     protected int mSkipForward = 0;
     private String mFilename = null;
     private boolean mStop;
+    private boolean mPaused = false;
     private Queue<Byte> queue;
 
     public FcLogfileWaiterThread(FcDevice device, String filename) {
         super(device);
         this.mFilename = filename;
+    }
+
+    public boolean isPaused() {
+        return mPaused;
+    }
+
+    public void setPaused(boolean mPaused) {
+        this.mPaused = mPaused;
     }
 
     private byte[] bufferRead(int len) {
@@ -35,8 +44,15 @@ public class FcLogfileWaiterThread extends FcWaiterThread {
         return retval;
     }
 
+    private void reportState(int i) {
+        if (mGuiEventListener != null) {
+            mGuiEventListener.reportState(i);
+        }
+    }
+
     public void run() {
 
+        reportState(FcDevice.GEL_RUNNING);
         queue = new ArrayDeque<>();
 
         byte[] logtimestampbuffer = new byte[4];
@@ -75,6 +91,21 @@ public class FcLogfileWaiterThread extends FcWaiterThread {
         int previousTimestamp = 0;
 
         while (true) {
+
+            if (mPaused) {
+                mGuiEventListener.reportState(FcDevice.GEL_PAUSED);
+                //wait a second before starting
+                try {
+                    Thread.sleep(500);
+
+                } catch (InterruptedException e) {
+
+                }
+                continue;
+            } else {
+                mGuiEventListener.reportState(FcDevice.GEL_RUNNING);
+            }
+
             byte[] buffer = new byte[64];
             int read = 0;
             try {
@@ -106,9 +137,7 @@ public class FcLogfileWaiterThread extends FcWaiterThread {
 
             if (mStop || queue.size() == 0) {
                 VisualLog.i("LOGFILE", "Done.");
-                if (mGuiEventListener != null) {
-                    mGuiEventListener.reportState(FcDevice.GEL_DONE);
-                }
+                reportState(FcDevice.GEL_STOPPED);
                 this.stopThread();
                 return;
             }
@@ -130,7 +159,6 @@ public class FcLogfileWaiterThread extends FcWaiterThread {
                 wait = ts - previousTimestamp;
             }
 
-            VisualLog.d("TS", "" + ts + " " + previousTimestamp + " " + wait);
             previousTimestamp = ts;
 
             if (wait > 0) {

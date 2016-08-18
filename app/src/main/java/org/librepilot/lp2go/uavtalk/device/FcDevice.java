@@ -32,11 +32,13 @@ import java.util.Set;
 
 public abstract class FcDevice {
 
-    public static final int GEL_DONE = 0;
+    public static final int GEL_STOPPED = 0;
     public static final byte UAVTALK_CONNECTED = 0x03;
     public static final byte UAVTALK_DISCONNECTED = 0x00;
     public static final byte UAVTALK_HANDSHAKE_ACKNOWLEDGED = 0x02;
     public static final byte UAVTALK_HANDSHAKE_REQUESTED = 0x01;
+    public static final int GEL_PAUSED = 1;
+    public static final int GEL_RUNNING = -1;
     private static final int MAX_HANDSHAKE_FAILURE_CYCLES = 3;
     public final Set<String> nackedObjects;
     final MainActivity mActivity;
@@ -283,6 +285,8 @@ public abstract class FcDevice {
                 .updateSettingsObject(mObjectTree, "GCSTelemetryStats", 0, "Status", 0, myb);
         requestObject("FlightTelemetryStats");
     }
+
+    public abstract void drawConnectionLogo(boolean blink);
 
     public interface GuiEventListener {
         void reportState(int i);
