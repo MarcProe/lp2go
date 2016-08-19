@@ -475,8 +475,6 @@ public class MainActivity extends AppCompatActivity {
 
         ((ViewControllerMainAnimatorViewSetter) mVcMain).setLayout();
 
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-
         initSlider();
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
