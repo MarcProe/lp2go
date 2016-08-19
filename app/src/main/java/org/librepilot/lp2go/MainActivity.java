@@ -61,6 +61,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -461,6 +462,8 @@ public class MainActivity extends AppCompatActivity {
 
         ((ViewControllerMainAnimatorViewSetter) mVcMain).setLayout();
 
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
         initSlider();
 
         initWarnDialog().show();
@@ -621,6 +624,7 @@ public class MainActivity extends AppCompatActivity {
         if (mCurrentView != p) {
             mCurrentView = p;
             super.setContentView(v);
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
             initSlider();
         }
     }
