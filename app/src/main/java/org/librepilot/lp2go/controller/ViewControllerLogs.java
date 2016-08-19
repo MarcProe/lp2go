@@ -381,7 +381,7 @@ public class ViewControllerLogs extends ViewController implements
             togglePaused();
         } else {
             //else, start replay
-            if (mCurrentLogListPos != null && !getMainActivity().getFcDevice().isLogging()) {
+            if (mCurrentLogListPos != null && (getMainActivity().getFcDevice() == null || !getMainActivity().getFcDevice().isLogging())) {
                 String filename = getFilename((String) mLogListView.getItemAtPosition(mCurrentLogListPos));
                 getMainActivity().getConnectionThread().setReplayLogFile(filename);
                 getMainActivity().getConnectionThread().setGuiEventListener(this);
