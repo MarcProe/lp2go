@@ -122,7 +122,8 @@ public class MainActivity extends AppCompatActivity {
     public static final int SERIAL_LOG_FILE = 3;
     protected static final int SERIAL_USB = 1;
     private static final int NUM_OF_VIEWS = 11;
-    private static final String UAVO_INTERNAL_PATH = "uavo";
+    private static final String ASSETS_LOGS_INTERNAL_PATH = "logs";
+    private static final String ASSETS_UAVO_INTERNAL_PATH = "uavo";
     static int mCurrentView = 0;
     private static boolean mHasPThread = false;
     public ImageView imgSerial;
@@ -295,21 +296,37 @@ public class MainActivity extends AppCompatActivity {
 
     public void copyAssets() {
 
-        VisualLog.d("STARTING", "CopyAssets");
+        VisualLog.d("COPY", "Starting CopyAssets");
         AssetManager assetManager = getAssets();
         String[] files = null;
         try {
-            files = assetManager.list(UAVO_INTERNAL_PATH);
+            files = assetManager.list(ASSETS_UAVO_INTERNAL_PATH);
         } catch (IOException e) {
-            VisualLog.e("tag", "Failed to get asset file list.", e);
+            VisualLog.e("COPY", "Failed to get uavo asset file list.", e);
         }
         if (files != null) {
             for (String filename : files) {
                 try {
-                    copyFile(assetManager.open(UAVO_INTERNAL_PATH +
+                    copyFile(assetManager.open(ASSETS_UAVO_INTERNAL_PATH +
                             File.separator + filename), filename);
                 } catch (IOException e) {
-                    VisualLog.e("tag", "Failed to copy asset file: " + filename, e);
+                    VisualLog.e("COPY", "Failed to copy uavo asset file: " + filename, e);
+                }
+            }
+        }
+
+        try {
+            files = assetManager.list(ASSETS_LOGS_INTERNAL_PATH);
+        } catch (IOException e) {
+            VisualLog.e("COPY", "Failed to get log asset file list.", e);
+        }
+        if (files != null) {
+            for (String filename : files) {
+                try {
+                    copyFile(assetManager.open(ASSETS_LOGS_INTERNAL_PATH +
+                            File.separator + filename), filename);
+                } catch (IOException e) {
+                    VisualLog.e("COPY", "Failed to copy log asset file: " + filename, e);
                 }
             }
         }
@@ -319,7 +336,7 @@ public class MainActivity extends AppCompatActivity {
 
         VisualLog.d("COPY", "Copy " + relativeFilename);
 
-        FileOutputStream out = openFileOutput(UAVO_INTERNAL_PATH +
+        FileOutputStream out = openFileOutput(ASSETS_UAVO_INTERNAL_PATH +
                 getString(R.string.DASH) + relativeFilename, Context.MODE_PRIVATE);
 
         copyFile(source, out);
@@ -549,7 +566,7 @@ public class MainActivity extends AppCompatActivity {
             MessageDigest cumucrypt;
             try {
                 InputStream is =
-                        openFileInput(UAVO_INTERNAL_PATH + getString(R.string.DASH) + file);
+                        openFileInput(ASSETS_UAVO_INTERNAL_PATH + getString(R.string.DASH) + file);
                 zis = new ZipInputStream(new BufferedInputStream(is));
                 ZipEntry ze;
 
