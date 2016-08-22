@@ -25,6 +25,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -41,19 +43,21 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ViewControllerSettings extends ViewController
         implements AdapterView.OnItemSelectedListener,
-        View.OnClickListener {
+        View.OnClickListener, CompoundButton.OnCheckedChangeListener {
 
     private Button btnClearUavo;
     private Button btnLoadUavo;
     private Spinner spnBluetoothPairedDevice;
     private Spinner spnConnectionTypeSpinner;
     private Spinner spnUavoSource;
+    private CheckBox cbxUsageStats;
 
     public ViewControllerSettings(MainActivity activity, int title, int icon, int localSettingsVisible,
                                   int flightSettingsVisible) {
@@ -126,6 +130,10 @@ public class ViewControllerSettings extends ViewController
         if (btnLoadUavo != null) {
             btnLoadUavo.setOnClickListener(this);
         }
+
+        cbxUsageStats = (CheckBox) activity.findViewById(R.id.cbxUsageStats);
+        cbxUsageStats.setChecked(SettingsHelper.mCollectUsageStatistics);
+        cbxUsageStats.setOnCheckedChangeListener(this);
 
     }
 
@@ -314,6 +322,20 @@ public class ViewControllerSettings extends ViewController
             }
             case R.id.btnLoadUavo: {
                 onLoadUavObjectFile();
+                break;
+            }
+        }
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+        switch (compoundButton.getId()) {
+            case R.id.cbxUsageStats: {
+                SettingsHelper.mCollectUsageStatistics = b;
+                boolean active = getMainActivity().initFirebaseAnalytics();
+                VisualLog.d(this.getClass().getName(),
+                        MessageFormat.format(getMainActivity().getString(
+                                R.string.FBA_LOG_ON_CHECKED_CHANGE), b, active));
                 break;
             }
         }

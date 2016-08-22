@@ -68,6 +68,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
+
 import org.librepilot.lp2go.controller.ViewController;
 import org.librepilot.lp2go.controller.ViewController3DMagCalibration;
 import org.librepilot.lp2go.controller.ViewControllerAbout;
@@ -211,6 +213,7 @@ public class MainActivity extends AppCompatActivity {
         }
     };
     private ArrayList<Integer> mViewPos;
+    private FirebaseAnalytics mFirebaseAnalytics;
 
     public static boolean hasPThread() {
         return mHasPThread;
@@ -494,9 +497,41 @@ public class MainActivity extends AppCompatActivity {
 
         initSlider();
 
+        initFirebaseAnalytics();
+
+        logAppOpenEvent();
+
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         initWarnDialog().show();
+    }
+
+    public boolean initFirebaseAnalytics() {
+        if (SettingsHelper.mCollectUsageStatistics) {
+            mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        } else {
+            mFirebaseAnalytics = null;
+        }
+        return mFirebaseAnalytics != null;
+    }
+
+    public void logAppOpenEvent() {
+        if (mFirebaseAnalytics != null) {
+            Bundle bundle = new Bundle();
+            mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.APP_OPEN, bundle);
+        }
+    }
+
+    public void logViewEvent(ViewController v) {
+        if (mFirebaseAnalytics != null && v != null && v.getTitle() != null) {
+            final Bundle bundle = new Bundle();
+            bundle.putString(FirebaseAnalytics.Param.ITEM_ID,
+                    H.trunc(v.getClass().getSimpleName(), 24));
+            bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, v.getTitle());
+            bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE,
+                    getString(R.string.FBA_CONTENT_TYPE_VIEW));
+            mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
+        }
     }
 
     @Override

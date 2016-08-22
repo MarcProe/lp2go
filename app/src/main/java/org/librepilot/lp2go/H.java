@@ -305,4 +305,12 @@ public class H {
         String strDate = sdfDate.format(now);
         return "OP-" + strDate + ".opl";
     }
+
+    public static String trunc(final String s, final int l) {
+        if (s.length() > l) {
+            return s.substring(0, l);
+        } else {
+            return s;
+        }
+    }
 }

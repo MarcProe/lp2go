@@ -65,5 +65,6 @@
     <string name="WIKI_LINK_INFO">See the wiki for help:\nhttps://librepilot.atlassian.net/wiki/display/LPDOC/LibrePilot2Go+Android+App</string>
     <string name="DELETE_ALL_BUTTON">Delete All</string>
     <string name="SKIPPING_OBJECTS">Skipping %d objects</string>
+    <string name="SEND_USAGE_STATISTICS">Send usage statistics</string>
 </resources>
 

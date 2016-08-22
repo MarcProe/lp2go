@@ -132,6 +132,28 @@
                     android:text="@string/WIKI_LINK_INFO"
                     android:textAppearance="?android:attr/textAppearanceMedium"/>
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/border_top"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/SEND_USAGE_STATISTICS"
+                        android:textAppearance="?android:attr/textAppearanceLarge"/>
+
+                    <CheckBox
+                        android:id="@+id/cbxUsageStats"
+                        android:layout_width="0dp"
+                        android:layout_height="fill_parent"
+                        android:layout_weight="1"
+                        android:checked="false"
+                        android:text=""/>
+
+                </LinearLayout>
 
             </LinearLayout>
         </ScrollView>

@@ -45,6 +45,7 @@ public class SettingsHelper {
     public static boolean mUseTimestampsFromFc;
     public static Set<String> mObjectFavorites;
     public static int mLogReplaySkipObjects;
+    public static boolean mCollectUsageStatistics;
 
     public static void loadSettings(MainActivity mainActivity) {
         SharedPreferences sharedPref = mainActivity.getPreferences(Context.MODE_PRIVATE);
@@ -83,13 +84,9 @@ public class SettingsHelper {
         mObjectFavorites = sharedPref.getStringSet(
                 mainActivity.getString(R.string.SETTINGS_OBJECT_FAVORITES, R.string.APP_ID),
                 new HashSet<String>());
-
-        String listString = "";
-
-        for (String s : mObjectFavorites) {
-            listString += s + "\t";
-        }
-        VisualLog.d("DSFG L", listString);
+        mCollectUsageStatistics = sharedPref.getBoolean(
+                mainActivity.getString(R.string.SETTINGS_COLLECT_USAGE_STATS, R.string.APP_ID),
+                false);  //Default for statistics is false, this is opt-in
     }
 
     @SuppressLint("CommitPrefEdits")
@@ -128,13 +125,9 @@ public class SettingsHelper {
         editor.putStringSet(
                 mainActivity.getString(R.string.SETTINGS_OBJECT_FAVORITES, R.string.APP_ID),
                 SettingsHelper.mObjectFavorites);
-
-        String listString = "";
-
-        for (String s : mObjectFavorites) {
-            listString += s + "\t";
-        }
-        VisualLog.d("DSFG S", listString);
+        editor.putBoolean(
+                mainActivity.getString(R.string.SETTINGS_COLLECT_USAGE_STATS, R.string.APP_ID),
+                SettingsHelper.mCollectUsageStatistics);
 
         if (async) {
             editor.apply();

@@ -34,6 +34,7 @@
     <string name="SETTINGS_TIMESTAMPS_FROM_FC">%1$s.fc_timestamps</string>
     <string name="SETTINGS_OBJECT_FAVORITES">%1$s.object_favorites</string>
     <string name="SETTINGS_LOG_REPLAY_SKIP_OBJECTS">%1$s.log_replay_skip_objects</string>
+    <string name="SETTINGS_COLLECT_USAGE_STATS">%1$s.collect_usage_stats</string>
 
 
 </resources>

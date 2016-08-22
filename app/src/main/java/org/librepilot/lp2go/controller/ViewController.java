@@ -70,6 +70,10 @@ public abstract class ViewController {
         this.mMenuItem = new MenuItem(getString(mTitle), mIcon);
     }
 
+    public String getTitle() {
+        return getString(mTitle);
+    }
+
     public abstract int getID();
 
     protected MainActivity getMainActivity() {
@@ -102,6 +106,8 @@ public abstract class ViewController {
             }
             mActivity.imgSerial = (ImageView) findViewById(R.id.imgSerial);
             mActivity.imgUavoSanity = (ImageView) findViewById(R.id.imgUavoSanity);
+
+            mActivity.logViewEvent(this);
         }
     }
 
