@@ -52,8 +52,9 @@ public class OpenGl3DMagCalView extends GLSurfaceView {
     }
 
     public void resetSamples() {
-        this.mRenderer.mCubes.clear();
-
+        if (this.mRenderer.mCubes != null) {
+            this.mRenderer.mCubes.clear();
+        }
     }
 
     public FitPoints fit() {
@@ -99,10 +100,14 @@ public class OpenGl3DMagCalView extends GLSurfaceView {
                 //VisualLog.d("DBG", "Adding Cube");
             }
 
-        } else {
+        } //else {
             //VisualLog.d("DBG", "Won't add because " + num + " " + alpha +" " + beta + " ");
+        //}
+        if (this.mRenderer.mCubes != null) {
+            return this.mRenderer.mCubes.size();
+        } else {
+            return 0;
         }
-        return this.mRenderer.mCubes.size();
     }
 
     public String PitchRollToString(float pitch, float roll) {

@@ -25,76 +25,74 @@ import javax.microedition.khronos.opengles.GL10;
 public class CartesianCoordinateSystem {
     final float n = 0.0f;
     final float o = 1.0f;
-    private final float d = 250.0f;
-    private final float m = -2.5f;
-    private final float p = 2.5f;
-    private final float verticesX[] = {
-            m, m / d, m / d,
-            p, m / d, m / d,
-            p, p / d, m / d,
-            m, p / d, m / d,
-            m, m / d, p / d,
-            p, m / d, p / d,
-            p, p / d, p / d,
-            m, p / d, p / d
-    };
-    private final float verticesY[] = {
-            m / d, m, m / d,
-            p / d, m, m / d,
-            p / d, p, m / d,
-            m / d, p, m / d,
-            m / d, m, p / d,
-            p / d, m, p / d,
-            p / d, p, p / d,
-            m / d, p, p / d
-    };
-    private final float verticesZ[] = {
-            m / d, m / d, m,
-            p / d, m / d, m,
-            p / d, p / d, m,
-            m / d, p / d, m,
-            m / d, m / d, p,
-            p / d, m / d, p,
-            p / d, p / d, p,
-            m / d, p / d, p
-    };
     CartesianCoordinateSystemAxis x, y, z;
-    private float colorsX[] = {
-            o, n, n, o,
-            o, n, n, o,
-            o, n, n, o,
-            o, n, n, o,
-            o, n, n, o,
-            o, n, n, o,
-            o, n, n, o,
-            o, n, n, o
-    };
-
-    private float colorsY[] = {
-            n, o, n, o,
-            n, o, n, o,
-            n, o, n, o,
-            n, o, n, o,
-            n, o, n, o,
-            n, o, n, o,
-            n, o, n, o,
-            n, o, n, o
-    };
-
-    private float colorsZ[] = {
-            n, n, o, o,
-            n, n, o, o,
-            n, n, o, o,
-            n, n, o, o,
-            n, n, o, o,
-            n, n, o, o,
-            n, n, o, o,
-            n, n, o, o
-    };
 
     public CartesianCoordinateSystem() {
+        float d = 250.0f;
+        float m = -2.5f;
+        float p = 2.5f;
+        float[] verticesX = {
+                m, m / d, m / d,
+                p, m / d, m / d,
+                p, p / d, m / d,
+                m, p / d, m / d,
+                m, m / d, p / d,
+                p, m / d, p / d,
+                p, p / d, p / d,
+                m, p / d, p / d
+        };
+        float[] colorsX = {
+                o, n, n, o,
+                o, n, n, o,
+                o, n, n, o,
+                o, n, n, o,
+                o, n, n, o,
+                o, n, n, o,
+                o, n, n, o,
+                o, n, n, o
+        };
         x = new CartesianCoordinateSystemAxis(verticesX, colorsX);
+        float[] verticesY = {
+                m / d, m, m / d,
+                p / d, m, m / d,
+                p / d, p, m / d,
+                m / d, p, m / d,
+                m / d, m, p / d,
+                p / d, m, p / d,
+                p / d, p, p / d,
+                m / d, p, p / d
+        };
+        float[] colorsY = {
+                n, o, n, o,
+                n, o, n, o,
+                n, o, n, o,
+                n, o, n, o,
+                n, o, n, o,
+                n, o, n, o,
+                n, o, n, o,
+                n, o, n, o
+        };
         y = new CartesianCoordinateSystemAxis(verticesY, colorsY);
+        float[] colorsZ = {
+                n, n, o, o,
+                n, n, o, o,
+                n, n, o, o,
+                n, n, o, o,
+                n, n, o, o,
+                n, n, o, o,
+                n, n, o, o,
+                n, n, o, o
+        };
+        float[] verticesZ = {
+                m / d, m / d, m,
+                p / d, m / d, m,
+                p / d, p / d, m,
+                m / d, p / d, m,
+                m / d, m / d, p,
+                p / d, m / d, p,
+                p / d, p / d, p,
+                m / d, p / d, p
+        };
         z = new CartesianCoordinateSystemAxis(verticesZ, colorsZ);
     }
 
@@ -106,7 +104,6 @@ public class CartesianCoordinateSystem {
 
     private class CartesianCoordinateSystemAxis {
 
-        private final float[] colors;
         private final byte indices[] = {
                 0, 4, 5, 0, 5, 1,
                 1, 5, 6, 1, 6, 2,
@@ -117,14 +114,10 @@ public class CartesianCoordinateSystem {
         };
 
         private final FloatBuffer mVertexBuffer;
-        private final float[] vertices;
         private FloatBuffer mColorBuffer;
         private ByteBuffer mIndexBuffer;
 
         public CartesianCoordinateSystemAxis(float[] vertices, float[] colors) {
-
-            this.vertices = vertices;
-            this.colors = colors;
 
             ByteBuffer byteBuf = ByteBuffer.allocateDirect(vertices.length * 4);
             byteBuf.order(ByteOrder.nativeOrder());
