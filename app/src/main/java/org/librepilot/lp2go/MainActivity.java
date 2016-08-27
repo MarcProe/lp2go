@@ -69,7 +69,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.librepilot.lp2go.controller.ViewController;
-import org.librepilot.lp2go.controller.ViewController3DMagCalibration;
+import org.librepilot.lp2go.controller.ViewController3DMagCal;
 import org.librepilot.lp2go.controller.ViewControllerAbout;
 import org.librepilot.lp2go.controller.ViewControllerLogs;
 import org.librepilot.lp2go.controller.ViewControllerMain;
@@ -472,7 +472,7 @@ public class MainActivity extends AppCompatActivity {
                 R.drawable.ic_public_24dp, View.INVISIBLE, View.INVISIBLE);
         ViewController mVcObjects = new ViewControllerObjects(this, R.string.menu_objects,
                 R.drawable.ic_now_widgets_24dp, View.INVISIBLE, View.INVISIBLE);
-        ViewController mVc3DMagCalibration = new ViewController3DMagCalibration(this,
+        ViewController mVc3DMagCalibration = new ViewController3DMagCal(this,
                 R.string.menu_3dmag, R.drawable.ic_explore_black_128dp, View.INVISIBLE, View.INVISIBLE);
         ViewController mVcMain = new ViewControllerMain(this, R.string.menu_main,
                 R.drawable.ic_notifications_on_24dp, View.VISIBLE, View.VISIBLE);
