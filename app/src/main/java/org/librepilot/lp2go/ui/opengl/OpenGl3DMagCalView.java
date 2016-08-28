@@ -29,6 +29,8 @@ import org.librepilot.lp2go.ui.opengl.shapes.Cube;
 import org.librepilot.lp2go.ui.opengl.shapes.Rhombicuboctahedron;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -36,12 +38,16 @@ import javax.microedition.khronos.opengles.GL10;
 public class OpenGl3DMagCalView extends GLSurfaceView {
 
     private final OpenGLRenderer mRenderer;
+    private Map<String, Integer> mSamplesPerFace;
+    private String mPreferedFace;
+    private String mCurrentFace;
 
     public OpenGl3DMagCalView(Context context) {
         super(context);
         setEGLContextClientVersion(1);
         mRenderer = new OpenGLRenderer();
         setRenderer(mRenderer);
+        initPreferedFaces();
     }
 
     public OpenGl3DMagCalView(Context context, AttributeSet attrs) {
@@ -49,11 +55,45 @@ public class OpenGl3DMagCalView extends GLSurfaceView {
         setEGLContextClientVersion(1);
         mRenderer = new OpenGLRenderer();
         setRenderer(mRenderer);
+        initPreferedFaces();
+    }
+
+    private void initPreferedFaces() {
+        //T/B|F/S|R/L
+        mPreferedFace = "T";
+        mSamplesPerFace = new LinkedHashMap<>();
+        mSamplesPerFace.put("T", 0);
+        mSamplesPerFace.put("TS", 0);
+        mSamplesPerFace.put("TSL", 0);
+        mSamplesPerFace.put("TL", 0);
+        mSamplesPerFace.put("TFL", 0);
+        mSamplesPerFace.put("TF", 0);
+        mSamplesPerFace.put("TFR", 0);
+        mSamplesPerFace.put("TR", 0);
+        mSamplesPerFace.put("TSR", 0);
+        mSamplesPerFace.put("SL", 0);
+        mSamplesPerFace.put("L", 0);
+        mSamplesPerFace.put("FL", 0);
+        mSamplesPerFace.put("F", 0);
+        mSamplesPerFace.put("FR", 0);
+        mSamplesPerFace.put("R", 0);
+        mSamplesPerFace.put("SR", 0);
+        mSamplesPerFace.put("S", 0);
+        mSamplesPerFace.put("BS", 0);
+        mSamplesPerFace.put("BSR", 0);
+        mSamplesPerFace.put("BR", 0);
+        mSamplesPerFace.put("BFR", 0);
+        mSamplesPerFace.put("BF", 0);
+        mSamplesPerFace.put("BFL", 0);
+        mSamplesPerFace.put("BL", 0);
+        mSamplesPerFace.put("BSL", 0);
+        mSamplesPerFace.put("B", 0);
     }
 
     public void resetSamples() {
         if (this.mRenderer.mCubes != null) {
             this.mRenderer.mCubes.clear();
+            initPreferedFaces();
         }
     }
 
@@ -79,6 +119,24 @@ public class OpenGl3DMagCalView extends GLSurfaceView {
         this.mRenderer.mYaw = yaw;
     }
 
+    public String getPreferedFace() {
+        int curcount = mSamplesPerFace.get(mPreferedFace);
+        if (curcount < 24) {
+            return mPreferedFace;
+        } else {
+            for (String f : mSamplesPerFace.keySet()) {
+                if (mSamplesPerFace.get(f) < 24) {
+                    mPreferedFace = f;
+                    return f;
+                }
+            }
+        }
+        return "";
+    }
+
+    public String getCurrentFace() {
+        return mCurrentFace != null ? mCurrentFace : "";
+    }
 
     public int addSample(float x, float y, float z) {
 
@@ -98,6 +156,11 @@ public class OpenGl3DMagCalView extends GLSurfaceView {
                 //increase counter for current sector
                 this.mRenderer.mSampleCubes[alpha][beta] = num + 1;
                 //VisualLog.d("DBG", "Adding Cube");
+
+                mCurrentFace = pitchRollToString(this.mRenderer.mPitch, this.mRenderer.mRoll);
+                final Integer t = mSamplesPerFace.get(mCurrentFace);
+
+                mSamplesPerFace.put(mCurrentFace, t == null ? 1 : t + 1);
             }
 
         } //else {
@@ -110,7 +173,7 @@ public class OpenGl3DMagCalView extends GLSurfaceView {
         }
     }
 
-    public String PitchRollToString(float pitch, float roll) {
+    public String pitchRollToString(float pitch, float roll) {
         return mRenderer.PitchRollToString(pitch, roll);
     }
 

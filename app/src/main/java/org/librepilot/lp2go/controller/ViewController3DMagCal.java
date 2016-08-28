@@ -16,6 +16,7 @@
 
 package org.librepilot.lp2go.controller;
 
+import android.graphics.Color;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -55,6 +56,8 @@ public class ViewController3DMagCal extends ViewController implements
     private final TextView txt3dRoll;
     private final TextView txt3dYaw;
     private final TextView txtCollectedSamples;
+    private final TextView txtSamplesPercentage;
+    private final TextView txtPreferedFace;
     ImageView imgCompass;
     private OpenGl3DMagCalView glv3DMagCalibration;
     private float be_0;
@@ -102,6 +105,8 @@ public class ViewController3DMagCal extends ViewController implements
         txt3dYaw = ((TextView) findViewById(R.id.txt3dYaw));
 
         txtCollectedSamples = ((TextView) findViewById(R.id.txtCollectedSamples));
+        txtSamplesPercentage = ((TextView) findViewById(R.id.txtSamplesPercentage));
+        txtPreferedFace = ((TextView) findViewById(R.id.txtPreferedFace));
 
         findViewById(R.id.imgStartStopCalibration).setOnClickListener(this);
 
@@ -160,15 +165,34 @@ public class ViewController3DMagCal extends ViewController implements
 
         boolean success = true;
 
+        //check if home position is set
+        success = getData("HomeLocation", "Set").toString().toLowerCase().equals("true");
+        if (!success) {
+            VisualLog.e("HomeLocation not set!");
+            SingleToast.show(getMainActivity(), "HomeLocation not set!", Toast.LENGTH_LONG);
+            return false;
+        }
+
+        //check if mag is activated
+        success = !getData("MagState", "Source").equals("Invalid");
+        if (!success) {
+            VisualLog.e("Mag not activated");
+            SingleToast.show(getMainActivity(), "Magnetometer is not activated!", Toast.LENGTH_LONG);
+            return false;
+        }
+
         //reset calibration on FC
         success = resetCalibrationOnFc();
         if (!success) {
+            VisualLog.e("Calibration reset failed");
             return false;
         }
 
         //increase magstate update rate
         success = setMetaUpdateRate("MagState", 300);
         if (!success) {
+            VisualLog.e("MagState Meta Update failed");
+            SingleToast.show(getMainActivity(), "MagState Meta Update failed", Toast.LENGTH_LONG);
             return false;
         }
 
@@ -181,7 +205,9 @@ public class ViewController3DMagCal extends ViewController implements
                 dev.getObjectTree().removeListener("AttitudeState");
                 dev.getObjectTree().setListener("AttitudeState", this);
             }
-        } catch (NullPointerException ignored) {
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+            VisualLog.e(e.getMessage());
             return false;
         }
 
@@ -194,14 +220,17 @@ public class ViewController3DMagCal extends ViewController implements
         mCalibrationRunning = false;
 
         //remove listener
-        getMainActivity().mFcDevice.getObjectTree().removeListener("MagState");
+        try {
+            getMainActivity().mFcDevice.getObjectTree().removeListener("MagState");
+        } catch (NullPointerException e) {
+            VisualLog.e(e.getMessage());
+        }
 
         //reset magstate update rate
         final boolean setUR = setMetaUpdateRate("MagState", 1000);
 
         //make fit and upload calibration to FC
         fitAndUpload();
-
     }
 
     private void toggleCalibration() {
@@ -209,7 +238,7 @@ public class ViewController3DMagCal extends ViewController implements
             stopCalibration();
         } else {
             final boolean s = startCalibration();
-            SingleToast.show(getMainActivity(), "Start successful " + s);
+            //SingleToast.show(getMainActivity(), "Start successful " + s);
         }
     }
 
@@ -248,6 +277,23 @@ public class ViewController3DMagCal extends ViewController implements
         super.init();
     }
 
+    private String longFace(String s) {
+        String retval = "";
+
+        VisualLog.d(s);
+
+        retval += s.contains("T") ? "Top " : "";
+        retval += s.contains("B") ? "Bottom " : "";
+        retval += s.contains("F") ? "Front " : "";
+        retval += s.contains("S") ? "Stern " : "";
+        retval += s.contains("L") ? "Left " : "";
+        retval += s.contains("R") ? "Right " : "";
+
+        VisualLog.d(retval);
+
+        return retval.trim();
+    }
+
     @Override
     public void update() {
         super.update();
@@ -282,7 +328,6 @@ public class ViewController3DMagCal extends ViewController implements
         txtR0c0.setText(String.valueOf(mag_transform_r0c0));
         txtR1c1.setText(String.valueOf(mag_transform_r1c1));
         txtR2c2.setText(String.valueOf(mag_transform_r2c2));
-
     }
 
     private int addSample() {
@@ -300,11 +345,10 @@ public class ViewController3DMagCal extends ViewController implements
 
     @Override
     public void onObjectUpdate(UAVTalkObject o) {
+        final float GOOD_SAMPLE_SIZE = 700.f;
         final float pitch = Float.parseFloat(getData("AttitudeState", "Pitch").toString());
         final float roll = Float.parseFloat(getData("AttitudeState", "Roll").toString());
         final float yaw = -Float.parseFloat(getData("AttitudeState", "Yaw").toString());
-
-        getData("", "", true);
 
         final float magx = Float.parseFloat(getData("MagState", "x").toString());
         final float magy = Float.parseFloat(getData("MagState", "y").toString());
@@ -324,7 +368,7 @@ public class ViewController3DMagCal extends ViewController implements
                 @Override
                 public void run() {
                     try {
-                        txtFaceName.setText(glv3DMagCalibration.PitchRollToString(pitch, roll));
+                        txtFaceName.setText(glv3DMagCalibration.pitchRollToString(pitch, roll));
 
                         txtMagX.setText(String.valueOf(Math.floor(magx)));
                         txtMagY.setText(String.valueOf(Math.floor(magy)));
@@ -335,6 +379,19 @@ public class ViewController3DMagCal extends ViewController implements
                         txt3dYaw.setText(String.valueOf(Math.floor(yaw)));
 
                         txtCollectedSamples.setText(String.valueOf(samples));
+                        txtSamplesPercentage.setText(String.valueOf(
+                                H.round((samples / GOOD_SAMPLE_SIZE) * 100, 2)));
+
+                        txtPreferedFace.setText(longFace(glv3DMagCalibration.getPreferedFace()));
+
+                        final String pFace = glv3DMagCalibration.getPreferedFace();
+                        final String cFace = glv3DMagCalibration.getCurrentFace();
+                        if (pFace.equals(cFace)) {
+                            txtPreferedFace.setTextColor(Color.GREEN);
+                        } else {
+                            txtPreferedFace.setTextColor(Color.RED);
+                        }
+
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -354,6 +411,7 @@ public class ViewController3DMagCal extends ViewController implements
             result = fp.toString();
         } catch (NullPointerException e) {
             SingleToast.show(getMainActivity(), "Error fitting points.", Toast.LENGTH_LONG);
+            return;
         }
 
         //get fit results
