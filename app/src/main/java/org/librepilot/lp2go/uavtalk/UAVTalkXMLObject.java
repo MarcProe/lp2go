@@ -142,8 +142,7 @@ public class UAVTalkXMLObject {
 
                 if (!elementCountString.equals("") && elementCountString != null) {
                     uavField.mElementCount = Integer.parseInt(elementCountString);
-                    if (uavField.mType == FIELDTYPE_ENUM
-                            && f.getElementsByTagName(XML_TAG_ELEMENTNAMES).getLength() == 0) {
+                    if (f.getElementsByTagName(XML_TAG_ELEMENTNAMES).getLength() == 0) {
                         uavField.mElements.clear();
                         for (int j = 0; j < uavField.mElementCount; j++) {
                             uavField.mElements.add(String.valueOf(j));
