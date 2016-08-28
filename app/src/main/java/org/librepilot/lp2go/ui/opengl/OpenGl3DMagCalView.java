@@ -22,6 +22,7 @@ import android.opengl.GLU;
 import android.opengl.Matrix;
 import android.util.AttributeSet;
 
+import org.librepilot.lp2go.controller.ViewController3DMagCal;
 import org.librepilot.lp2go.helper.ellipsoidFit.FitPoints;
 import org.librepilot.lp2go.helper.libgdx.math.Quaternion;
 import org.librepilot.lp2go.helper.libgdx.math.Vector3;
@@ -56,6 +57,10 @@ public class OpenGl3DMagCalView extends GLSurfaceView {
         mRenderer = new OpenGLRenderer();
         setRenderer(mRenderer);
         initPreferedFaces();
+    }
+
+    public Map<String, Integer> getSamplesPerFace() {
+        return this.mSamplesPerFace;
     }
 
     private void initPreferedFaces() {
@@ -147,7 +152,7 @@ public class OpenGl3DMagCalView extends GLSurfaceView {
 
         int num = (int) this.mRenderer.mSampleCubes[alpha][beta];
 
-        if (num < OpenGLRenderer.SAMPLES) {
+        if (num < ViewController3DMagCal.SAMPLES) {
             if (this.mRenderer.mCubes != null) {
 
                 c.setRGB(1.0f, 0.3f * num, 0.3f * num);
@@ -181,7 +186,6 @@ public class OpenGl3DMagCalView extends GLSurfaceView {
 
         final static int ANGLE_DEG = 15;
         final static int ANGLES = (int) (360 / ANGLE_DEG);
-        final static int SAMPLES = 6;
         public ArrayList<Cube> mCubes;
         protected float mPitch = 0;
         protected float mRoll = 0;

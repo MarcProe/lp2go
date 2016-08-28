@@ -48,7 +48,8 @@ public class Cube implements ThreeSpacePoint {
         rawY = y;
         rawZ = z;
 
-        this.x = -x / 300;
+        //this.x = -x / 300;
+        this.x = x / 300;
         this.y = -y / 300;
         this.z = z / 300;
 

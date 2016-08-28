@@ -39,6 +39,7 @@ import java.text.MessageFormat;
 public class ViewController3DMagCal extends ViewController implements
         UAVTalkObjectListener, View.OnClickListener {
 
+    public final static int SAMPLES = 10;
     private final TextView txtBe0;
     private final TextView txtBe1;
     private final TextView txtBe2;
@@ -48,7 +49,7 @@ public class ViewController3DMagCal extends ViewController implements
     private final TextView txtR0c0;
     private final TextView txtR1c1;
     private final TextView txtR2c2;
-    private final TextView txtFaceName;
+    private final TextView txtCurrentFace;
     private final TextView txtMagX;
     private final TextView txtMagY;
     private final TextView txtMagZ;
@@ -70,6 +71,7 @@ public class ViewController3DMagCal extends ViewController implements
     private float mag_transform_r1c1;
     private float mag_transform_r2c2;
     private boolean mCalibrationRunning = false;
+    private int mSamples;
 
     public ViewController3DMagCal(MainActivity activity, int title, int icon,
                                   int localSettingsVisible, int flightSettingsVisible) {
@@ -94,7 +96,7 @@ public class ViewController3DMagCal extends ViewController implements
         txtR1c1 = ((TextView) findViewById(R.id.txtR1c1));
         txtR2c2 = ((TextView) findViewById(R.id.txtR2c2));
 
-        txtFaceName = ((TextView) findViewById(R.id.txtFaceName));
+        txtCurrentFace = ((TextView) findViewById(R.id.txtCurrentFace));
 
         txtMagX = ((TextView) findViewById(R.id.txtMagX));
         txtMagY = ((TextView) findViewById(R.id.txtMagY));
@@ -109,7 +111,6 @@ public class ViewController3DMagCal extends ViewController implements
         txtPreferedFace = ((TextView) findViewById(R.id.txtPreferedFace));
 
         findViewById(R.id.imgStartStopCalibration).setOnClickListener(this);
-
     }
 
     private boolean isCalibrationRunning() {
@@ -298,6 +299,12 @@ public class ViewController3DMagCal extends ViewController implements
     public void update() {
         super.update();
 
+        if (getMainActivity().mFcDevice.isConnected()) {
+            imgCompass.setEnabled(true);
+        } else {
+            imgCompass.setEnabled(false);
+        }
+
         //get needed objects
         if (be_0 == 0
                 && getMainActivity().getFcDevice() != null
@@ -337,6 +344,7 @@ public class ViewController3DMagCal extends ViewController implements
             final float magz = Float.parseFloat(getData("MagState", "z").toString());
             return glv3DMagCalibration.addSample(magx, magy, magz);
 
+
         } catch (NumberFormatException e) {
             e.printStackTrace();
         }
@@ -345,7 +353,7 @@ public class ViewController3DMagCal extends ViewController implements
 
     @Override
     public void onObjectUpdate(UAVTalkObject o) {
-        final float GOOD_SAMPLE_SIZE = 700.f;
+        final float GOOD_SAMPLE_SIZE = 260.f;
         final float pitch = Float.parseFloat(getData("AttitudeState", "Pitch").toString());
         final float roll = Float.parseFloat(getData("AttitudeState", "Roll").toString());
         final float yaw = -Float.parseFloat(getData("AttitudeState", "Yaw").toString());
@@ -355,8 +363,8 @@ public class ViewController3DMagCal extends ViewController implements
         final float magz = Float.parseFloat(getData("MagState", "z").toString());
 
         final MainActivity m = getMainActivity();
-
-        final int samples = addSample();        //saving the current sample
+        final int cSamples = mSamples;
+        mSamples = addSample();        //saving the current sample
 
         try {
             glv3DMagCalibration.setRoll(roll);
@@ -368,7 +376,7 @@ public class ViewController3DMagCal extends ViewController implements
                 @Override
                 public void run() {
                     try {
-                        txtFaceName.setText(glv3DMagCalibration.pitchRollToString(pitch, roll));
+                        txtCurrentFace.setText(longFace(glv3DMagCalibration.pitchRollToString(pitch, roll)));
 
                         txtMagX.setText(String.valueOf(Math.floor(magx)));
                         txtMagY.setText(String.valueOf(Math.floor(magy)));
@@ -378,9 +386,14 @@ public class ViewController3DMagCal extends ViewController implements
                         txt3dRoll.setText(String.valueOf(Math.floor(roll)));
                         txt3dYaw.setText(String.valueOf(Math.floor(yaw)));
 
-                        txtCollectedSamples.setText(String.valueOf(samples));
+                        txtCollectedSamples.setText(String.valueOf(mSamples));
+
+                        int sum = 0;
+                        for (Integer i : glv3DMagCalibration.getSamplesPerFace().values()) {
+                            sum += i > SAMPLES ? SAMPLES : i;
+                        }
                         txtSamplesPercentage.setText(String.valueOf(
-                                H.round((samples / GOOD_SAMPLE_SIZE) * 100, 2)));
+                                H.round((sum / GOOD_SAMPLE_SIZE) * 100, 2)));
 
                         txtPreferedFace.setText(longFace(glv3DMagCalibration.getPreferedFace()));
 
@@ -390,6 +403,15 @@ public class ViewController3DMagCal extends ViewController implements
                             txtPreferedFace.setTextColor(Color.GREEN);
                         } else {
                             txtPreferedFace.setTextColor(Color.RED);
+                        }
+
+                        if (cSamples != mSamples) {
+                            getMainActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    imgCompass.setRotation(imgCompass.getRotation() % 360 + 1f);
+                                }
+                            });
                         }
 
                     } catch (Exception e) {

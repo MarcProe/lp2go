@@ -29,8 +29,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="3"
+            android:layout_height="wrap_content"
             android:orientation="horizontal">
 
             <ImageView
@@ -40,19 +39,43 @@
                 android:layout_weight="1"
                 android:src="@drawable/ic_explore_black_128dp"/>
 
-            <TextView
-                android:id="@+id/txtSamplesPercentage"
+            <LinearLayout
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:textAppearance="?android:attr/textAppearanceLarge"/>
+                android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/txtPreferedFace"
+                <TextView
+                    android:id="@+id/txtSamplesPercentage"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"/>
+
+                <TextView
+                    android:id="@+id/txtCollectedSamples"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"/>
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:textAppearance="?android:attr/textAppearanceLarge"/>
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/txtPreferedFace"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"/>
+
+                <TextView
+                    android:id="@+id/txtCurrentFace"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"/>
+            </LinearLayout>
 
         </LinearLayout>
 
@@ -60,28 +83,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            >
+            android:visibility="gone">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/txtFaceName"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="faceName"
-                    android:textAppearance="?android:attr/textAppearanceLarge"/>
-
-                <TextView
-                    android:id="@+id/txtCollectedSamples"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Samples"
-                    android:textAppearance="?android:attr/textAppearanceLarge"/>
 
                 <TextView
                     android:id="@+id/textView4"
