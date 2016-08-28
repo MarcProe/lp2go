@@ -25,46 +25,6 @@ import javax.microedition.khronos.opengles.GL10;
 
 public class Rhombicuboctahedron {
 
-    private final float no = -1.0f;
-    private final float po = 1.0f;
-    private final float ps = 1.0f + (float) Math.sqrt(1.0f);
-    private final float ns = ps * (-1);
-    private float alpha = 0.4f;
-    private float colors[] = {
-            //Top           *
-            //Bottom        o
-            //Front         ^
-            //Stern         v
-            //Left          <
-            //Right         >
-
-            0.7f, 0.5f, 0.7f, alpha,       //TFR
-            0.9f, 0.9f, 0.9f, alpha,       //T
-            0.5f, 0.7f, 0.7f, alpha,       //TFL
-            1.0f, 0.7f, 0.7f, alpha,       //TS
-            0.7f, 0.7f, 1.0f, alpha,       //TF
-            0.5f, 0.0f, 0.7f, alpha,       //BFR
-            0.5f, 0.5f, 1.0f, alpha,       //F
-            0.1f, 0.5f, 0.7f, alpha,       //BFL
-            0.9f, 0.5f, 0.9f, alpha,       //TR
-            0.5f, 0.0f, 0.5f, alpha,       //R
-            1.0f, 0.5f, 0.7f, alpha,       //TSR
-            0.2f, 0.0f, 0.2f, alpha,       //BR
-            0.2f, 0.2f, 1.0f, alpha,       //BF
-            0.7f, 0.0f, 0.2f, alpha,       //BSR
-            0.1f, 0.1f, 0.1f, alpha,       //B
-            0.5f, 0.5f, 0.2f, alpha,       //BSL
-            0.9f, 0.0f, 0.4f, alpha,       //SR
-            1.0f, 0.2f, 0.2f, alpha,       //BS
-            1.0f, 0.5f, 0.5f, alpha,       //S
-            0.7f, 0.7f, 0.5f, alpha,       //SL
-            0.5f, 0.9f, 0.5f, alpha,       //TL
-            0.5f, 0.7f, 0.5f, alpha,       //L
-            1.0f, 1.0f, 0.7f, alpha,       //TSL
-            0.2f, 0.5f, 0.2f, alpha,       //BL
-            0.5f, 0.0f, 0.8f, alpha,       //FR
-            0.5f, 0.7f, 1.0f, alpha        //FL
-    };
     private byte indices[] = {
             //                              PITCH   ROLL   YAW
             8, 4, 0,            //TFR       45      -45
@@ -150,50 +110,90 @@ public class Rhombicuboctahedron {
     private ByteBuffer mIndexBuffer;
     private FloatBuffer mVertexBuffer;
     private HashMap<String, Integer> verticeMap;
-    private float vertices[] = {
-            po, po, ps,
-            po, no, ps,
-            no, po, ps,
-            no, no, ps,
-
-            po, ps, po,
-            po, ps, no,
-            no, ps, po,
-            no, ps, no,
-
-            ps, po, po,
-            ps, po, no,
-            ps, no, po,
-            ps, no, no,
-
-            po, po, ns,
-            po, no, ns,
-            no, po, ns,
-            no, no, ns,
-
-            po, ns, po,
-            po, ns, no,
-            no, ns, po,
-            no, ns, no,
-
-            ns, po, po,
-            ns, po, no,
-            ns, no, po,
-            ns, no, no,
-
-            //bonus vertices to map unique colors
-            //we have only 24 regular vertices, but 26 faces
-            ps, po, no, //copy from vertex 9
-            no, ps, no  //copy from vertex 7
-    };
 
     public Rhombicuboctahedron() {
+        float no = -1.0f;
+        float po = 1.0f;
+        float ps = 1.0f + (float) Math.sqrt(1.0f);
+        float ns = ps * (-1);
+        float[] vertices = {
+                po, po, ps,
+                po, no, ps,
+                no, po, ps,
+                no, no, ps,
+
+                po, ps, po,
+                po, ps, no,
+                no, ps, po,
+                no, ps, no,
+
+                ps, po, po,
+                ps, po, no,
+                ps, no, po,
+                ps, no, no,
+
+                po, po, ns,
+                po, no, ns,
+                no, po, ns,
+                no, no, ns,
+
+                po, ns, po,
+                po, ns, no,
+                no, ns, po,
+                no, ns, no,
+
+                ns, po, po,
+                ns, po, no,
+                ns, no, po,
+                ns, no, no,
+
+                //bonus vertices to map unique colors
+                //we have only 24 regular vertices, but 26 faces
+                ps, po, no, //copy from vertex 9
+                no, ps, no  //copy from vertex 7
+        };
         ByteBuffer byteBuf = ByteBuffer.allocateDirect(vertices.length * 4);
         byteBuf.order(ByteOrder.nativeOrder());
         mVertexBuffer = byteBuf.asFloatBuffer();
         mVertexBuffer.put(vertices);
         mVertexBuffer.position(0);
 
+        float alpha = 0.4f;
+        float[] colors = {
+                //Top           *
+                //Bottom        o
+                //Front         ^
+                //Stern         v
+                //Left          <
+                //Right         >
+
+                0.7f, 0.5f, 0.7f, alpha,       //TFR
+                0.9f, 0.9f, 0.9f, alpha,       //T
+                0.5f, 0.7f, 0.7f, alpha,       //TFL
+                1.0f, 0.7f, 0.7f, alpha,       //TS
+                0.7f, 0.7f, 1.0f, alpha,       //TF
+                0.5f, 0.0f, 0.7f, alpha,       //BFR
+                0.5f, 0.5f, 1.0f, alpha,       //F
+                0.1f, 0.5f, 0.7f, alpha,       //BFL
+                0.9f, 0.5f, 0.9f, alpha,       //TR
+                0.5f, 0.0f, 0.5f, alpha,       //R
+                1.0f, 0.5f, 0.7f, alpha,       //TSR
+                0.2f, 0.0f, 0.2f, alpha,       //BR
+                0.2f, 0.2f, 1.0f, alpha,       //BF
+                0.7f, 0.0f, 0.2f, alpha,       //BSR
+                0.1f, 0.1f, 0.1f, alpha,       //B
+                0.5f, 0.5f, 0.2f, alpha,       //BSL
+                0.9f, 0.0f, 0.4f, alpha,       //SR
+                1.0f, 0.2f, 0.2f, alpha,       //BS
+                1.0f, 0.5f, 0.5f, alpha,       //S
+                0.7f, 0.7f, 0.5f, alpha,       //SL
+                0.5f, 0.9f, 0.5f, alpha,       //TL
+                0.5f, 0.7f, 0.5f, alpha,       //L
+                1.0f, 1.0f, 0.7f, alpha,       //TSL
+                0.2f, 0.5f, 0.2f, alpha,       //BL
+                0.5f, 0.0f, 0.8f, alpha,       //FR
+                0.5f, 0.7f, 1.0f, alpha        //FL
+        };
         byteBuf = ByteBuffer.allocateDirect(colors.length * 4);
         byteBuf.order(ByteOrder.nativeOrder());
         mColorBuffer = byteBuf.asFloatBuffer();

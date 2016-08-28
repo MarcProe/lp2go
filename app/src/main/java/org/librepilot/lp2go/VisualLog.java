@@ -34,6 +34,14 @@ public class VisualLog {
         printToDebug(tag, msg);
     }
 
+    static public void e(String msg) {
+        e(new Exception().getStackTrace()[1].getClassName(), msg);
+    }
+
+    static public void d(String msg) {
+        d(new Exception().getStackTrace()[1].getClassName(), msg);
+    }
+
     static public void d(String tag, String msg, Throwable tr) {
         if (msg == null) {
             msg = nullstring;

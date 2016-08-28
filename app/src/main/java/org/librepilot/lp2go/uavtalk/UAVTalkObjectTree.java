@@ -42,11 +42,12 @@ public class UAVTalkObjectTree {
     }
 
     public void setListener(String objName, UAVTalkObjectListener listener) {
-        objects.get(xmlObjects.get(objName).getId()).setListener(listener);
+        final String objId = xmlObjects.get(objName).getId();
+        objects.get(objId).setListener(listener);
     }
 
     public UAVTalkObjectListener getListener(String objName) {
-        if (objects.get(xmlObjects.get(objName)) != null) {
+        if (objects.get(xmlObjects.get(objName).getId()) != null) {
             return objects.get(xmlObjects.get(objName).getId()).getListener();
         } else {
             return null;
@@ -54,7 +55,12 @@ public class UAVTalkObjectTree {
     }
 
     public void removeListener(String objName) {
-        objects.get(xmlObjects.get(objName).getId()).removeListener();
+        try {
+            objects.get(xmlObjects.get(objName).getId()).removeListener();
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+            VisualLog.e(e.getMessage());
+        }
     }
 
     public String toString() {

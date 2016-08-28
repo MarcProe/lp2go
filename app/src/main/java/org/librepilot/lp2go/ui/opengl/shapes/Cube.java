@@ -30,16 +30,6 @@ public class Cube implements ThreeSpacePoint {
     final private float x, y, z;
     final private float rawX, rawY, rawZ;
 
-    private final float colors[] = {
-            1.0f, 0.0f, 0.0f, 1.0f,
-            1.0f, 0.0f, 0.0f, 1.0f,
-            1.0f, 0.0f, 0.0f, 1.0f,
-            1.0f, 0.0f, 0.0f, 1.0f,
-            1.0f, 0.0f, 0.0f, 1.0f,
-            1.0f, 0.0f, 0.0f, 1.0f,
-            1.0f, 0.0f, 0.0f, 1.0f,
-            1.0f, 0.0f, 0.0f, 1.0f
-    };
     private final byte indices[] = {
             0, 4, 5, 0, 5, 1,
             1, 5, 6, 1, 6, 2,
@@ -47,18 +37,6 @@ public class Cube implements ThreeSpacePoint {
             3, 7, 4, 3, 4, 0,
             4, 7, 6, 4, 6, 5,
             3, 0, 1, 3, 1, 2
-    };
-    private final float n = -0.1f;
-    private final float p = 0.1f;
-    private final float vertices[] = {
-            n, n, n,
-            p, n, n,
-            p, p, n,
-            n, p, n,
-            n, n, p,
-            p, n, p,
-            p, p, p,
-            n, p, p
     };
     private FloatBuffer mColorBuffer;
     private ByteBuffer mIndexBuffer;
@@ -70,13 +48,26 @@ public class Cube implements ThreeSpacePoint {
         rawY = y;
         rawZ = z;
 
-        this.x = -x / 300;
+        //this.x = -x / 300;
+        this.x = x / 300;
         this.y = -y / 300;
         this.z = z / 300;
 
         this.alpha = Math.atan2(this.y, this.x) * 180 / Math.PI + 180;
         this.beta = Math.atan2(this.y, this.z) * 180 / Math.PI + 180;
 
+        float n = -0.1f;
+        float p = 0.1f;
+        float[] vertices = {
+                n, n, n,
+                p, n, n,
+                p, p, n,
+                n, p, n,
+                n, n, p,
+                p, n, p,
+                p, p, p,
+                n, p, p
+        };
         ByteBuffer byteBuf = ByteBuffer.allocateDirect(vertices.length * 4);
         byteBuf.order(ByteOrder.nativeOrder());
         mVertexBuffer = byteBuf.asFloatBuffer();
@@ -85,6 +76,16 @@ public class Cube implements ThreeSpacePoint {
 
         //float[] lightcolor = {.0f, .0f, .0f, 1.0f};
 
+        float[] colors = {
+                1.0f, 0.0f, 0.0f, 1.0f,
+                1.0f, 0.0f, 0.0f, 1.0f,
+                1.0f, 0.0f, 0.0f, 1.0f,
+                1.0f, 0.0f, 0.0f, 1.0f,
+                1.0f, 0.0f, 0.0f, 1.0f,
+                1.0f, 0.0f, 0.0f, 1.0f,
+                1.0f, 0.0f, 0.0f, 1.0f,
+                1.0f, 0.0f, 0.0f, 1.0f
+        };
         byteBuf = ByteBuffer.allocateDirect(colors.length * 4);
         byteBuf.order(ByteOrder.nativeOrder());
         mColorBuffer = byteBuf.asFloatBuffer();
