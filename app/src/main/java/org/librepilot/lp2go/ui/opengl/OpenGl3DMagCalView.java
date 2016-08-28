@@ -22,10 +22,11 @@ import android.opengl.GLU;
 import android.opengl.Matrix;
 import android.util.AttributeSet;
 
+import com.badlogic.gdx.math.Quaternion;
+import com.badlogic.gdx.math.Vector3;
+
 import org.librepilot.lp2go.controller.ViewController3DMagCal;
 import org.librepilot.lp2go.helper.ellipsoidFit.FitPoints;
-import org.librepilot.lp2go.helper.libgdx.math.Quaternion;
-import org.librepilot.lp2go.helper.libgdx.math.Vector3;
 import org.librepilot.lp2go.ui.opengl.shapes.Cube;
 import org.librepilot.lp2go.ui.opengl.shapes.Rhombicuboctahedron;
 
