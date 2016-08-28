@@ -164,7 +164,7 @@ public class ViewController3DMagCal extends ViewController implements
     private boolean startCalibration() {
         imgCompass.setRotation(90);
 
-        boolean success = true;
+        boolean success;
 
         //check if home position is set
         success = getData("HomeLocation", "Set").toString().toLowerCase().equals("true");
@@ -239,7 +239,7 @@ public class ViewController3DMagCal extends ViewController implements
             stopCalibration();
         } else {
             final boolean s = startCalibration();
-            //SingleToast.show(getMainActivity(), "Start successful " + s);
+            VisualLog.d("Start successful " + s);
         }
     }
 
@@ -428,7 +428,7 @@ public class ViewController3DMagCal extends ViewController implements
     private void fitAndUpload() {
         FitPoints fp = glv3DMagCalibration.fit();
 
-        String result = "";
+        String result;
         try {
             result = fp.toString();
         } catch (NullPointerException e) {
