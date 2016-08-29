@@ -13,4 +13,5 @@
     <string name="menu_debug">Debug</string>
     <string name="menu_scope">Scope</string>
     <string name="menu_3dmag">Compass Calibration</string>
+    <string name="menu_parent_tuning">Tuning</string>
 </resources>

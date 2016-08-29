@@ -358,4 +358,15 @@
         android:dividerHeight="1dp"
         android:listSelector="@drawable/list_selector"/>
 
+    <ListView
+        android:id="@+id/list_slidermenu_right"
+        android:layout_width="240dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="end"
+        android:background="@color/transparent"
+        android:choiceMode="singleChoice"
+        android:divider="@drawable/list_divider"
+        android:dividerHeight="1dp"
+        android:listSelector="@drawable/list_selector"/>
+
 </android.support.v4.widget.DrawerLayout>

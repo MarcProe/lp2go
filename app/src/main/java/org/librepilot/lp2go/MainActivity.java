@@ -78,10 +78,9 @@ import org.librepilot.lp2go.controller.ViewControllerMain;
 import org.librepilot.lp2go.controller.ViewControllerMainAnimatorViewSetter;
 import org.librepilot.lp2go.controller.ViewControllerMap;
 import org.librepilot.lp2go.controller.ViewControllerObjects;
-import org.librepilot.lp2go.controller.ViewControllerPid;
+import org.librepilot.lp2go.controller.ViewControllerParentTuning;
 import org.librepilot.lp2go.controller.ViewControllerScope;
 import org.librepilot.lp2go.controller.ViewControllerSettings;
-import org.librepilot.lp2go.controller.ViewControllerVerticalPid;
 import org.librepilot.lp2go.helper.SettingsHelper;
 import org.librepilot.lp2go.helper.TextToSpeechHelper;
 import org.librepilot.lp2go.menu.MenuItem;
@@ -123,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
     public static final int SERIAL_NONE = 0;
     public static final int SERIAL_LOG_FILE = 3;
     protected static final int SERIAL_USB = 1;
-    private static final int NUM_OF_VIEWS = 11;
+    private static final int NUM_OF_VIEWS = 12; //TODO: NEEDED?
     private static final String ASSETS_LOGS_INTERNAL_PATH = "logs";
     private static final String ASSETS_UAVO_INTERNAL_PATH = "uavo";
     static int mCurrentView = 0;
@@ -140,6 +139,7 @@ public class MainActivity extends AppCompatActivity {
     public Map<Integer, View> mViews;
     public Map<String, UAVTalkXMLObject> mXmlObjects = null;
     public MenuItem menDebug = null;
+    public ViewController mCurrentParentViewController;
     ImageView imgFlightTelemetry;
     ImageView imgGroundTelemetry;
     private ConnectionThread mConnectionThread = null;
@@ -147,6 +147,7 @@ public class MainActivity extends AppCompatActivity {
     private UsbDeviceConnection mDeviceConnection;
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
+    private ListView mDrawerListRight;
     private CharSequence mDrawerTitle;
     private ActionBarDrawerToggle mDrawerToggle;
     private UsbInterface mInterface;
@@ -213,6 +214,7 @@ public class MainActivity extends AppCompatActivity {
         }
     };
     private ArrayList<Integer> mViewPos;
+    private ArrayList<Integer> mViewPosRight;
     private FirebaseAnalytics mFirebaseAnalytics;
 
     public static boolean hasPThread() {
@@ -361,19 +363,46 @@ public class MainActivity extends AppCompatActivity {
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.list_slidermenu);
-        ArrayList<MenuItem> menuItems = new ArrayList<>();
 
+        try {
+            mDrawerListRight = (ListView) findViewById(R.id.list_slidermenu_right);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        ArrayList<MenuItem> menuItems = new ArrayList<>();
+        ArrayList<MenuItem> menuItemsRight = new ArrayList<>();
 
         mViewPos = new ArrayList<>();
+        mViewPosRight = new ArrayList<>();
 
         for (ViewController vc : mVcList.values()) {
             menuItems.add(vc.getMenuItem());
             mViewPos.add(vc.getID());
         }
 
+        switch (mCurrentView) {
+            case (ViewController.VIEW_P_TUNING): //parent
+            case (ViewController.VIEW_PID):      //child
+            case (ViewController.VIEW_VPID): {    //child
+                for (ViewController vc : mVcList.get(ViewController.VIEW_P_TUNING).getMenuRightItems().values()) {
+                    menuItemsRight.add(vc.getMenuItem());
+                    mViewPosRight.add(vc.getID());
+                }
+                break;
+            }
+        }
+
         MenuListAdapter drawListAdapter = new MenuListAdapter(getApplicationContext(),
                 menuItems);
+        MenuListAdapter drawListRightAdapter = new MenuListAdapter(getApplicationContext(),
+                menuItemsRight);
+
         mDrawerList.setAdapter(drawListAdapter);
+        if (mDrawerListRight != null) {
+            mDrawerListRight.setAdapter(drawListRightAdapter);
+        }
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         if (toolbar != null) {
             toolbar.setLogo(R.drawable.ic_librepilot_logo_toolbar_48dp);
@@ -403,8 +432,13 @@ public class MainActivity extends AppCompatActivity {
 
         mDrawerLayout.removeDrawerListener(mDrawerToggle);
         mDrawerLayout.addDrawerListener(mDrawerToggle);
+        SlideMenuClickListener smcl = new SlideMenuClickListener();
 
-        mDrawerList.setOnItemClickListener(new SlideMenuClickListener());
+        mDrawerList.setOnItemClickListener(smcl);
+        if (mDrawerListRight != null) {
+            mDrawerListRight.setOnItemClickListener(smcl);
+            mDrawerListRight.setOnItemLongClickListener(smcl);
+        }
     }
 
     public void reconnect() {
@@ -459,10 +493,8 @@ public class MainActivity extends AppCompatActivity {
         mTtsHelper = new TextToSpeechHelper(this);
 
         //debug view is initialized above
-        ViewController mVcPid = new ViewControllerPid(this, R.string.menu_pid,
-                R.drawable.ic_tune_128dp, View.VISIBLE, View.INVISIBLE);
-        ViewController mVcVPid = new ViewControllerVerticalPid(this, R.string.menu_vpid,
-                R.drawable.ic_vertical_align_center_black_128dp, View.VISIBLE, View.INVISIBLE);
+        ViewController mVcParentTuning = new ViewControllerParentTuning(this, R.string.menu_parent_tuning,
+                R.drawable.ic_tune_128dp, View.INVISIBLE, View.INVISIBLE);
         ViewController mVcScope = new ViewControllerScope(this, R.string.menu_scope,
                 R.drawable.ic_timeline_black_48dp, View.INVISIBLE, View.INVISIBLE);
         ViewController mVcAbout = new ViewControllerAbout(this, R.string.menu_about,
@@ -485,8 +517,7 @@ public class MainActivity extends AppCompatActivity {
         mVcList.put(ViewController.VIEW_MAP, mVcMap);
         mVcList.put(ViewController.VIEW_OBJECTS, mVcObjects);
         mVcList.put(ViewController.VIEW_SCOPE, mVcScope);
-        mVcList.put(ViewController.VIEW_PID, mVcPid);
-        mVcList.put(ViewController.VIEW_VPID, mVcVPid);
+        mVcList.put(ViewController.VIEW_P_TUNING, mVcParentTuning);
         mVcList.put(ViewController.VIEW_LOGS, mVcLogs);
         mVcList.put(ViewController.VIEW_SETTINGS, mVcSettings);
         mVcList.put(ViewController.VIEW_ABOUT, mVcAbout);
@@ -699,22 +730,63 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void displayRightMenuView(int position) {
+        if (mCurrentParentViewController.getCurrentRightView() == null) {
+            mCurrentParentViewController.leave();
+        } else {
+            mCurrentParentViewController.getCurrentRightView().leave();
+        }
+
+        ViewController vcNew = mCurrentParentViewController.getMenuRightItems().get(position);
+
+        mCurrentParentViewController.setCurrentRightView(vcNew);
+
+        for (Map.Entry<Integer, ViewController> e : mCurrentParentViewController.getMenuRightItems().entrySet()) {
+            VisualLog.d("" + e.getKey() + " " + e.getValue().getTitle());
+        }
+        vcNew.enter(position);
+
+        mDrawerListRight.setItemChecked(position, true);
+        mDrawerListRight.setSelection(position);
+
+        setToolbarIcons();
+
+        mDrawerLayout.closeDrawer(mDrawerList);
+        mDrawerLayout.closeDrawer(mDrawerListRight);
+    }
+
     public void displayView(int position) {
         //clean up current view
-        mVcList.get(mCurrentView).leave();
-        mVcList.get(position).enter(position);
+        if (mCurrentParentViewController == null) {
+            mVcList.get(mCurrentView).leave();
+        } else if (mCurrentParentViewController.getCurrentRightView() != null) {
+            mCurrentParentViewController.getCurrentRightView().leave();
+        }
+
+        final ViewController vcNew = mVcList.get(position);
+
+        if (vcNew.getMenuRightItems().size() > 0) {  //if it's > 0, it's a parent
+            mCurrentParentViewController = vcNew;
+        } else {
+            mCurrentParentViewController = null;
+        }
+
+        vcNew.enter(position);
 
         mDrawerList.setItemChecked(position, true);
         mDrawerList.setSelection(position);
 
+        setToolbarIcons();
+
+        mDrawerLayout.closeDrawer(mDrawerList);
+    }
+
+    private void setToolbarIcons() {
         imgSerial = (ImageView) findViewById(R.id.imgSerial);
         imgUavoSanity = (ImageView) findViewById(R.id.imgUavoSanity);
 
         imgGroundTelemetry = (ImageView) findViewById(R.id.imgGroundTelemetry);
         imgFlightTelemetry = (ImageView) findViewById(R.id.imgFlightTelemetry);
-
-        mDrawerLayout.closeDrawer(mDrawerList);
-
     }
 
     @Override
@@ -753,6 +825,15 @@ public class MainActivity extends AppCompatActivity {
                 mDrawerLayout.closeDrawer(GravityCompat.START);
             } else {
                 mDrawerLayout.openDrawer(GravityCompat.START);
+            }
+            if (mDrawerLayout.isDrawerOpen(GravityCompat.END)) {
+                mDrawerLayout.closeDrawer(GravityCompat.END);
+            } else {
+                try {
+                    mDrawerLayout.openDrawer(GravityCompat.END);
+                } catch (IllegalArgumentException e) {
+                    //bork
+                }
             }
             return true;
         }
@@ -958,10 +1039,26 @@ public class MainActivity extends AppCompatActivity {
         dialogBuilder.show();
     }
 
-    private class SlideMenuClickListener implements ListView.OnItemClickListener {
+    private class SlideMenuClickListener implements ListView.OnItemClickListener, ListView.OnItemLongClickListener {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            displayView(mViewPos.get(position));
+            switch (parent.getId()) {
+                case (R.id.list_slidermenu): {
+                    displayView(mViewPos.get(position));
+                    break;
+                }
+                case (R.id.list_slidermenu_right): {
+                    displayRightMenuView(mViewPosRight.get(position));
+                    break;
+                }
+            }
+        }
+
+        @Override
+        public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long id) {
+            mCurrentParentViewController.setFavorite(mViewPosRight.get(position));
+            displayRightMenuView(mViewPosRight.get(position));
+            return true;
         }
     }
 }

@@ -58,7 +58,6 @@ public class UAVTalkObjectTree {
         try {
             objects.get(xmlObjects.get(objName).getId()).removeListener();
         } catch (NullPointerException e) {
-            e.printStackTrace();
             VisualLog.e(e.getMessage());
         }
     }

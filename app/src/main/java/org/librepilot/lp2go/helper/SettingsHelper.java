@@ -46,6 +46,7 @@ public class SettingsHelper {
     public static Set<String> mObjectFavorites;
     public static int mLogReplaySkipObjects;
     public static boolean mCollectUsageStatistics;
+    public static Set<String> mRightMenuFavorites;
 
     public static void loadSettings(MainActivity mainActivity) {
         SharedPreferences sharedPref = mainActivity.getPreferences(Context.MODE_PRIVATE);
@@ -87,6 +88,9 @@ public class SettingsHelper {
         mCollectUsageStatistics = sharedPref.getBoolean(
                 mainActivity.getString(R.string.SETTINGS_COLLECT_USAGE_STATS, R.string.APP_ID),
                 false);  //Default for statistics is false, this is opt-in
+        mRightMenuFavorites = sharedPref.getStringSet(
+                mainActivity.getString(R.string.SETTINGS_RIGHT_MENU_FAVORITES, R.string.APP_ID),
+                new HashSet<String>());
     }
 
     @SuppressLint("CommitPrefEdits")
@@ -128,6 +132,9 @@ public class SettingsHelper {
         editor.putBoolean(
                 mainActivity.getString(R.string.SETTINGS_COLLECT_USAGE_STATS, R.string.APP_ID),
                 SettingsHelper.mCollectUsageStatistics);
+        editor.putStringSet(
+                mainActivity.getString(R.string.SETTINGS_RIGHT_MENU_FAVORITES, R.string.APP_ID),
+                SettingsHelper.mRightMenuFavorites);
 
         if (async) {
             editor.apply();

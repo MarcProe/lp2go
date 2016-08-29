@@ -34,6 +34,8 @@ import org.librepilot.lp2go.uavtalk.UAVTalkMetaData;
 import org.librepilot.lp2go.uavtalk.UAVTalkMissingObjectException;
 
 import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
 
 public abstract class ViewController {
 
@@ -45,6 +47,7 @@ public abstract class ViewController {
     public static final int VIEW_MAP = 10;
     public static final int VIEW_OBJECTS = 20;
     public static final int VIEW_PID = 30;
+    public static final int VIEW_P_TUNING = 35;
     public static final int VIEW_SCOPE = 25;
     public static final int VIEW_SETTINGS = 60;
     public static final int VIEW_VPID = 40;
@@ -53,10 +56,12 @@ public abstract class ViewController {
     protected int mFlightSettingsVisible;
     protected int mLocalSettingsVisible;
     protected int mTitle;
+    protected Map<Integer, ViewController> mRightMenuItems;
+    ViewController mCurrentRightView;
     private MainActivity mActivity;
-    private int mIcon;
     private MenuItem mMenuItem;
     private String mPreviousArmedStatus = "";
+    private ViewController mFavorite;
 
     ViewController(MainActivity activity, int title, int icon, int localSettingsVisible,
                    int flightSettingsVisible) {
@@ -66,8 +71,8 @@ public abstract class ViewController {
         this.mLocalSettingsVisible = localSettingsVisible;
         this.mFlightSettingsVisible = flightSettingsVisible;
         this.mTitle = title;
-        this.mIcon = icon;
-        this.mMenuItem = new MenuItem(getString(mTitle), mIcon);
+        this.mMenuItem = new MenuItem(getString(mTitle), icon);
+        this.mRightMenuItems = new TreeMap<>();
     }
 
     public String getTitle() {
@@ -82,6 +87,14 @@ public abstract class ViewController {
 
     public void enter(int view) {
         enter(view, false);
+    }
+
+    public ViewController getCurrentRightView() {
+        return mCurrentRightView;
+    }
+
+    public void setCurrentRightView(ViewController crv) {
+        this.mCurrentRightView = crv;
     }
 
     public void enter(int view, boolean isSubwindow) {
@@ -128,6 +141,14 @@ public abstract class ViewController {
 
     public void init() {
 
+    }
+
+    public void initRightMenu() {
+
+    }
+
+    public Map<Integer, ViewController> getMenuRightItems() {
+        return mRightMenuItems;
     }
 
     public MenuItem getMenuItem() {
@@ -336,5 +357,18 @@ public abstract class ViewController {
         } catch (ClassCastException e) {
             return .0f;
         }
+    }
+
+    public ViewController getFavorite() {
+        return mFavorite;
+    }
+
+    public void setFavorite(int id) {
+        if (this.mFavorite != null) {
+            SettingsHelper.mRightMenuFavorites.remove(String.valueOf(this.mFavorite.getID()));
+        }
+        this.mFavorite = mRightMenuItems.get(id);
+        SettingsHelper.mRightMenuFavorites.add(String.valueOf(this.mFavorite.getID()));
+        SettingsHelper.saveSettings(getMainActivity(), true);
     }
 }
