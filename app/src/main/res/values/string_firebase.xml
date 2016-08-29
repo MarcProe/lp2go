@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="FBA_CONTENT_TYPE_VIEW">view</string>
-    <string name="FBA_LOG_ON_CHECKED_CHANGE">FirebaseAnalytics: {0} {1}</string>
-</resources>
