@@ -823,16 +823,14 @@ public class MainActivity extends AppCompatActivity {
         if (keyCode == KeyEvent.KEYCODE_MENU) {
             if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
                 mDrawerLayout.closeDrawer(GravityCompat.START);
-            } else {
-                mDrawerLayout.openDrawer(GravityCompat.START);
-            }
-            if (mDrawerLayout.isDrawerOpen(GravityCompat.END)) {
-                mDrawerLayout.closeDrawer(GravityCompat.END);
-            } else {
                 try {
                     mDrawerLayout.openDrawer(GravityCompat.END);
-                } catch (IllegalArgumentException e) {
-                    //bork
+                } catch (IllegalArgumentException ignored) {
+                }
+            } else {
+                mDrawerLayout.openDrawer(GravityCompat.START);
+                if (mDrawerLayout.isDrawerOpen(GravityCompat.END)) {
+                    mDrawerLayout.closeDrawer(GravityCompat.END);
                 }
             }
             return true;
@@ -1044,7 +1042,20 @@ public class MainActivity extends AppCompatActivity {
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             switch (parent.getId()) {
                 case (R.id.list_slidermenu): {
-                    displayView(mViewPos.get(position));
+                    if (mCurrentView != mViewPos.get(position)) {
+                        displayView(mViewPos.get(position));
+                    } else {
+                        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+                            mDrawerLayout.closeDrawer(GravityCompat.START);
+                        }
+                    }
+                    if (mCurrentParentViewController != null && mCurrentParentViewController.getID() == mViewPos.get(position)) {
+                        //clicked on the same left menu item again
+                        try {
+                            mDrawerLayout.openDrawer(GravityCompat.END);
+                        } catch (IllegalArgumentException ignored) {
+                        }
+                    }
                     break;
                 }
                 case (R.id.list_slidermenu_right): {
