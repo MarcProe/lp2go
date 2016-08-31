@@ -39,18 +39,20 @@ import java.util.TreeMap;
 
 public abstract class ViewController {
 
-    public static final int VIEW_3DMAG = 45;
-    public static final int VIEW_ABOUT = 70;
-    public static final int VIEW_DEBUG = 80;
-    public static final int VIEW_LOGS = 50;
+    public static final int VIEW_3DMAG = 4500;
+    public static final int VIEW_ABOUT = 7000;
+    public static final int VIEW_DEBUG = 8000;
+    public static final int VIEW_LOGS = 5000;
     public static final int VIEW_MAIN = 0;
-    public static final int VIEW_MAP = 10;
-    public static final int VIEW_OBJECTS = 20;
-    public static final int VIEW_PID = 30;
-    public static final int VIEW_P_TUNING = 35;
-    public static final int VIEW_SCOPE = 25;
-    public static final int VIEW_SETTINGS = 60;
-    public static final int VIEW_VPID = 40;
+    public static final int VIEW_MAP = 1000;
+    public static final int VIEW_OBJECTS = 2000;
+    public static final int VIEW_PID = 3000;
+    public static final int VIEW_P_TUNING = 3500;
+    public static final int VIEW_SCOPE = 2500;
+    public static final int VIEW_SETTINGS = 6000;
+    public static final int VIEW_VPID = 4000;
+    public static final int VIEW_RESP = 4200;
+
     protected final HashMap<String, Object> mOffset;
     protected boolean mBlink;
     protected int mFlightSettingsVisible;

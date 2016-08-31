@@ -47,6 +47,7 @@ public class SettingsHelper {
     public static int mLogReplaySkipObjects;
     public static boolean mCollectUsageStatistics;
     public static Set<String> mRightMenuFavorites;
+    public static boolean mColorfulResp;
 
     public static void loadSettings(MainActivity mainActivity) {
         SharedPreferences sharedPref = mainActivity.getPreferences(Context.MODE_PRIVATE);
@@ -64,6 +65,8 @@ public class SettingsHelper {
         mColorfulVPid = sharedPref.getBoolean(
                 mainActivity.getString(R.string.SETTINGS_COLORFUL_VPID, R.string.APP_ID),
                 false);
+        mColorfulResp = sharedPref.getBoolean(
+                mainActivity.getString(R.string.SETTINGS_COLORFUL_RESP, R.string.APP_ID), false);
         mText2SpeechEnabled = sharedPref.getBoolean(
                 mainActivity.getString(R.string.SETTINGS_TEXT2SPEECH_ENABLED, R.string.APP_ID),
                 false);
@@ -111,6 +114,8 @@ public class SettingsHelper {
                 SettingsHelper.mColorfulPid);
         editor.putBoolean(mainActivity.getString(R.string.SETTINGS_COLORFUL_VPID, R.string.APP_ID),
                 SettingsHelper.mColorfulVPid);
+        editor.putBoolean(mainActivity.getString(R.string.SETTINGS_COLORFUL_RESP, R.string.APP_ID),
+                SettingsHelper.mColorfulResp);
         editor.putString(mainActivity.getString(R.string.SETTINGS_TOP_LEFT_LAYOUT_RES,
                 R.string.APP_ID), mTopLeftLayout);
         editor.putString(mainActivity.getString(R.string.SETTINGS_BOTTOM_RIGHT_LAYOUT_RES,

@@ -78,9 +78,9 @@ import org.librepilot.lp2go.controller.ViewControllerMain;
 import org.librepilot.lp2go.controller.ViewControllerMainAnimatorViewSetter;
 import org.librepilot.lp2go.controller.ViewControllerMap;
 import org.librepilot.lp2go.controller.ViewControllerObjects;
-import org.librepilot.lp2go.controller.ViewControllerParentTuning;
 import org.librepilot.lp2go.controller.ViewControllerScope;
 import org.librepilot.lp2go.controller.ViewControllerSettings;
+import org.librepilot.lp2go.controller.ViewControllerTuningParent;
 import org.librepilot.lp2go.helper.SettingsHelper;
 import org.librepilot.lp2go.helper.TextToSpeechHelper;
 import org.librepilot.lp2go.menu.MenuItem;
@@ -384,7 +384,8 @@ public class MainActivity extends AppCompatActivity {
         switch (mCurrentView) {
             case (ViewController.VIEW_P_TUNING): //parent
             case (ViewController.VIEW_PID):      //child
-            case (ViewController.VIEW_VPID): {    //child
+            case (ViewController.VIEW_VPID):     //child
+            case (ViewController.VIEW_RESP): {    //child
                 for (ViewController vc : mVcList.get(ViewController.VIEW_P_TUNING).getMenuRightItems().values()) {
                     menuItemsRight.add(vc.getMenuItem());
                     mViewPosRight.add(vc.getID());
@@ -493,7 +494,7 @@ public class MainActivity extends AppCompatActivity {
         mTtsHelper = new TextToSpeechHelper(this);
 
         //debug view is initialized above
-        ViewController mVcParentTuning = new ViewControllerParentTuning(this, R.string.menu_parent_tuning,
+        ViewController mVcParentTuning = new ViewControllerTuningParent(this, R.string.menu_parent_tuning,
                 R.drawable.ic_tune_128dp, View.INVISIBLE, View.INVISIBLE);
         ViewController mVcScope = new ViewControllerScope(this, R.string.menu_scope,
                 R.drawable.ic_timeline_black_48dp, View.INVISIBLE, View.INVISIBLE);
@@ -879,11 +880,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onToolbarFlightSettingsClick(View v) {
-        mVcList.get(mCurrentView).onToolbarFlightSettingsClick(v);
+        if (mCurrentParentViewController == null) {
+            mVcList.get(mCurrentView).onToolbarFlightSettingsClick(v);
+        } else {
+            mCurrentParentViewController.getMenuRightItems().get(mCurrentView).onToolbarFlightSettingsClick(v);
+        }
     }
 
     public void onToolbarLocalSettingsClick(View v) {
-        mVcList.get(mCurrentView).onToolbarLocalSettingsClick(v);
+        if (mCurrentParentViewController == null) {
+            mVcList.get(mCurrentView).onToolbarLocalSettingsClick(v);
+        } else {
+            mCurrentParentViewController.getMenuRightItems().get(mCurrentView).onToolbarLocalSettingsClick(v);
+        }
     }
 
     private boolean setFileLogInterface(String filename, FcDevice.GuiEventListener gel) {

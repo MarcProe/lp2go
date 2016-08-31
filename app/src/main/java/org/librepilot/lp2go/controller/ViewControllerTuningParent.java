@@ -23,9 +23,9 @@ import org.librepilot.lp2go.helper.SettingsHelper;
 
 import java.util.Set;
 
-public class ViewControllerParentTuning extends ViewController {
+public class ViewControllerTuningParent extends ViewController {
 
-    public ViewControllerParentTuning(MainActivity activity, int title, int icon, int localSettingsVisible, int flightSettingsVisible) {
+    public ViewControllerTuningParent(MainActivity activity, int title, int icon, int localSettingsVisible, int flightSettingsVisible) {
         super(activity, title, icon, localSettingsVisible, flightSettingsVisible);
 
         final MainActivity ma = getMainActivity();
@@ -38,13 +38,16 @@ public class ViewControllerParentTuning extends ViewController {
     @Override
     public void initRightMenu() {
         final MainActivity ma = getMainActivity();
-        ViewController mVcPid = new ViewControllerPid(ma, R.string.menu_pid,
+        ViewController mVcPid = new ViewControllerTuningPid(ma, R.string.menu_pid,
                 R.drawable.ic_tune_128dp, View.VISIBLE, View.INVISIBLE);
-        ViewController mVcVPid = new ViewControllerVerticalPid(ma, R.string.menu_vpid,
+        ViewController mVcVPid = new ViewControllerTuningVPid(ma, R.string.menu_vpid,
                 R.drawable.ic_vertical_align_center_black_128dp, View.VISIBLE, View.INVISIBLE);
+        ViewController mVcResp = new ViewControllerTuningResp(ma, R.string.menu_responsiveness,
+                R.drawable.ic_transform_black_128dp, View.VISIBLE, View.INVISIBLE);
 
         mRightMenuItems.put(ViewController.VIEW_PID, mVcPid);
         mRightMenuItems.put(ViewController.VIEW_VPID, mVcVPid);
+        mRightMenuItems.put(ViewController.VIEW_RESP, mVcResp);
 
         Set<String> favSet = SettingsHelper.mRightMenuFavorites;
         boolean set = false;
