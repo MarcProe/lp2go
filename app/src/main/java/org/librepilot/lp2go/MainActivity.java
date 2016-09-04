@@ -280,7 +280,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void setPollThreadObjectTree(UAVTalkObjectTree oTree) {
-        mPollThread.setObjectTree(oTree);
+        if (mPollThread != null) {
+            mPollThread.setObjectTree(oTree);
+        }
     }
 
     public void setUavoLongHashFC(String uavolonghashfc) {
