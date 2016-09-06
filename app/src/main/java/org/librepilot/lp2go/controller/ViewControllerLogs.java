@@ -356,7 +356,7 @@ public class ViewControllerLogs extends ViewController implements
     }
 
     private void onReplayPause() {
-        if (!getMainActivity().getFcDevice().isLogging()) {
+        if (getMainActivity() != null && getMainActivity().getFcDevice() != null && !getMainActivity().getFcDevice().isLogging()) {
             togglePaused();
         }
         //TODO: make this visible on the button
