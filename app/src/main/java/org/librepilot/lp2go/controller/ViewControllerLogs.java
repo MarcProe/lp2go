@@ -388,7 +388,7 @@ public class ViewControllerLogs extends ViewController implements
                 SettingsHelper.mSerialModeUsed = MainActivity.SERIAL_LOG_FILE;
                 getMainActivity().reconnect();
                 //TODO: make this visible on the button
-            } else if (getMainActivity().getFcDevice().isLogging()) {
+            } else if (getMainActivity() != null && getMainActivity().getFcDevice() != null && getMainActivity().getFcDevice().isLogging()) {
                 SingleToast.show(getMainActivity(), "A log is currently being recorded", Toast.LENGTH_SHORT);
             } else {
                 SingleToast.show(getMainActivity(), "Please select a logfile", Toast.LENGTH_SHORT);
