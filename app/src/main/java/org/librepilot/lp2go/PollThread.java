@@ -161,7 +161,11 @@ public class PollThread extends Thread {
                                 getData("GCSTelemetryStats", "Status").toString());
 
                         //UPDATING THE VIEW!
-                        mA.mVcList.get(MainActivity.mCurrentView).update();
+                        if (mA.mCurrentParentViewController == null) {
+                            mA.mVcList.get(MainActivity.mCurrentView).update();
+                        } else {
+                            mA.mCurrentParentViewController.getMenuRightItems().get(MainActivity.mCurrentView).update();
+                        }
 
                     } catch (NullPointerException e) {
                         e.printStackTrace();

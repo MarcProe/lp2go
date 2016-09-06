@@ -36,5 +36,6 @@
     <string name="SETTINGS_LOG_REPLAY_SKIP_OBJECTS">%1$s.log_replay_skip_objects</string>
     <string name="SETTINGS_COLLECT_USAGE_STATS">%1$s.collect_usage_stats</string>
     <string name="SETTINGS_RIGHT_MENU_FAVORITES">%1$s.right_menu_favorites</string>
+    <string name="SETTINGS_COLORFUL_RESP">%1$s.colorful_resp</string>
 
 </resources>

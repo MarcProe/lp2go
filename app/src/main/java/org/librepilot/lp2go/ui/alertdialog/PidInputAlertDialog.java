@@ -29,7 +29,7 @@ import org.librepilot.lp2go.H;
 import org.librepilot.lp2go.R;
 import org.librepilot.lp2go.VisualLog;
 import org.librepilot.lp2go.uavtalk.UAVTalkXMLObject;
-import org.librepilot.lp2go.ui.PidTextView;
+import org.librepilot.lp2go.ui.ObjectTextView;
 import org.librepilot.lp2go.ui.SingleToast;
 
 import java.text.DecimalFormat;
@@ -42,7 +42,7 @@ public class PidInputAlertDialog extends InputAlertDialog
     private String mDecimalFormatString;
     private int mDenom;
     private EditText mEditText;
-    private PidTextView mPidTextView;
+    private ObjectTextView mObjectTextView;
     private int mStep;
     private int mValueMax;
 
@@ -73,8 +73,8 @@ public class PidInputAlertDialog extends InputAlertDialog
 
     }
 
-    public PidInputAlertDialog withPidTextView(PidTextView pidTextView) {
-        this.mPidTextView = pidTextView;
+    public PidInputAlertDialog withPidTextView(ObjectTextView objectTextView) {
+        this.mObjectTextView = objectTextView;
         return this;
     }
 
@@ -155,7 +155,7 @@ public class PidInputAlertDialog extends InputAlertDialog
                             fText = mEditText.getText().toString();
                         }
 
-                        mPidTextView.setTextOverride(fText);
+                        mObjectTextView.setTextOverride(fText);
 
                         dialog.dismiss();
                     }
