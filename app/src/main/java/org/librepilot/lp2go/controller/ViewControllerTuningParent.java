@@ -39,11 +39,11 @@ public class ViewControllerTuningParent extends ViewController {
     public void initRightMenu() {
         final MainActivity ma = getMainActivity();
         ViewController mVcPid = new ViewControllerTuningPid(ma, R.string.menu_pid,
-                R.drawable.ic_tune_128dp, View.VISIBLE, View.INVISIBLE);
+                R.drawable.ic_tune_24dp, View.VISIBLE, View.INVISIBLE);
         ViewController mVcVPid = new ViewControllerTuningVPid(ma, R.string.menu_vpid,
-                R.drawable.ic_vertical_align_center_black_128dp, View.VISIBLE, View.INVISIBLE);
+                R.drawable.ic_vertical_align_center_black_24dp, View.VISIBLE, View.INVISIBLE);
         ViewController mVcResp = new ViewControllerTuningResp(ma, R.string.menu_responsiveness,
-                R.drawable.ic_transform_black_128dp, View.VISIBLE, View.INVISIBLE);
+                R.drawable.ic_transform_black_24dp, View.VISIBLE, View.INVISIBLE);
 
         mRightMenuItems.put(ViewController.VIEW_PID, mVcPid);
         mRightMenuItems.put(ViewController.VIEW_VPID, mVcVPid);

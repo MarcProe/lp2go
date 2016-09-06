@@ -497,9 +497,9 @@ public class MainActivity extends AppCompatActivity {
 
         //debug view is initialized above
         ViewController mVcParentTuning = new ViewControllerTuningParent(this, R.string.menu_parent_tuning,
-                R.drawable.ic_tune_128dp, View.INVISIBLE, View.INVISIBLE);
+                R.drawable.ic_tune_24dp, View.INVISIBLE, View.INVISIBLE);
         ViewController mVcScope = new ViewControllerScope(this, R.string.menu_scope,
-                R.drawable.ic_timeline_black_48dp, View.INVISIBLE, View.INVISIBLE);
+                R.drawable.ic_timeline_black_24dp, View.INVISIBLE, View.INVISIBLE);
         ViewController mVcAbout = new ViewControllerAbout(this, R.string.menu_about,
                 R.drawable.ic_info_outline_24dp, View.INVISIBLE, View.INVISIBLE);
         ViewController mVcLogs = new ViewControllerLogs(this, R.string.menu_logs,
@@ -510,8 +510,8 @@ public class MainActivity extends AppCompatActivity {
                 R.drawable.ic_public_24dp, View.INVISIBLE, View.INVISIBLE);
         ViewController mVcObjects = new ViewControllerObjects(this, R.string.menu_objects,
                 R.drawable.ic_now_widgets_24dp, View.INVISIBLE, View.INVISIBLE);
-        ViewController mVc3DMagCalibration = new ViewController3DMagCal(this,
-                R.string.menu_3dmag, R.drawable.ic_explore_black_128dp, View.INVISIBLE, View.INVISIBLE);
+        ViewController mVc3DMagCal = new ViewController3DMagCal(this,
+                R.string.menu_3dmag, R.drawable.ic_explore_black_24dp, View.INVISIBLE, View.INVISIBLE);
         ViewController mVcMain = new ViewControllerMain(this, R.string.menu_main,
                 R.drawable.ic_notifications_on_24dp, View.VISIBLE, View.VISIBLE);
 
@@ -525,7 +525,7 @@ public class MainActivity extends AppCompatActivity {
         mVcList.put(ViewController.VIEW_SETTINGS, mVcSettings);
         mVcList.put(ViewController.VIEW_ABOUT, mVcAbout);
         //mVcList.put(ViewController.VIEW_DEBUG, mVcDebug);
-        mVcList.put(ViewController.VIEW_3DMAG, mVc3DMagCalibration);
+        mVcList.put(ViewController.VIEW_3DMAG, mVc3DMagCal);
 
         ((ViewControllerMainAnimatorViewSetter) mVcMain).setLayout();
 
