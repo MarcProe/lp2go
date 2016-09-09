@@ -90,10 +90,14 @@ public class TextToSpeechHelper implements TextToSpeech.OnInitListener {
     @Override
     public void onInit(int status) {
         if (mTts != null) {
-            mTts.setLanguage(Locale.US);
-            VisualLog.d("TTS", "Instanciated");
+            try {
+                mTts.setLanguage(Locale.US);
+                VisualLog.i("TTS", "Instanciated");
+            } catch (IllegalArgumentException e) {
+                VisualLog.e("TTS", e.getMessage());
+            }
         } else {
-            VisualLog.d("TTS", "not available");
+            VisualLog.w("TTS", "not available");
         }
     }
 
