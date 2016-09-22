@@ -35,16 +35,16 @@ import org.librepilot.lp2go.uavtalk.UAVTalkObjectListener;
 
 public class ViewControllerScope extends ViewController implements
         UAVTalkObjectListener {
-    LineChart lchScope;
-    TextView txtScopeLastValue;
-    TextView txtScopeObjectName;
-    String mObject1;
-    String mField1;
-    String mElement1;
+    private LineChart lchScope;
+    private TextView txtScopeLastValue;
+    private TextView txtScopeObjectName;
+    private String mObject1;
+    private String mField1;
+    private String mElement1;
 
-    String mObject2;
-    String mField2;
-    String mElement2;
+    private String mObject2;
+    private String mField2;
+    private String mElement2;
 
     private LineData mData;
     private long relTime;

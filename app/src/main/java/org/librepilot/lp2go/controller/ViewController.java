@@ -248,6 +248,8 @@ public abstract class ViewController {
             case "Completed":
                 CompatHelper.setBackground(t, c, R.drawable.rounded_corner_completed);
                 break;
+            default: //do nothing
+                break;
         }
     }
 

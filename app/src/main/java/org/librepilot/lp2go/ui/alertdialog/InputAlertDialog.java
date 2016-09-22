@@ -22,16 +22,16 @@ import android.content.Context;
 import org.librepilot.lp2go.uavtalk.device.FcDevice;
 
 public abstract class InputAlertDialog extends AlertDialog {
-    String mElement = "0";
-    FcDevice mFcDevice;
-    String mField;
-    int mFieldType;
-    int mLayout;
-    long mMax = -1;
-    long mMin = -1;
-    String mObject;
-    String mText;
-    String mTitle;
+    protected String mElement = "0";
+    protected FcDevice mFcDevice;
+    protected String mField;
+    protected int mFieldType;
+    protected int mLayout;
+    protected long mMax = -1;
+    protected long mMin = -1;
+    protected String mObject;
+    protected String mText;
+    protected String mTitle;
 
     InputAlertDialog(Context parent) {
         super(parent);
