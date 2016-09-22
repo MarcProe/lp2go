@@ -16,7 +16,7 @@
 
 package org.librepilot.lp2go.ui.opengl.shapes;
 
-import org.librepilot.lp2go.helper.ellipsoidFit.ThreeSpacePoint;
+import org.librepilot.lp2go.helper.ellipsoidfit.ThreeSpacePoint;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;

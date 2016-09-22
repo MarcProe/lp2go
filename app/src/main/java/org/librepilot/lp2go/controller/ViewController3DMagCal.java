@@ -26,7 +26,7 @@ import org.librepilot.lp2go.H;
 import org.librepilot.lp2go.MainActivity;
 import org.librepilot.lp2go.R;
 import org.librepilot.lp2go.VisualLog;
-import org.librepilot.lp2go.helper.ellipsoidFit.FitPoints;
+import org.librepilot.lp2go.helper.ellipsoidfit.FitPoints;
 import org.librepilot.lp2go.uavtalk.UAVTalkMetaData;
 import org.librepilot.lp2go.uavtalk.UAVTalkObject;
 import org.librepilot.lp2go.uavtalk.UAVTalkObjectListener;
@@ -475,6 +475,7 @@ public class ViewController3DMagCal extends ViewController implements
         switch (view.getId()) {
             case R.id.imgStartStopCalibration: {
                 toggleCalibration();
+                break;
             }
         }
     }

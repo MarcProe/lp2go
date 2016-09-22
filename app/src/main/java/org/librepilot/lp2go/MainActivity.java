@@ -140,8 +140,8 @@ public class MainActivity extends AppCompatActivity {
     public Map<String, UAVTalkXMLObject> mXmlObjects = null;
     public MenuItem menDebug = null;
     public ViewController mCurrentParentViewController;
-    ImageView imgFlightTelemetry;
-    ImageView imgGroundTelemetry;
+    protected ImageView imgFlightTelemetry;
+    protected ImageView imgGroundTelemetry;
     private ConnectionThread mConnectionThread = null;
     private android.hardware.usb.UsbDevice mDevice;
     private UsbDeviceConnection mDeviceConnection;
@@ -392,6 +392,9 @@ public class MainActivity extends AppCompatActivity {
                     menuItemsRight.add(vc.getMenuItem());
                     mViewPosRight.add(vc.getID());
                 }
+                break;
+            }
+            default: {//do nothing
                 break;
             }
         }
@@ -983,7 +986,7 @@ public class MainActivity extends AppCompatActivity {
         showObjectSanityWarningMessage();
     }
 
-    void showObjectSanityWarningMessage() {
+    private void showObjectSanityWarningMessage() {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
 
         String uavoShortHash = mUavoLongHash != null && mUavoLongHash.length() > 8

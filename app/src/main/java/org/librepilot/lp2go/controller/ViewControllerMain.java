@@ -509,20 +509,19 @@ public class ViewControllerMain extends ViewController implements View.OnClickLi
 
         }
 
-        if (isView(R.id.root_main_inc_pfd)) {
-            if (getMainActivity().mFcDevice.getObjectTree().getListener("AttitudeState") == null) {
+        if (isView(R.id.root_main_inc_pfd) &&
+                getMainActivity().mFcDevice.getObjectTree().getListener("AttitudeState") == null) {
+            try {
                 try {
-                    try {
-                        getMainActivity().mFcDevice.getObjectTree()
-                                .setListener("AttitudeState", this);
-                    } catch (IllegalStateException e1) {
-                        getMainActivity().mFcDevice.getObjectTree().removeListener("AttitudeState");
-                        getMainActivity().mFcDevice.getObjectTree()
-                                .setListener("AttitudeState", this);
-                    }
-                } catch (NullPointerException ignored) {
-
+                    getMainActivity().mFcDevice.getObjectTree()
+                            .setListener("AttitudeState", this);
+                } catch (IllegalStateException e1) {
+                    getMainActivity().mFcDevice.getObjectTree().removeListener("AttitudeState");
+                    getMainActivity().mFcDevice.getObjectTree()
+                            .setListener("AttitudeState", this);
                 }
+            } catch (NullPointerException ignored) {
+
             }
         }
 
@@ -681,7 +680,7 @@ public class ViewControllerMain extends ViewController implements View.OnClickLi
     private void onBatteryCapacityClick(View v) {
         String moduleEnabled =
                 getData("HwSettings", "OptionalModules", "Battery", true).toString();
-        if (moduleEnabled.equals("Enabled")) {
+        if ("Enabled".equals(moduleEnabled)) {
             new NumberInputAlertDialog(getMainActivity())
                     .withPresetText(
                             txtHealthAlertDialogBatteryCapacity.getText().toString())
@@ -727,7 +726,7 @@ public class ViewControllerMain extends ViewController implements View.OnClickLi
                 armingState = "";
                 ma.mFcDevice.requestObject("FlightStatus");
             }
-            if (armingState.equals("Disarmed")) {
+            if ("Disarmed".equals(armingState)) {
                 new EnumInputAlertDialog(ma)
                         .withTitle("Select Fusion Algorithm")
                         .withUavTalkDevice(ma.mFcDevice)

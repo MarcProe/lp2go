@@ -26,7 +26,7 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 
 import org.librepilot.lp2go.controller.ViewController3DMagCal;
-import org.librepilot.lp2go.helper.ellipsoidFit.FitPoints;
+import org.librepilot.lp2go.helper.ellipsoidfit.FitPoints;
 import org.librepilot.lp2go.ui.opengl.shapes.Cube;
 import org.librepilot.lp2go.ui.opengl.shapes.Rhombicuboctahedron;
 
@@ -180,7 +180,7 @@ public class OpenGl3DMagCalView extends GLSurfaceView {
     }
 
     public String pitchRollToString(float pitch, float roll) {
-        return mRenderer.PitchRollToString(pitch, roll);
+        return mRenderer.pitchRollToString(pitch, roll);
     }
 
     private class OpenGLRenderer implements GLSurfaceView.Renderer {
@@ -200,8 +200,8 @@ public class OpenGl3DMagCalView extends GLSurfaceView {
 
         }
 
-        public String PitchRollToString(float pitch, float roll) {
-            return mRhombicuboctahedron.PitchRollToString(pitch, roll);
+        public String pitchRollToString(float pitch, float roll) {
+            return mRhombicuboctahedron.pitchRollToString(pitch, roll);
         }
 
         @Override

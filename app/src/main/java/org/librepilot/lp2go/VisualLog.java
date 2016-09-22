@@ -26,12 +26,13 @@ public class VisualLog {
     private static String nullstring;
     private static TextView txtDebugLog;
 
+    static private String checkNull(String msg) {
+        return msg == null ? nullstring : msg;
+    }
+
     static public void d(String tag, String msg) {
-        if (msg == null) {
-            msg = nullstring;
-        }
-        Log.d(tag, msg);
-        printToDebug(tag, msg);
+        Log.d(tag, checkNull(msg));
+        printToDebug(tag, checkNull(msg));
     }
 
     static public void e(String msg) {
@@ -43,36 +44,24 @@ public class VisualLog {
     }
 
     static public void d(String tag, String msg, Throwable tr) {
-        if (msg == null) {
-            msg = nullstring;
-        }
-        Log.e(tag, msg, tr);
-        printToDebug(tag, msg);
+        Log.e(tag, checkNull(msg), tr);
+        printToDebug(tag, checkNull(msg));
         printToDebug(tr.getClass().getSimpleName(), Log.getStackTraceString(tr));
     }
 
     static public void w(String tag, String msg) {
-        if (msg == null) {
-            msg = nullstring;
-        }
-        Log.w(tag, msg);
-        printToDebug(tag, msg);
+        Log.w(tag, checkNull(msg));
+        printToDebug(tag, checkNull(msg));
     }
 
     static public void e(String tag, String msg) {
-        if (msg == null) {
-            msg = nullstring;
-        }
-        Log.e(tag, msg);
-        printToDebug(tag, msg);
+        Log.e(tag, checkNull(msg));
+        printToDebug(tag, checkNull(msg));
     }
 
     static public void e(String tag, String msg, Throwable tr) {
-        if (msg == null) {
-            msg = nullstring;
-        }
-        Log.e(tag, msg, tr);
-        printToDebug(tag, msg);
+        Log.e(tag, checkNull(msg), tr);
+        printToDebug(tag, checkNull(msg));
         printToDebug(tr.getClass().getSimpleName(), Log.getStackTraceString(tr));
     }
 
@@ -81,11 +70,8 @@ public class VisualLog {
     }
 
     static public void i(String tag, String msg) {
-        if (msg == null) {
-            msg = nullstring;
-        }
-        Log.i(tag, msg);
-        printToDebug(tag, msg);
+        Log.i(tag, checkNull(msg));
+        printToDebug(tag, checkNull(msg));
     }
 
     static private void printToDebug(final String t, final String s) {

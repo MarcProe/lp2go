@@ -420,7 +420,7 @@ public class ViewControllerLogs extends ViewController implements
                 armingState = "";
                 ma.mFcDevice.requestObject("HwSettings");
             }
-            if (armingState.equals("Disarmed")) {
+            if ("Disarmed".equals(armingState)) {
                 new EnumInputAlertDialog(ma)
                         .withTitle("Telemetry Timestamps (reboot required)")
                         .withUavTalkDevice(ma.mFcDevice)

@@ -139,14 +139,15 @@ public abstract class ViewController {
     }
 
     public void leave() {
+        //optional method to override
     }
 
     public void init() {
-
+        //optional method to override
     }
 
     public void initRightMenu() {
-
+        //optional method to override
     }
 
     public Map<Integer, ViewController> getMenuRightItems() {
@@ -172,17 +173,19 @@ public abstract class ViewController {
     }
 
     public void reset() {
-
+        //optional method to override
     }
 
     public void onToolbarFlightSettingsClick(View v) {
+        //optional method to override
     }
 
     public void onToolbarLocalSettingsClick(View v) {
+        //optional method to override
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-
+        //optional method to override
     }
 
     protected String getFloatData(String obj, String field, int b) {

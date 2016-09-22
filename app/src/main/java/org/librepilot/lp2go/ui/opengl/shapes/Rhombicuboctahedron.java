@@ -260,7 +260,7 @@ public class Rhombicuboctahedron {
         gl.glDisableClientState(GL10.GL_COLOR_ARRAY);
     }
 
-    public String PitchRollToString(float pitch, float roll) {
+    public String pitchRollToString(float pitch, float roll) {
         String retval = "";
 
         if (Math.abs(pitch) <= 67.5f && Math.abs(roll) <= 67.5f) {
@@ -281,7 +281,7 @@ public class Rhombicuboctahedron {
             retval += "L";
         }
 
-        if (!retval.equals("")) {
+        if (!"".equals(retval)) {
             int index = verticeMap.get(retval);
 
             mColorBuffer.put(index * 4, .5f);
