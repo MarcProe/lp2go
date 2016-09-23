@@ -16,8 +16,8 @@
 
 package org.librepilot.lp2go.uavtalk;
 
-import org.librepilot.lp2go.H;
 import org.librepilot.lp2go.VisualLog;
+import org.librepilot.lp2go.helper.H;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;

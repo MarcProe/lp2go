@@ -26,12 +26,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import org.librepilot.lp2go.H;
 import org.librepilot.lp2go.MainActivity;
 import org.librepilot.lp2go.R;
 import org.librepilot.lp2go.VisualLog;
 import org.librepilot.lp2go.c.RESP;
 import org.librepilot.lp2go.helper.CompatHelper;
+import org.librepilot.lp2go.helper.H;
 import org.librepilot.lp2go.helper.SettingsHelper;
 import org.librepilot.lp2go.uavtalk.UAVTalkDeviceHelper;
 import org.librepilot.lp2go.uavtalk.UAVTalkObjectTree;
@@ -327,7 +327,7 @@ public class ViewControllerTuningResp extends ViewController implements View.OnC
                     data = getData(mCurrentStabilizationBank,
                             ptv.getField(), ptv.getElement()).toString();
                     break;
-                default:
+                default: //do nothing
                     break;
             }
             if (data == null || data.equals("")) {
@@ -512,7 +512,8 @@ public class ViewControllerTuningResp extends ViewController implements View.OnC
                 SingleToast.show(getMainActivity(), v.getContentDescription().toString());
             }
             break;
-
+            default: //do nothing
+                break;
         }
 
         if (v.getClass().equals(ObjectTextView.class)) {

@@ -23,15 +23,15 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import org.librepilot.lp2go.H;
 import org.librepilot.lp2go.MainActivity;
 import org.librepilot.lp2go.R;
 import org.librepilot.lp2go.VisualLog;
 import org.librepilot.lp2go.helper.CompatHelper;
+import org.librepilot.lp2go.helper.H;
 import org.librepilot.lp2go.helper.SettingsHelper;
-import org.librepilot.lp2go.menu.MenuItem;
 import org.librepilot.lp2go.uavtalk.UAVTalkMetaData;
 import org.librepilot.lp2go.uavtalk.UAVTalkMissingObjectException;
+import org.librepilot.lp2go.ui.menu.MenuItem;
 
 import java.util.HashMap;
 import java.util.Map;

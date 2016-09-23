@@ -27,8 +27,8 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import org.librepilot.lp2go.H;
 import org.librepilot.lp2go.R;
+import org.librepilot.lp2go.helper.H;
 import org.librepilot.lp2go.helper.SettingsHelper;
 import org.librepilot.lp2go.uavtalk.UAVTalkXMLObject;
 
@@ -93,18 +93,19 @@ public class ObjectsExpandableListViewAdapter extends BaseExpandableListAdapter 
     @Override
     public View getGroupView(int groupPosition, boolean isExpanded,
                              View convertView, ViewGroup parent) {
+        View retView = convertView;
         String headerTitle = (String) getGroup(groupPosition);
-        if (convertView == null) {
+        if (retView == null) {
             LayoutInflater infalInflater = (LayoutInflater) this.mContext
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = infalInflater.inflate(R.layout.activity_objects_list_group, null);
+            retView = infalInflater.inflate(R.layout.activity_objects_list_group, null);
         }
 
-        TextView lblListHeader = (TextView) convertView.findViewById(R.id.lblListHeader);
+        TextView lblListHeader = (TextView) retView.findViewById(R.id.lblListHeader);
         lblListHeader.setTypeface(null, Typeface.BOLD);
         lblListHeader.setText(headerTitle);
 
-        ImageView imgListHeaderFavIcon = (ImageView) convertView.findViewById(R.id.imgListHeaderFavIcon);
+        ImageView imgListHeaderFavIcon = (ImageView) retView.findViewById(R.id.imgListHeaderFavIcon);
         if (SettingsHelper.mObjectFavorites.contains(headerTitle)) {
             imgListHeaderFavIcon.setImageDrawable(ContextCompat.getDrawable(mContext,
                     R.drawable.ic_star_black_128dp));
@@ -113,7 +114,7 @@ public class ObjectsExpandableListViewAdapter extends BaseExpandableListAdapter 
                     android.R.color.transparent));
         }
 
-        return convertView;
+        return retView;
     }
 
     @Override

@@ -16,8 +16,8 @@
 
 package org.librepilot.lp2go.uavtalk.device;
 
-import org.librepilot.lp2go.H;
 import org.librepilot.lp2go.VisualLog;
+import org.librepilot.lp2go.helper.H;
 import org.librepilot.lp2go.uavtalk.UAVTalkObject;
 
 public abstract class FcWaiterThread extends Thread {

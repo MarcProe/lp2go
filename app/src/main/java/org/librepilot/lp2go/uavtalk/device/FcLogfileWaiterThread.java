@@ -16,9 +16,9 @@
 
 package org.librepilot.lp2go.uavtalk.device;
 
-import org.librepilot.lp2go.H;
 import org.librepilot.lp2go.MainActivity;
 import org.librepilot.lp2go.VisualLog;
+import org.librepilot.lp2go.helper.H;
 import org.librepilot.lp2go.uavtalk.UAVTalkMessage;
 import org.librepilot.lp2go.uavtalk.UAVTalkObject;
 import org.librepilot.lp2go.uavtalk.UAVTalkObjectInstance;

@@ -224,6 +224,8 @@ public class ViewControllerLogs extends ViewController implements
                                             SettingsHelper.mUseTimestampsFromFc = isChecked;
                                             break;
                                         }
+                                        default: //do nothing
+                                            break;
                                     }
                                     SettingsHelper.saveSettings(getMainActivity());
                                 }
@@ -327,6 +329,8 @@ public class ViewControllerLogs extends ViewController implements
                 onReplayStop();
                 break;
             }
+            default: //do nothing
+                break;
         }
     }
 
@@ -518,6 +522,8 @@ public class ViewControllerLogs extends ViewController implements
             case FcDevice.GEL_RUNNING: {
                 break;
             }
+            default: //do nothing
+                break;
         }
     }
 

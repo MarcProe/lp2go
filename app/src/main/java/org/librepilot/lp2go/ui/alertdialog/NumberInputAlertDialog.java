@@ -28,9 +28,9 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import org.librepilot.lp2go.H;
 import org.librepilot.lp2go.R;
 import org.librepilot.lp2go.VisualLog;
+import org.librepilot.lp2go.helper.H;
 import org.librepilot.lp2go.uavtalk.UAVTalkXMLObject;
 import org.librepilot.lp2go.ui.InputFilterMinMax;
 import org.librepilot.lp2go.ui.SingleToast;

@@ -32,11 +32,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewAnimator;
 
-import org.librepilot.lp2go.H;
 import org.librepilot.lp2go.MainActivity;
 import org.librepilot.lp2go.R;
 import org.librepilot.lp2go.VisualLog;
 import org.librepilot.lp2go.helper.CompatHelper;
+import org.librepilot.lp2go.helper.H;
 import org.librepilot.lp2go.helper.SettingsHelper;
 import org.librepilot.lp2go.uavtalk.UAVTalkMissingObjectException;
 import org.librepilot.lp2go.uavtalk.UAVTalkObject;
@@ -661,7 +661,7 @@ public class ViewControllerMain extends ViewController implements View.OnClickLi
     private void onBatteryCellsClick(View v) {
         String moduleEnabled =
                 getData("HwSettings", "OptionalModules", "Battery", true).toString();
-        if (moduleEnabled.equals("Enabled")) {
+        if ("Enabled".equals(moduleEnabled)) {
             new NumberInputAlertDialog(getMainActivity())
                     .withPresetText(txtHealthAlertDialogBatteryCells.getText().toString())
                     .withTitle(getString(R.string.CELLS_DIALOG_TITLE))

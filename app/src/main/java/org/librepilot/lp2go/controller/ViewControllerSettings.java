@@ -153,6 +153,8 @@ public class ViewControllerSettings extends ViewController
 
                 break;
             }
+            default: //do nothing
+                break;
         }
     }
 
@@ -324,6 +326,8 @@ public class ViewControllerSettings extends ViewController
                 onLoadUavObjectFile();
                 break;
             }
+            default: //do nothing
+                break;
         }
     }
 
@@ -338,6 +342,8 @@ public class ViewControllerSettings extends ViewController
                                 R.string.FBA_LOG_ON_CHECKED_CHANGE), b, active));
                 break;
             }
+            default: //do nothing
+                break;
         }
     }
 }

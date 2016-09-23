@@ -20,7 +20,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.util.AttributeSet;
 
-import org.librepilot.lp2go.H;
+import org.librepilot.lp2go.helper.H;
 import org.librepilot.lp2go.uavtalk.UAVTalkXMLObject;
 
 import java.text.DecimalFormat;

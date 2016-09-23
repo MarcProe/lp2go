@@ -81,10 +81,9 @@ import org.librepilot.lp2go.controller.ViewControllerObjects;
 import org.librepilot.lp2go.controller.ViewControllerScope;
 import org.librepilot.lp2go.controller.ViewControllerSettings;
 import org.librepilot.lp2go.controller.ViewControllerTuningParent;
+import org.librepilot.lp2go.helper.H;
 import org.librepilot.lp2go.helper.SettingsHelper;
 import org.librepilot.lp2go.helper.TextToSpeechHelper;
-import org.librepilot.lp2go.menu.MenuItem;
-import org.librepilot.lp2go.menu.MenuListAdapter;
 import org.librepilot.lp2go.uavtalk.UAVTalkObjectTree;
 import org.librepilot.lp2go.uavtalk.UAVTalkXMLObject;
 import org.librepilot.lp2go.uavtalk.device.FcBluetoothDevice;
@@ -92,6 +91,8 @@ import org.librepilot.lp2go.uavtalk.device.FcDevice;
 import org.librepilot.lp2go.uavtalk.device.FcLogfileDevice;
 import org.librepilot.lp2go.uavtalk.device.FcUsbDevice;
 import org.librepilot.lp2go.ui.SingleToast;
+import org.librepilot.lp2go.ui.menu.MenuItem;
+import org.librepilot.lp2go.ui.menu.MenuListAdapter;
 import org.xml.sax.SAXException;
 
 import java.io.BufferedInputStream;
@@ -1077,6 +1078,8 @@ public class MainActivity extends AppCompatActivity {
                     displayRightMenuView(mViewPosRight.get(position));
                     break;
                 }
+                default: //do nothing
+                    break;
             }
         }
 

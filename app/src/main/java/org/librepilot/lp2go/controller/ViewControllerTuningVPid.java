@@ -22,12 +22,12 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import org.librepilot.lp2go.H;
 import org.librepilot.lp2go.MainActivity;
 import org.librepilot.lp2go.R;
 import org.librepilot.lp2go.VisualLog;
 import org.librepilot.lp2go.c.PID;
 import org.librepilot.lp2go.helper.CompatHelper;
+import org.librepilot.lp2go.helper.H;
 import org.librepilot.lp2go.helper.SettingsHelper;
 import org.librepilot.lp2go.uavtalk.UAVTalkDeviceHelper;
 import org.librepilot.lp2go.uavtalk.UAVTalkObjectTree;
@@ -218,7 +218,7 @@ public class ViewControllerTuningVPid extends ViewController implements View.OnC
                     }
                     ptv.setText(data);
                     break;
-                default:
+                default: //do nothing
                     break;
 
             }
@@ -273,6 +273,8 @@ public class ViewControllerTuningVPid extends ViewController implements View.OnC
                 onVerticalPidSaveClick(v);
             }
             break;
+            default: //do nothing
+                break;
         }
 
         if (v.getClass().equals(ObjectTextView.class)) {
@@ -330,8 +332,7 @@ public class ViewControllerTuningVPid extends ViewController implements View.OnC
                                                 ptv.getElement() + " " + ptv.getText().toString());
                             }
                             break;
-                        default:
-
+                        default: //do nothing
                             break;
                     }
                 }

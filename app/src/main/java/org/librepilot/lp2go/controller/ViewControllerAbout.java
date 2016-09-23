@@ -32,7 +32,7 @@ import com.google.firebase.database.ValueEventListener;
 import org.librepilot.lp2go.MainActivity;
 import org.librepilot.lp2go.R;
 import org.librepilot.lp2go.VisualLog;
-import org.librepilot.lp2go.menu.MenuItem;
+import org.librepilot.lp2go.ui.menu.MenuItem;
 
 public class ViewControllerAbout extends ViewController implements View.OnClickListener {
 

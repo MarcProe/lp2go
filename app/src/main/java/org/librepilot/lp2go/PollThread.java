@@ -20,6 +20,7 @@ import android.graphics.Color;
 import android.support.v4.content.ContextCompat;
 import android.widget.ImageView;
 
+import org.librepilot.lp2go.helper.H;
 import org.librepilot.lp2go.helper.SettingsHelper;
 import org.librepilot.lp2go.uavtalk.UAVTalkMissingObjectException;
 import org.librepilot.lp2go.uavtalk.UAVTalkObjectTree;

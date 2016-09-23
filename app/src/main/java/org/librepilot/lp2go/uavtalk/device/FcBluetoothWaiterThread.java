@@ -18,8 +18,8 @@ package org.librepilot.lp2go.uavtalk.device;
 
 import android.bluetooth.BluetoothSocket;
 
-import org.librepilot.lp2go.H;
 import org.librepilot.lp2go.VisualLog;
+import org.librepilot.lp2go.helper.H;
 import org.librepilot.lp2go.uavtalk.UAVTalkMessage;
 import org.librepilot.lp2go.uavtalk.UAVTalkObject;
 import org.librepilot.lp2go.uavtalk.UAVTalkObjectInstance;

@@ -16,8 +16,8 @@
 
 package org.librepilot.lp2go.uavtalk;
 
-import org.librepilot.lp2go.H;
 import org.librepilot.lp2go.VisualLog;
+import org.librepilot.lp2go.helper.H;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;

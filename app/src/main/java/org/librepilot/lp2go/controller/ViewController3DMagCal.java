@@ -22,10 +22,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.librepilot.lp2go.H;
 import org.librepilot.lp2go.MainActivity;
 import org.librepilot.lp2go.R;
 import org.librepilot.lp2go.VisualLog;
+import org.librepilot.lp2go.helper.H;
 import org.librepilot.lp2go.helper.ellipsoidfit.FitPoints;
 import org.librepilot.lp2go.uavtalk.UAVTalkMetaData;
 import org.librepilot.lp2go.uavtalk.UAVTalkObject;
@@ -477,6 +477,8 @@ public class ViewController3DMagCal extends ViewController implements
                 toggleCalibration();
                 break;
             }
+            default: //do nothing
+                break;
         }
     }
 }
