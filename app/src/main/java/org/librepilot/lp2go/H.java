@@ -182,7 +182,7 @@ public class H {
         return bytesToPrintHex(ba);
     }*/
 
-    public static String getDateFromMilliSeconds(String ms) {
+    public static String getDateFromMs(String ms) {
         if (ms == null || ms.equals("")) {
             return "";
         }

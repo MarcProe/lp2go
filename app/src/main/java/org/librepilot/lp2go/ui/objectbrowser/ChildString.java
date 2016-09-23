@@ -16,6 +16,8 @@
 
 package org.librepilot.lp2go.ui.objectbrowser;
 
+import java.text.MessageFormat;
+
 public class ChildString {
     protected String data;
     protected String element;
@@ -39,12 +41,12 @@ public class ChildString {
         this.isSettings = isSettings;
         isInstanceHeader = false;
 
-        if (element == null || element.equals("")) {
-            element = "";
+        if (this.element == null || "".equals(this.element)) {
+            this.element = "";
         } else {
-            element = "-" + element;
+            this.element = MessageFormat.format("-{0}", this.element);
         }
-        message = fieldname + " " + element;
+        message = MessageFormat.format("{0} {1}", fieldname, this.element);
     }
 
     public ChildString(String message) {
@@ -57,7 +59,7 @@ public class ChildString {
         isInstanceHeader = true;
         isSettings = false;
         this.instance = instance;
-        this.message = "Instance: " + instance;
+        this.message = MessageFormat.format("Instance: {0}", instance);
     }
 
     public String getLabel() {

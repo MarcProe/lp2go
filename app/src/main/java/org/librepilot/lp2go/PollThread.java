@@ -24,6 +24,8 @@ import org.librepilot.lp2go.helper.SettingsHelper;
 import org.librepilot.lp2go.uavtalk.UAVTalkMissingObjectException;
 import org.librepilot.lp2go.uavtalk.UAVTalkObjectTree;
 
+import java.text.MessageFormat;
+
 public class PollThread extends Thread {
 
     public UAVTalkObjectTree mObjectTree;
@@ -61,6 +63,8 @@ public class PollThread extends Thread {
                 break;
             case "Disconnected":
                 i.setColorFilter(Color.argb(0xff, 0xd4, 0x00, 0x00));
+                break;
+            default: //do nothing
                 break;
         }
     }
@@ -127,21 +131,13 @@ public class PollThread extends Thread {
                                 H.bytesToHex(getByteData("FirmwareIAPObj", "Description", 60, 20));
                         mA.setUavoLongHashFC(fcUavoHash.toLowerCase());
                         if (fcUavoHash.toLowerCase().equals(mA.getUavoLongHash().toLowerCase())) {
-                            if (mA.getFcDevice() != null) {
-                                if (mA.getFcDevice().isLogging()) {
-                                    if (mBlink) {
-                                        mA.imgUavoSanity.setColorFilter(Color.argb(0xff, 0, 0x00, 0x80));
-                                        mA.imgUavoSanity.setRotation(90f);
-                                    } else {
-                                        mA.imgUavoSanity.setColorFilter(Color.argb(0xff, 0, 0x00, 0x80));
-                                        mA.imgUavoSanity.setRotation(180f);
-                                    }
+                            if (mA.getFcDevice() != null && mA.getFcDevice().isLogging()) {
+                                mA.imgUavoSanity.setColorFilter(Color.argb(0xff, 0, 0x00, 0x80));
+                                mA.imgUavoSanity.setRotation(mBlink ? 90f : 180f);
                                 } else {
                                     mA.imgUavoSanity.setColorFilter(Color.argb(0xff, 0, 0x80, 0));
                                     mA.imgUavoSanity.setRotation(0f);
                                 }
-                            }
-
                         } else {
                             if (mBlink) {
                                 mA.imgUavoSanity.setColorFilter(Color.argb(0xff, 0xd4, 0, 0));
@@ -164,13 +160,13 @@ public class PollThread extends Thread {
                         if (mA.mCurrentParentViewController == null) {
                             mA.mVcList.get(MainActivity.mCurrentView).update();
                         } else {
-                            mA.mCurrentParentViewController.getMenuRightItems().get(MainActivity.mCurrentView).update();
+                            mA.mCurrentParentViewController.getMenuRightItems().
+                                    get(MainActivity.mCurrentView).update();
                         }
 
                     } catch (NullPointerException e) {
                         e.printStackTrace();
-                        VisualLog.d("NPE", "Nullpointer Exception in Pollthread, "
-                                + "most likely switched Connections");
+                        VisualLog.d("NPE", "Nullpointer Exception in Pollthread, most likely switched Connections");
 
                     }
                 }
@@ -210,7 +206,7 @@ public class PollThread extends Thread {
 
             }
         } catch (UAVTalkMissingObjectException | NumberFormatException | ClassCastException e) {
-            VisualLog.e("Pollthread", "Requesting " + object);
+            VisualLog.e(MessageFormat.format("Requesting {0}", object));
 
             try {
                 mA.mFcDevice.requestObject(object);

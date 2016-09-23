@@ -475,6 +475,9 @@ public class ViewControllerTuningPid extends ViewController implements View.OnCl
                 onPidSaveClick();
             }
             break;
+            default: {
+            }//do nothing
+            break;
         }
 
         if (v.getClass().equals(ObjectTextView.class)) {

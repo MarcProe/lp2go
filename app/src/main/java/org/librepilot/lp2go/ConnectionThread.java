@@ -130,6 +130,8 @@ public class ConnectionThread extends Thread {
                             mA.connectLogFile(mReplayLogFile, mGuiEventListener);
                         }
                         break;
+                    default: //do nothing
+                        break;
                 }
             }
 

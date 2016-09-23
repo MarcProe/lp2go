@@ -47,6 +47,8 @@ import org.librepilot.lp2go.ui.alertdialog.EnumInputAlertDialog;
 import org.librepilot.lp2go.ui.alertdialog.NumberInputAlertDialog;
 import org.librepilot.lp2go.ui.pfd.PfdRollPitchView;
 
+import java.text.MessageFormat;
+
 public class ViewControllerMain extends ViewController implements View.OnClickListener,
         ViewControllerMainAnimatorViewSetter, CompoundButton.OnCheckedChangeListener,
         UAVTalkObjectListener {
@@ -81,7 +83,7 @@ public class ViewControllerMain extends ViewController implements View.OnClickLi
     private TextView txtGPSSatsInView;
     private TextView txtHealthAlertDialogBatteryCapacity;
     private TextView txtHealthAlertDialogBatteryCells;
-    private TextView txtHealthAlertDialogFusionAlgorithm;
+    private TextView txtHealthAlertDiaFAlgo;
     private TextView txtI2C;
     private TextView txtInput;
     private TextView txtMag;
@@ -127,10 +129,10 @@ public class ViewControllerMain extends ViewController implements View.OnClickLi
                 (TextView) mFlightSettingsView.findViewById(R.id.txtHealthAlertDialogBatteryCells);
         txtHealthAlertDialogBatteryCells.setOnClickListener(this);
 
-        txtHealthAlertDialogFusionAlgorithm =
+        txtHealthAlertDiaFAlgo =
                 (TextView) mFlightSettingsView
                         .findViewById(R.id.txtHealthAlertDialogFusionAlgorithm);
-        txtHealthAlertDialogFusionAlgorithm.setOnClickListener(this);
+        txtHealthAlertDiaFAlgo.setOnClickListener(this);
 
         spiTopLeft = SettingsHelper.initSpinner(R.id.spiTopLeftView, mLocalSettingsView,
                 null, R.array.main_elements, SettingsHelper.mTopLeftLayout);
@@ -397,79 +399,47 @@ public class ViewControllerMain extends ViewController implements View.OnClickLi
             ma.setRxObjectsBad(0);
             ma.setRxObjectsGood(0);
 
-            setTextBGColor(txtAtti,
-                    getData("SystemAlarms", "Alarm", "Attitude").toString());
-            setTextBGColor(txtStab,
-                    getData("SystemAlarms", "Alarm", "Stabilization")
-                            .toString());
-            setTextBGColor(txtPath,
-                    getData("PathStatus", "Status").toString());
-            setTextBGColor(txtPlan,
-                    getData("SystemAlarms", "Alarm", "PathPlan").toString());
+            setTextBGColor(txtAtti, getData("SystemAlarms", "Alarm", "Attitude").toString());
+            setTextBGColor(txtStab, getData("SystemAlarms", "Alarm", "Stabilization").toString());
+            setTextBGColor(txtPath, getData("PathStatus", "Status").toString());
+            setTextBGColor(txtPlan, getData("SystemAlarms", "Alarm", "PathPlan").toString());
 
-            setText(txtGPSSatsInView,
-                    getData("GPSSatellites", "SatsInView").toString());
-            setTextBGColor(txtGPS,
-                    getData("SystemAlarms", "Alarm", "GPS").toString());
-            setTextBGColor(txtSensor,
-                    getData("SystemAlarms", "Alarm", "Sensors").toString());
-            setTextBGColor(txtAirspd,
-                    getData("SystemAlarms", "Alarm", "Airspeed").toString());
-            setTextBGColor(txtMag,
-                    getData("SystemAlarms", "Alarm", "Magnetometer")
-                            .toString());
+            setText(txtGPSSatsInView, getData("GPSSatellites", "SatsInView").toString());
+            setTextBGColor(txtGPS, getData("SystemAlarms", "Alarm", "GPS").toString());
+            setTextBGColor(txtSensor, getData("SystemAlarms", "Alarm", "Sensors").toString());
+            setTextBGColor(txtAirspd, getData("SystemAlarms", "Alarm", "Airspeed").toString());
+            setTextBGColor(txtMag, getData("SystemAlarms", "Alarm", "Magnetometer").toString());
 
-            setTextBGColor(txtInput,
-                    getData("SystemAlarms", "Alarm", "Receiver").toString());
-            setTextBGColor(txtOutput,
-                    getData("SystemAlarms", "Alarm", "Actuator").toString());
-            setTextBGColor(txtI2C,
-                    getData("SystemAlarms", "Alarm", "I2C").toString());
-            setTextBGColor(txtTelemetry,
-                    getData("SystemAlarms", "Alarm", "Telemetry").toString());
+            setTextBGColor(txtInput, getData("SystemAlarms", "Alarm", "Receiver").toString());
+            setTextBGColor(txtOutput, getData("SystemAlarms", "Alarm", "Actuator").toString());
+            setTextBGColor(txtI2C, getData("SystemAlarms", "Alarm", "I2C").toString());
+            setTextBGColor(txtTelemetry, getData("SystemAlarms", "Alarm", "Telemetry").toString());
 
-            setText(txtHealthAlertDialogFusionAlgorithm,
-                    getData("RevoSettings", "FusionAlgorithm").toString());
+            setText(txtHealthAlertDiaFAlgo, getData("RevoSettings", "FusionAlgorithm").toString());
 
-            setTextBGColor(txtBatt,
-                    getData("SystemAlarms", "Alarm", "Battery").toString());
-            setTextBGColor(txtTime,
-                    getData("SystemAlarms", "Alarm", "FlightTime").toString());
-            setTextBGColor(txtConfig,
-                    getData("SystemAlarms", "ExtendedAlarmStatus",
+            setTextBGColor(txtBatt, getData("SystemAlarms", "Alarm", "Battery").toString());
+            setTextBGColor(txtTime, getData("SystemAlarms", "Alarm", "FlightTime").toString());
+            setTextBGColor(txtConfig, getData("SystemAlarms", "ExtendedAlarmStatus",
                             "SystemConfiguration").toString());
 
-            setTextBGColor(txtBoot,
-                    getData("SystemAlarms", "Alarm", "BootFault").toString());
-            setTextBGColor(txtMem,
-                    getData("SystemAlarms", "Alarm", "OutOfMemory").toString());
-            setTextBGColor(txtStack,
-                    getData("SystemAlarms", "Alarm", "StackOverflow")
-                            .toString());
-            setTextBGColor(txtEvent,
-                    getData("SystemAlarms", "Alarm", "EventSystem").toString());
-            setTextBGColor(txtCPU,
-                    getData("SystemAlarms", "Alarm", "CPUOverload").toString());
-
+            setTextBGColor(txtBoot, getData("SystemAlarms", "Alarm", "BootFault").toString());
+            setTextBGColor(txtMem, getData("SystemAlarms", "Alarm", "OutOfMemory").toString());
+            setTextBGColor(txtStack, getData("SystemAlarms", "Alarm", "StackOverflow").toString());
+            setTextBGColor(txtEvent, getData("SystemAlarms", "Alarm", "EventSystem").toString());
+            setTextBGColor(txtCPU, getData("SystemAlarms", "Alarm", "CPUOverload").toString());
         }
-
 
         if (isView(R.id.root_main_inc_info)) {
 
             setText(txtArmed, getData("FlightStatus", "Armed").toString());
 
-            setText(txtFlightTime, H.getDateFromMilliSeconds(
-                    getData("SystemStats", "FlightTime").toString()));
+            setText(txtFlightTime, H.getDateFromMs(getData("SystemStats", "FlightTime").toString()));
 
-            setText(txtVolt,
-                    getFloatData("FlightBatteryState", "Voltage", 4));
-            setText(txtAmpere,
-                    getFloatData("FlightBatteryState", "Current", 4));
-            setText(txtmAh,
-                    getFloatData("FlightBatteryState", "ConsumedEnergy", 3));
+            setText(txtVolt, getFloatData("FlightBatteryState", "Voltage", 4));
+            setText(txtAmpere, getFloatData("FlightBatteryState", "Current", 4));
+            setText(txtmAh, getFloatData("FlightBatteryState", "ConsumedEnergy", 3));
             setText(txtTimeLeft, H.getDateFromSeconds(
-                    getData("FlightBatteryState", "EstimatedFlightTime")
-                            .toString()));
+                    getData("FlightBatteryState", "EstimatedFlightTime").toString()));
 
             setText(txtHealthAlertDialogBatteryCapacity,
                     getData("FlightBatterySettings", "Capacity").toString());
@@ -480,45 +450,36 @@ public class ViewControllerMain extends ViewController implements View.OnClickLi
                     getString(R.string.OFFSET_BAROSENSOR_ALTITUDE,
                             R.string.APP_ID)));
 
-            setText(txtAltitudeAccel,
-                    getFloatData("VelocityState", "Down", 2));
+            setText(txtAltitudeAccel, getFloatData("VelocityState", "Down", 2));
 
             String flightModeSwitchPosition =
-                    getData("ManualControlCommand", "FlightModeSwitchPosition",
-                            true).toString();
+                    getData("ManualControlCommand", "FlightModeSwitchPosition", true).toString();
 
             try {   //FlightMode in GCS is 1...n, so add "1" to be user friendly
-                setText(txtModeNum, String.valueOf(
-                        Integer.parseInt(flightModeSwitchPosition) + 1));
+                setText(txtModeNum,
+                        String.valueOf(Integer.parseInt(flightModeSwitchPosition) + 1));
             } catch (NumberFormatException e) {
-                VisualLog.e("MainActivity",
-                        "Could not parse numeric Flightmode: " +
-                                flightModeSwitchPosition);
+                VisualLog.e(MessageFormat.format("Could not parse numeric Flightmode: {0}",
+                        flightModeSwitchPosition));
             }
 
-            setText(txtModeFlightMode,
-                    getData("FlightStatus", "FlightMode", true).toString());
-            setText(txtModeAssistedControl,
-                    getData("FlightStatus", "FlightModeAssist", true)
+            setText(txtModeFlightMode, getData("FlightStatus", "FlightMode", true).toString());
+            setText(txtModeAssistedControl, getData("FlightStatus", "FlightModeAssist", true)
                             .toString());
         }
 
         if (isView(R.id.root_main_inc_map)) {
-
             getMainActivity().mVcList.get(ViewController.VIEW_MAP).update();
-
         }
 
         if (isView(R.id.root_main_inc_pfd) &&
                 getMainActivity().mFcDevice.getObjectTree().getListener("AttitudeState") == null) {
             try {
                 try {
-                    getMainActivity().mFcDevice.getObjectTree()
-                            .setListener("AttitudeState", this);
+                    getMainActivity().mFcDevice.getObjectTree().setListener("AttitudeState", this);
                 } catch (IllegalStateException e1) {
                     getMainActivity().mFcDevice.getObjectTree().removeListener("AttitudeState");
-                    getMainActivity().mFcDevice.getObjectTree()
-                            .setListener("AttitudeState", this);
+                    getMainActivity().mFcDevice.getObjectTree().setListener("AttitudeState", this);
                 }
             } catch (NullPointerException ignored) {
 
@@ -596,7 +557,7 @@ public class ViewControllerMain extends ViewController implements View.OnClickLi
                     .getData("FlightBatterySettings", "Capacity").toString());
             txtHealthAlertDialogBatteryCells.setText(getMainActivity().mFcDevice.getObjectTree()
                     .getData("FlightBatterySettings", "NbCells").toString());
-            txtHealthAlertDialogFusionAlgorithm.setText(getMainActivity().mFcDevice.getObjectTree()
+            txtHealthAlertDiaFAlgo.setText(getMainActivity().mFcDevice.getObjectTree()
                     .getData("RevoSettings", "FusionAlgorithm").toString());
         } catch (UAVTalkMissingObjectException | NullPointerException e) {
             e.printStackTrace();
@@ -641,7 +602,6 @@ public class ViewControllerMain extends ViewController implements View.OnClickLi
         } catch (NullPointerException ignored) {
         }
         dialogBuilder.show();
-
     }
 
     private void onAltitudeClick(View v) {
@@ -674,6 +634,8 @@ public class ViewControllerMain extends ViewController implements View.OnClickLi
                 onFusionAlgoClick(v);
                 break;
             }
+            default: //do nothing
+                break;
         }
     }
 
@@ -741,7 +703,6 @@ public class ViewControllerMain extends ViewController implements View.OnClickLi
         } else {
             SingleToast.show(ma, R.string.SEND_FAILED, Toast.LENGTH_SHORT);
         }
-
     }
 
     @Override
@@ -784,10 +745,6 @@ public class ViewControllerMain extends ViewController implements View.OnClickLi
                 mPreviousPitch = pitch;
                 inval = true;
             }
-
-            //if(pitch!=null && roll!=null) {
-            //    VisualLog.d("DBG", ""+roll+" " +pitch);
-            //}
 
             if (inval) {
                 imgPfdRollPitch.postInvalidate();

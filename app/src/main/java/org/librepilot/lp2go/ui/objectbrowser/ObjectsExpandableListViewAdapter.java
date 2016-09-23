@@ -118,10 +118,12 @@ public class ObjectsExpandableListViewAdapter extends BaseExpandableListAdapter 
 
     @Override
     public View getChildView(int groupPosition, final int childPosition,
-                             boolean isLastChild, View convertView, ViewGroup parent) {
+                             boolean isLastChild, View convertViewParam, ViewGroup parent) {
+
+        View convertView = convertViewParam;
 
         final ChildString childText = (ChildString) getChild(groupPosition, childPosition);
-        boolean isInstanceHeader = childText.isInstanceHeader;
+        //boolean isInstanceHeader = childText.isInstanceHeader;
 
         if (convertView == null) {
             LayoutInflater infalInflater = (LayoutInflater) this.mContext
