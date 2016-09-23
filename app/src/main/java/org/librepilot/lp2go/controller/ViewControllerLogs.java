@@ -543,16 +543,16 @@ public class ViewControllerLogs extends ViewController implements
 
     @Override
     public void incObjectsReceived(int objRec) {
-
+        //not yet implemented
     }
 
     @Override
     public void incObjectsSent(int objSent) {
-
+        //not yet implemented
     }
 
     @Override
     public void incObjectsBad(int ObjBad) {
-
+        //not yet implemented
     }
 }

@@ -88,7 +88,9 @@ public class MapHelper implements OnMapReadyCallback {
             CameraUpdate cameraUpdate =
                     CameraUpdateFactory.newLatLngZoom(e, 19);
 
-            if (distance < 200) {
+            final int MAX_ANIMATED_DISTANCE = 200;
+
+            if (distance < MAX_ANIMATED_DISTANCE) {
                 mMap.animateCamera(cameraUpdate);
             } else {
                 mMap.moveCamera(cameraUpdate);

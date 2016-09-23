@@ -65,12 +65,12 @@ public class PidInputAlertDialog extends InputAlertDialog
 
     @Override
     public void onStartTrackingTouch(SeekBar seekBar) {
-
+        //do nothing
     }
 
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
-
+        //do nothing
     }
 
     public PidInputAlertDialog withPidTextView(ObjectTextView objectTextView) {
@@ -247,7 +247,7 @@ public class PidInputAlertDialog extends InputAlertDialog
             private String lastTextOk = mText;
 
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
+                //do nothing
             }
 
             public void afterTextChanged(Editable s) {
@@ -298,7 +298,7 @@ public class PidInputAlertDialog extends InputAlertDialog
 
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
-
+        //do nothing
     }
 
     @Override

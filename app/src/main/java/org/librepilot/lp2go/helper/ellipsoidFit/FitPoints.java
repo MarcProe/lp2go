@@ -48,11 +48,11 @@ import java.util.List;
 public class FitPoints {
     public RealVector center;
     public RealVector radii;
-    public RealVector evecs;
-    public RealVector evecs1;
-    public RealVector evecs2;
+    private RealVector evecs;
+    private RealVector evecs1;
+    private RealVector evecs2;
 
-    public double[] evals;
+    private double[] evals;
 
     /**
      * Fit points to the polynomial expression Ax^2 + By^2 + Cz^2 + 2Dxy + 2Exz

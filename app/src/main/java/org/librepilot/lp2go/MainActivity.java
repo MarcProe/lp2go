@@ -103,6 +103,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -163,14 +164,14 @@ public class MainActivity extends AppCompatActivity {
     private final BroadcastReceiver mUsbReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            VisualLog.d(getString(R.string.USB), action);
+            VisualLog.d(action);
 
             if (SettingsHelper.mSerialModeUsed == SERIAL_USB &&
                     UsbManager.ACTION_USB_DEVICE_ATTACHED.equals(action)) {
                 android.hardware.usb.UsbDevice device =
                         intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
 
-                VisualLog.d(getString(R.string.USB), device.getVendorId() +
+                VisualLog.d(device.getVendorId() +
                         getString(R.string.DASH) + device.getProductId() +
                         getString(R.string.DASH) + device.getDeviceClass() +
                         getString(R.string.SPACE) + device.getDeviceSubclass() +
@@ -207,7 +208,7 @@ public class MainActivity extends AppCompatActivity {
                             }
                         }
                     } else {
-                        VisualLog.d("DBG", "permission denied for device " + mDevice);
+                        VisualLog.d("permission denied for device " + mDevice);
                     }
                 }
             }
@@ -303,13 +304,13 @@ public class MainActivity extends AppCompatActivity {
 
     public void copyAssets() {
 
-        VisualLog.d("COPY", "Starting CopyAssets");
+        VisualLog.d("Starting CopyAssets");
         AssetManager assetManager = getAssets();
         String[] files = null;
         try {
             files = assetManager.list(ASSETS_UAVO_INTERNAL_PATH);
         } catch (IOException e) {
-            VisualLog.e("COPY", "Failed to get uavo asset file list.", e);
+            VisualLog.e("Failed to get uavo asset file list.", e);
         }
         if (files != null) {
             for (String filename : files) {
@@ -317,7 +318,7 @@ public class MainActivity extends AppCompatActivity {
                     copyFile(assetManager.open(ASSETS_UAVO_INTERNAL_PATH +
                             File.separator + filename), filename);
                 } catch (IOException e) {
-                    VisualLog.e("COPY", "Failed to copy uavo asset file: " + filename, e);
+                    VisualLog.e("Failed to copy uavo asset file: " + filename, e);
                 }
             }
         }
@@ -341,7 +342,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void copyFile(InputStream source, String relativeFilename) throws IOException {
 
-        VisualLog.d("COPY", "Copy " + relativeFilename);
+        VisualLog.d("Copy " + relativeFilename);
 
         FileOutputStream out = openFileOutput(ASSETS_UAVO_INTERNAL_PATH +
                 getString(R.string.DASH) + relativeFilename, Context.MODE_PRIVATE);
@@ -676,18 +677,18 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 mUavoLongHash = H.bytesToHex(cumucrypt.digest()).toLowerCase();
-                VisualLog.d("SHA1", H.bytesToHex(cumucrypt.digest()).toLowerCase());
+                VisualLog.d(H.bytesToHex(cumucrypt.digest()).toLowerCase());
 
             } catch (IOException | SAXException
                     | ParserConfigurationException | NoSuchAlgorithmException e) {
-                VisualLog.e("UAVO", "UAVO Load Error", e);
+                VisualLog.e("UAVO Load Error", e);
             } finally {
                 try {
                     if (zis != null) {
                         zis.close();
                     }
                 } catch (IOException e) {
-                    VisualLog.e("LoadXML", "Exception on Close");
+                    VisualLog.e(MessageFormat.format("Exception on Close: {0}", e.getMessage()));
                 }
             }
             mDoReconnect = true;
@@ -748,7 +749,7 @@ public class MainActivity extends AppCompatActivity {
         mCurrentParentViewController.setCurrentRightView(vcNew);
 
         for (Map.Entry<Integer, ViewController> e : mCurrentParentViewController.getMenuRightItems().entrySet()) {
-            VisualLog.d("" + e.getKey() + " " + e.getValue().getTitle());
+            VisualLog.d(MessageFormat.format("{0} {1}", e.getKey(), e.getValue().getTitle()));
         }
         vcNew.enter(position);
 
@@ -881,7 +882,7 @@ public class MainActivity extends AppCompatActivity {
 
         displayView(mCurrentView);
 
-        VisualLog.d("onStart", "onStart");
+        VisualLog.d("onStart");
     }
 
     public void onToolbarFlightSettingsClick(View v) {

@@ -160,24 +160,24 @@ public class UAVTalkXMLObject {
                         e1.printStackTrace();
                     }
 
-                    if (uavField.mOptions == null || uavField.mOptions.length == 0
+                    if ((uavField.mOptions == null || uavField.mOptions.length == 0
                             || ((uavField.mOptions.length == 1) &&
-                            (uavField.mOptions[0].equals("")))) {
-                        if (f.getElementsByTagName(XML_TAG_OPTIONS).getLength() > 0) {
-                            NodeList optionnodes =
-                                    f.getElementsByTagName(XML_TAG_OPTIONS).item(0).getChildNodes();
+                            (uavField.mOptions[0].equals("")))) &&
+                            f.getElementsByTagName(XML_TAG_OPTIONS).getLength() > 0) {
 
-                            ArrayList<String> options = new ArrayList<>();
-                            for (int j = 0; j < optionnodes.getLength(); j++) {
-                                String content =
-                                        optionnodes.item(j).getTextContent()
-                                                .replaceAll(REPLACE_OPTION_NODES, "");
-                                if (content != null && !content.equals("")) {
-                                    options.add(content);
-                                }
+                        NodeList optionnodes =
+                                f.getElementsByTagName(XML_TAG_OPTIONS).item(0).getChildNodes();
+
+                        ArrayList<String> options = new ArrayList<>();
+                        for (int j = 0; j < optionnodes.getLength(); j++) {
+                            String content =
+                                    optionnodes.item(j).getTextContent()
+                                            .replaceAll(REPLACE_OPTION_NODES, "");
+                            if (content != null && !content.equals("")) {
+                                options.add(content);
                             }
-                            uavField.mOptions = options.toArray(new String[options.size()]);
                         }
+                        uavField.mOptions = options.toArray(new String[options.size()]);
                     }
                 }
 

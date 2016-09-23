@@ -153,23 +153,20 @@ public class OpenGl3DMagCalView extends GLSurfaceView {
 
         int num = (int) this.mRenderer.mSampleCubes[alpha][beta];
 
-        if (num < ViewController3DMagCal.SAMPLES) {
-            if (this.mRenderer.mCubes != null) {
+        if (this.mRenderer.mCubes != null && num < ViewController3DMagCal.SAMPLES) {
 
-                c.setRGB(1.0f, 0.3f * num, 0.3f * num);
-                this.mRenderer.mCubes.add(c);
+            c.setRGB(1.0f, 0.3f * num, 0.3f * num);
+            this.mRenderer.mCubes.add(c);
 
-                //increase counter for current sector
-                this.mRenderer.mSampleCubes[alpha][beta] = num + 1;
-                //VisualLog.d("DBG", "Adding Cube");
+            //increase counter for current sector
+            this.mRenderer.mSampleCubes[alpha][beta] = num + 1;
+            //VisualLog.d("DBG", "Adding Cube");
 
-                mCurrentFace = pitchRollToString(this.mRenderer.mPitch, this.mRenderer.mRoll);
-                final Integer t = mSamplesPerFace.get(mCurrentFace);
+            mCurrentFace = pitchRollToString(this.mRenderer.mPitch, this.mRenderer.mRoll);
+            final Integer t = mSamplesPerFace.get(mCurrentFace);
 
-                mSamplesPerFace.put(mCurrentFace, t == null ? 1 : t + 1);
-            }
-
-        } //else {
+            mSamplesPerFace.put(mCurrentFace, t == null ? 1 : t + 1);
+        }
             //VisualLog.d("DBG", "Won't add because " + num + " " + alpha +" " + beta + " ");
         //}
         if (this.mRenderer.mCubes != null) {
@@ -194,11 +191,6 @@ public class OpenGl3DMagCalView extends GLSurfaceView {
         protected float mYaw = 0;
         private CartesianCoordinateSystem mCcs = new CartesianCoordinateSystem();
         private Rhombicuboctahedron mRhombicuboctahedron = new Rhombicuboctahedron();
-
-
-        public OpenGLRenderer() {
-
-        }
 
         public String pitchRollToString(float pitch, float roll) {
             return mRhombicuboctahedron.pitchRollToString(pitch, roll);

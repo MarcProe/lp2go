@@ -61,7 +61,7 @@ public class TextToSpeechHelper implements TextToSpeech.OnInitListener {
                 SingleToast.show(mActivity, "Text2Speech not supported on your device. (1)", Toast.LENGTH_LONG);
                 mTts = null;
             } else {
-                VisualLog.d("TTS", "Calling Activity");
+                VisualLog.d("Calling Activity");
                 mActivity.startActivityForResult(checkIntent, MainActivity.CALLBACK_TTS);
             }
         } catch (ActivityNotFoundException e) {
@@ -75,7 +75,7 @@ public class TextToSpeechHelper implements TextToSpeech.OnInitListener {
         if (requestCode == MainActivity.CALLBACK_TTS) {
             if (resultCode == TextToSpeech.Engine.CHECK_VOICE_DATA_PASS) {
                 mTts = new TextToSpeech(mActivity, this);
-                VisualLog.d("TTS", "Call successful");
+                VisualLog.d("Call successful");
             } else {
                 //Intent installIntent = new Intent();
                 //installIntent.setAction(
@@ -92,12 +92,12 @@ public class TextToSpeechHelper implements TextToSpeech.OnInitListener {
         if (mTts != null) {
             try {
                 mTts.setLanguage(Locale.US);
-                VisualLog.i("TTS", "Instanciated");
+                VisualLog.i("Instanciated");
             } catch (IllegalArgumentException e) {
-                VisualLog.e("TTS", e.getMessage());
+                VisualLog.e(e.getMessage());
             }
         } else {
-            VisualLog.w("TTS", "not available");
+            VisualLog.w("not available");
         }
     }
 

@@ -54,6 +54,10 @@ public class VisualLog {
         printToDebug(tag, checkNull(msg));
     }
 
+    static public void w(String msg) {
+        w(new Exception().getStackTrace()[1].getClassName(), msg);
+    }
+
     static public void e(String tag, String msg) {
         Log.e(tag, checkNull(msg));
         printToDebug(tag, checkNull(msg));
@@ -65,6 +69,10 @@ public class VisualLog {
         printToDebug(tr.getClass().getSimpleName(), Log.getStackTraceString(tr));
     }
 
+    static public void e(String msg, Throwable tr) {
+        e(new Exception().getStackTrace()[1].getClassName(), msg, tr);
+    }
+
     static public void e(Throwable tr) {
         VisualLog.e(tr.getClass().getSimpleName(), tr.getMessage(), tr);
     }
@@ -72,6 +80,11 @@ public class VisualLog {
     static public void i(String tag, String msg) {
         Log.i(tag, checkNull(msg));
         printToDebug(tag, checkNull(msg));
+    }
+
+    static public void i(String msg) {
+        i(new Exception().getStackTrace()[1].getClassName(), checkNull(msg));
+
     }
 
     static private void printToDebug(final String t, final String s) {

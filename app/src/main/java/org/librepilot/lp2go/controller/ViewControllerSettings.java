@@ -104,7 +104,7 @@ public class ViewControllerSettings extends ViewController
                 if (pairedDevices.size() > 0) {
                     // Loop through paired devices
                     int btpd = 0;
-                    for (android.bluetooth.BluetoothDevice device : pairedDevices) {
+                    for (BluetoothDevice device : pairedDevices) {
                         // Add the name and address to an array adapter to show in a ListView
                         if (device != null) {
                             if (device.getName() != null) {
@@ -158,7 +158,7 @@ public class ViewControllerSettings extends ViewController
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
-
+        //do nothing
     }
 
     @Override
