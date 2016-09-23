@@ -66,7 +66,6 @@ public class ViewControllerMain extends ViewController implements View.OnClickLi
     private int mTopLayout;
     private Spinner spiBottomRight;
     private Spinner spiTopLeft;
-    private Switch swiEnableText2Speech;
     private TextView txtAirspd;
     private TextView txtAltitude;
     private TextView txtAltitudeAccel;
@@ -81,8 +80,8 @@ public class ViewControllerMain extends ViewController implements View.OnClickLi
     private TextView txtFlightTime;
     private TextView txtGPS;
     private TextView txtGPSSatsInView;
-    private TextView txtHealthAlertDialogBatteryCapacity;
-    private TextView txtHealthAlertDialogBatteryCells;
+    private TextView txtHealthAlertDiaBatCap;
+    private TextView txtHealthAlertDiaBatCls;
     private TextView txtHealthAlertDiaFAlgo;
     private TextView txtI2C;
     private TextView txtInput;
@@ -120,14 +119,14 @@ public class ViewControllerMain extends ViewController implements View.OnClickLi
         mFlightSettingsView = View.inflate(ma, R.layout.alert_main_settings_flight, null);
         mLocalSettingsView = View.inflate(ma, R.layout.alert_main_settings_local, null);
 
-        txtHealthAlertDialogBatteryCapacity =
+        txtHealthAlertDiaBatCap =
                 (TextView) mFlightSettingsView
                         .findViewById(R.id.txtHealthAlertDialogBatteryCapacity);
-        txtHealthAlertDialogBatteryCapacity.setOnClickListener(this);
+        txtHealthAlertDiaBatCap.setOnClickListener(this);
 
-        txtHealthAlertDialogBatteryCells =
+        txtHealthAlertDiaBatCls =
                 (TextView) mFlightSettingsView.findViewById(R.id.txtHealthAlertDialogBatteryCells);
-        txtHealthAlertDialogBatteryCells.setOnClickListener(this);
+        txtHealthAlertDiaBatCls.setOnClickListener(this);
 
         txtHealthAlertDiaFAlgo =
                 (TextView) mFlightSettingsView
@@ -138,7 +137,8 @@ public class ViewControllerMain extends ViewController implements View.OnClickLi
                 null, R.array.main_elements, SettingsHelper.mTopLeftLayout);
         spiBottomRight = SettingsHelper.initSpinner(R.id.spiBottomRightView, mLocalSettingsView,
                 null, R.array.main_elements, SettingsHelper.mBottomRightLayout);
-        swiEnableText2Speech = (Switch) mLocalSettingsView.findViewById(R.id.swiEnableText2Speech);
+        Switch swiEnableText2Speech =
+                (Switch) mLocalSettingsView.findViewById(R.id.swiEnableText2Speech);
         swiEnableText2Speech.setOnCheckedChangeListener(this);
     }
 
@@ -344,128 +344,130 @@ public class ViewControllerMain extends ViewController implements View.OnClickLi
         }
     }
 
+    private void setPacketIcons() {
+        final MainActivity ma = getMainActivity();
+        if (mBlink) {
+            if (ma.getRxObjectsGood() > 0) {
+                imgPacketsGood.setColorFilter(
+                        Color.argb(0xff, 0x00, 0x88, 0x00), PorterDuff.Mode.SRC_ATOP);
+            }
+            if (ma.getRxObjectsBad() > 0) {
+                imgPacketsBad.setColorFilter(
+                        Color.argb(0xff, 0x88, 0x00, 0x00), PorterDuff.Mode.SRC_ATOP);
+            }
+            if (ma.getTxObjects() > 0) {
+                imgPacketsUp.setColorFilter(
+                        Color.argb(0xff, 0x00, 0x00, 0xdd), PorterDuff.Mode.SRC_ATOP);
+            }
+        } else {
+            if (ma.getRxObjectsGood() > 0) {
+                imgPacketsGood.setColorFilter(
+                        Color.argb(0xff, 0x00, 0x00, 0x00), PorterDuff.Mode.SRC_ATOP);
+            }
+            if (ma.getRxObjectsBad() > 0) {
+                imgPacketsBad.setColorFilter(
+                        Color.argb(0xff, 0x00, 0x00, 0x00), PorterDuff.Mode.SRC_ATOP);
+            }
+            if (ma.getTxObjects() > 0) {
+                imgPacketsUp.setColorFilter(
+                        Color.argb(0xff, 0x00, 0x00, 0x00), PorterDuff.Mode.SRC_ATOP);
+            }
+        }
+
+        //reset
+        ma.setTxObjects(0);
+        ma.setRxObjectsBad(0);
+        ma.setRxObjectsGood(0);
+    }
+
+    private void updateHealth() {
+        final MainActivity ma = getMainActivity();
+        txtObjectLogTx.setText(
+                H.k(String.valueOf(ma.getTxObjects() * MainActivity.POLL_SECOND_FACTOR)));
+        txtObjectLogRxGood.setText(
+                H.k(String.valueOf(ma.getRxObjectsGood() * MainActivity.POLL_SECOND_FACTOR)));
+        txtObjectLogRxBad.setText(
+                H.k(String.valueOf(ma.getRxObjectsBad() * MainActivity.POLL_SECOND_FACTOR)));
+
+        setPacketIcons();
+
+        setTextBGColor(txtAtti, getData("SystemAlarms", "Alarm", "Attitude").toString());
+        setTextBGColor(txtStab, getData("SystemAlarms", "Alarm", "Stabilization").toString());
+        setTextBGColor(txtPath, getData("PathStatus", "Status").toString());
+        setTextBGColor(txtPlan, getData("SystemAlarms", "Alarm", "PathPlan").toString());
+
+        setText(txtGPSSatsInView, getData("GPSSatellites", "SatsInView").toString());
+        setTextBGColor(txtGPS, getData("SystemAlarms", "Alarm", "GPS").toString());
+        setTextBGColor(txtSensor, getData("SystemAlarms", "Alarm", "Sensors").toString());
+        setTextBGColor(txtAirspd, getData("SystemAlarms", "Alarm", "Airspeed").toString());
+        setTextBGColor(txtMag, getData("SystemAlarms", "Alarm", "Magnetometer").toString());
+
+        setTextBGColor(txtInput, getData("SystemAlarms", "Alarm", "Receiver").toString());
+        setTextBGColor(txtOutput, getData("SystemAlarms", "Alarm", "Actuator").toString());
+        setTextBGColor(txtI2C, getData("SystemAlarms", "Alarm", "I2C").toString());
+        setTextBGColor(txtTelemetry, getData("SystemAlarms", "Alarm", "Telemetry").toString());
+
+        setText(txtHealthAlertDiaFAlgo, getData("RevoSettings", "FusionAlgorithm").toString());
+
+        setTextBGColor(txtBatt, getData("SystemAlarms", "Alarm", "Battery").toString());
+        setTextBGColor(txtTime, getData("SystemAlarms", "Alarm", "FlightTime").toString());
+        setTextBGColor(txtConfig, getData("SystemAlarms", "ExtendedAlarmStatus",
+                "SystemConfiguration").toString());
+
+        setTextBGColor(txtBoot, getData("SystemAlarms", "Alarm", "BootFault").toString());
+        setTextBGColor(txtMem, getData("SystemAlarms", "Alarm", "OutOfMemory").toString());
+        setTextBGColor(txtStack, getData("SystemAlarms", "Alarm", "StackOverflow").toString());
+        setTextBGColor(txtEvent, getData("SystemAlarms", "Alarm", "EventSystem").toString());
+        setTextBGColor(txtCPU, getData("SystemAlarms", "Alarm", "CPUOverload").toString());
+    }
+
+    private void updateInfo() {
+        setText(txtArmed, getData("FlightStatus", "Armed").toString());
+
+        setText(txtFlightTime, H.getDateFromMs(getData("SystemStats", "FlightTime").toString()));
+
+        setText(txtVolt, getFloatData("FlightBatteryState", "Voltage", 4));
+        setText(txtAmpere, getFloatData("FlightBatteryState", "Current", 4));
+        setText(txtmAh, getFloatData("FlightBatteryState", "ConsumedEnergy", 3));
+        setText(txtTimeLeft, H.getDateFromSeconds(
+                getData("FlightBatteryState", "EstimatedFlightTime").toString()));
+
+        setText(txtHealthAlertDiaBatCap, getData("FlightBatterySettings", "Capacity").toString());
+        setText(txtHealthAlertDiaBatCls, getData("FlightBatterySettings", "NbCells").toString());
+
+        setText(txtAltitude, getFloatOffsetData("BaroSensor", "Altitude",
+                getString(R.string.OFFSET_BAROSENSOR_ALTITUDE, R.string.APP_ID)));
+
+        setText(txtAltitudeAccel, getFloatData("VelocityState", "Down", 2));
+
+        String flightModeSwitchPosition =
+                getData("ManualControlCommand", "FlightModeSwitchPosition", true).toString();
+
+        try {   //FlightMode in GCS is 1...n, so add "1" to be user friendly
+            setText(txtModeNum,
+                    String.valueOf(Integer.parseInt(flightModeSwitchPosition) + 1));
+        } catch (NumberFormatException e) {
+            VisualLog.e(MessageFormat.format("Could not parse numeric Flightmode: {0}",
+                    flightModeSwitchPosition));
+        }
+
+        setText(txtModeFlightMode, getData("FlightStatus", "FlightMode", true).toString());
+        setText(txtModeAssistedControl, getData("FlightStatus", "FlightModeAssist", true)
+                .toString());
+    }
+
     @Override
     public void update() {
         super.update();
 
-        MainActivity ma = getMainActivity();
+        final MainActivity ma = getMainActivity();
 
         if (isView(R.id.root_main_inc_health)) {
-            txtObjectLogTx.setText(
-                    H.k(String.valueOf(ma.getTxObjects() *
-                            MainActivity.POLL_SECOND_FACTOR)));
-            txtObjectLogRxGood.setText(
-                    H.k(String.valueOf(ma.getRxObjectsGood() *
-                            MainActivity.POLL_SECOND_FACTOR)));
-            txtObjectLogRxBad.setText(
-                    H.k(String.valueOf(ma.getRxObjectsBad() *
-                            MainActivity.POLL_SECOND_FACTOR)));
-
-            if (mBlink) {
-                if (ma.getRxObjectsGood() > 0) {
-                    imgPacketsGood.setColorFilter(
-                            Color.argb(0xff, 0x00, 0x88, 0x00),
-                            PorterDuff.Mode.SRC_ATOP);
-                }
-                if (ma.getRxObjectsBad() > 0) {
-                    imgPacketsBad.setColorFilter(
-                            Color.argb(0xff, 0x88, 0x00, 0x00),
-                            PorterDuff.Mode.SRC_ATOP);
-                }
-                if (ma.getTxObjects() > 0) {
-                    imgPacketsUp.setColorFilter(
-                            Color.argb(0xff, 0x00, 0x00, 0xdd),
-                            PorterDuff.Mode.SRC_ATOP);
-                }
-            } else {
-                if (ma.getRxObjectsGood() > 0) {
-                    imgPacketsGood.setColorFilter(
-                            Color.argb(0xff, 0x00, 0x00, 0x00),
-                            PorterDuff.Mode.SRC_ATOP);
-                }
-                if (ma.getRxObjectsBad() > 0) {
-                    imgPacketsBad.setColorFilter(
-                            Color.argb(0xff, 0x00, 0x00, 0x00),
-                            PorterDuff.Mode.SRC_ATOP);
-                }
-                if (ma.getTxObjects() > 0) {
-                    imgPacketsUp.setColorFilter(
-                            Color.argb(0xff, 0x00, 0x00, 0x00),
-                            PorterDuff.Mode.SRC_ATOP);
-                }
-            }
-
-            ma.setTxObjects(0);
-            ma.setRxObjectsBad(0);
-            ma.setRxObjectsGood(0);
-
-            setTextBGColor(txtAtti, getData("SystemAlarms", "Alarm", "Attitude").toString());
-            setTextBGColor(txtStab, getData("SystemAlarms", "Alarm", "Stabilization").toString());
-            setTextBGColor(txtPath, getData("PathStatus", "Status").toString());
-            setTextBGColor(txtPlan, getData("SystemAlarms", "Alarm", "PathPlan").toString());
-
-            setText(txtGPSSatsInView, getData("GPSSatellites", "SatsInView").toString());
-            setTextBGColor(txtGPS, getData("SystemAlarms", "Alarm", "GPS").toString());
-            setTextBGColor(txtSensor, getData("SystemAlarms", "Alarm", "Sensors").toString());
-            setTextBGColor(txtAirspd, getData("SystemAlarms", "Alarm", "Airspeed").toString());
-            setTextBGColor(txtMag, getData("SystemAlarms", "Alarm", "Magnetometer").toString());
-
-            setTextBGColor(txtInput, getData("SystemAlarms", "Alarm", "Receiver").toString());
-            setTextBGColor(txtOutput, getData("SystemAlarms", "Alarm", "Actuator").toString());
-            setTextBGColor(txtI2C, getData("SystemAlarms", "Alarm", "I2C").toString());
-            setTextBGColor(txtTelemetry, getData("SystemAlarms", "Alarm", "Telemetry").toString());
-
-            setText(txtHealthAlertDiaFAlgo, getData("RevoSettings", "FusionAlgorithm").toString());
-
-            setTextBGColor(txtBatt, getData("SystemAlarms", "Alarm", "Battery").toString());
-            setTextBGColor(txtTime, getData("SystemAlarms", "Alarm", "FlightTime").toString());
-            setTextBGColor(txtConfig, getData("SystemAlarms", "ExtendedAlarmStatus",
-                            "SystemConfiguration").toString());
-
-            setTextBGColor(txtBoot, getData("SystemAlarms", "Alarm", "BootFault").toString());
-            setTextBGColor(txtMem, getData("SystemAlarms", "Alarm", "OutOfMemory").toString());
-            setTextBGColor(txtStack, getData("SystemAlarms", "Alarm", "StackOverflow").toString());
-            setTextBGColor(txtEvent, getData("SystemAlarms", "Alarm", "EventSystem").toString());
-            setTextBGColor(txtCPU, getData("SystemAlarms", "Alarm", "CPUOverload").toString());
+            updateHealth();
         }
 
         if (isView(R.id.root_main_inc_info)) {
-
-            setText(txtArmed, getData("FlightStatus", "Armed").toString());
-
-            setText(txtFlightTime, H.getDateFromMs(getData("SystemStats", "FlightTime").toString()));
-
-            setText(txtVolt, getFloatData("FlightBatteryState", "Voltage", 4));
-            setText(txtAmpere, getFloatData("FlightBatteryState", "Current", 4));
-            setText(txtmAh, getFloatData("FlightBatteryState", "ConsumedEnergy", 3));
-            setText(txtTimeLeft, H.getDateFromSeconds(
-                    getData("FlightBatteryState", "EstimatedFlightTime").toString()));
-
-            setText(txtHealthAlertDialogBatteryCapacity,
-                    getData("FlightBatterySettings", "Capacity").toString());
-            setText(txtHealthAlertDialogBatteryCells,
-                    getData("FlightBatterySettings", "NbCells").toString());
-
-            setText(txtAltitude, getFloatOffsetData("BaroSensor", "Altitude",
-                    getString(R.string.OFFSET_BAROSENSOR_ALTITUDE,
-                            R.string.APP_ID)));
-
-            setText(txtAltitudeAccel, getFloatData("VelocityState", "Down", 2));
-
-            String flightModeSwitchPosition =
-                    getData("ManualControlCommand", "FlightModeSwitchPosition", true).toString();
-
-            try {   //FlightMode in GCS is 1...n, so add "1" to be user friendly
-                setText(txtModeNum,
-                        String.valueOf(Integer.parseInt(flightModeSwitchPosition) + 1));
-            } catch (NumberFormatException e) {
-                VisualLog.e(MessageFormat.format("Could not parse numeric Flightmode: {0}",
-                        flightModeSwitchPosition));
-            }
-
-            setText(txtModeFlightMode, getData("FlightStatus", "FlightMode", true).toString());
-            setText(txtModeAssistedControl, getData("FlightStatus", "FlightModeAssist", true)
-                            .toString());
+            updateInfo();
         }
 
         if (isView(R.id.root_main_inc_map)) {
@@ -473,7 +475,7 @@ public class ViewControllerMain extends ViewController implements View.OnClickLi
         }
 
         if (isView(R.id.root_main_inc_pfd) &&
-                getMainActivity().mFcDevice.getObjectTree().getListener("AttitudeState") == null) {
+                ma.mFcDevice.getObjectTree().getListener("AttitudeState") == null) {
             try {
                 try {
                     getMainActivity().mFcDevice.getObjectTree().setListener("AttitudeState", this);
@@ -482,7 +484,6 @@ public class ViewControllerMain extends ViewController implements View.OnClickLi
                     getMainActivity().mFcDevice.getObjectTree().setListener("AttitudeState", this);
                 }
             } catch (NullPointerException ignored) {
-
             }
         }
 
@@ -490,54 +491,60 @@ public class ViewControllerMain extends ViewController implements View.OnClickLi
         getMainActivity().mFcDevice.requestObject("SystemStats");
     }
 
+    private void resetHealth() {
+        final Context c = getMainActivity().getApplicationContext();
+
+        CompatHelper.setBackground(txtAtti, c, R.drawable.rounded_corner_unini);
+
+        CompatHelper.setBackground(txtStab, c, R.drawable.rounded_corner_unini);
+        CompatHelper.setBackground(txtPath, c, R.drawable.rounded_corner_unini);
+        CompatHelper.setBackground(txtPlan, c, R.drawable.rounded_corner_unini);
+
+        txtGPSSatsInView.setText(R.string.EMPTY_STRING);
+        CompatHelper.setBackground(txtGPS, c, R.drawable.rounded_corner_unini);
+        CompatHelper.setBackground(txtSensor, c, R.drawable.rounded_corner_unini);
+        CompatHelper.setBackground(txtAirspd, c, R.drawable.rounded_corner_unini);
+        CompatHelper.setBackground(txtMag, c, R.drawable.rounded_corner_unini);
+
+        CompatHelper.setBackground(txtInput, c, R.drawable.rounded_corner_unini);
+        CompatHelper.setBackground(txtOutput, c, R.drawable.rounded_corner_unini);
+        CompatHelper.setBackground(txtI2C, c, R.drawable.rounded_corner_unini);
+        CompatHelper.setBackground(txtTelemetry, c, R.drawable.rounded_corner_unini);
+
+        CompatHelper.setBackground(txtBatt, c, R.drawable.rounded_corner_unini);
+        CompatHelper.setBackground(txtTime, c, R.drawable.rounded_corner_unini);
+        CompatHelper.setBackground(txtConfig, c, R.drawable.rounded_corner_unini);
+
+        CompatHelper.setBackground(txtBoot, c, R.drawable.rounded_corner_unini);
+        CompatHelper.setBackground(txtMem, c, R.drawable.rounded_corner_unini);
+        CompatHelper.setBackground(txtStack, c, R.drawable.rounded_corner_unini);
+        CompatHelper.setBackground(txtEvent, c, R.drawable.rounded_corner_unini);
+        CompatHelper.setBackground(txtCPU, c, R.drawable.rounded_corner_unini);
+    }
+
+    private void resetInfo() {
+        txtArmed.setText(R.string.EMPTY_STRING);
+
+        txtVolt.setText(R.string.EMPTY_STRING);
+        txtAmpere.setText(R.string.EMPTY_STRING);
+        txtmAh.setText(R.string.EMPTY_STRING);
+        txtTimeLeft.setText(R.string.EMPTY_STRING);
+
+        txtAltitude.setText(R.string.EMPTY_STRING);
+        txtAltitudeAccel.setText(R.string.EMPTY_STRING);
+
+        txtModeNum.setText(R.string.EMPTY_STRING);
+        txtModeFlightMode.setText(R.string.EMPTY_STRING);
+        txtModeAssistedControl.setText(R.string.EMPTY_STRING);
+    }
+
     @Override
     public void reset() {
-        Context c = getMainActivity().getApplicationContext();
-
         if (isView(R.id.root_main_inc_health)) {
-
-            CompatHelper.setBackground(txtAtti, c, R.drawable.rounded_corner_unini);
-
-            CompatHelper.setBackground(txtStab, c, R.drawable.rounded_corner_unini);
-            CompatHelper.setBackground(txtPath, c, R.drawable.rounded_corner_unini);
-            CompatHelper.setBackground(txtPlan, c, R.drawable.rounded_corner_unini);
-
-            txtGPSSatsInView.setText(R.string.EMPTY_STRING);
-            CompatHelper.setBackground(txtGPS, c, R.drawable.rounded_corner_unini);
-            CompatHelper.setBackground(txtSensor, c, R.drawable.rounded_corner_unini);
-            CompatHelper.setBackground(txtAirspd, c, R.drawable.rounded_corner_unini);
-            CompatHelper.setBackground(txtMag, c, R.drawable.rounded_corner_unini);
-
-            CompatHelper.setBackground(txtInput, c, R.drawable.rounded_corner_unini);
-            CompatHelper.setBackground(txtOutput, c, R.drawable.rounded_corner_unini);
-            CompatHelper.setBackground(txtI2C, c, R.drawable.rounded_corner_unini);
-            CompatHelper.setBackground(txtTelemetry, c, R.drawable.rounded_corner_unini);
-
-            CompatHelper.setBackground(txtBatt, c, R.drawable.rounded_corner_unini);
-            CompatHelper.setBackground(txtTime, c, R.drawable.rounded_corner_unini);
-            CompatHelper.setBackground(txtConfig, c, R.drawable.rounded_corner_unini);
-
-            CompatHelper.setBackground(txtBoot, c, R.drawable.rounded_corner_unini);
-            CompatHelper.setBackground(txtMem, c, R.drawable.rounded_corner_unini);
-            CompatHelper.setBackground(txtStack, c, R.drawable.rounded_corner_unini);
-            CompatHelper.setBackground(txtEvent, c, R.drawable.rounded_corner_unini);
-            CompatHelper.setBackground(txtCPU, c, R.drawable.rounded_corner_unini);
-
+            resetHealth();
         }
         if (isView(R.id.root_main_inc_info)) {
-            txtArmed.setText(R.string.EMPTY_STRING);
-
-            txtVolt.setText(R.string.EMPTY_STRING);
-            txtAmpere.setText(R.string.EMPTY_STRING);
-            txtmAh.setText(R.string.EMPTY_STRING);
-            txtTimeLeft.setText(R.string.EMPTY_STRING);
-
-            txtAltitude.setText(R.string.EMPTY_STRING);
-            txtAltitudeAccel.setText(R.string.EMPTY_STRING);
-
-            txtModeNum.setText(R.string.EMPTY_STRING);
-            txtModeFlightMode.setText(R.string.EMPTY_STRING);
-            txtModeAssistedControl.setText(R.string.EMPTY_STRING);
+            resetInfo();
         }
 
         if (isView(R.id.root_main_inc_map)) {
@@ -553,9 +560,9 @@ public class ViewControllerMain extends ViewController implements View.OnClickLi
         dialogBuilder.setView(mFlightSettingsView);
 
         try {
-            txtHealthAlertDialogBatteryCapacity.setText(getMainActivity().mFcDevice.getObjectTree()
+            txtHealthAlertDiaBatCap.setText(getMainActivity().mFcDevice.getObjectTree()
                     .getData("FlightBatterySettings", "Capacity").toString());
-            txtHealthAlertDialogBatteryCells.setText(getMainActivity().mFcDevice.getObjectTree()
+            txtHealthAlertDiaBatCls.setText(getMainActivity().mFcDevice.getObjectTree()
                     .getData("FlightBatterySettings", "NbCells").toString());
             txtHealthAlertDiaFAlgo.setText(getMainActivity().mFcDevice.getObjectTree()
                     .getData("RevoSettings", "FusionAlgorithm").toString());
@@ -645,7 +652,7 @@ public class ViewControllerMain extends ViewController implements View.OnClickLi
         if ("Enabled".equals(moduleEnabled)) {
             new NumberInputAlertDialog(getMainActivity())
                     .withPresetText(
-                            txtHealthAlertDialogBatteryCapacity.getText().toString())
+                            txtHealthAlertDiaBatCap.getText().toString())
                     .withTitle(getString(R.string.CAPACITY_DIALOG_TITLE))
                     .withLayout(R.layout.alert_dialog_integer_input)
                     .withUavTalkDevice(getMainActivity().mFcDevice)
@@ -663,7 +670,7 @@ public class ViewControllerMain extends ViewController implements View.OnClickLi
                 getData("HwSettings", "OptionalModules", "Battery", true).toString();
         if ("Enabled".equals(moduleEnabled)) {
             new NumberInputAlertDialog(getMainActivity())
-                    .withPresetText(txtHealthAlertDialogBatteryCells.getText().toString())
+                    .withPresetText(txtHealthAlertDiaBatCls.getText().toString())
                     .withTitle(getString(R.string.CELLS_DIALOG_TITLE))
                     .withLayout(R.layout.alert_dialog_integer_input)
                     .withUavTalkDevice(getMainActivity().mFcDevice)
