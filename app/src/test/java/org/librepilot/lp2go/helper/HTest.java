@@ -1,15 +1,14 @@
-package org.librepilot.lp2go.test;
+package org.librepilot.lp2go.helper;
 
 import com.google.android.gms.maps.model.LatLng;
 
 import org.junit.Test;
-import org.librepilot.lp2go.helper.H;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
-public class HelperTest {
+public class HTest {
 
     private static String LOREMIPSUM = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.";
 
