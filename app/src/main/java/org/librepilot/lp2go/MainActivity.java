@@ -78,7 +78,6 @@ import org.librepilot.lp2go.controller.ViewControllerMain;
 import org.librepilot.lp2go.controller.ViewControllerMainAnimatorViewSetter;
 import org.librepilot.lp2go.controller.ViewControllerMap;
 import org.librepilot.lp2go.controller.ViewControllerObjects;
-import org.librepilot.lp2go.controller.ViewControllerScope;
 import org.librepilot.lp2go.controller.ViewControllerSettings;
 import org.librepilot.lp2go.controller.ViewControllerTuningParent;
 import org.librepilot.lp2go.helper.H;
@@ -503,8 +502,8 @@ public class MainActivity extends AppCompatActivity {
         //debug view is initialized above
         ViewController mVcParentTuning = new ViewControllerTuningParent(this, R.string.menu_parent_tuning,
                 R.drawable.ic_tune_24dp, View.INVISIBLE, View.INVISIBLE);
-        ViewController mVcScope = new ViewControllerScope(this, R.string.menu_scope,
-                R.drawable.ic_timeline_black_24dp, View.INVISIBLE, View.INVISIBLE);
+        //ViewController mVcScope = new ViewControllerScope(this, R.string.menu_scope,
+        //        R.drawable.ic_timeline_black_24dp, View.INVISIBLE, View.INVISIBLE);
         ViewController mVcAbout = new ViewControllerAbout(this, R.string.menu_about,
                 R.drawable.ic_info_outline_24dp, View.INVISIBLE, View.INVISIBLE);
         ViewController mVcLogs = new ViewControllerLogs(this, R.string.menu_logs,
@@ -524,7 +523,7 @@ public class MainActivity extends AppCompatActivity {
         mVcList.put(ViewController.VIEW_MAIN, mVcMain);
         mVcList.put(ViewController.VIEW_MAP, mVcMap);
         mVcList.put(ViewController.VIEW_OBJECTS, mVcObjects);
-        mVcList.put(ViewController.VIEW_SCOPE, mVcScope);
+        //mVcList.put(ViewController.VIEW_SCOPE, mVcScope);
         mVcList.put(ViewController.VIEW_P_TUNING, mVcParentTuning);
         mVcList.put(ViewController.VIEW_LOGS, mVcLogs);
         mVcList.put(ViewController.VIEW_SETTINGS, mVcSettings);
