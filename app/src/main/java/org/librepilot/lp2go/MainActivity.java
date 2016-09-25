@@ -582,8 +582,11 @@ public class MainActivity extends AppCompatActivity {
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         mDrawerToggle.onConfigurationChanged(newConfig);
+        try {
+            mVcList.get(mCurrentView).init();
+        } catch (NullPointerException ignored) {
+        }
 
-        mVcList.get(mCurrentView).init();
         displayView(mCurrentView);
         initSlider();
     }
