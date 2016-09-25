@@ -22,9 +22,9 @@ import android.widget.TextView;
 
 public class VisualLog {
 
-    private static Activity activity;
-    private static String nullstring;
-    private static TextView txtDebugLog;
+    //private static Activity activity;
+    private static String nullstring = "null";
+    //private static TextView txtDebugLog;
 
     static private String checkNull(String msg) {
         return msg == null ? nullstring : msg;
@@ -88,6 +88,7 @@ public class VisualLog {
     }
 
     static private void printToDebug(final String t, final String s) {
+        /*
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -96,14 +97,15 @@ public class VisualLog {
                 }
             }
         });
+        */
     }
 
     public static void setActivity(Activity activity) {
-        VisualLog.activity = activity;
-        VisualLog.nullstring = activity.getString(R.string.NULL);
+        //VisualLog.activity = activity;
+        //VisualLog.nullstring = activity.getString(R.string.NULL);
     }
 
     public static void setDebugLogTextView(TextView txtDebugLog) {
-        VisualLog.txtDebugLog = txtDebugLog;
+        //VisualLog.txtDebugLog = txtDebugLog;
     }
 }
