@@ -11,8 +11,8 @@ android {
 
         multiDexEnabled true
 
-        versionName '0.3.0.36'
-        versionCode 30036
+        versionName '0.3.0.38'
+        versionCode 30038
     }
 
     dexOptions {
