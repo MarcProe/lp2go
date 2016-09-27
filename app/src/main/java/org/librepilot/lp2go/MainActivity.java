@@ -58,6 +58,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.SparseArray;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.View;
@@ -105,7 +106,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -137,7 +137,7 @@ public class MainActivity extends AppCompatActivity {
     public FcDevice mFcDevice;
     public PollThread mPollThread = null;
     public Map<Integer, ViewController> mVcList;
-    public Map<Integer, View> mViews;
+    public SparseArray<View> mViews;
     public Map<String, UAVTalkXMLObject> mXmlObjects = null;
     public MenuItem menDebug = null;
     public ViewController mCurrentParentViewController;
@@ -490,7 +490,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         VisualLog.setActivity(this);
 
-        mViews = new HashMap<>(NUM_OF_VIEWS);
+        mViews = new SparseArray<>(NUM_OF_VIEWS);
         //ViewController mVcDebug =
         //        new ViewControllerDebug(this, R.string.menu_debug, R.drawable.ic_cancel_128dp, View.INVISIBLE, View.INVISIBLE);
 
@@ -500,7 +500,7 @@ public class MainActivity extends AppCompatActivity {
         mTtsHelper = new TextToSpeechHelper(this);
 
         //debug view is initialized above
-        ViewController mVcParentTuning = new ViewControllerTuningParent(this, R.string.menu_parent_tuning,
+        ViewController mVcTuningParent = new ViewControllerTuningParent(this, R.string.menu_parent_tuning,
                 R.drawable.ic_tune_24dp, View.INVISIBLE, View.INVISIBLE);
         //ViewController mVcScope = new ViewControllerScope(this, R.string.menu_scope,
         //        R.drawable.ic_timeline_black_24dp, View.INVISIBLE, View.INVISIBLE);
@@ -524,7 +524,7 @@ public class MainActivity extends AppCompatActivity {
         mVcList.put(ViewController.VIEW_MAP, mVcMap);
         mVcList.put(ViewController.VIEW_OBJECTS, mVcObjects);
         //mVcList.put(ViewController.VIEW_SCOPE, mVcScope);
-        mVcList.put(ViewController.VIEW_P_TUNING, mVcParentTuning);
+        mVcList.put(ViewController.VIEW_P_TUNING, mVcTuningParent);
         mVcList.put(ViewController.VIEW_LOGS, mVcLogs);
         mVcList.put(ViewController.VIEW_SETTINGS, mVcSettings);
         mVcList.put(ViewController.VIEW_ABOUT, mVcAbout);
