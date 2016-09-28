@@ -1,39 +1,42 @@
-/**
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 3 of the License, or
- * (at your option) any later version.
- * <p>
- * This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
- * for more details.
- * <p>
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- * <p>
+/*
+ * @file   AutoResizeTextView.java
+ * @author The LibrePilot Project, http://www.librepilot.org Copyright (C) 2016.
+ * @see    The GNU Public License (GPL) Version 3
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful, but
+ *  WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ *  or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+ *  for more details.
+ *
+ *  You should have received a copy of the GNU General Public License along
+ *  with this program; if not, write to the Free Software Foundation, Inc.,
+ *  59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ *
  * *************************************************************************************************
- * <p>
  * Class is based on the work of http://stackoverflow.com/users/826606/m-wajeeh
- * <p>
+ *
  * Source: http://stackoverflow.com/questions/
  * 5033012/auto-scale-textview-text-to-fit-within-bounds/17782522#comment32893186_17782522
- * <p>
+ *
  * License referenced:
- * <p>
+ *
  * DO WHAT YOU WANT TO PUBLIC LICENSE
  * Version 2, December 2004
- * <p>
+ *
  * Copyright (C) 2004 M-WaJeEh <mwajeeh.droid@gmal.com>
- * <p>
+ *
  * Everyone is permitted to copy and distribute verbatim or modified
  * copies of this license document, and changing it is allowed as
  * long as the name is changed.
- * <p>
+ *
  * DO WHAT YOU WANT TO PUBLIC LICENSE
  * TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
- * <p>
+ *
  * 0. You just DO WHAT YOU WANT TO.
  */
 
