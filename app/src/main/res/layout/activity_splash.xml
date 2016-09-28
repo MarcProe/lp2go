@@ -10,5 +10,5 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:contentDescription="SplashScreen: Librepilot Logo is flying into view"
-        android:src="@drawable/splash"/>
+        />
 </LinearLayout>

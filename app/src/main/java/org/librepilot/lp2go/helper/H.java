@@ -16,6 +16,15 @@
 
 package org.librepilot.lp2go.helper;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
+import android.util.DisplayMetrics;
+
 import com.google.android.gms.maps.model.LatLng;
 
 import org.librepilot.lp2go.VisualLog;
@@ -307,11 +316,40 @@ public class H {
         return "OP-" + strDate + ".opl";
     }
 
-    public static String trunc(final String s, final int l) {
+    public static String trunc(@NonNull final String s, final int l) {
         if (s.length() > l) {
             return s.substring(0, l);
         } else {
             return s;
         }
+    }
+
+    public static int dpToPx(int dp, @NonNull Context c) {
+        DisplayMetrics displayMetrics = c.getResources().getDisplayMetrics();
+        return Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
+    }
+
+    public static Bitmap drawableToBitmap(int imgRes, int dpwidth, int dpheight, @NonNull Context c) {
+        return drawableToBitmap(ContextCompat.getDrawable(c, imgRes), dpwidth, dpheight, c);
+    }
+
+    public static Bitmap drawableToBitmap(Drawable drawable, int dpwidth, int dpheight, Context c) {
+
+        if (drawable instanceof BitmapDrawable) {
+            return ((BitmapDrawable) drawable).getBitmap();
+        }
+
+        int width = H.dpToPx(dpwidth, c);
+        int height = H.dpToPx(dpheight, c);
+
+        VisualLog.d("==>" + width + " " + height);
+
+        //Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        drawable.draw(canvas);
+
+        return bitmap;
     }
 }
