@@ -85,6 +85,7 @@ import org.librepilot.lp2go.controller.ViewControllerMainAnimatorViewSetter;
 import org.librepilot.lp2go.controller.ViewControllerMap;
 import org.librepilot.lp2go.controller.ViewControllerObjects;
 import org.librepilot.lp2go.controller.ViewControllerSettings;
+import org.librepilot.lp2go.controller.ViewControllerTest;
 import org.librepilot.lp2go.controller.ViewControllerTuningParent;
 import org.librepilot.lp2go.helper.H;
 import org.librepilot.lp2go.helper.SettingsHelper;
@@ -128,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
     public static final int SERIAL_NONE = 0;
     public static final int SERIAL_LOG_FILE = 3;
     protected static final int SERIAL_USB = 1;
-    private static final int NUM_OF_VIEWS = 12; //TODO: NEEDED?
+    private static final int NUM_OF_VIEWS = 13; //TODO: NEEDED?
     private static final String ASSETS_LOGS_INTERNAL_PATH = "logs";
     private static final String ASSETS_UAVO_INTERNAL_PATH = "uavo";
     static int mCurrentView = 0;
@@ -523,6 +524,8 @@ public class MainActivity extends AppCompatActivity {
                 R.string.menu_3dmag, R.drawable.ic_explore_black_24dp, View.INVISIBLE, View.INVISIBLE);
         ViewController mVcMain = new ViewControllerMain(this, R.string.menu_main,
                 R.drawable.ic_notifications_on_24dp, View.VISIBLE, View.VISIBLE);
+        ViewController mVcTest = new ViewControllerTest(this, R.string.menu_test,
+                R.drawable.ic_tag_faces_black_24dp, View.INVISIBLE, View.INVISIBLE);
 
         mVcList = new TreeMap<>();
         mVcList.put(ViewController.VIEW_MAIN, mVcMain);
@@ -535,6 +538,7 @@ public class MainActivity extends AppCompatActivity {
         mVcList.put(ViewController.VIEW_ABOUT, mVcAbout);
         //mVcList.put(ViewController.VIEW_DEBUG, mVcDebug);
         mVcList.put(ViewController.VIEW_3DMAG, mVc3DMagCal);
+        mVcList.put(ViewController.VIEW_TEST, mVcTest);
 
         ((ViewControllerMainAnimatorViewSetter) mVcMain).setLayout();
 

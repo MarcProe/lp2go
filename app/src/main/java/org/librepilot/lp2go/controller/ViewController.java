@@ -57,6 +57,7 @@ public abstract class ViewController {
     public static final int VIEW_SETTINGS = 6000;
     public static final int VIEW_VPID = 4000;
     public static final int VIEW_RESP = 4200;
+    public static final int VIEW_TEST = 9999;
 
     protected final HashMap<String, Object> mOffset;
     protected boolean mBlink;
