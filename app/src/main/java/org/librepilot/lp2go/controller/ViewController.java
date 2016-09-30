@@ -383,4 +383,8 @@ public abstract class ViewController {
         SettingsHelper.mRightMenuFavorites.add(String.valueOf(this.mFavorite.getID()));
         SettingsHelper.saveSettings(getMainActivity(), true);
     }
+
+    public void removeFavorite() {
+        this.mFavorite = null;
+    }
 }

@@ -38,7 +38,6 @@ public class ViewControllerTuningParent extends ViewController {
 
         ma.mViews.put(VIEW_P_TUNING, ma.getLayoutInflater().inflate(R.layout.activity_parent_tuning, null));
         ma.setContentView(ma.mViews.get(VIEW_P_TUNING));
-        initRightMenu();
     }
 
     @Override
@@ -66,6 +65,7 @@ public class ViewControllerTuningParent extends ViewController {
         if (!set) {
             setFavorite(ViewController.VIEW_PID);
         }
+        setCurrentRightView(getFavorite());
     }
 
     @Override
@@ -76,6 +76,14 @@ public class ViewControllerTuningParent extends ViewController {
     @Override
     public void enter(int view) {
         super.enter(view);
-        getMainActivity().displayRightMenuView(getFavorite().getID());
+        initRightMenu();
+        getMainActivity().displayRightMenuView(this, getFavorite().getID());
+    }
+
+    @Override
+    public void leave() {
+        mRightMenuItems.clear();
+        mRightMenuItems = null;
+        removeFavorite();
     }
 }

@@ -745,6 +745,15 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void displayRightMenuView(ViewController parent, int position) {
+
+        if (mCurrentParentViewController == null) {
+            mCurrentParentViewController = parent;
+        }
+
+        displayRightMenuView(position);
+    }
+
     public void displayRightMenuView(int position) {
         if (mCurrentParentViewController.getCurrentRightView() == null) {
             mCurrentParentViewController.leave();
