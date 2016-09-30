@@ -46,10 +46,8 @@ public class ChildString {
         this.isSettings = isSettings;
         isInstanceHeader = false;
 
-        if (this.element == null || "".equals(this.element)) {
+        if (this.element == null) {
             this.element = "";
-        } else {
-            this.element = MessageFormat.format("-{0}", this.element);
         }
         message = MessageFormat.format("{0} {1}", fieldname, this.element);
     }
