@@ -462,6 +462,11 @@ public class MainActivity extends AppCompatActivity {
         super.onRestart();
 
         SettingsHelper.loadSettings(this);
+
+        ViewController cView = mVcList.get(mCurrentView);
+        if (cView != null && cView.isChild()) {
+            //noop
+        }
     }
 
     @Override
@@ -755,47 +760,55 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void displayRightMenuView(int position) {
-        if (mCurrentParentViewController.getCurrentRightView() == null) {
-            mCurrentParentViewController.leave();
-        } else {
-            mCurrentParentViewController.getCurrentRightView().leave();
+        if (mCurrentParentViewController != null) {
+            if (mCurrentParentViewController.getCurrentRightView() == null) {
+                mCurrentParentViewController.leave();
+            } else {
+                mCurrentParentViewController.getCurrentRightView().leave();
+            }
+
+            ViewController vcNew = mCurrentParentViewController.getMenuRightItems().get(position);
+
+            mCurrentParentViewController.setCurrentRightView(vcNew);
+
+            for (Map.Entry<Integer, ViewController> e : mCurrentParentViewController.getMenuRightItems().entrySet()) {
+                VisualLog.d(MessageFormat.format("{0} {1}", e.getKey(), e.getValue().getTitle()));
+            }
+            vcNew.enter(position);
+
+            mDrawerListRight.setItemChecked(position, true);
+            mDrawerListRight.setSelection(position);
+
+            setToolbarIcons();
+
+            mDrawerLayout.closeDrawer(mDrawerList);
+            mDrawerLayout.closeDrawer(mDrawerListRight);
         }
-
-        ViewController vcNew = mCurrentParentViewController.getMenuRightItems().get(position);
-
-        mCurrentParentViewController.setCurrentRightView(vcNew);
-
-        for (Map.Entry<Integer, ViewController> e : mCurrentParentViewController.getMenuRightItems().entrySet()) {
-            VisualLog.d(MessageFormat.format("{0} {1}", e.getKey(), e.getValue().getTitle()));
-        }
-        vcNew.enter(position);
-
-        mDrawerListRight.setItemChecked(position, true);
-        mDrawerListRight.setSelection(position);
-
-        setToolbarIcons();
-
-        mDrawerLayout.closeDrawer(mDrawerList);
-        mDrawerLayout.closeDrawer(mDrawerListRight);
     }
 
     public void displayView(int position) {
         //clean up current view
         if (mCurrentParentViewController == null) {
-            mVcList.get(mCurrentView).leave();
+            ViewController l = mVcList.get(mCurrentView);
+            if (l != null) {
+                l.leave();
+            }
         } else if (mCurrentParentViewController.getCurrentRightView() != null) {
             mCurrentParentViewController.getCurrentRightView().leave();
         }
 
         final ViewController vcNew = mVcList.get(position);
 
-        if (vcNew.getMenuRightItems().size() > 0) {  //if it's > 0, it's a parent
-            mCurrentParentViewController = vcNew;
-        } else {
-            mCurrentParentViewController = null;
+        //if (vcNew != null && vcNew.getMenuRightItems() != null && vcNew.getMenuRightItems().size() > 0) {  //if it's > 0, it's a parent
+        if (vcNew != null) {
+            if (vcNew.isParent()) {
+                mCurrentParentViewController = vcNew;
+                //} else if(vcNew != null && (vcNew.getMenuRightItems() == null || vcNew.getMenuRightItems().size() == 0)) {
+            } else {
+                mCurrentParentViewController = null;
+            }
+            vcNew.enter(position);
         }
-
-        vcNew.enter(position);
 
         mDrawerList.setItemChecked(position, true);
         mDrawerList.setSelection(position);
@@ -1101,8 +1114,10 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long id) {
-            mCurrentParentViewController.setFavorite(mViewPosRight.get(position));
-            displayRightMenuView(mViewPosRight.get(position));
+            if (mCurrentParentViewController != null) {
+                mCurrentParentViewController.setFavorite(mViewPosRight.get(position));
+                displayRightMenuView(mViewPosRight.get(position));
+            }
             return true;
         }
     }

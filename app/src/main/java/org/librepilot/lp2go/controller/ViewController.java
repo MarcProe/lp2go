@@ -387,4 +387,12 @@ public abstract class ViewController {
     public void removeFavorite() {
         this.mFavorite = null;
     }
+
+    public boolean isParent() {
+        return false;
+    }
+
+    public boolean isChild() {
+        return false;
+    }
 }

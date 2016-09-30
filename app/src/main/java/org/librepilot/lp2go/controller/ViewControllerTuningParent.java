@@ -86,4 +86,9 @@ public class ViewControllerTuningParent extends ViewController {
         mRightMenuItems = null;
         removeFavorite();
     }
+
+    @Override
+    public boolean isParent() {
+        return true;
+    }
 }

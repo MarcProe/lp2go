@@ -488,6 +488,10 @@ public class ViewControllerTuningPid extends ViewController implements View.OnCl
         if (v.getClass().equals(ObjectTextView.class)) {
             onPidGridNumberClick(v);
         }
+    }
 
+    @Override
+    public boolean isChild() {
+        return true;
     }
 }

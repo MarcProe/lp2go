@@ -550,4 +550,9 @@ public class ViewControllerTuningResp extends ViewController implements View.OnC
                 break;
         }
     }
+
+    @Override
+    public boolean isChild() {
+        return true;
+    }
 }

@@ -393,4 +393,9 @@ public class ViewControllerTuningVPid extends ViewController implements View.OnC
     public int getID() {
         return ViewController.VIEW_VPID;
     }
+
+    @Override
+    public boolean isChild() {
+        return true;
+    }
 }
