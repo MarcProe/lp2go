@@ -74,13 +74,21 @@ public class UAVTalkObjectTree {
     }
 
     public UAVTalkObject getObjectFromName(String name) {
-        String oID = xmlObjects.get(name).getId();
-        UAVTalkObject obj = objects.get(oID);
-        if (obj == null) {
-            VisualLog.d("OFN", "CREATED NEW OBJECT! " + name + " " + oID);
-            obj = new UAVTalkObject(oID);
+        if (xmlObjects != null) {
+            UAVTalkXMLObject xobj = xmlObjects.get(name);
+            if (xobj != null) {
+                String oID = xobj.getId();
+                UAVTalkObject obj = objects.get(oID);
+                if (obj == null) {
+                    VisualLog.d("OFN", "CREATED NEW OBJECT! " + name + " " + oID);
+                    obj = new UAVTalkObject(oID);
+                }
+                return obj;
+            }
         }
-        return obj;
+
+        return null;
+
     }
 
     public void updateObject(UAVTalkObject obj) {
