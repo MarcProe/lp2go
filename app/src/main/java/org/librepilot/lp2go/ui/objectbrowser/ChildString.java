@@ -39,11 +39,10 @@ public class ChildString {
         this.isSettings = isSettings;
         isInstanceHeader = false;
 
-        if (element == null || element.equals("")) {
+        if (element == null) {
             element = "";
-        } else {
-            element = "-" + element;
         }
+
         message = fieldname + " " + element;
     }
 
