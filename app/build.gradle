@@ -11,8 +11,8 @@ android {
 
         multiDexEnabled true
 
-        versionName '0.3.0.40'
-        versionCode 30040
+        versionName '0.3.0.41'
+        versionCode 30041
     }
 
     dexOptions {
@@ -34,6 +34,15 @@ android {
         }
     }
     productFlavors {
+        preflight_flavor_ {
+            versionName 'x1'
+            versionCode 1
+            applicationId 'net.proest.lp2go.preflight'
+            resValue 'string', 'APP_ID', applicationId
+            resValue 'string', 'google_maps_api_key', 'AIzaSyCE91uHoVzA_-mxPer8g5sU7WL2jTdQDzo'
+            resValue 'string', 'APP_NAME', 'LibrePilot2Go Preflight'
+            resValue 'string', 'ACTION_USB_PERMISSION', applicationId + '.USB_PERMISSION'
+        }
         alpha_flavor_ {
             applicationId 'net.proest.lp2go3'
             resValue 'string', 'APP_ID', applicationId
