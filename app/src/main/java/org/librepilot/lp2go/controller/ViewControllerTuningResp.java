@@ -282,7 +282,6 @@ public class ViewControllerTuningResp extends ViewController implements View.OnC
     @Override
     public void update() {
         super.update();
-        VisualLog.d("UPDATE");
         MainActivity a = getMainActivity();
         String fmode =
                 getData("ManualControlCommand", "FlightModeSwitchPosition")
