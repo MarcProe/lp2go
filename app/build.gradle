@@ -59,8 +59,8 @@ android {
             resValue 'string', 'APP_NAME', 'LibrePilot2Go Beta'
             resValue 'string', 'ACTION_USB_PERMISSION', applicationId + '.USB_PERMISSION'
 
-            versionCode 30118
-            versionName '0.3.1.18'
+            versionCode 30119
+            versionName '0.3.1.19'
         }
         release_flavor_ {
             minSdkVersion 14
