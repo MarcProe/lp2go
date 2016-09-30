@@ -55,7 +55,12 @@ public class ViewControllerTuningPid extends ViewController implements View.OnCl
     public ViewControllerTuningPid(MainActivity activity, int title, int icon, int localSettingsVisible,
                                    int flightSettingsVisible) {
         super(activity, title, icon, localSettingsVisible, flightSettingsVisible);
+        mPidTexts = new HashSet<>();
 
+        privInit();
+    }
+
+    private final void privInit() {
         final MainActivity ma = getMainActivity();
         SingleToast.show(ma, R.string.CHECK_PID_WARNING, Toast.LENGTH_SHORT);
 
@@ -72,7 +77,7 @@ public class ViewControllerTuningPid extends ViewController implements View.OnCl
         imgPidDownload.setOnClickListener(this);
         imgPidSave.setOnClickListener(this);
 
-        mPidTexts = new HashSet<>();
+        mPidTexts.clear();
 
         ObjectTextView txtPidRateRollProportional =
                 (ObjectTextView) ma.findViewById(R.id.txtRateRollProportional);
