@@ -22,7 +22,6 @@
 package org.librepilot.lp2go.ui.menu;
 
 import android.app.Activity;
-import android.app.ActivityManager;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
@@ -34,12 +33,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.librepilot.lp2go.R;
-import org.librepilot.lp2go.VisualLog;
 import org.librepilot.lp2go.helper.H;
 
 import java.util.ArrayList;
-
-import static android.content.Context.ACTIVITY_SERVICE;
 
 public class MenuListAdapter extends BaseAdapter {
 
@@ -78,32 +74,11 @@ public class MenuListAdapter extends BaseAdapter {
         ImageView imgIcon = (ImageView) retview.findViewById(R.id.icon);
         TextView txtTitle = (TextView) retview.findViewById(R.id.title);
 
-        //if ((imgIcon.getDrawable()) != null) {
-        //    ((BitmapDrawable)imgIcon.getDrawable()).getBitmap().recycle();
-        //}
-
-        //imgIcon.setImageResource(menuItems.get(position).getIcon());
-
         final Bitmap b = H.drawableToBitmap(menuItems.get(position).getIcon(), 25, 25, context);
 
         imgIcon.setImageBitmap(b);
 
         txtTitle.setText(menuItems.get(position).getTitle());
-
-        {//memory debugging
-            ActivityManager.MemoryInfo mi = new ActivityManager.MemoryInfo();
-            ActivityManager activityManager = (ActivityManager) context.getSystemService(ACTIVITY_SERVICE);
-            activityManager.getMemoryInfo(mi);
-            double availableMegs = mi.availMem / 1048576L;
-            double percentAvail = 0;
-            double totalMem = 0;
-            //Percentage can be calculated for API 16+
-            if (android.os.Build.VERSION.SDK_INT >= 16) {
-                percentAvail = mi.availMem / mi.totalMem;
-                totalMem = mi.totalMem;
-            }
-            VisualLog.d("MEMORY: " + percentAvail + " " + availableMegs + " " + totalMem);
-        }
 
         return retview;
     }

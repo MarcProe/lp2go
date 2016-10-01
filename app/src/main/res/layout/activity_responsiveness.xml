@@ -86,15 +86,15 @@
                     android:orientation="horizontal">
 
                     <ImageView
+                        android:id="@+id/imgRespRespLabel"
                         android:layout_width="25dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_gravity="center"
                         android:layout_marginBottom="3dp"
                         android:layout_marginLeft="3dp"
                         android:layout_marginTop="3dp"
                         android:contentDescription="Responsiveness"
-                        android:gravity="center|center_vertical|center_horizontal"
-                        android:src="@drawable/text_responsiveness"/>
+                        android:gravity="center|center_vertical|center_horizontal"/>
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -116,7 +116,7 @@
                                 android:layout_marginBottom="2dp"
                                 android:layout_marginTop="2dp"
                                 android:contentDescription="Attitude mode response (deg)"
-                                android:src="@drawable/letter_a"/>
+                                />
 
                             <org.librepilot.lp2go.ui.ObjectTextView
                                 android:id="@+id/txtRespRollAttitude"
@@ -166,7 +166,7 @@
                                 android:layout_marginBottom="2dp"
                                 android:layout_marginTop="2dp"
                                 android:contentDescription="Rate mode response (deg/s)"
-                                android:src="@drawable/letter_r"/>
+                                />
 
                             <org.librepilot.lp2go.ui.ObjectTextView
                                 android:id="@+id/txtRespRollRate"
@@ -221,7 +221,7 @@
                                 android:layout_marginBottom="2dp"
                                 android:layout_marginTop="2dp"
                                 android:contentDescription="Max rate limit (all modes) (deg/s)"
-                                android:src="@drawable/letter_m"/>
+                                />
 
                             <org.librepilot.lp2go.ui.ObjectTextView
                                 android:id="@+id/txtRespRollLimit"
@@ -273,15 +273,16 @@
                     android:orientation="horizontal">
 
                     <ImageView
+                        android:id="@+id/imgRespAcroLabel"
                         android:layout_width="25dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_gravity="center"
                         android:layout_marginBottom="3dp"
                         android:layout_marginLeft="3dp"
                         android:layout_marginTop="3dp"
                         android:contentDescription="Acro+"
                         android:gravity="center|center_vertical|center_horizontal"
-                        android:src="@drawable/text_acro_plus"/>
+                        />
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -298,12 +299,12 @@
                             <ImageView
                                 android:id="@+id/imgRespAcro"
                                 android:layout_width="32dp"
-                                android:layout_height="fill_parent"
+                                android:layout_height="match_parent"
                                 android:layout_gravity="center"
                                 android:layout_marginBottom="2dp"
                                 android:layout_marginTop="2dp"
                                 android:contentDescription="Roll/Pitch(/Yaw) Factor"
-                                android:src="@drawable/letter_f"/>
+                                />
 
                             <org.librepilot.lp2go.ui.ObjectTextView
                                 android:id="@+id/txtRespRollAcroFactor"

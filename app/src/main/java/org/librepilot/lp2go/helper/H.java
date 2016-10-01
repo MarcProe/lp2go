@@ -338,23 +338,20 @@ public class H {
         return drawableToBitmap(ContextCompat.getDrawable(c, imgRes), dpwidth, dpheight, c);
     }
 
-    public static Bitmap drawableToBitmap(Drawable drawable, int dpwidth, int dpheight, Context c) {
+    public static Bitmap drawableToBitmap(Drawable d, int dpwidth, int dpheight, @NonNull Context c) {
 
-        if (drawable instanceof BitmapDrawable) {
-            return ((BitmapDrawable) drawable).getBitmap();
+        if (d instanceof BitmapDrawable) {
+            return ((BitmapDrawable) d).getBitmap();
         }
 
         int width = H.dpToPx(dpwidth, c);
         int height = H.dpToPx(dpheight, c);
 
-        VisualLog.d("==>" + width + " " + height);
+        Bitmap b = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        Canvas can = new Canvas(b);
+        d.setBounds(0, 0, can.getWidth(), can.getHeight());
+        d.draw(can);
 
-        //Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(bitmap);
-        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-        drawable.draw(canvas);
-
-        return bitmap;
+        return b;
     }
 }

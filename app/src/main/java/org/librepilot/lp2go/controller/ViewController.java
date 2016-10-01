@@ -23,8 +23,13 @@ package org.librepilot.lp2go.controller;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBar;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -39,7 +44,9 @@ import org.librepilot.lp2go.uavtalk.UAVTalkMissingObjectException;
 import org.librepilot.lp2go.ui.menu.MenuItem;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 public abstract class ViewController {
@@ -59,6 +66,7 @@ public abstract class ViewController {
     public static final int VIEW_RESP = 4200;
 
     protected final HashMap<String, Object> mOffset;
+    final private Set<ImageView> mUiImages;
     protected boolean mBlink;
     protected int mFlightSettingsVisible;
     protected int mLocalSettingsVisible;
@@ -80,6 +88,7 @@ public abstract class ViewController {
         this.mTitle = title;
         this.mMenuItem = new MenuItem(getString(mTitle), icon);
         this.mRightMenuItems = new TreeMap<>();
+        this.mUiImages = new HashSet<>();
     }
 
     public String getTitle() {
@@ -144,7 +153,11 @@ public abstract class ViewController {
     }
 
     public void leave() {
-        //optional method to override
+        //recycle bitmaps
+        for (ImageView iv : mUiImages) {  //unsure if we need this.
+            //recycleImageViewSrc(iv);
+        }
+        mUiImages.clear();
     }
 
     public void init() {
@@ -394,5 +407,64 @@ public abstract class ViewController {
 
     public boolean isChild() {
         return false;
+    }
+
+    public void setImageViewSrc(int imageViewRes, final int imgRes, final float aspectRatio) {
+        final ImageView imageView = (ImageView) findViewById(imageViewRes);
+
+        //collect all the images so we can easily recycle the bitmaps on leave()
+        mUiImages.add(imageView);
+
+        ViewTreeObserver o = imageView.getViewTreeObserver();
+
+        o.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            public boolean onPreDraw() {
+                imageView.getViewTreeObserver().removeOnPreDrawListener(this);
+
+                int dph = imageView.getMeasuredHeight();
+                int dpw = imageView.getMeasuredWidth();
+
+                final Context c = getMainActivity().getApplicationContext();
+
+                // ar = w / h
+                // w = ar * h
+                // h = w / ar
+
+                //both aspect ratios are correct
+                final int arw = Math.round(aspectRatio * dph);
+                final int arh = Math.round(dpw / aspectRatio);
+
+                //which bitmap would be smaller?
+                final int arwdph = arw * dph;     //size of image
+                final int dpwarh = dpw * arh;     //size of image
+
+                if (arwdph < dpwarh) {
+                    dpw = arw;
+                } else {
+                    dph = arh;
+                }
+
+                final Bitmap b = H.drawableToBitmap(imgRes, dpw, dph, c);
+                imageView.setImageBitmap(b);
+
+                return true;
+            }
+        });
+    }
+
+    protected void recycleImageViewSrc(int imageViewRes) {
+        ImageView iv = (ImageView) findViewById(imageViewRes);
+        if (iv != null) {
+            recycleImageViewSrc(iv);
+        }
+    }
+
+    protected void recycleImageViewSrc(@NonNull ImageView iv) {
+        Drawable d = iv.getDrawable();
+        if (d instanceof BitmapDrawable) {
+            BitmapDrawable bd = (BitmapDrawable) d;
+            Bitmap b = bd.getBitmap();
+            b.recycle();
+        }
     }
 }

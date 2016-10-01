@@ -25,7 +25,6 @@ import android.view.View;
 
 import org.librepilot.lp2go.MainActivity;
 import org.librepilot.lp2go.R;
-import org.librepilot.lp2go.VisualLog;
 import org.librepilot.lp2go.helper.SettingsHelper;
 
 import java.util.Set;
@@ -43,7 +42,6 @@ public class ViewControllerTuningParent extends ViewController {
 
     @Override
     public void initRightMenu() {
-        VisualLog.i("initRightMenu entered");
         final MainActivity ma = getMainActivity();
         ViewController mVcPid = new ViewControllerTuningPid(ma, R.string.menu_pid,
                 R.drawable.ic_tune_24dp, View.VISIBLE, View.INVISIBLE);
@@ -52,18 +50,13 @@ public class ViewControllerTuningParent extends ViewController {
         ViewController mVcResp = new ViewControllerTuningResp(ma, R.string.menu_responsiveness,
                 R.drawable.ic_transform_black_24dp, View.VISIBLE, View.INVISIBLE);
 
-        VisualLog.i("initRightMenu controller intantiated");
-
         mRightMenuItems.put(ViewController.VIEW_PID, mVcPid);
         mRightMenuItems.put(ViewController.VIEW_VPID, mVcVPid);
         mRightMenuItems.put(ViewController.VIEW_RESP, mVcResp);
 
-        VisualLog.i("initRightMenu controller collected");
 
         Set<String> favSet = SettingsHelper.mRightMenuFavorites;
         boolean set = false;
-
-        VisualLog.i("initRightMenu setting fav");
 
         for (ViewController v : mRightMenuItems.values()) {
             if (favSet.contains(String.valueOf(v.getID()))) {
@@ -72,14 +65,11 @@ public class ViewControllerTuningParent extends ViewController {
             }
         }
 
-        VisualLog.i("initRightMenu  fav set");
-
         if (!set) {
             setFavorite(ViewController.VIEW_PID);
         }
         setCurrentRightView(getFavorite());
 
-        VisualLog.i("initRightMenu leaving");
     }
 
     @Override
@@ -89,13 +79,9 @@ public class ViewControllerTuningParent extends ViewController {
 
     @Override
     public void enter(int view) {
-        VisualLog.i("VCParent - enter");
         super.enter(view);
-        VisualLog.i("VCParent - after super");
         initRightMenu();
-        VisualLog.i("VCParent - after rm");
         getMainActivity().displayRightMenuView(this, getFavorite().getID());
-        VisualLog.i("VCParent - exit enter");
     }
 
     @Override

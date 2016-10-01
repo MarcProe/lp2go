@@ -258,6 +258,15 @@ public class ViewControllerTuningResp extends ViewController implements View.OnC
 
         try {
             final MainActivity a = getMainActivity();
+
+            setImageViewSrc(R.id.imgRespRespLabel, R.drawable.text_responsiveness, 0.122f);
+            setImageViewSrc(R.id.imgRespAcroLabel, R.drawable.text_acro_plus, 0.273f);
+
+            setImageViewSrc(R.id.imgRespAtti, R.drawable.letter_a, 1);
+            setImageViewSrc(R.id.imgRespRate, R.drawable.letter_r, 1);
+            setImageViewSrc(R.id.imgRespMax, R.drawable.letter_m, 1);
+            setImageViewSrc(R.id.imgRespAcro, R.drawable.letter_f, 1);
+
             final View lloResponsiveness = findViewById(R.id.lloResponsiveness);
             final View lloAcroPlus = findViewById(R.id.lloAcroPlus);
 

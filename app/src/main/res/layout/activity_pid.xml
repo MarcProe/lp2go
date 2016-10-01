@@ -96,26 +96,26 @@
                     android:orientation="horizontal">
 
                     <ImageView
+                        android:id="@+id/imgPidRateStabLabel"
                         android:layout_width="25dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_gravity="center"
                         android:layout_marginBottom="3dp"
                         android:layout_marginLeft="3dp"
                         android:layout_marginTop="3dp"
                         android:contentDescription="Rate Stabilization"
-                        android:gravity="center|center_vertical|center_horizontal"
-                        android:src="@drawable/text_rate_stabilization"/>
+                        android:gravity="center|center_vertical|center_horizontal"/>
 
                     <ImageView
+                        android:id="@+id/imgPidInnerLoopLabel"
                         android:layout_width="25dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_gravity="center"
                         android:layout_marginBottom="3dp"
                         android:layout_marginLeft="3dp"
                         android:layout_marginTop="3dp"
                         android:contentDescription="Inner Loop"
-                        android:gravity="center|center_vertical|center_horizontal"
-                        android:src="@drawable/text_inner_loop"/>
+                        android:gravity="center|center_vertical|center_horizontal"/>
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -130,13 +130,13 @@
                             android:orientation="horizontal">
 
                             <ImageView
+                                android:id="@+id/imgPidPi"
                                 android:layout_width="32dp"
                                 android:layout_height="fill_parent"
                                 android:layout_gravity="center"
                                 android:layout_marginBottom="2dp"
                                 android:layout_marginTop="2dp"
-                                android:contentDescription="Proportional"
-                                android:src="@drawable/letter_p"/>
+                                android:contentDescription="Proportional"/>
 
                             <org.librepilot.lp2go.ui.ObjectTextView
                                 android:id="@+id/txtRateRollProportional"
@@ -183,13 +183,13 @@
                             android:orientation="horizontal">
 
                             <ImageView
+                                android:id="@+id/imgPidIi"
                                 android:layout_width="32dp"
                                 android:layout_height="fill_parent"
                                 android:layout_gravity="center"
                                 android:layout_marginBottom="2dp"
                                 android:layout_marginTop="2dp"
-                                android:contentDescription="Integral"
-                                android:src="@drawable/letter_i"/>
+                                android:contentDescription="Integral"/>
 
                             <org.librepilot.lp2go.ui.ObjectTextView
                                 android:id="@+id/txtRateRollIntegral"
@@ -237,13 +237,13 @@
                             android:orientation="horizontal">
 
                             <ImageView
+                                android:id="@+id/imgPidDi"
                                 android:layout_width="32dp"
                                 android:layout_height="fill_parent"
                                 android:layout_gravity="center"
                                 android:layout_marginBottom="2dp"
                                 android:layout_marginTop="2dp"
-                                android:contentDescription="Derivative"
-                                android:src="@drawable/letter_d"/>
+                                android:contentDescription="Derivative"/>
 
                             <org.librepilot.lp2go.ui.ObjectTextView
                                 android:id="@+id/txtRateRollDerivative"
@@ -295,26 +295,26 @@
                     android:orientation="horizontal">
 
                     <ImageView
+                        android:id="@+id/imgPidAttiStabLabel"
                         android:layout_width="25dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_gravity="center"
                         android:layout_marginBottom="3dp"
                         android:layout_marginLeft="3dp"
                         android:layout_marginTop="3dp"
                         android:contentDescription="Attitude Stabilization"
-                        android:gravity="center|center_vertical|center_horizontal"
-                        android:src="@drawable/text_attitude_stabilization"/>
+                        android:gravity="center|center_vertical|center_horizontal"/>
 
                     <ImageView
+                        android:id="@+id/imgPidOuterLoopLabel"
                         android:layout_width="25dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_gravity="center"
                         android:layout_marginBottom="3dp"
                         android:layout_marginLeft="3dp"
                         android:layout_marginTop="3dp"
                         android:contentDescription="Outer Loop"
-                        android:gravity="center|center_vertical|center_horizontal"
-                        android:src="@drawable/text_outer_loop"/>
+                        android:gravity="center|center_vertical|center_horizontal"/>
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -329,14 +329,13 @@
                             android:orientation="horizontal">
 
                             <ImageView
+                                android:id="@+id/imgPidPo"
                                 android:layout_width="32dp"
                                 android:layout_height="fill_parent"
                                 android:layout_gravity="center"
                                 android:layout_marginBottom="2dp"
                                 android:layout_marginTop="2dp"
-                                android:contentDescription="Proportional"
-                                android:src="@drawable/letter_p"
-                                />
+                                android:contentDescription="Proportional"/>
 
                             <org.librepilot.lp2go.ui.ObjectTextView
                                 android:id="@+id/txtAttitudeRollProportional"
@@ -383,14 +382,13 @@
                             android:orientation="horizontal">
 
                             <ImageView
+                                android:id="@+id/imgPidIo"
                                 android:layout_width="32dp"
                                 android:layout_height="fill_parent"
                                 android:layout_gravity="center"
                                 android:layout_marginBottom="2dp"
                                 android:layout_marginTop="2dp"
-                                android:contentDescription="Integral"
-                                android:src="@drawable/letter_i"
-                                />
+                                android:contentDescription="Integral"/>
 
                             <org.librepilot.lp2go.ui.ObjectTextView
                                 android:id="@+id/txtAttitudeRollIntegral"
