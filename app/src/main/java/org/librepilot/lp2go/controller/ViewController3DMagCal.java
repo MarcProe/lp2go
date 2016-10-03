@@ -21,8 +21,11 @@
 
 package org.librepilot.lp2go.controller;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,6 +34,7 @@ import org.librepilot.lp2go.MainActivity;
 import org.librepilot.lp2go.R;
 import org.librepilot.lp2go.VisualLog;
 import org.librepilot.lp2go.helper.H;
+import org.librepilot.lp2go.helper.SettingsHelper;
 import org.librepilot.lp2go.helper.ellipsoidfit.FitPoints;
 import org.librepilot.lp2go.uavtalk.UAVTalkMetaData;
 import org.librepilot.lp2go.uavtalk.UAVTalkObject;
@@ -40,6 +44,7 @@ import org.librepilot.lp2go.ui.SingleToast;
 import org.librepilot.lp2go.ui.opengl.OpenGl3DMagCalView;
 
 import java.text.MessageFormat;
+import java.util.Locale;
 
 public class ViewController3DMagCal extends ViewController implements
         UAVTalkObjectListener, View.OnClickListener {
@@ -77,6 +82,7 @@ public class ViewController3DMagCal extends ViewController implements
     private float mag_transform_r2c2;
     private boolean mCalibrationRunning = false;
     private int mSamples;
+    private View mBackupAlertView;
 
     public ViewController3DMagCal(MainActivity activity, int title, int icon,
                                   int localSettingsVisible, int flightSettingsVisible) {
@@ -236,7 +242,8 @@ public class ViewController3DMagCal extends ViewController implements
         final boolean setUR = setMetaUpdateRate("MagState", 1000);
 
         //make fit and upload calibration to FC
-        fitAndUpload();
+        final FitPoints fp = fit();
+        upload(fp);
     }
 
     private void toggleCalibration() {
@@ -257,6 +264,8 @@ public class ViewController3DMagCal extends ViewController implements
     public void enter(int view) {
         super.enter(view);
         requestMetaData("MagState");
+        requestObject("RevoCalibration");
+        requestObject("HomeLocation");
     }
 
     @Override
@@ -430,7 +439,7 @@ public class ViewController3DMagCal extends ViewController implements
         }
     }
 
-    private void fitAndUpload() {
+    private FitPoints fit() {
         FitPoints fp = glv3DMagCalibration.fit();
 
         String result;
@@ -438,8 +447,15 @@ public class ViewController3DMagCal extends ViewController implements
             result = fp.toString();
         } catch (NullPointerException e) {
             SingleToast.show(getMainActivity(), "Error fitting points.", Toast.LENGTH_LONG);
-            return;
+            return null;
         }
+
+        VisualLog.d("FIT2", result);
+
+        return fp;
+    }
+
+    private void upload(FitPoints fp) {
 
         //get fit results
         float biasx = (float) fp.center.getEntry(0);
@@ -471,8 +487,6 @@ public class ViewController3DMagCal extends ViewController implements
         }
 
         be_0 = 0; //resetting one value will re-receive all values
-
-        VisualLog.d("FIT2", result);
     }
 
     @Override
@@ -485,5 +499,113 @@ public class ViewController3DMagCal extends ViewController implements
             default: //do nothing
                 break;
         }
+    }
+
+    @Override
+    public void onToolbarLocalSettingsClick(View v) {
+
+        final MainActivity ma = getMainActivity();
+
+        mBackupAlertView = View.inflate(ma, R.layout.alert_dialog_magcal_backup, null);
+
+        final float biasX = H.stringToFloat(getData("RevoCalibration", "mag_bias", "X").toString());
+        final float biasY = H.stringToFloat(getData("RevoCalibration", "mag_bias", "Y").toString());
+        final float biasZ = H.stringToFloat(getData("RevoCalibration", "mag_bias", "Z").toString());
+
+        final float trans0 = H.stringToFloat(getData("RevoCalibration", "mag_transform", "r0c0").toString());
+        final float trans1 = H.stringToFloat(getData("RevoCalibration", "mag_transform", "r1c1").toString());
+        final float trans2 = H.stringToFloat(getData("RevoCalibration", "mag_transform", "r2c2").toString());
+
+        ((EditText) mBackupAlertView.findViewById(R.id.etxMagCalBiasCuX))
+                .setText(String.format(Locale.US, "%f", biasX));
+        ((EditText) mBackupAlertView.findViewById(R.id.etxMagCalBiasCuY))
+                .setText(String.format(Locale.US, "%f", biasY));
+        ((EditText) mBackupAlertView.findViewById(R.id.etxMagCalBiasCuZ))
+                .setText(String.format(Locale.US, "%f", biasZ));
+
+        ((EditText) mBackupAlertView.findViewById(R.id.etxMagCalTransCuR0C0))
+                .setText(String.format(Locale.US, "%f", trans0));
+        ((EditText) mBackupAlertView.findViewById(R.id.etxMagCalTransCuR1C1))
+                .setText(String.format(Locale.US, "%f", trans1));
+        ((EditText) mBackupAlertView.findViewById(R.id.etxMagCalTransCuR2C2))
+                .setText(String.format(Locale.US, "%f", trans2));
+
+        SettingsHelper.mMagCalBiasX = SettingsHelper.mMagCalBiasX == 0 ? biasX : SettingsHelper.mMagCalBiasX;
+        SettingsHelper.mMagCalBiasY = SettingsHelper.mMagCalBiasY == 0 ? biasY : SettingsHelper.mMagCalBiasY;
+        SettingsHelper.mMagCalBiasZ = SettingsHelper.mMagCalBiasZ == 0 ? biasZ : SettingsHelper.mMagCalBiasZ;
+
+        SettingsHelper.mMagCalTransformR0C0 = SettingsHelper.mMagCalTransformR0C0 == 0 ? trans0 : SettingsHelper.mMagCalTransformR0C0;
+        SettingsHelper.mMagCalTransformR1C1 = SettingsHelper.mMagCalTransformR1C1 == 0 ? trans1 : SettingsHelper.mMagCalTransformR1C1;
+        SettingsHelper.mMagCalTransformR2C2 = SettingsHelper.mMagCalTransformR2C2 == 0 ? trans2 : SettingsHelper.mMagCalTransformR2C2;
+
+        ((EditText) mBackupAlertView.findViewById(R.id.etxMagCalBiasBuX))
+                .setText(String.format(Locale.US, "%f", SettingsHelper.mMagCalBiasX));
+        ((EditText) mBackupAlertView.findViewById(R.id.etxMagCalBiasBuY))
+                .setText(String.format(Locale.US, "%f", SettingsHelper.mMagCalBiasY));
+        ((EditText) mBackupAlertView.findViewById(R.id.etxMagCalBiasBuZ))
+                .setText(String.format(Locale.US, "%f", SettingsHelper.mMagCalBiasZ));
+
+        ((EditText) mBackupAlertView.findViewById(R.id.etxMagCalTransBuR0C0))
+                .setText(String.format(Locale.US, "%f", SettingsHelper.mMagCalTransformR0C0));
+        ((EditText) mBackupAlertView.findViewById(R.id.etxMagCalTransBuR1C1))
+                .setText(String.format(Locale.US, "%f", SettingsHelper.mMagCalTransformR1C1));
+        ((EditText) mBackupAlertView.findViewById(R.id.etxMagCalTransBuR2C2))
+                .setText(String.format(Locale.US, "%f", SettingsHelper.mMagCalTransformR2C2));
+
+        mBackupAlertView.findViewById(R.id.etxMagCalBiasCuX).requestFocus();
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(ma);
+        builder.setView(mBackupAlertView);
+        builder.setTitle("Mag Calibration Backup");
+        builder.setCancelable(true);
+
+        builder.setNeutralButton("Save",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        SettingsHelper.mMagCalBiasX = H.stringToFloat(((EditText) mBackupAlertView.findViewById(R.id.etxMagCalBiasBuX)).getText().toString());
+                        SettingsHelper.mMagCalBiasY = H.stringToFloat(((EditText) mBackupAlertView.findViewById(R.id.etxMagCalBiasBuY)).getText().toString());
+                        SettingsHelper.mMagCalBiasZ = H.stringToFloat(((EditText) mBackupAlertView.findViewById(R.id.etxMagCalBiasBuZ)).getText().toString());
+
+                        SettingsHelper.mMagCalTransformR0C0 = H.stringToFloat(((EditText) mBackupAlertView.findViewById(R.id.etxMagCalTransBuR0C0)).getText().toString());
+                        SettingsHelper.mMagCalTransformR1C1 = H.stringToFloat(((EditText) mBackupAlertView.findViewById(R.id.etxMagCalTransBuR1C1)).getText().toString());
+                        SettingsHelper.mMagCalTransformR2C2 = H.stringToFloat(((EditText) mBackupAlertView.findViewById(R.id.etxMagCalTransBuR2C2)).getText().toString());
+                    }
+                });
+        builder.setPositiveButton("Backup",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        //Copy live to backup
+                        SettingsHelper.mMagCalBiasX = biasX;
+                        SettingsHelper.mMagCalBiasY = biasY;
+                        SettingsHelper.mMagCalBiasZ = biasZ;
+
+                        SettingsHelper.mMagCalTransformR0C0 = trans0;
+                        SettingsHelper.mMagCalTransformR1C1 = trans1;
+                        SettingsHelper.mMagCalTransformR2C2 = trans2;
+                    }
+                });
+
+        builder.setNegativeButton("Restore",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        //Copy backup live
+                        sendSettingsObjectRevFloat("RevoCalibration", "mag_bias", "X", SettingsHelper.mMagCalBiasX);
+                        sendSettingsObjectRevFloat("RevoCalibration", "mag_bias", "Y", SettingsHelper.mMagCalBiasY);
+                        sendSettingsObjectRevFloat("RevoCalibration", "mag_bias", "Z", SettingsHelper.mMagCalBiasZ);
+
+                        sendSettingsObjectRevFloat("RevoCalibration", "mag_transform", "r0c0", SettingsHelper.mMagCalTransformR0C0);
+                        sendSettingsObjectRevFloat("RevoCalibration", "mag_transform", "r1c1", SettingsHelper.mMagCalTransformR1C1);
+                        sendSettingsObjectRevFloat("RevoCalibration", "mag_transform", "r2c2", SettingsHelper.mMagCalTransformR2C2);
+
+                        savePersistent("RevoCalibration");
+                    }
+                });
+
+        AlertDialog alert = builder.create();
+
+        alert.show();
     }
 }

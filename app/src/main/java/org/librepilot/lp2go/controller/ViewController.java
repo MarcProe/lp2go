@@ -376,6 +376,29 @@ public abstract class ViewController {
         }
     }
 
+    boolean requestObject(@NonNull String obj) {
+        if (mActivity != null && mActivity.mFcDevice != null) {
+            return mActivity.mFcDevice.requestObject(obj);
+        } else {
+            return false;
+        }
+    }
+
+    boolean sendSettingsObjectRevFloat(@NonNull String obj, @NonNull String field, @NonNull String element, float data) {
+        if (mActivity != null && mActivity.mFcDevice != null) {
+            byte[] newFieldData = H.floatToByteArrayRev(data);
+            return mActivity.mFcDevice.sendSettingsObject(obj, 0, field, element, newFieldData);
+        } else {
+            return false;
+        }
+    }
+
+    void savePersistent(@NonNull String obj) {
+        if (mActivity != null && mActivity.mFcDevice != null) {
+            mActivity.mFcDevice.savePersistent(obj);
+        }
+    }
+
     protected Float toFloat(Object o) {
         try {
             return (Float) o;

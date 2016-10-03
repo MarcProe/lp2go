@@ -36,6 +36,8 @@ import org.librepilot.lp2go.VisualLog;
 import java.util.HashSet;
 import java.util.Set;
 
+import static org.librepilot.lp2go.R.string.APP_ID;
+
 public class SettingsHelper {
     public static String mBluetoothDeviceAddress = null;
     public static String mBluetoothDeviceUsed = null;
@@ -53,98 +55,132 @@ public class SettingsHelper {
     public static boolean mCollectUsageStatistics;
     public static Set<String> mRightMenuFavorites;
     public static boolean mColorfulResp;
+    public static float mMagCalBiasX;
+    public static float mMagCalBiasY;
+    public static float mMagCalBiasZ;
+    public static float mMagCalTransformR0C0;
+    public static float mMagCalTransformR1C1;
+    public static float mMagCalTransformR2C2;
 
-    public static void loadSettings(MainActivity mainActivity) {
-        SharedPreferences sharedPref = mainActivity.getPreferences(Context.MODE_PRIVATE);
-        mSerialModeUsed = sharedPref.getInt(mainActivity
-                .getString(R.string.SETTINGS_SERIAL_MODE, R.string.APP_ID), 0);
+    @SuppressLint({"CommitPrefEdits", "StringFormatMatches"})
+    public static void loadSettings(MainActivity ma) {
+        SharedPreferences sharedPref = ma.getPreferences(Context.MODE_PRIVATE);
+        mSerialModeUsed = sharedPref.getInt(ma
+                .getString(R.string.SETTINGS_SERIAL_MODE, APP_ID), 0);
         mBluetoothDeviceUsed = sharedPref.getString(
-                mainActivity.getString(R.string.SETTINGS_BT_NAME, R.string.APP_ID), null);
+                ma.getString(R.string.SETTINGS_BT_NAME, APP_ID), null);
         mBluetoothDeviceAddress = sharedPref.getString(
-                mainActivity.getString(R.string.SETTINGS_BT_MAC, R.string.APP_ID), null);
+                ma.getString(R.string.SETTINGS_BT_MAC, APP_ID), null);
         mLoadedUavo = sharedPref
-                .getString(mainActivity.getString(R.string.SETTINGS_UAVO_SOURCE, R.string.APP_ID),
+                .getString(ma.getString(R.string.SETTINGS_UAVO_SOURCE, APP_ID),
                         null);
         mColorfulPid = sharedPref.getBoolean(
-                mainActivity.getString(R.string.SETTINGS_COLORFUL_PID, R.string.APP_ID), false);
+                ma.getString(R.string.SETTINGS_COLORFUL_PID, APP_ID), false);
         mColorfulVPid = sharedPref.getBoolean(
-                mainActivity.getString(R.string.SETTINGS_COLORFUL_VPID, R.string.APP_ID),
+                ma.getString(R.string.SETTINGS_COLORFUL_VPID, APP_ID),
                 false);
         mColorfulResp = sharedPref.getBoolean(
-                mainActivity.getString(R.string.SETTINGS_COLORFUL_RESP, R.string.APP_ID), false);
+                ma.getString(R.string.SETTINGS_COLORFUL_RESP, APP_ID), false);
         mText2SpeechEnabled = sharedPref.getBoolean(
-                mainActivity.getString(R.string.SETTINGS_TEXT2SPEECH_ENABLED, R.string.APP_ID),
+                ma.getString(R.string.SETTINGS_TEXT2SPEECH_ENABLED, APP_ID),
                 false);
         mTopLeftLayout = sharedPref.getString(
-                mainActivity.getString(R.string.SETTINGS_TOP_LEFT_LAYOUT_RES, R.string.APP_ID),
-                mainActivity.getString(R.string.main_element_health));
+                ma.getString(R.string.SETTINGS_TOP_LEFT_LAYOUT_RES, APP_ID),
+                ma.getString(R.string.main_element_health));
         mBottomRightLayout = sharedPref.getString(
-                mainActivity.getString(R.string.SETTINGS_BOTTOM_RIGHT_LAYOUT_RES, R.string.APP_ID),
-                mainActivity.getString(R.string.main_element_info));
+                ma.getString(R.string.SETTINGS_BOTTOM_RIGHT_LAYOUT_RES, APP_ID),
+                ma.getString(R.string.main_element_info));
         mLogAsRawUavTalk = sharedPref.getBoolean(
-                mainActivity.getString(R.string.SETTINGS_LOG_RAW, R.string.APP_ID),
+                ma.getString(R.string.SETTINGS_LOG_RAW, APP_ID),
                 false);
         mUseTimestampsFromFc = sharedPref.getBoolean(
-                mainActivity.getString(R.string.SETTINGS_TIMESTAMPS_FROM_FC, R.string.APP_ID),
+                ma.getString(R.string.SETTINGS_TIMESTAMPS_FROM_FC, APP_ID),
                 false);
         mLogReplaySkipObjects = sharedPref.getInt(
-                mainActivity.getString(R.string.SETTINGS_LOG_REPLAY_SKIP_OBJECTS, R.string.APP_ID),
+                ma.getString(R.string.SETTINGS_LOG_REPLAY_SKIP_OBJECTS, APP_ID),
                 100);
         mObjectFavorites = sharedPref.getStringSet(
-                mainActivity.getString(R.string.SETTINGS_OBJECT_FAVORITES, R.string.APP_ID),
+                ma.getString(R.string.SETTINGS_OBJECT_FAVORITES, APP_ID),
                 new HashSet<String>());
         mCollectUsageStatistics = sharedPref.getBoolean(
-                mainActivity.getString(R.string.SETTINGS_COLLECT_USAGE_STATS, R.string.APP_ID),
+                ma.getString(R.string.SETTINGS_COLLECT_USAGE_STATS, APP_ID),
                 false);  //Default for statistics is false, this is opt-in
         mRightMenuFavorites = sharedPref.getStringSet(
-                mainActivity.getString(R.string.SETTINGS_RIGHT_MENU_FAVORITES, R.string.APP_ID),
+                ma.getString(R.string.SETTINGS_RIGHT_MENU_FAVORITES, APP_ID),
                 new HashSet<String>());
+        mMagCalBiasX = sharedPref.getFloat(
+                ma.getString(R.string.SETTINGS_MAGCAL_BIAS_X, APP_ID), .0f);
+        mMagCalBiasY = sharedPref.getFloat(
+                ma.getString(R.string.SETTINGS_MAGCAL_BIAS_Y, APP_ID), .0f);
+        mMagCalBiasZ = sharedPref.getFloat(
+                ma.getString(R.string.SETTINGS_MAGCAL_BIAS_Z, APP_ID), .0f);
+        mMagCalTransformR0C0 = sharedPref.getFloat(
+                ma.getString(R.string.SETTINGS_MAGCAL_TRANSFORM_R0C0, APP_ID), .0f);
+        mMagCalTransformR1C1 = sharedPref.getFloat(
+                ma.getString(R.string.SETTINGS_MAGCAL_TRANSFORM_R1C1, APP_ID), .0f);
+        mMagCalTransformR2C2 = sharedPref.getFloat(
+                ma.getString(R.string.SETTINGS_MAGCAL_TRANSFORM_R1C1, APP_ID), .0f);
     }
 
-    @SuppressLint("CommitPrefEdits")
-    public static void saveSettings(MainActivity mainActivity, boolean async) {
-        SharedPreferences sharedPref = mainActivity.getPreferences(Context.MODE_PRIVATE);
+    @SuppressLint({"CommitPrefEdits", "StringFormatMatches"})
+    public static void saveSettings(MainActivity ma, boolean async) {
+        SharedPreferences sharedPref = ma.getPreferences(Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.clear();
 
-        editor.putString(mainActivity.getString(R.string.SETTINGS_BT_MAC, R.string.APP_ID),
+        editor.putString(ma.getString(R.string.SETTINGS_BT_MAC, APP_ID),
                 mBluetoothDeviceAddress);
-        editor.putString(mainActivity.getString(R.string.SETTINGS_BT_NAME, R.string.APP_ID),
+        editor.putString(ma.getString(R.string.SETTINGS_BT_NAME, APP_ID),
                 mBluetoothDeviceUsed);
-        editor.putString(mainActivity.getString(R.string.SETTINGS_UAVO_SOURCE, R.string.APP_ID),
+        editor.putString(ma.getString(R.string.SETTINGS_UAVO_SOURCE, APP_ID),
                 mLoadedUavo);
-        editor.putInt(mainActivity.getString(R.string.SETTINGS_SERIAL_MODE, R.string.APP_ID),
+        editor.putInt(ma.getString(R.string.SETTINGS_SERIAL_MODE, APP_ID),
                 mSerialModeUsed);
-        editor.putBoolean(mainActivity.getString(R.string.SETTINGS_COLORFUL_PID, R.string.APP_ID),
+        editor.putBoolean(ma.getString(R.string.SETTINGS_COLORFUL_PID, APP_ID),
                 SettingsHelper.mColorfulPid);
-        editor.putBoolean(mainActivity.getString(R.string.SETTINGS_COLORFUL_VPID, R.string.APP_ID),
+        editor.putBoolean(ma.getString(R.string.SETTINGS_COLORFUL_VPID, APP_ID),
                 SettingsHelper.mColorfulVPid);
-        editor.putBoolean(mainActivity.getString(R.string.SETTINGS_COLORFUL_RESP, R.string.APP_ID),
+        editor.putBoolean(ma.getString(R.string.SETTINGS_COLORFUL_RESP, APP_ID),
                 SettingsHelper.mColorfulResp);
-        editor.putString(mainActivity.getString(R.string.SETTINGS_TOP_LEFT_LAYOUT_RES,
-                R.string.APP_ID), mTopLeftLayout);
-        editor.putString(mainActivity.getString(R.string.SETTINGS_BOTTOM_RIGHT_LAYOUT_RES,
-                R.string.APP_ID), mBottomRightLayout);
-        editor.putBoolean(mainActivity.getString(R.string.SETTINGS_LOG_RAW, R.string.APP_ID),
+        editor.putString(ma.getString(R.string.SETTINGS_TOP_LEFT_LAYOUT_RES,
+                APP_ID), mTopLeftLayout);
+        editor.putString(ma.getString(R.string.SETTINGS_BOTTOM_RIGHT_LAYOUT_RES,
+                APP_ID), mBottomRightLayout);
+        editor.putBoolean(ma.getString(R.string.SETTINGS_LOG_RAW, APP_ID),
                 SettingsHelper.mLogAsRawUavTalk);
         editor.putBoolean(
-                mainActivity.getString(R.string.SETTINGS_TIMESTAMPS_FROM_FC, R.string.APP_ID),
+                ma.getString(R.string.SETTINGS_TIMESTAMPS_FROM_FC, APP_ID),
                 SettingsHelper.mUseTimestampsFromFc);
         editor.putBoolean(
-                mainActivity.getString(R.string.SETTINGS_TEXT2SPEECH_ENABLED, R.string.APP_ID),
+                ma.getString(R.string.SETTINGS_TEXT2SPEECH_ENABLED, APP_ID),
                 SettingsHelper.mText2SpeechEnabled);
         editor.putInt(
-                mainActivity.getString(R.string.SETTINGS_LOG_REPLAY_SKIP_OBJECTS, R.string.APP_ID),
+                ma.getString(R.string.SETTINGS_LOG_REPLAY_SKIP_OBJECTS, APP_ID),
                 SettingsHelper.mLogReplaySkipObjects);
         editor.putStringSet(
-                mainActivity.getString(R.string.SETTINGS_OBJECT_FAVORITES, R.string.APP_ID),
+                ma.getString(R.string.SETTINGS_OBJECT_FAVORITES, APP_ID),
                 SettingsHelper.mObjectFavorites);
         editor.putBoolean(
-                mainActivity.getString(R.string.SETTINGS_COLLECT_USAGE_STATS, R.string.APP_ID),
+                ma.getString(R.string.SETTINGS_COLLECT_USAGE_STATS, APP_ID),
                 SettingsHelper.mCollectUsageStatistics);
         editor.putStringSet(
-                mainActivity.getString(R.string.SETTINGS_RIGHT_MENU_FAVORITES, R.string.APP_ID),
+                ma.getString(R.string.SETTINGS_RIGHT_MENU_FAVORITES, APP_ID),
                 SettingsHelper.mRightMenuFavorites);
+        editor.putFloat(
+                ma.getString(R.string.SETTINGS_MAGCAL_BIAS_X, APP_ID), SettingsHelper.mMagCalBiasX);
+        editor.putFloat(
+                ma.getString(R.string.SETTINGS_MAGCAL_BIAS_Y, APP_ID), SettingsHelper.mMagCalBiasY);
+        editor.putFloat(
+                ma.getString(R.string.SETTINGS_MAGCAL_BIAS_Z, APP_ID), SettingsHelper.mMagCalBiasZ);
+        editor.putFloat(
+                ma.getString(R.string.SETTINGS_MAGCAL_TRANSFORM_R0C0, APP_ID),
+                SettingsHelper.mMagCalTransformR0C0);
+        editor.putFloat(
+                ma.getString(R.string.SETTINGS_MAGCAL_TRANSFORM_R1C1, APP_ID),
+                SettingsHelper.mMagCalTransformR1C1);
+        editor.putFloat(
+                ma.getString(R.string.SETTINGS_MAGCAL_TRANSFORM_R2C2, APP_ID),
+                SettingsHelper.mMagCalTransformR2C2);
 
         if (async) {
             editor.apply();

@@ -525,7 +525,7 @@ public class MainActivity extends AppCompatActivity {
         ViewController mVcObjects = new ViewControllerObjects(this, R.string.menu_objects,
                 R.drawable.ic_now_widgets_24dp, View.INVISIBLE, View.INVISIBLE);
         ViewController mVc3DMagCal = new ViewController3DMagCal(this,
-                R.string.menu_3dmag, R.drawable.ic_explore_black_24dp, View.INVISIBLE, View.INVISIBLE);
+                R.string.menu_3dmag, R.drawable.ic_explore_black_24dp, View.VISIBLE, View.INVISIBLE);
         ViewController mVcMain = new ViewControllerMain(this, R.string.menu_main,
                 R.drawable.ic_notifications_on_24dp, View.VISIBLE, View.VISIBLE);
 

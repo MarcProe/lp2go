@@ -37,5 +37,10 @@
     <string name="SETTINGS_COLLECT_USAGE_STATS">%1$s.collect_usage_stats</string>
     <string name="SETTINGS_RIGHT_MENU_FAVORITES">%1$s.right_menu_favorites</string>
     <string name="SETTINGS_COLORFUL_RESP">%1$s.colorful_resp</string>
-
+    <string name="SETTINGS_MAGCAL_BIAS_X">%1$s.magcal_bias_x</string>
+    <string name="SETTINGS_MAGCAL_BIAS_Y">%1$s.magcal_bias_y</string>
+    <string name="SETTINGS_MAGCAL_BIAS_Z">%1$s.magcal_bias_z</string>
+    <string name="SETTINGS_MAGCAL_TRANSFORM_R0C0">%1$s.magcal_transform_r0c0</string>
+    <string name="SETTINGS_MAGCAL_TRANSFORM_R1C1">%1$s.magcal_transform_r1c1</string>
+    <string name="SETTINGS_MAGCAL_TRANSFORM_R2C2">%1$s.magcal_transform_r2c2</string>
 </resources>
