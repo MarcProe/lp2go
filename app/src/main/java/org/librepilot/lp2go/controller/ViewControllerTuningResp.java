@@ -68,10 +68,10 @@ public class ViewControllerTuningResp extends ViewController implements View.OnC
         a.mViews.put(VIEW_RESP, a.getLayoutInflater().inflate(R.layout.activity_responsiveness, null));
         a.setContentView(a.mViews.get(VIEW_RESP));
 
-        a.findViewById(R.id.imgRespAtti).setOnClickListener(this);
-        a.findViewById(R.id.imgRespRate).setOnClickListener(this);
-        a.findViewById(R.id.imgRespMax).setOnClickListener(this);
-        a.findViewById(R.id.imgRespAcro).setOnClickListener(this);
+        a.findViewById(R.id.txtRespA).setOnClickListener(this);
+        a.findViewById(R.id.txtRespR).setOnClickListener(this);
+        a.findViewById(R.id.txtRespM).setOnClickListener(this);
+        a.findViewById(R.id.txtRespF).setOnClickListener(this);
 
         cbxRespLinkRollAndPitch = ((CheckBox) a.findViewById(R.id.cbxRespLinkRollAndPitch));
         cbxRespLinkRollAndPitch.setOnCheckedChangeListener(this);
@@ -261,11 +261,6 @@ public class ViewControllerTuningResp extends ViewController implements View.OnC
 
             setImageViewSrc(R.id.imgRespRespLabel, R.drawable.text_responsiveness, 0.122f);
             setImageViewSrc(R.id.imgRespAcroLabel, R.drawable.text_acro_plus, 0.273f);
-
-            setImageViewSrc(R.id.imgRespAtti, R.drawable.letter_a, 1);
-            setImageViewSrc(R.id.imgRespRate, R.drawable.letter_r, 1);
-            setImageViewSrc(R.id.imgRespMax, R.drawable.letter_m, 1);
-            setImageViewSrc(R.id.imgRespAcro, R.drawable.letter_f, 1);
 
             final View lloResponsiveness = findViewById(R.id.lloResponsiveness);
             final View lloAcroPlus = findViewById(R.id.lloAcroPlus);
@@ -518,10 +513,10 @@ public class ViewControllerTuningResp extends ViewController implements View.OnC
                 onRespSaveClick();
             }
             break;
-            case R.id.imgRespAtti:
-            case R.id.imgRespRate:
-            case R.id.imgRespMax:
-            case R.id.imgRespAcro: {
+            case R.id.txtRespA:
+            case R.id.txtRespR:
+            case R.id.txtRespM:
+            case R.id.txtRespF: {
                 SingleToast.show(getMainActivity(), v.getContentDescription().toString());
             }
             break;

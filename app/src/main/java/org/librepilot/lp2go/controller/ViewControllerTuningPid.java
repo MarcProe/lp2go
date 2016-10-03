@@ -301,12 +301,6 @@ public class ViewControllerTuningPid extends ViewController implements View.OnCl
             setImageViewSrc(R.id.imgPidInnerLoopLabel, R.drawable.text_inner_loop, 0.186f);
             setImageViewSrc(R.id.imgPidOuterLoopLabel, R.drawable.text_outer_loop, 0.186f);
 
-            setImageViewSrc(R.id.imgPidPi, R.drawable.letter_p, 1);
-            setImageViewSrc(R.id.imgPidIi, R.drawable.letter_i, 1);
-            setImageViewSrc(R.id.imgPidDi, R.drawable.letter_d, 1);
-            setImageViewSrc(R.id.imgPidPo, R.drawable.letter_p, 1);
-            setImageViewSrc(R.id.imgPidIo, R.drawable.letter_i, 1);
-
             final View lloOuterPid = findViewById(R.id.lloOuterPid);
             final View lloInnerPid = findViewById(R.id.lloInnerPid);
 
