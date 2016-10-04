@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ @file   alert_dialog_magcal_backup.xml
+  ~ @author The LibrePilot Project, http://www.librepilot.org Copyright (C) 2016.
+  ~ @see    The GNU Public License (GPL) Version 3
+  ~
+  ~  This program is free software; you can redistribute it and/or modify
+  ~  it under the terms of the GNU General Public License as published by
+  ~  the Free Software Foundation; either version 3 of the License, or
+  ~  (at your option) any later version.
+  ~
+  ~  This program is distributed in the hope that it will be useful, but
+  ~  WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+  ~  or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+  ~  for more details.
+  ~
+  ~  You should have received a copy of the GNU General Public License along
+  ~  with this program; if not, write to the Free Software Foundation, Inc.,
+  ~  59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+  ~
+  -->
+
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:gravity="center_vertical|center_horizontal"
+                android:text="Bias"
+                android:textSize="26sp"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_vertical|center_horizontal"
+                android:text="Backup"/>
+
+            <TextView
+                android:id="@+id/textView16"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_vertical|center_horizontal"
+                android:text="Current"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_vertical|center_horizontal"
+                android:text="X"
+                android:textSize="20sp"/>
+
+            <EditText
+                android:id="@+id/etxMagCalBiasBuX"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="10"
+                android:gravity="center_vertical|center_horizontal"
+                android:inputType="textPersonName"
+                android:text="0"/>
+
+            <EditText
+                android:id="@+id/etxMagCalBiasCuX"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:elevation="0dp"
+                android:enabled="false"
+                android:gravity="center_vertical|center_horizontal"
+                android:inputType="textPersonName"
+                android:text="0"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_vertical|center_horizontal"
+                android:text="Y"
+                android:textSize="20sp"/>
+
+            <EditText
+                android:id="@+id/etxMagCalBiasBuY"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="10"
+                android:gravity="center_vertical|center_horizontal"
+                android:inputType="textPersonName"
+                android:text="0"/>
+
+            <EditText
+                android:id="@+id/etxMagCalBiasCuY"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:elevation="0dp"
+                android:ems="10"
+                android:enabled="false"
+                android:gravity="center_vertical|center_horizontal"
+                android:inputType="textPersonName"
+                android:text="0"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_vertical|center_horizontal"
+                android:text="Z"
+                android:textSize="20sp"/>
+
+            <EditText
+                android:id="@+id/etxMagCalBiasBuZ"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="10"
+                android:gravity="center_vertical|center_horizontal"
+                android:inputType="textPersonName"
+                android:text="0"/>
+
+            <EditText
+                android:id="@+id/etxMagCalBiasCuZ"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:elevation="0dp"
+                android:ems="10"
+                android:enabled="false"
+                android:gravity="center_vertical|center_horizontal"
+                android:inputType="textPersonName"
+                android:text="0"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:gravity="center_vertical|center_horizontal"
+                android:text="Transform"
+                android:textSize="26sp"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_vertical|center_horizontal"
+                android:text="Backup"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_vertical|center_horizontal"
+                android:text="Current"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_vertical|center_horizontal"
+                android:text="X"
+                android:textSize="20sp"/>
+
+            <EditText
+                android:id="@+id/etxMagCalTransBuR0C0"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="10"
+                android:gravity="center_vertical|center_horizontal"
+                android:inputType="textPersonName"
+                android:text="0"/>
+
+            <EditText
+                android:id="@+id/etxMagCalTransCuR0C0"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:elevation="0dp"
+                android:enabled="false"
+                android:gravity="center_vertical|center_horizontal"
+                android:inputType="textPersonName"
+                android:text="0"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_vertical|center_horizontal"
+                android:text="Y"
+                android:textSize="20sp"/>
+
+            <EditText
+                android:id="@+id/etxMagCalTransBuR1C1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="10"
+                android:gravity="center_vertical|center_horizontal"
+                android:inputType="textPersonName"
+                android:text="0"/>
+
+            <EditText
+                android:id="@+id/etxMagCalTransCuR1C1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:elevation="0dp"
+                android:ems="10"
+                android:enabled="false"
+                android:gravity="center_vertical|center_horizontal"
+                android:inputType="textPersonName"
+                android:text="0"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_vertical|center_horizontal"
+                android:text="Z"
+                android:textSize="20sp"/>
+
+            <EditText
+                android:id="@+id/etxMagCalTransBuR2C2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="10"
+                android:gravity="center_vertical|center_horizontal"
+                android:inputType="textPersonName"
+                android:text="0"/>
+
+            <EditText
+                android:id="@+id/etxMagCalTransCuR2C2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:elevation="0dp"
+                android:ems="10"
+                android:enabled="false"
+                android:gravity="center_vertical|center_horizontal"
+                android:inputType="textPersonName"
+                android:text="0"/>
+
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>
