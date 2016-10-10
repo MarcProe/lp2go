@@ -490,4 +490,12 @@ public abstract class ViewController {
             b.recycle();
         }
     }
+
+    boolean isConnected() {
+        if (mActivity != null && mActivity.getFcDevice() != null) {
+            return mActivity.getFcDevice().isConnected();
+        } else {
+            return false;
+        }
+    }
 }

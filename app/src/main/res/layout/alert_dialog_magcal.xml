@@ -27,7 +27,7 @@
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                   android:layout_width="match_parent"
-                  android:layout_height="match_parent"
+                  android:layout_height="wrap_content"
                   android:orientation="vertical">
 
         <LinearLayout
@@ -41,23 +41,22 @@
                 android:layout_weight="1"
                 android:ellipsize="end"
                 android:gravity="center_vertical|center_horizontal"
-                android:text="Bias"
+                android:text="@string/MAGCAL_BIAS"
                 android:textSize="26sp"/>
 
             <TextView
+                android:id="@+id/txtMagCalBiasLeftLabel"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:gravity="center_vertical|center_horizontal"
-                android:text="Backup"/>
+                android:gravity="center_vertical|center_horizontal"/>
 
             <TextView
-                android:id="@+id/textView16"
+                android:id="@+id/txtMagCalBiasRightLabel"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:gravity="center_vertical|center_horizontal"
-                android:text="Current"/>
+                android:gravity="center_vertical|center_horizontal"/>
         </LinearLayout>
 
         <LinearLayout
@@ -75,7 +74,7 @@
                 android:textSize="20sp"/>
 
             <EditText
-                android:id="@+id/etxMagCalBiasBuX"
+                android:id="@+id/etxMagCalBiasLeftX"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -85,11 +84,10 @@
                 android:text="0"/>
 
             <EditText
-                android:id="@+id/etxMagCalBiasCuX"
+                android:id="@+id/etxMagCalBiasRightX"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:elevation="0dp"
                 android:enabled="false"
                 android:gravity="center_vertical|center_horizontal"
                 android:inputType="textPersonName"
@@ -110,7 +108,7 @@
                 android:textSize="20sp"/>
 
             <EditText
-                android:id="@+id/etxMagCalBiasBuY"
+                android:id="@+id/etxMagCalBiasLeftY"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -120,11 +118,10 @@
                 android:text="0"/>
 
             <EditText
-                android:id="@+id/etxMagCalBiasCuY"
+                android:id="@+id/etxMagCalBiasRightY"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:elevation="0dp"
                 android:ems="10"
                 android:enabled="false"
                 android:gravity="center_vertical|center_horizontal"
@@ -147,7 +144,7 @@
                 android:textSize="20sp"/>
 
             <EditText
-                android:id="@+id/etxMagCalBiasBuZ"
+                android:id="@+id/etxMagCalBiasLeftZ"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -157,11 +154,10 @@
                 android:text="0"/>
 
             <EditText
-                android:id="@+id/etxMagCalBiasCuZ"
+                android:id="@+id/etxMagCalBiasRightZ"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:elevation="0dp"
                 android:ems="10"
                 android:enabled="false"
                 android:gravity="center_vertical|center_horizontal"
@@ -185,18 +181,18 @@
                 android:textSize="26sp"/>
 
             <TextView
+                android:id="@+id/txtMagCalTransformLeftLabel"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:gravity="center_vertical|center_horizontal"
-                android:text="Backup"/>
+                android:gravity="center_vertical|center_horizontal"/>
 
             <TextView
+                android:id="@+id/txtMagCalTransformRightLabel"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:gravity="center_vertical|center_horizontal"
-                android:text="Current"/>
+                android:gravity="center_vertical|center_horizontal"/>
         </LinearLayout>
 
         <LinearLayout
@@ -214,7 +210,7 @@
                 android:textSize="20sp"/>
 
             <EditText
-                android:id="@+id/etxMagCalTransBuR0C0"
+                android:id="@+id/etxMagCalTransLeftR0C0"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -224,11 +220,10 @@
                 android:text="0"/>
 
             <EditText
-                android:id="@+id/etxMagCalTransCuR0C0"
+                android:id="@+id/etxMagCalTransRightR0C0"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:elevation="0dp"
                 android:enabled="false"
                 android:gravity="center_vertical|center_horizontal"
                 android:inputType="textPersonName"
@@ -249,7 +244,7 @@
                 android:textSize="20sp"/>
 
             <EditText
-                android:id="@+id/etxMagCalTransBuR1C1"
+                android:id="@+id/etxMagCalTransLeftR1C1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -259,11 +254,10 @@
                 android:text="0"/>
 
             <EditText
-                android:id="@+id/etxMagCalTransCuR1C1"
+                android:id="@+id/etxMagCalTransRightR1C1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:elevation="0dp"
                 android:ems="10"
                 android:enabled="false"
                 android:gravity="center_vertical|center_horizontal"
@@ -286,7 +280,7 @@
                 android:textSize="20sp"/>
 
             <EditText
-                android:id="@+id/etxMagCalTransBuR2C2"
+                android:id="@+id/etxMagCalTransLeftR2C2"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -296,11 +290,10 @@
                 android:text="0"/>
 
             <EditText
-                android:id="@+id/etxMagCalTransCuR2C2"
+                android:id="@+id/etxMagCalTransRightR2C2"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:elevation="0dp"
                 android:ems="10"
                 android:enabled="false"
                 android:gravity="center_vertical|center_horizontal"

@@ -82,7 +82,7 @@ public class ViewController3DMagCal extends ViewController implements
     private float mag_transform_r2c2;
     private boolean mCalibrationRunning = false;
     private int mSamples;
-    private View mBackupAlertView;
+    private View mToolbarAlertView;
 
     public ViewController3DMagCal(MainActivity activity, int title, int icon,
                                   int localSettingsVisible, int flightSettingsVisible) {
@@ -502,11 +502,102 @@ public class ViewController3DMagCal extends ViewController implements
     }
 
     @Override
+    public void onToolbarFlightSettingsClick(View v) {
+
+        final MainActivity ma = getMainActivity();
+
+        if (isConnected()) {
+
+            mToolbarAlertView = View.inflate(ma, R.layout.alert_dialog_magcal, null);
+
+            final float biasX = H.stringToFloat(getData("RevoCalibration", "mag_bias", "X").toString());
+            final float biasY = H.stringToFloat(getData("RevoCalibration", "mag_bias", "Y").toString());
+            final float biasZ = H.stringToFloat(getData("RevoCalibration", "mag_bias", "Z").toString());
+
+            final float trans0 = H.stringToFloat(getData("RevoCalibration", "mag_transform", "r0c0").toString());
+            final float trans1 = H.stringToFloat(getData("RevoCalibration", "mag_transform", "r1c1").toString());
+            final float trans2 = H.stringToFloat(getData("RevoCalibration", "mag_transform", "r2c2").toString());
+
+            //set final vars to be used in the dialog onClick Listeners
+            final float lmBiasX = this.mag_bias_x;
+            final float lmBiasY = this.mag_bias_y;
+            final float lmBiasZ = this.mag_bias_z;
+
+            final float lmTrans0 = this.mag_transform_r0c0;
+            final float lmTrans1 = this.mag_transform_r1c1;
+            final float lmTrans2 = this.mag_transform_r2c2;
+
+            fillToolbarAlertViewLeft("Current", biasX, biasY, biasZ, trans0, trans1, trans2);
+            fillToolbarAlertViewRight("Calculated", this.mag_bias_x, this.mag_bias_y, this.mag_bias_z,
+                    this.mag_transform_r0c0, this.mag_transform_r1c1, this.mag_transform_r2c2);
+
+            setEnabledRightEditTextFields(false);
+
+            mToolbarAlertView.findViewById(R.id.etxMagCalBiasRightX).requestFocus();
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(ma);
+            builder.setView(mToolbarAlertView);
+            builder.setTitle("Mag Calibration Backup");
+            builder.setCancelable(true);
+
+            builder.setNeutralButton("Close",
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int id) {
+                            //just dismiss dialog
+                        }
+                    });
+            builder.setPositiveButton("Upload",
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int id) {
+                            //Copy calc to current (volatile)
+                            sendSettingsObjectRevFloat("RevoCalibration", "mag_bias", "X", lmBiasX);
+                            sendSettingsObjectRevFloat("RevoCalibration", "mag_bias", "Y", lmBiasY);
+                            sendSettingsObjectRevFloat("RevoCalibration", "mag_bias", "Z", lmBiasZ);
+
+                            sendSettingsObjectRevFloat("RevoCalibration", "mag_transform", "r0c0", lmTrans0);
+                            sendSettingsObjectRevFloat("RevoCalibration", "mag_transform", "r1c1", lmTrans1);
+                            sendSettingsObjectRevFloat("RevoCalibration", "mag_transform", "r2c2", lmTrans2);
+
+                            SingleToast.show(ma, "Calculated values uploaded volatile to FlightController");
+                        }
+                    });
+
+            builder.setNegativeButton("Save",
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int id) {
+                            //Copy calc to current (persistent)
+                            sendSettingsObjectRevFloat("RevoCalibration", "mag_bias", "X", lmBiasX);
+                            sendSettingsObjectRevFloat("RevoCalibration", "mag_bias", "Y", lmBiasY);
+                            sendSettingsObjectRevFloat("RevoCalibration", "mag_bias", "Z", lmBiasZ);
+
+                            sendSettingsObjectRevFloat("RevoCalibration", "mag_transform", "r0c0", lmTrans0);
+                            sendSettingsObjectRevFloat("RevoCalibration", "mag_transform", "r1c1", lmTrans1);
+                            sendSettingsObjectRevFloat("RevoCalibration", "mag_transform", "r2c2", lmTrans2);
+
+                            savePersistent("RevoCalibration");
+
+                            SingleToast.show(ma, "Calculated values saved persistent to FlightController");
+
+                        }
+                    });
+
+            AlertDialog alert = builder.create();
+            alert.show();
+
+        } else {
+            SingleToast.show(ma, "Not connected");
+        }
+    }
+
+    @Override
     public void onToolbarLocalSettingsClick(View v) {
 
         final MainActivity ma = getMainActivity();
 
-        mBackupAlertView = View.inflate(ma, R.layout.alert_dialog_magcal_backup, null);
+        mToolbarAlertView = View.inflate(ma, R.layout.alert_dialog_magcal, null);
 
         final float biasX = H.stringToFloat(getData("RevoCalibration", "mag_bias", "X").toString());
         final float biasY = H.stringToFloat(getData("RevoCalibration", "mag_bias", "Y").toString());
@@ -516,46 +607,19 @@ public class ViewController3DMagCal extends ViewController implements
         final float trans1 = H.stringToFloat(getData("RevoCalibration", "mag_transform", "r1c1").toString());
         final float trans2 = H.stringToFloat(getData("RevoCalibration", "mag_transform", "r2c2").toString());
 
-        ((EditText) mBackupAlertView.findViewById(R.id.etxMagCalBiasCuX))
-                .setText(String.format(Locale.US, "%f", biasX));
-        ((EditText) mBackupAlertView.findViewById(R.id.etxMagCalBiasCuY))
-                .setText(String.format(Locale.US, "%f", biasY));
-        ((EditText) mBackupAlertView.findViewById(R.id.etxMagCalBiasCuZ))
-                .setText(String.format(Locale.US, "%f", biasZ));
+        fillDefaultBackupIfEmpty(biasX, biasY, biasZ, trans0, trans1, trans2);
+        fillToolbarAlertViewLeft("Backup", SettingsHelper.mMagCalBiasX,
+                SettingsHelper.mMagCalBiasY, SettingsHelper.mMagCalBiasZ,
+                SettingsHelper.mMagCalTransformR0C0, SettingsHelper.mMagCalTransformR1C1,
+                SettingsHelper.mMagCalTransformR2C2);
 
-        ((EditText) mBackupAlertView.findViewById(R.id.etxMagCalTransCuR0C0))
-                .setText(String.format(Locale.US, "%f", trans0));
-        ((EditText) mBackupAlertView.findViewById(R.id.etxMagCalTransCuR1C1))
-                .setText(String.format(Locale.US, "%f", trans1));
-        ((EditText) mBackupAlertView.findViewById(R.id.etxMagCalTransCuR2C2))
-                .setText(String.format(Locale.US, "%f", trans2));
+        fillToolbarAlertViewRight("Current", biasX, biasY, biasZ, trans0, trans1, trans2);
+        setEnabledRightEditTextFields(true);
 
-        SettingsHelper.mMagCalBiasX = SettingsHelper.mMagCalBiasX == 0 ? biasX : SettingsHelper.mMagCalBiasX;
-        SettingsHelper.mMagCalBiasY = SettingsHelper.mMagCalBiasY == 0 ? biasY : SettingsHelper.mMagCalBiasY;
-        SettingsHelper.mMagCalBiasZ = SettingsHelper.mMagCalBiasZ == 0 ? biasZ : SettingsHelper.mMagCalBiasZ;
-
-        SettingsHelper.mMagCalTransformR0C0 = SettingsHelper.mMagCalTransformR0C0 == 0 ? trans0 : SettingsHelper.mMagCalTransformR0C0;
-        SettingsHelper.mMagCalTransformR1C1 = SettingsHelper.mMagCalTransformR1C1 == 0 ? trans1 : SettingsHelper.mMagCalTransformR1C1;
-        SettingsHelper.mMagCalTransformR2C2 = SettingsHelper.mMagCalTransformR2C2 == 0 ? trans2 : SettingsHelper.mMagCalTransformR2C2;
-
-        ((EditText) mBackupAlertView.findViewById(R.id.etxMagCalBiasBuX))
-                .setText(String.format(Locale.US, "%f", SettingsHelper.mMagCalBiasX));
-        ((EditText) mBackupAlertView.findViewById(R.id.etxMagCalBiasBuY))
-                .setText(String.format(Locale.US, "%f", SettingsHelper.mMagCalBiasY));
-        ((EditText) mBackupAlertView.findViewById(R.id.etxMagCalBiasBuZ))
-                .setText(String.format(Locale.US, "%f", SettingsHelper.mMagCalBiasZ));
-
-        ((EditText) mBackupAlertView.findViewById(R.id.etxMagCalTransBuR0C0))
-                .setText(String.format(Locale.US, "%f", SettingsHelper.mMagCalTransformR0C0));
-        ((EditText) mBackupAlertView.findViewById(R.id.etxMagCalTransBuR1C1))
-                .setText(String.format(Locale.US, "%f", SettingsHelper.mMagCalTransformR1C1));
-        ((EditText) mBackupAlertView.findViewById(R.id.etxMagCalTransBuR2C2))
-                .setText(String.format(Locale.US, "%f", SettingsHelper.mMagCalTransformR2C2));
-
-        mBackupAlertView.findViewById(R.id.etxMagCalBiasCuX).requestFocus();
+        mToolbarAlertView.findViewById(R.id.etxMagCalBiasRightX).requestFocus();
 
         AlertDialog.Builder builder = new AlertDialog.Builder(ma);
-        builder.setView(mBackupAlertView);
+        builder.setView(mToolbarAlertView);
         builder.setTitle("Mag Calibration Backup");
         builder.setCancelable(true);
 
@@ -563,27 +627,38 @@ public class ViewController3DMagCal extends ViewController implements
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-                        SettingsHelper.mMagCalBiasX = H.stringToFloat(((EditText) mBackupAlertView.findViewById(R.id.etxMagCalBiasBuX)).getText().toString());
-                        SettingsHelper.mMagCalBiasY = H.stringToFloat(((EditText) mBackupAlertView.findViewById(R.id.etxMagCalBiasBuY)).getText().toString());
-                        SettingsHelper.mMagCalBiasZ = H.stringToFloat(((EditText) mBackupAlertView.findViewById(R.id.etxMagCalBiasBuZ)).getText().toString());
+                        SettingsHelper.mMagCalBiasX = H.stringToFloat(((EditText) mToolbarAlertView.findViewById(R.id.etxMagCalBiasLeftX)).getText().toString());
+                        SettingsHelper.mMagCalBiasY = H.stringToFloat(((EditText) mToolbarAlertView.findViewById(R.id.etxMagCalBiasLeftY)).getText().toString());
+                        SettingsHelper.mMagCalBiasZ = H.stringToFloat(((EditText) mToolbarAlertView.findViewById(R.id.etxMagCalBiasLeftZ)).getText().toString());
 
-                        SettingsHelper.mMagCalTransformR0C0 = H.stringToFloat(((EditText) mBackupAlertView.findViewById(R.id.etxMagCalTransBuR0C0)).getText().toString());
-                        SettingsHelper.mMagCalTransformR1C1 = H.stringToFloat(((EditText) mBackupAlertView.findViewById(R.id.etxMagCalTransBuR1C1)).getText().toString());
-                        SettingsHelper.mMagCalTransformR2C2 = H.stringToFloat(((EditText) mBackupAlertView.findViewById(R.id.etxMagCalTransBuR2C2)).getText().toString());
+                        SettingsHelper.mMagCalTransformR0C0 = H.stringToFloat(((EditText) mToolbarAlertView.findViewById(R.id.etxMagCalTransLeftR0C0)).getText().toString());
+                        SettingsHelper.mMagCalTransformR1C1 = H.stringToFloat(((EditText) mToolbarAlertView.findViewById(R.id.etxMagCalTransLeftR1C1)).getText().toString());
+                        SettingsHelper.mMagCalTransformR2C2 = H.stringToFloat(((EditText) mToolbarAlertView.findViewById(R.id.etxMagCalTransLeftR2C2)).getText().toString());
+
+                        SingleToast.show(ma, "Manual changes in Backup values saved");
                     }
                 });
         builder.setPositiveButton("Backup",
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-                        //Copy live to backup
-                        SettingsHelper.mMagCalBiasX = biasX;
-                        SettingsHelper.mMagCalBiasY = biasY;
-                        SettingsHelper.mMagCalBiasZ = biasZ;
 
-                        SettingsHelper.mMagCalTransformR0C0 = trans0;
-                        SettingsHelper.mMagCalTransformR1C1 = trans1;
-                        SettingsHelper.mMagCalTransformR2C2 = trans2;
+                        if (isConnected()) {
+                            //Copy live to backup
+                            SettingsHelper.mMagCalBiasX = biasX;
+                            SettingsHelper.mMagCalBiasY = biasY;
+                            SettingsHelper.mMagCalBiasZ = biasZ;
+
+                            SettingsHelper.mMagCalTransformR0C0 = trans0;
+                            SettingsHelper.mMagCalTransformR1C1 = trans1;
+                            SettingsHelper.mMagCalTransformR2C2 = trans2;
+
+                            SettingsHelper.saveSettings(ma);
+
+                            SingleToast.show(ma, "Current values copied to Backup");
+                        } else {
+                            SingleToast.show(ma, "Not connected");
+                        }
                     }
                 });
 
@@ -591,21 +666,86 @@ public class ViewController3DMagCal extends ViewController implements
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-                        //Copy backup live
-                        sendSettingsObjectRevFloat("RevoCalibration", "mag_bias", "X", SettingsHelper.mMagCalBiasX);
-                        sendSettingsObjectRevFloat("RevoCalibration", "mag_bias", "Y", SettingsHelper.mMagCalBiasY);
-                        sendSettingsObjectRevFloat("RevoCalibration", "mag_bias", "Z", SettingsHelper.mMagCalBiasZ);
 
-                        sendSettingsObjectRevFloat("RevoCalibration", "mag_transform", "r0c0", SettingsHelper.mMagCalTransformR0C0);
-                        sendSettingsObjectRevFloat("RevoCalibration", "mag_transform", "r1c1", SettingsHelper.mMagCalTransformR1C1);
-                        sendSettingsObjectRevFloat("RevoCalibration", "mag_transform", "r2c2", SettingsHelper.mMagCalTransformR2C2);
+                        if (!isConnected()) {
+                            //Copy backup to live
+                            sendSettingsObjectRevFloat("RevoCalibration", "mag_bias", "X", SettingsHelper.mMagCalBiasX);
+                            sendSettingsObjectRevFloat("RevoCalibration", "mag_bias", "Y", SettingsHelper.mMagCalBiasY);
+                            sendSettingsObjectRevFloat("RevoCalibration", "mag_bias", "Z", SettingsHelper.mMagCalBiasZ);
 
-                        savePersistent("RevoCalibration");
+                            sendSettingsObjectRevFloat("RevoCalibration", "mag_transform", "r0c0", SettingsHelper.mMagCalTransformR0C0);
+                            sendSettingsObjectRevFloat("RevoCalibration", "mag_transform", "r1c1", SettingsHelper.mMagCalTransformR1C1);
+                            sendSettingsObjectRevFloat("RevoCalibration", "mag_transform", "r2c2", SettingsHelper.mMagCalTransformR2C2);
+
+                            savePersistent("RevoCalibration");
+
+                            SingleToast.show(ma, "Backup values copied to FlightController and saved persistent");
+                        } else {
+                            SingleToast.show(ma, "Not connected");
+                        }
                     }
                 });
 
         AlertDialog alert = builder.create();
-
         alert.show();
+    }
+
+    private void fillDefaultBackupIfEmpty(float biasX, float biasY, float biasZ, float trans0, float trans1, float trans2) {
+        //fill settings with current values, if saved settings are "0"
+        SettingsHelper.mMagCalBiasX = SettingsHelper.mMagCalBiasX == 0 ? biasX : SettingsHelper.mMagCalBiasX;
+        SettingsHelper.mMagCalBiasY = SettingsHelper.mMagCalBiasY == 0 ? biasY : SettingsHelper.mMagCalBiasY;
+        SettingsHelper.mMagCalBiasZ = SettingsHelper.mMagCalBiasZ == 0 ? biasZ : SettingsHelper.mMagCalBiasZ;
+
+        SettingsHelper.mMagCalTransformR0C0 = SettingsHelper.mMagCalTransformR0C0 == 0 ? trans0 : SettingsHelper.mMagCalTransformR0C0;
+        SettingsHelper.mMagCalTransformR1C1 = SettingsHelper.mMagCalTransformR1C1 == 0 ? trans1 : SettingsHelper.mMagCalTransformR1C1;
+        SettingsHelper.mMagCalTransformR2C2 = SettingsHelper.mMagCalTransformR2C2 == 0 ? trans2 : SettingsHelper.mMagCalTransformR2C2;
+    }
+
+    private void fillToolbarAlertViewLeft(String leftLabel, float biasX, float biasY, float biasZ, float trans0, float trans1, float trans2) {
+        ((TextView) mToolbarAlertView.findViewById(R.id.txtMagCalBiasLeftLabel)).setText(leftLabel);
+        ((TextView) mToolbarAlertView.findViewById(R.id.txtMagCalTransformLeftLabel)).setText(leftLabel);
+
+        ((EditText) mToolbarAlertView.findViewById(R.id.etxMagCalBiasLeftX))
+                .setText(String.format(Locale.US, "%f", biasX));
+        ((EditText) mToolbarAlertView.findViewById(R.id.etxMagCalBiasLeftY))
+                .setText(String.format(Locale.US, "%f", biasY));
+        ((EditText) mToolbarAlertView.findViewById(R.id.etxMagCalBiasLeftZ))
+                .setText(String.format(Locale.US, "%f", biasZ));
+
+        ((EditText) mToolbarAlertView.findViewById(R.id.etxMagCalTransLeftR0C0))
+                .setText(String.format(Locale.US, "%f", trans0));
+        ((EditText) mToolbarAlertView.findViewById(R.id.etxMagCalTransLeftR1C1))
+                .setText(String.format(Locale.US, "%f", trans1));
+        ((EditText) mToolbarAlertView.findViewById(R.id.etxMagCalTransLeftR2C2))
+                .setText(String.format(Locale.US, "%f", trans2));
+    }
+
+    private void fillToolbarAlertViewRight(String rightLabel, float biasX, float biasY, float biasZ, float trans0, float trans1, float trans2) {
+        ((TextView) mToolbarAlertView.findViewById(R.id.txtMagCalBiasRightLabel)).setText(rightLabel);
+        ((TextView) mToolbarAlertView.findViewById(R.id.txtMagCalTransformRightLabel)).setText(rightLabel);
+
+        ((EditText) mToolbarAlertView.findViewById(R.id.etxMagCalBiasRightX))
+                .setText(String.format(Locale.US, "%f", biasX));
+        ((EditText) mToolbarAlertView.findViewById(R.id.etxMagCalBiasRightY))
+                .setText(String.format(Locale.US, "%f", biasY));
+        ((EditText) mToolbarAlertView.findViewById(R.id.etxMagCalBiasRightZ))
+                .setText(String.format(Locale.US, "%f", biasZ));
+
+        ((EditText) mToolbarAlertView.findViewById(R.id.etxMagCalTransRightR0C0))
+                .setText(String.format(Locale.US, "%f", trans0));
+        ((EditText) mToolbarAlertView.findViewById(R.id.etxMagCalTransRightR1C1))
+                .setText(String.format(Locale.US, "%f", trans1));
+        ((EditText) mToolbarAlertView.findViewById(R.id.etxMagCalTransRightR2C2))
+                .setText(String.format(Locale.US, "%f", trans2));
+    }
+
+    private void setEnabledRightEditTextFields(boolean enabled) {
+        mToolbarAlertView.findViewById(R.id.etxMagCalBiasLeftX).setEnabled(enabled);
+        mToolbarAlertView.findViewById(R.id.etxMagCalBiasLeftY).setEnabled(enabled);
+        mToolbarAlertView.findViewById(R.id.etxMagCalBiasLeftZ).setEnabled(enabled);
+
+        mToolbarAlertView.findViewById(R.id.etxMagCalTransLeftR0C0).setEnabled(enabled);
+        mToolbarAlertView.findViewById(R.id.etxMagCalTransLeftR1C1).setEnabled(enabled);
+        mToolbarAlertView.findViewById(R.id.etxMagCalTransLeftR2C2).setEnabled(enabled);
     }
 }

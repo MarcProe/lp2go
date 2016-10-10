@@ -66,4 +66,5 @@
     <string name="DELETE_ALL_BUTTON">Delete All</string>
     <string name="SKIPPING_OBJECTS">Skipping %d objects</string>
     <string name="SEND_USAGE_STATISTICS">Send usage statistics</string>
+    <string name="MAGCAL_BIAS">Bias</string>
 </resources>
