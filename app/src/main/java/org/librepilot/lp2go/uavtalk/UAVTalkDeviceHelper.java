@@ -21,6 +21,8 @@
 
 package org.librepilot.lp2go.uavtalk;
 
+import android.support.annotation.Nullable;
+
 import org.librepilot.lp2go.VisualLog;
 
 public class UAVTalkDeviceHelper {
@@ -44,6 +46,7 @@ public class UAVTalkDeviceHelper {
         }
     }
 
+    @Nullable
     public static byte[] updateSettingsObject(
             UAVTalkObjectTree oTree, String objectName, int instance,
             String fieldName, int element, byte[] newFieldData) {
@@ -82,7 +85,12 @@ public class UAVTalkDeviceHelper {
 
         int savepos = fpos + elen * element;
 
-        System.arraycopy(newFieldData, 0, data, savepos, newFieldData.length);
+        try {
+            System.arraycopy(newFieldData, 0, data, savepos, newFieldData.length);
+        } catch (ArrayIndexOutOfBoundsException e) {
+            VisualLog.e(e);
+            return null;
+        }
 
         ins.setData(data);
         obj.setInstance(ins);
