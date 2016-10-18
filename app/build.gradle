@@ -11,8 +11,8 @@ android {
 
         multiDexEnabled true
 
-        versionName '0.3.0.43'
-        versionCode 30043
+        versionName '0.3.0.44'
+        versionCode 30044
     }
 
     dexOptions {
@@ -59,8 +59,8 @@ android {
             resValue 'string', 'APP_NAME', 'LibrePilot2Go Beta'
             resValue 'string', 'ACTION_USB_PERMISSION', applicationId + '.USB_PERMISSION'
 
-            versionCode 30119
-            versionName '0.3.1.19'
+            versionCode 30120
+            versionName '0.3.1.20'
         }
         release_flavor_ {
             minSdkVersion 14
