@@ -85,6 +85,7 @@ import org.librepilot.lp2go.controller.ViewControllerMainAnimatorViewSetter;
 import org.librepilot.lp2go.controller.ViewControllerMap;
 import org.librepilot.lp2go.controller.ViewControllerObjects;
 import org.librepilot.lp2go.controller.ViewControllerSettings;
+import org.librepilot.lp2go.controller.ViewControllerTransmitter;
 import org.librepilot.lp2go.controller.ViewControllerTuningParent;
 import org.librepilot.lp2go.helper.H;
 import org.librepilot.lp2go.helper.SettingsHelper;
@@ -528,6 +529,8 @@ public class MainActivity extends AppCompatActivity {
                 R.string.menu_3dmag, R.drawable.ic_explore_black_24dp, View.INVISIBLE, View.INVISIBLE);
         ViewController mVcMain = new ViewControllerMain(this, R.string.menu_main,
                 R.drawable.ic_notifications_on_24dp, View.VISIBLE, View.VISIBLE);
+        ViewController mVcManualControl = new ViewControllerTransmitter(this, R.string.menu_manualcontroller,
+                R.drawable.ic_pan_tool_black_24dp, View.VISIBLE, View.VISIBLE);
 
         mVcList = new TreeMap<>();
         mVcList.put(ViewController.VIEW_MAIN, mVcMain);
@@ -540,6 +543,7 @@ public class MainActivity extends AppCompatActivity {
         mVcList.put(ViewController.VIEW_ABOUT, mVcAbout);
         //mVcList.put(ViewController.VIEW_DEBUG, mVcDebug);
         mVcList.put(ViewController.VIEW_3DMAG, mVc3DMagCal);
+        mVcList.put(ViewController.VIEW_TRANSMITTER, mVcManualControl);
 
         ((ViewControllerMainAnimatorViewSetter) mVcMain).setLayout();
 

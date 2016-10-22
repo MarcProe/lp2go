@@ -15,4 +15,5 @@
     <string name="menu_3dmag">Compass Calibration</string>
     <string name="menu_parent_tuning">Tuning</string>
     <string name="menu_responsiveness">Responsiveness</string>
+    <string name="menu_manualcontroller">Manual Control</string>
 </resources>

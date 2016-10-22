@@ -155,6 +155,17 @@ public class H {
         return result;
     }
 
+    public static short toUint16(int i) {
+        return (short) i;
+    }
+
+    public static byte[] toBytes(short s) {
+        byte[] result = new byte[2];
+        result[0] = (byte) (s >> 8);
+        result[1] = (byte) (s);
+        return result;
+    }
+
     public static byte[] toBytes(int i) {
         byte[] result = new byte[4];
 

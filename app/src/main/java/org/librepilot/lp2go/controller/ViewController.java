@@ -39,6 +39,7 @@ import org.librepilot.lp2go.VisualLog;
 import org.librepilot.lp2go.helper.CompatHelper;
 import org.librepilot.lp2go.helper.H;
 import org.librepilot.lp2go.helper.SettingsHelper;
+import org.librepilot.lp2go.uavtalk.UAVTalkDeviceHelper;
 import org.librepilot.lp2go.uavtalk.UAVTalkMetaData;
 import org.librepilot.lp2go.uavtalk.UAVTalkMissingObjectException;
 import org.librepilot.lp2go.ui.menu.MenuItem;
@@ -64,6 +65,8 @@ public abstract class ViewController {
     public static final int VIEW_SETTINGS = 6000;
     public static final int VIEW_VPID = 4000;
     public static final int VIEW_RESP = 4200;
+    public static final int VIEW_TRANSMITTER = 4800;
+
 
     protected final HashMap<String, Object> mOffset;
     final private Set<ImageView> mUiImages;
@@ -293,6 +296,27 @@ public abstract class ViewController {
 
     boolean sendMetaObject(UAVTalkMetaData o) {
         return mActivity.mFcDevice.sendMetaObject(o.toMessage((byte) 0x22, false));
+    }
+
+    boolean sendData(String o) {
+        if (mActivity != null && mActivity.mFcDevice != null) {
+            return mActivity.mFcDevice.sendSettingsObject(o, 0);
+        } else {
+            return false;
+        }
+    }
+
+    void setData(String object, String field, int element, short data) {
+
+        byte[] d = new byte[2];
+        d[0] = H.toBytes(data)[1];
+        d[1] = H.toBytes(data)[0];
+        VisualLog.d("setData", "" + data + " " + d[0] + " " + d[1]);
+
+        if (mActivity != null && mActivity.mFcDevice != null) {
+            UAVTalkDeviceHelper.updateSettingsObject(mActivity.mFcDevice.getObjectTree(), object, 0, field, element, d);
+
+        }
     }
 
     UAVTalkMetaData getMetaData(String objectName) throws NullPointerException {
