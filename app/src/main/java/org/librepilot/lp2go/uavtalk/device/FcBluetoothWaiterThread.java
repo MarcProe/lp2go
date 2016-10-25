@@ -183,6 +183,10 @@ class FcBluetoothWaiterThread extends FcWaiterThread {
     }
 
     private byte[] bufferRead(int dlen) throws IOException {
+        if (dlen <= 0) {
+            return null;
+        }
+
         byte[] buffer = new byte[dlen];
         int read = mmInStream.read(buffer);
         int pos;
