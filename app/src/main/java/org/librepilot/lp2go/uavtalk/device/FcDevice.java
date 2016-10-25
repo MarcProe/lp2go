@@ -32,8 +32,8 @@ import org.librepilot.lp2go.uavtalk.UAVTalkDeviceHelper;
 import org.librepilot.lp2go.uavtalk.UAVTalkMessage;
 import org.librepilot.lp2go.uavtalk.UAVTalkObject;
 import org.librepilot.lp2go.uavtalk.UAVTalkObjectTree;
-import org.librepilot.lp2go.ui.SingleToast;
 import org.librepilot.lp2go.uavtalk.UAVTalkXMLObject;
+import org.librepilot.lp2go.ui.SingleToast;
 
 import java.io.FileOutputStream;
 import java.util.Arrays;
@@ -279,7 +279,7 @@ public abstract class FcDevice {
         } catch (NullPointerException e) {
             VisualLog.e(e);
             if (mActivity != null) {
-                SingleToast.show(mActivity, "PErsisten save failed.", Toast.LENGTH_LONG);
+                SingleToast.show(mActivity, "Persistent save failed.", Toast.LENGTH_LONG);
             }
         }
     }
