@@ -17,13 +17,16 @@
 package org.librepilot.lp2go.uavtalk.device;
 
 import android.content.Context;
+import android.widget.Toast;
 
 import org.librepilot.lp2go.H;
 import org.librepilot.lp2go.MainActivity;
+import org.librepilot.lp2go.VisualLog;
 import org.librepilot.lp2go.helper.SettingsHelper;
 import org.librepilot.lp2go.uavtalk.UAVTalkDeviceHelper;
 import org.librepilot.lp2go.uavtalk.UAVTalkMessage;
 import org.librepilot.lp2go.uavtalk.UAVTalkObjectTree;
+import org.librepilot.lp2go.ui.SingleToast;
 
 import java.io.FileOutputStream;
 import java.util.Arrays;
@@ -205,30 +208,37 @@ public abstract class FcDevice {
     public abstract boolean requestObject(String objectName, int instance);
 
     public void savePersistent(String saveObjectName) {
-        mObjectTree.getObjectFromName("ObjectPersistence").setWriteBlocked(true);
+        try {
+            mObjectTree.getObjectFromName("ObjectPersistence").setWriteBlocked(true);
 
-        byte[] op = {0x02};
-        UAVTalkDeviceHelper
-                .updateSettingsObject(mObjectTree, "ObjectPersistence", 0, "Operation", 0, op);
+            byte[] op = {0x02};
+            UAVTalkDeviceHelper
+                    .updateSettingsObject(mObjectTree, "ObjectPersistence", 0, "Operation", 0, op);
 
-        byte[] sel = {0x00};
-        UAVTalkDeviceHelper
-                .updateSettingsObject(mObjectTree, "ObjectPersistence", 0, "Selection", 0, sel);
-        String sid = mObjectTree.getXmlObjects().get(saveObjectName).getId();
+            byte[] sel = {0x00};
+            UAVTalkDeviceHelper
+                    .updateSettingsObject(mObjectTree, "ObjectPersistence", 0, "Selection", 0, sel);
+            String sid = mObjectTree.getXmlObjects().get(saveObjectName).getId();
 
-        byte[] oid = H.reverse4bytes(H.hexStringToByteArray(sid));
+            byte[] oid = H.reverse4bytes(H.hexStringToByteArray(sid));
 
-        UAVTalkDeviceHelper
-                .updateSettingsObject(mObjectTree, "ObjectPersistence", 0, "ObjectID", 0, oid);
+            UAVTalkDeviceHelper
+                    .updateSettingsObject(mObjectTree, "ObjectPersistence", 0, "ObjectID", 0, oid);
 
-        //for the last things we set, we can just use the sendsettingsobject. It will call updateSettingsObjectDeprecated for the last field.
-        byte[] ins = {0x00};
-        UAVTalkDeviceHelper
-                .updateSettingsObject(mObjectTree, "ObjectPersistence", 0, "InstanceID", 0, ins);
+            //for the last things we set, we can just use the sendsettingsobject. It will call updateSettingsObjectDeprecated for the last field.
+            byte[] ins = {0x00};
+            UAVTalkDeviceHelper
+                    .updateSettingsObject(mObjectTree, "ObjectPersistence", 0, "InstanceID", 0, ins);
 
-        sendSettingsObject("ObjectPersistence", 0);
+            sendSettingsObject("ObjectPersistence", 0);
 
-        mObjectTree.getObjectFromName("ObjectPersistence").setWriteBlocked(false);
+            mObjectTree.getObjectFromName("ObjectPersistence").setWriteBlocked(false);
+        } catch (NullPointerException e) {
+            VisualLog.e(e);
+            if (mActivity != null) {
+                SingleToast.show(mActivity, "PErsisten save failed.", Toast.LENGTH_LONG);
+            }
+        }
     }
 
     public void handleHandshake(byte flightTelemtryStatusField) {

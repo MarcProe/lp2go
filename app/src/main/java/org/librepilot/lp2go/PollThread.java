@@ -85,7 +85,7 @@ public class PollThread extends Thread {
                 @Override
                 public void run() {
                     if (SettingsHelper.mSerialModeUsed == MainActivity.SERIAL_BLUETOOTH) {
-                        if (mA.mFcDevice != null && mA.mFcDevice.isConnected()) {
+                        if (mA != null && mA.mFcDevice != null && mA.mFcDevice.isConnected()) {
                             mA.imgSerial.setColorFilter(Color.argb(0xff, 0x00, 0x80, 0x00));
                             mA.imgSerial.setImageDrawable(
                                     ContextCompat.getDrawable(mA.getApplicationContext(),
