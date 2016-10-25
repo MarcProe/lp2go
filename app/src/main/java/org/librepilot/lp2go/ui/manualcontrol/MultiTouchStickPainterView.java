@@ -124,28 +124,16 @@ public class MultiTouchStickPainterView extends View {
             case MotionEvent.ACTION_MOVE: {
 
                 if (mLeftPointerId != -1 && event.getX(mLeftPointerId) > llb && event.getX(mLeftPointerId) < lrb && event.getY(mLeftPointerId) > tb && event.getY(mLeftPointerId) < bb) {
-                    try {
-                        mLeftPointer.x = event.getX(mLeftPointerId);
-                        mLeftPointer.y = event.getY(mLeftPointerId);
-
-                        calcLeft();
-
-                    } catch (IllegalArgumentException e) {
-                        VisualLog.d("pointerrcrash left");
-                    }
+                    mLeftPointer.x = event.getX(mLeftPointerId);
+                    mLeftPointer.y = event.getY(mLeftPointerId);
                 }
 
                 if (mRightPointerId != -1 && event.getX(mRightPointerId) > rlb && event.getX(mRightPointerId) < rrb && event.getY(mRightPointerId) > tb && event.getY(mRightPointerId) < bb) {
-                    try {
-                        mRightPointer.x = event.getX(mRightPointerId);
-                        mRightPointer.y = event.getY(mRightPointerId);
-
-                        calcRight();
-
-                    } catch (IllegalArgumentException e) {
-                        VisualLog.d("pointerrcrash right");
-                    }
+                    mRightPointer.x = event.getX(mRightPointerId);
+                    mRightPointer.y = event.getY(mRightPointerId);
                 }
+
+                calc();
 
                 break;
             }
@@ -154,14 +142,12 @@ public class MultiTouchStickPainterView extends View {
             case MotionEvent.ACTION_CANCEL: {
 
                 if (pointerId == mLeftPointerId) {
-                    mLeftPointer.x = w / 4;
                     mLeftPointerId = -1;
-                    calcLeft();
+                    mLeftPointer.x = w / 4;
                 } else if (pointerId == mRightPointerId) {
+                    mRightPointerId = -1;
                     mRightPointer.x = w / 4 * 3;
                     mRightPointer.y = h / 2;
-                    mRightPointerId = -1;
-                    calcRight();
                 }
 
                 if (mLeftPointerId == 1 && mRightPointerId == -1) {
@@ -173,10 +159,12 @@ public class MultiTouchStickPainterView extends View {
 
                 VisualLog.d("PointerUp: L " + mLeftPointerId + " R " + mRightPointerId + " " + event.getPointerCount());
 
-                if (event.getPointerCount() == 1) { //the last one, which is "uped" in this event
+                if (event.getPointerCount() == 1) { //the last one, which is "up'ed" in this event
                     mLeftPointerId = -1;
                     mRightPointerId = -1;
                 }
+
+                calc();
 
                 break;
 
@@ -192,22 +180,29 @@ public class MultiTouchStickPainterView extends View {
         return true;
     }
 
-    private void calcLeft() {
-        final float hqs = ((lrb - llb) / 2);
-        mLeftHoriPerc = ((mLeftPointer.x - llb) - hqs) / hqs * 100;//x
-        final float vqs = ((bb - tb) / 2);
-        mLeftVertPerc = ((mLeftPointer.y - tb) - vqs) / vqs * 100;//y
+    private void calc() {
+        final float hqsl = ((lrb - llb) / 2);
+        mLeftHoriPerc = ((mLeftPointer.x - llb) - hqsl) / hqsl * 100;//x
+        final float vqsl = ((bb - tb) / 2);
+        mLeftVertPerc = ((mLeftPointer.y - tb) - vqsl) / vqsl * 100;//y
 
-        mStickListener.onLeftChange(mLeftHoriPerc, mLeftVertPerc);
-    }
+        if (-1 == mLeftPointerId) {
+            mLeftPointer.x = w / 4;
+        }
 
-    private void calcRight() {
-        final float hqs = ((rrb - rlb) / 2);
-        mRightHoriPerc = ((mRightPointer.x - rlb) - hqs) / hqs * 100;//x
-        final float vqs = ((bb - tb) / 2);
-        mRightVertPerc = ((mRightPointer.y - tb) - vqs) / vqs * 100;//y
+        //mStickListener.onLeftChange(mLeftHoriPerc, mLeftVertPerc);
 
-        mStickListener.onRightChange(mRightHoriPerc, mRightVertPerc);
+        final float hqsr = ((rrb - rlb) / 2);
+        mRightHoriPerc = ((mRightPointer.x - rlb) - hqsr) / hqsr * 100;//x
+        final float vqsr = ((bb - tb) / 2);
+        mRightVertPerc = ((mRightPointer.y - tb) - vqsr) / vqsr * 100;//y
+
+        if (-1 == mRightPointerId) {
+            mRightPointer.x = w / 4 * 3;
+            mRightPointer.y = h / 2;
+        }
+
+        mStickListener.onChange(mLeftHoriPerc, mLeftVertPerc, mRightHoriPerc, mRightVertPerc);
     }
 
     @Override
@@ -215,7 +210,6 @@ public class MultiTouchStickPainterView extends View {
         super.onDraw(canvas);
 
         mPaint.setStyle(Paint.Style.FILL_AND_STROKE);
-
 
         canvas.drawText("" + mLeftPointerId + "- " + H.round(mLeftHoriPerc, 2) + " | " + H.round(mLeftVertPerc, 2), w / 4, 30, textPaint);
         mPaint.setColor(Color.RED);
@@ -232,8 +226,6 @@ public class MultiTouchStickPainterView extends View {
         canvas.drawLine(mRightPointer.x, tb, mRightPointer.x, bb, mPaint);
 
         mPaint.setColor(Color.GRAY);
-
-        final float hsw = (mPaint.getStrokeWidth() / 2);
 
         mPaint.setStyle(Paint.Style.STROKE);
         canvas.drawRect(llb, tb, lrb, bb, mPaint);
@@ -260,8 +252,7 @@ public class MultiTouchStickPainterView extends View {
 
         mLeftPointer = new PointF(w / 4, bb);
         mRightPointer = new PointF((w / 4) * 3, h / 2);
-        calcLeft();
-        calcRight();
+        calc();
     }
 
     public void setStickListener(StickListener s) {
@@ -272,6 +263,8 @@ public class MultiTouchStickPainterView extends View {
         void onLeftChange(float lx, float ly);
 
         void onRightChange(float rx, float ry);
+
+        void onChange(float lx, float ly, float rx, float ry);
     }
 }
 

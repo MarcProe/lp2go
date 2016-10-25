@@ -25,6 +25,7 @@ import android.widget.LinearLayout;
 
 import org.librepilot.lp2go.MainActivity;
 import org.librepilot.lp2go.R;
+import org.librepilot.lp2go.VisualLog;
 import org.librepilot.lp2go.helper.H;
 import org.librepilot.lp2go.ui.manualcontrol.MultiTouchStickPainterView;
 
@@ -32,6 +33,8 @@ public class ViewControllerTransmitter extends ViewController implements MultiTo
 
     private MultiTouchStickPainterView mStickView;
     private float mOlx, mOrx, mOly, mOry = .0f;
+    private short mThrust, mYaw, mRoll, mPitch = 1500;
+    private SendThread mST;
 
     public ViewControllerTransmitter(MainActivity activity, int title, int icon, int localSettingsVisible, int flightSettingsVisible) {
         super(activity, title, icon, localSettingsVisible, flightSettingsVisible);
@@ -49,14 +52,13 @@ public class ViewControllerTransmitter extends ViewController implements MultiTo
     public void leave() {
         super.leave();
         ((LinearLayout) findViewById(R.id.view_transmitter_parent)).removeView(mStickView);
+        mST.running = false;
+        mST = null;
     }
 
     @Override
     public void update() {
-
         super.update();
-        onLeftChange(mOlx, mOly);
-        onRightChange(mOrx, mOry);
     }
 
     @Override
@@ -64,18 +66,25 @@ public class ViewControllerTransmitter extends ViewController implements MultiTo
         super.enter(view);
         mStickView = new MultiTouchStickPainterView(getMainActivity().getApplicationContext(), null, this);
         ((LinearLayout) findViewById(R.id.view_transmitter_parent)).addView(mStickView);
+        mST = new SendThread();
+        mST.start();
     }
 
     @Override
     public void onLeftChange(float x, float y) {
-        //VisualLog.d("Left", ""+x+" " +y);
 
         int yaw = Math.round(x + 100) * 5 + 1000;
-        int thrust = Math.round(y + 100) * 5 + 1000;
+        int thrust = Math.round((y * (-1)) + 100) * 5 + 1000;
 
-        setData("GCSReceiver", "Channel", 0, H.toUint16(yaw));
-        setData("GCSReceiver", "Channel", 1, H.toUint16(thrust));
-        sendData("GCSReceiver");
+        VisualLog.d("Left", "" + yaw + " " + thrust);
+
+        //setData("GCSReceiver", "Channel", 0, H.toUint16(yaw));
+        //setData("GCSReceiver", "Channel", 1, H.toUint16(thrust));
+
+        mYaw = H.toUint16(yaw);
+        mThrust = H.toUint16(thrust);
+
+        //sendData("GCSReceiver");
 
         mOlx = x;
         mOly = y;
@@ -83,16 +92,57 @@ public class ViewControllerTransmitter extends ViewController implements MultiTo
 
     @Override
     public void onRightChange(float x, float y) {
-        //VisualLog.d("Right", ""+x+" " +y);
 
         int roll = Math.round(x + 100) * 5 + 1000;
         int pitch = Math.round(y + 100) * 5 + 1000;
 
-        setData("GCSReceiver", "Channel", 2, H.toUint16(roll));
-        setData("GCSReceiver", "Channel", 3, H.toUint16(pitch));
-        sendData("GCSReceiver");
+        VisualLog.d("Right", "" + roll + " " + pitch);
+
+        //setData("GCSReceiver", "Channel", 2, H.toUint16(roll));
+        //setData("GCSReceiver", "Channel", 3, H.toUint16(pitch));
+
+        mRoll = H.toUint16(roll);
+        mPitch = H.toUint16(pitch);
+
+        //sendData("GCSReceiver");
 
         mOrx = x;
         mOry = y;
+    }
+
+    @Override
+    public void onChange(float lx, float ly, float rx, float ry) {
+        onLeftChange(lx, ly);
+        onRightChange(rx, ry);
+    }
+
+    private class SendThread extends Thread {
+        public boolean running = true;
+
+        @Override
+        public void run() {
+            while (running) {
+                long before = System.currentTimeMillis();
+
+                setData("GCSReceiver", "Channel", 0, mYaw);
+                setData("GCSReceiver", "Channel", 1, mThrust);
+                setData("GCSReceiver", "Channel", 2, mRoll);
+                setData("GCSReceiver", "Channel", 3, mPitch);
+
+                sendData("GCSReceiver");
+                long diff = 20 - (System.currentTimeMillis() - before);
+                long sl = diff < 0 ? 0 : diff;
+
+                //VisualLog.d(""+sl);
+
+                try {
+                    Thread.sleep(sl);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+        }
     }
 }
