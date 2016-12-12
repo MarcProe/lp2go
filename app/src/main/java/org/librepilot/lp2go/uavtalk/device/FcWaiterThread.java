@@ -25,6 +25,8 @@ import org.librepilot.lp2go.VisualLog;
 import org.librepilot.lp2go.helper.H;
 import org.librepilot.lp2go.uavtalk.UAVTalkObject;
 
+import java.text.MessageFormat;
+
 public abstract class FcWaiterThread extends Thread {
     public final static byte MASK_TIMESTAMP = (byte) 0x80;
     final FcDevice mDevice;
@@ -48,33 +50,38 @@ public abstract class FcWaiterThread extends Thread {
                 break;
             case (byte) 0x21:
             case (byte) 0xa1:
-                //handle request message, nobody should request from LP2Go (so we don't implement this)
-                VisualLog
-                        .e("UAVTalk", "Received Object Request, but won't send any " + obj.getId());
+                //handle request message, nobody'd request from LP2Go (so we don't implement this)
+                VisualLog.e("UAVTalk",
+                        MessageFormat.format("Received Object Request, but won't send any {0}",
+                                obj.getId()));
                 break;
             case (byte) 0x22:
             case (byte) 0xa2:
                 //handle object with ACK REQ, means send ACK
                 mDevice.sendAck(obj.getId(), 0);
-                VisualLog.d("UAVTalk", "Received Object with ACK Request " + obj.getId());
+                VisualLog.d("UAVTalk",
+                        MessageFormat.format("Received Object with ACK Request {0}", obj.getId()));
                 break;
             case (byte) 0x23:
             case (byte) 0xa3:
                 //handle received ACK, e.g. save in Object that it has been acknowledged
-                VisualLog.d("UAVTalk", "Received ACK Object " + obj.getId());
+                VisualLog.d("UAVTalk", MessageFormat.format("Received ACK Object {0}",
+                        obj.getId()));
                 break;
             case (byte) 0x24:
             case (byte) 0xa4:
                 //handle NACK, show warning and add to request blacklist
                 mDevice.nackedObjects.add(obj.getId());
                 mDevice.mActivity.incRxObjectsBad();
-                VisualLog.w("UAVTalk", "Received NACK Object " + obj.getId());
+                VisualLog.w("UAVTalk", MessageFormat.format("Received NACK Object {0}",
+                        obj.getId()));
                 break;
             default:
                 mDevice.mActivity.incRxObjectsBad();
                 byte[] b = new byte[1];
                 b[0] = msgType;
-                VisualLog.w("UAVTalk", "Received bad Object Type " + H.bytesToHex(b));
+                VisualLog.w("UAVTalk", MessageFormat.format("Received bad Object Type {0}",
+                        H.bytesToHex(b)));
                 return false;
         }
         return true;

@@ -130,7 +130,7 @@ public class ViewControllerTransmitter extends ViewController implements MultiTo
                 setData("GCSReceiver", "Channel", 3, mPitch);
 
                 sendData("GCSReceiver");
-                long diff = 20 - (System.currentTimeMillis() - before);
+                long diff = 50 - (System.currentTimeMillis() - before);
                 long sl = diff < 0 ? 0 : diff;
 
                 //VisualLog.d(""+sl);

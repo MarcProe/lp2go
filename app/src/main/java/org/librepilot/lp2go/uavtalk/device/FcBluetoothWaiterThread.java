@@ -100,6 +100,7 @@ class FcBluetoothWaiterThread extends FcWaiterThread {
 
                 if (len > 266 || len < 10) {
                     mDevice.mActivity.incRxObjectsBad();
+                    VisualLog.d("Bad Packet Size " + len);
                     continue; // maximum possible packet size
                 }
 
@@ -115,8 +116,12 @@ class FcBluetoothWaiterThread extends FcWaiterThread {
                 databuffer = bufferRead(len - (10 + tsoffset));
                 crcbuffer = bufferRead(crcbuffer.length);
 
+                //VisualLog.d(""+""+msgtypebuffer[0]);
+
                 if (lenbuffer.length != 2 || oidbuffer.length != 4 || iidbuffer.length != 2
-                        || databuffer.length == 0 || crcbuffer.length != 1) {
+                        || /*databuffer.length == 0 ||*/ crcbuffer.length != 1) {
+                    VisualLog.d("Bad buffer len " + lenbuffer.length + " " + oidbuffer.length + " " + iidbuffer.length + " " + databuffer.length + " " + crcbuffer.length);
+
                     mDevice.mActivity.incRxObjectsBad();
                     continue;
                 }
@@ -136,6 +141,7 @@ class FcBluetoothWaiterThread extends FcWaiterThread {
                 if ((((int) crcbuffer[0] & 0xff) == (crc & 0xff))) {
                     mDevice.mActivity.incRxObjectsGood();
                 } else {
+                    VisualLog.d("Bad CRC " + ((int) crcbuffer[0] + " " + (crc & 0xff)));
                     mDevice.mActivity.incRxObjectsBad();
                     continue;
                 }
