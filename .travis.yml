@@ -8,7 +8,7 @@ android:
   - platform-tools
   - tools
   - build-tools-24.0.2
-  - android-24
+  - android-25
   - extra
 
 script:
