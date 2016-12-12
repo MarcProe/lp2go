@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 24
+    compileSdkVersion 25
     buildToolsVersion '23.0.3'
 
     defaultConfig {
@@ -82,12 +82,12 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:24.2.0'
+    compile 'com.android.support:appcompat-v7:25.0.1'
     compile 'com.android.support:multidex:1.0.1'
-    compile 'com.android.support:percent:24.2.0'
-    compile 'com.google.android.gms:play-services-maps:9.4.0'
-    compile 'com.google.android.gms:play-services-appindexing:9.4.0'
-    compile 'com.google.android.gms:play-services:9.4.0'
+    compile 'com.android.support:percent:25.0.1'
+    compile 'com.google.android.gms:play-services-maps:10.0.1'
+    compile 'com.google.firebase:firebase-appindexing:10.0.1'
+    compile 'com.google.android.gms:play-services:10.0.1'
     compile 'com.nbsp:library:1.08'
     compile 'com.github.PhilJay:MPAndroidChart:v2.2.4'
     compile 'com.google.firebase:firebase-core:9.0.2'
