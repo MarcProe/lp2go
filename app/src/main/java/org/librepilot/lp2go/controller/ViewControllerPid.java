@@ -396,7 +396,7 @@ public class ViewControllerPid extends ViewController implements View.OnClickLis
         MainActivity ma = getMainActivity();
         if (ma.mFcDevice != null && ma.mFcDevice.isConnected()) {
             UAVTalkObjectTree oTree = ma.mFcDevice.getObjectTree();
-            if (oTree != null) {
+            if (oTree != null && oTree.getObjectFromName(mCurrentStabilizationBank) != null) {
                 oTree.getObjectFromName(mCurrentStabilizationBank).setWriteBlocked(true);
 
                 for (PidTextView ptv : mPidTexts) {
