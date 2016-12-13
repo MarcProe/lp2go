@@ -11,8 +11,8 @@ android {
 
         multiDexEnabled true
 
-        versionName '0.3.0.44'
-        versionCode 30044
+        versionName '0.3.0.46'
+        versionCode 30046
     }
 
     dexOptions {
@@ -35,8 +35,8 @@ android {
     }
     productFlavors {
         preflight_flavor_ {
-            versionName 'x7'
-            versionCode 7
+            versionName 'x8'
+            versionCode 8
             applicationId 'net.proest.lp2go.preflight'
             resValue 'string', 'APP_ID', applicationId
             resValue 'string', 'google_maps_api_key', 'AIzaSyCE91uHoVzA_-mxPer8g5sU7WL2jTdQDzo'
