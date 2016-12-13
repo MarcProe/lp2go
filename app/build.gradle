@@ -22,7 +22,7 @@ android {
     buildTypes {
         release {
             minifyEnabled false
-            shrinkResources true
+            shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             zipAlignEnabled true
         }
@@ -50,8 +50,8 @@ android {
             resValue 'string', 'APP_NAME', 'LibrePilot2Go Beta'
             resValue 'string', 'ACTION_USB_PERMISSION', applicationId + '.USB_PERMISSION'
 
-            versionCode 30120
-            versionName '0.3.1.20'
+            versionCode 30200
+            versionName '0.3.2.0'
         }
         release_flavor_ {
             minSdkVersion 14
