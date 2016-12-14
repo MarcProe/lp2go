@@ -184,7 +184,7 @@ class FcBluetoothWaiterThread extends FcWaiterThread {
 
     private byte[] bufferRead(int dlen) throws IOException {
         if (dlen <= 0) {
-            return null;
+            return new byte[0];
         }
 
         byte[] buffer = new byte[dlen];
