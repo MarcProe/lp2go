@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 24
+    compileSdkVersion 25
     buildToolsVersion '24.0.2'
 
     defaultConfig {
@@ -11,8 +11,8 @@ android {
 
         multiDexEnabled true
 
-        versionName '0.3.0.44'
-        versionCode 30044
+        versionName '0.3.0.47'
+        versionCode 30047
     }
 
     dexOptions {
@@ -35,8 +35,8 @@ android {
     }
     productFlavors {
         preflight_flavor_ {
-            versionName 'x7'
-            versionCode 7
+            versionName 'x8'
+            versionCode 8
             applicationId 'net.proest.lp2go.preflight'
             resValue 'string', 'APP_ID', applicationId
             resValue 'string', 'google_maps_api_key', 'AIzaSyCE91uHoVzA_-mxPer8g5sU7WL2jTdQDzo'
@@ -91,13 +91,13 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
+    compile 'com.android.support:appcompat-v7:25.0.1'
     testCompile 'org.mockito:mockito-core:1.10.19'
-    compile 'com.android.support:appcompat-v7:24.2.1'
     compile 'com.android.support:multidex:1.0.1'
-    compile 'com.android.support:percent:24.2.1'
-    compile 'com.google.android.gms:play-services-maps:9.6.1'
-    compile 'com.google.android.gms:play-services-appindexing:9.6.1'
-    compile 'com.google.android.gms:play-services:9.6.1'
+    compile 'com.android.support:percent:25.0.1'
+    compile 'com.google.android.gms:play-services-maps:10.0.1'
+    compile 'com.google.firebase:firebase-appindexing:10.0.1'
+    compile 'com.google.android.gms:play-services:10.0.1'
     compile 'com.nbsp:library:1.08'
     compile 'com.github.PhilJay:MPAndroidChart:v2.2.4'
     compile 'com.google.firebase:firebase-core:9.2.0'
