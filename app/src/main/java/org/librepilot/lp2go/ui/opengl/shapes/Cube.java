@@ -47,7 +47,7 @@ public class Cube implements ThreeSpacePoint {
     private ByteBuffer mIndexBuffer;
     private FloatBuffer mVertexBuffer;
 
-    public Cube(float x, float y, float z) {
+    public Cube(float x, float y, float z, boolean isAuxMag) {
 
         rawX = x;
         rawY = y;
@@ -91,10 +91,25 @@ public class Cube implements ThreeSpacePoint {
                 1.0f, 0.0f, 0.0f, 1.0f,
                 1.0f, 0.0f, 0.0f, 1.0f
         };
+
+        float[] auxColors = {
+                0.0f, 0.0f, 1.0f, 1.0f,
+                0.0f, 0.0f, 1.0f, 1.0f,
+                0.0f, 0.0f, 1.0f, 1.0f,
+                0.0f, 0.0f, 1.0f, 1.0f,
+                0.0f, 0.0f, 1.0f, 1.0f,
+                0.0f, 0.0f, 1.0f, 1.0f,
+                0.0f, 0.0f, 1.0f, 1.0f,
+                0.0f, 0.0f, 1.0f, 1.0f
+        };
         byteBuf = ByteBuffer.allocateDirect(colors.length * 4);
         byteBuf.order(ByteOrder.nativeOrder());
         mColorBuffer = byteBuf.asFloatBuffer();
-        mColorBuffer.put(colors);
+        if (isAuxMag) {
+            mColorBuffer.put(auxColors);
+        } else {
+            mColorBuffer.put(colors);
+        }
         mColorBuffer.position(0);
 
         mIndexBuffer = ByteBuffer.allocateDirect(indices.length);

@@ -61,6 +61,12 @@ public class SettingsHelper {
     public static float mMagCalTransformR0C0;
     public static float mMagCalTransformR1C1;
     public static float mMagCalTransformR2C2;
+    public static float mAuxMagCalBiasX;
+    public static float mAuxMagCalBiasY;
+    public static float mAuxMagCalBiasZ;
+    public static float mAuxMagCalTransformR0C0;
+    public static float mAuxMagCalTransformR1C1;
+    public static float mAuxMagCalTransformR2C2;
 
     @SuppressLint({"CommitPrefEdits", "StringFormatMatches"})
     public static void loadSettings(MainActivity ma) {
@@ -120,6 +126,19 @@ public class SettingsHelper {
                 ma.getString(R.string.SETTINGS_MAGCAL_TRANSFORM_R1C1, APP_ID), .0f);
         mMagCalTransformR2C2 = sharedPref.getFloat(
                 ma.getString(R.string.SETTINGS_MAGCAL_TRANSFORM_R1C1, APP_ID), .0f);
+
+        mAuxMagCalBiasX = sharedPref.getFloat(
+                ma.getString(R.string.SETTINGS_AUX_MAGCAL_BIAS_X, APP_ID), .0f);
+        mAuxMagCalBiasY = sharedPref.getFloat(
+                ma.getString(R.string.SETTINGS_AUX_MAGCAL_BIAS_Y, APP_ID), .0f);
+        mAuxMagCalBiasZ = sharedPref.getFloat(
+                ma.getString(R.string.SETTINGS_AUX_MAGCAL_BIAS_Z, APP_ID), .0f);
+        mAuxMagCalTransformR0C0 = sharedPref.getFloat(
+                ma.getString(R.string.SETTINGS_AUX_MAGCAL_TRANSFORM_R0C0, APP_ID), .0f);
+        mAuxMagCalTransformR1C1 = sharedPref.getFloat(
+                ma.getString(R.string.SETTINGS_AUX_MAGCAL_TRANSFORM_R1C1, APP_ID), .0f);
+        mAuxMagCalTransformR2C2 = sharedPref.getFloat(
+                ma.getString(R.string.SETTINGS_AUX_MAGCAL_TRANSFORM_R1C1, APP_ID), .0f);
     }
 
     @SuppressLint({"CommitPrefEdits", "StringFormatMatches"})
@@ -181,6 +200,22 @@ public class SettingsHelper {
         editor.putFloat(
                 ma.getString(R.string.SETTINGS_MAGCAL_TRANSFORM_R2C2, APP_ID),
                 SettingsHelper.mMagCalTransformR2C2);
+
+        editor.putFloat(
+                ma.getString(R.string.SETTINGS_AUX_MAGCAL_BIAS_X, APP_ID), SettingsHelper.mAuxMagCalBiasX);
+        editor.putFloat(
+                ma.getString(R.string.SETTINGS_AUX_MAGCAL_BIAS_Y, APP_ID), SettingsHelper.mAuxMagCalBiasY);
+        editor.putFloat(
+                ma.getString(R.string.SETTINGS_AUX_MAGCAL_BIAS_Z, APP_ID), SettingsHelper.mAuxMagCalBiasZ);
+        editor.putFloat(
+                ma.getString(R.string.SETTINGS_AUX_MAGCAL_TRANSFORM_R0C0, APP_ID),
+                SettingsHelper.mAuxMagCalTransformR0C0);
+        editor.putFloat(
+                ma.getString(R.string.SETTINGS_AUX_MAGCAL_TRANSFORM_R1C1, APP_ID),
+                SettingsHelper.mAuxMagCalTransformR1C1);
+        editor.putFloat(
+                ma.getString(R.string.SETTINGS_AUX_MAGCAL_TRANSFORM_R2C2, APP_ID),
+                SettingsHelper.mAuxMagCalTransformR2C2);
 
         if (async) {
             editor.apply();

@@ -42,21 +42,24 @@
                 android:ellipsize="end"
                 android:gravity="center_vertical|center_horizontal"
                 android:text="@string/MAGCAL_BIAS"
-                android:textSize="26sp"/>
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                />
 
             <TextView
                 android:id="@+id/txtMagCalBiasLeftLabel"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:gravity="center_vertical|center_horizontal"/>
+                android:gravity="center_vertical|center_horizontal"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"/>
 
             <TextView
                 android:id="@+id/txtMagCalBiasRightLabel"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:gravity="center_vertical|center_horizontal"/>
+                android:gravity="center_vertical|center_horizontal"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"/>
         </LinearLayout>
 
         <LinearLayout
@@ -70,8 +73,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center_vertical|center_horizontal"
-                android:text="X"
-                android:textSize="20sp"/>
+                android:text="Mag X"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"/>
 
             <EditText
                 android:id="@+id/etxMagCalBiasLeftX"
@@ -81,7 +84,8 @@
                 android:ems="10"
                 android:gravity="center_vertical|center_horizontal"
                 android:inputType="textPersonName"
-                android:text="0"/>
+                android:text="0"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"/>
 
             <EditText
                 android:id="@+id/etxMagCalBiasRightX"
@@ -91,7 +95,8 @@
                 android:enabled="false"
                 android:gravity="center_vertical|center_horizontal"
                 android:inputType="textPersonName"
-                android:text="0"/>
+                android:text="0"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"/>
         </LinearLayout>
 
         <LinearLayout
@@ -104,8 +109,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center_vertical|center_horizontal"
-                android:text="Y"
-                android:textSize="20sp"/>
+                android:text="Mag Y"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                />
 
             <EditText
                 android:id="@+id/etxMagCalBiasLeftY"
@@ -115,7 +121,8 @@
                 android:ems="10"
                 android:gravity="center_vertical|center_horizontal"
                 android:inputType="textPersonName"
-                android:text="0"/>
+                android:text="0"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"/>
 
             <EditText
                 android:id="@+id/etxMagCalBiasRightY"
@@ -126,7 +133,8 @@
                 android:enabled="false"
                 android:gravity="center_vertical|center_horizontal"
                 android:inputType="textPersonName"
-                android:text="0"/>
+                android:text="0"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"/>
 
         </LinearLayout>
 
@@ -140,8 +148,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center_vertical|center_horizontal"
-                android:text="Z"
-                android:textSize="20sp"/>
+                android:text="Mag Z"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                />
 
             <EditText
                 android:id="@+id/etxMagCalBiasLeftZ"
@@ -151,7 +160,8 @@
                 android:ems="10"
                 android:gravity="center_vertical|center_horizontal"
                 android:inputType="textPersonName"
-                android:text="0"/>
+                android:text="0"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"/>
 
             <EditText
                 android:id="@+id/etxMagCalBiasRightZ"
@@ -162,7 +172,8 @@
                 android:enabled="false"
                 android:gravity="center_vertical|center_horizontal"
                 android:inputType="textPersonName"
-                android:text="0"/>
+                android:text="0"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"/>
 
         </LinearLayout>
 
@@ -178,21 +189,23 @@
                 android:ellipsize="end"
                 android:gravity="center_vertical|center_horizontal"
                 android:text="Transform"
-                android:textSize="26sp"/>
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"/>
 
             <TextView
                 android:id="@+id/txtMagCalTransformLeftLabel"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:gravity="center_vertical|center_horizontal"/>
+                android:gravity="center_vertical|center_horizontal"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"/>
 
             <TextView
                 android:id="@+id/txtMagCalTransformRightLabel"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:gravity="center_vertical|center_horizontal"/>
+                android:gravity="center_vertical|center_horizontal"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"/>
         </LinearLayout>
 
         <LinearLayout
@@ -206,8 +219,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center_vertical|center_horizontal"
-                android:text="X"
-                android:textSize="20sp"/>
+                android:text="Mag R0C0"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                />
 
             <EditText
                 android:id="@+id/etxMagCalTransLeftR0C0"
@@ -217,7 +231,8 @@
                 android:ems="10"
                 android:gravity="center_vertical|center_horizontal"
                 android:inputType="textPersonName"
-                android:text="0"/>
+                android:text="0"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"/>
 
             <EditText
                 android:id="@+id/etxMagCalTransRightR0C0"
@@ -227,7 +242,8 @@
                 android:enabled="false"
                 android:gravity="center_vertical|center_horizontal"
                 android:inputType="textPersonName"
-                android:text="0"/>
+                android:text="0"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"/>
         </LinearLayout>
 
         <LinearLayout
@@ -240,8 +256,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center_vertical|center_horizontal"
-                android:text="Y"
-                android:textSize="20sp"/>
+                android:text="Mag R1C1"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                />
 
             <EditText
                 android:id="@+id/etxMagCalTransLeftR1C1"
@@ -251,7 +268,8 @@
                 android:ems="10"
                 android:gravity="center_vertical|center_horizontal"
                 android:inputType="textPersonName"
-                android:text="0"/>
+                android:text="0"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"/>
 
             <EditText
                 android:id="@+id/etxMagCalTransRightR1C1"
@@ -262,7 +280,8 @@
                 android:enabled="false"
                 android:gravity="center_vertical|center_horizontal"
                 android:inputType="textPersonName"
-                android:text="0"/>
+                android:text="0"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"/>
 
         </LinearLayout>
 
@@ -276,8 +295,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center_vertical|center_horizontal"
-                android:text="Z"
-                android:textSize="20sp"/>
+                android:text="Mag R2C2"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                />
 
             <EditText
                 android:id="@+id/etxMagCalTransLeftR2C2"
@@ -287,7 +307,8 @@
                 android:ems="10"
                 android:gravity="center_vertical|center_horizontal"
                 android:inputType="textPersonName"
-                android:text="0"/>
+                android:text="0"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"/>
 
             <EditText
                 android:id="@+id/etxMagCalTransRightR2C2"
@@ -298,7 +319,304 @@
                 android:enabled="false"
                 android:gravity="center_vertical|center_horizontal"
                 android:inputType="textPersonName"
-                android:text="0"/>
+                android:text="0"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"/>
+
+        </LinearLayout>
+
+        <!-- middle -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:gravity="center_vertical|center_horizontal"
+                android:text="@string/MAGCAL_BIAS"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"/>
+
+            <TextView
+                android:id="@+id/txtAuxMagCalBiasLeftLabel"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_vertical|center_horizontal"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"/>
+
+            <TextView
+                android:id="@+id/txtAuxMagCalBiasRightLabel"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_vertical|center_horizontal"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_vertical|center_horizontal"
+                android:text="Aux X"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                />
+
+            <EditText
+                android:id="@+id/etxAuxMagCalBiasLeftX"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="10"
+                android:gravity="center_vertical|center_horizontal"
+                android:inputType="textPersonName"
+                android:text="0"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"/>
+
+            <EditText
+                android:id="@+id/etxAuxMagCalBiasRightX"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:enabled="false"
+                android:gravity="center_vertical|center_horizontal"
+                android:inputType="textPersonName"
+                android:text="0"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_vertical|center_horizontal"
+                android:text="Aux Y"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                />
+
+            <EditText
+                android:id="@+id/etxAuxMagCalBiasLeftY"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="10"
+                android:gravity="center_vertical|center_horizontal"
+                android:inputType="textPersonName"
+                android:text="0"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"/>
+
+            <EditText
+                android:id="@+id/etxAuxMagCalBiasRightY"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="10"
+                android:enabled="false"
+                android:gravity="center_vertical|center_horizontal"
+                android:inputType="textPersonName"
+                android:text="0"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_vertical|center_horizontal"
+                android:text="Aux Z"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                />
+
+            <EditText
+                android:id="@+id/etxAuxMagCalBiasLeftZ"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="10"
+                android:gravity="center_vertical|center_horizontal"
+                android:inputType="textPersonName"
+                android:text="0"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"/>
+
+            <EditText
+                android:id="@+id/etxAuxMagCalBiasRightZ"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="10"
+                android:enabled="false"
+                android:gravity="center_vertical|center_horizontal"
+                android:inputType="textPersonName"
+                android:text="0"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:gravity="center_vertical|center_horizontal"
+                android:text="Transform"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"/>
+
+            <TextView
+                android:id="@+id/txtAuxMagCalTransformLeftLabel"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_vertical|center_horizontal"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"/>
+
+            <TextView
+                android:id="@+id/txtAuxMagCalTransformRightLabel"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_vertical|center_horizontal"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_vertical|center_horizontal"
+                android:text="Aux R0C0"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                />
+
+            <EditText
+                android:id="@+id/etxAuxMagCalTransLeftR0C0"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="10"
+                android:gravity="center_vertical|center_horizontal"
+                android:inputType="textPersonName"
+                android:text="0"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"/>
+
+            <EditText
+                android:id="@+id/etxAuxMagCalTransRightR0C0"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:enabled="false"
+                android:gravity="center_vertical|center_horizontal"
+                android:inputType="textPersonName"
+                android:text="0"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_vertical|center_horizontal"
+                android:text="Aux R1C1"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                />
+
+            <EditText
+                android:id="@+id/etxAuxMagCalTransLeftR1C1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="10"
+                android:gravity="center_vertical|center_horizontal"
+                android:inputType="textPersonName"
+                android:text="0"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"/>
+
+            <EditText
+                android:id="@+id/etxAuxMagCalTransRightR1C1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="10"
+                android:enabled="false"
+                android:gravity="center_vertical|center_horizontal"
+                android:inputType="textPersonName"
+                android:text="0"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_vertical|center_horizontal"
+                android:text="Aux R2C2"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                />
+
+            <EditText
+                android:id="@+id/etxAuxMagCalTransLeftR2C2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="10"
+                android:gravity="center_vertical|center_horizontal"
+                android:inputType="textPersonName"
+                android:text="0"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"/>
+
+            <EditText
+                android:id="@+id/etxAuxMagCalTransRightR2C2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="10"
+                android:enabled="false"
+                android:gravity="center_vertical|center_horizontal"
+                android:inputType="textPersonName"
+                android:text="0"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"/>
 
         </LinearLayout>
     </LinearLayout>

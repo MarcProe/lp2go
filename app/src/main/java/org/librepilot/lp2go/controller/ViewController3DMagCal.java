@@ -27,6 +27,7 @@ import android.graphics.Color;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,7 +50,7 @@ import java.util.Locale;
 public class ViewController3DMagCal extends ViewController implements
         UAVTalkObjectListener, View.OnClickListener {
 
-    public final static int SAMPLES = 10;
+    public final static int SAMPLES = 20;
     private final TextView txtBe0;
     private final TextView txtBe1;
     private final TextView txtBe2;
@@ -59,10 +60,19 @@ public class ViewController3DMagCal extends ViewController implements
     private final TextView txtR0c0;
     private final TextView txtR1c1;
     private final TextView txtR2c2;
+    private final TextView txtAuxMagBiasX;
+    private final TextView txtAuxMagBiasY;
+    private final TextView txtAuxMagBiasZ;
+    private final TextView txtAuxR0c0;
+    private final TextView txtAuxR1c1;
+    private final TextView txtAuxR2c2;
     private final TextView txtCurrentFace;
     private final TextView txtMagX;
     private final TextView txtMagY;
     private final TextView txtMagZ;
+    private final TextView txtAuxMagX;
+    private final TextView txtAuxMagY;
+    private final TextView txtAuxMagZ;
     private final TextView txt3dPitch;
     private final TextView txt3dRoll;
     private final TextView txt3dYaw;
@@ -82,7 +92,14 @@ public class ViewController3DMagCal extends ViewController implements
     private float mag_transform_r2c2;
     private boolean mCalibrationRunning = false;
     private int mSamples;
+    private int mAuxSamples;
     private View mToolbarAlertView;
+    private float aux_mag_bias_x;
+    private float aux_mag_bias_y;
+    private float aux_mag_bias_z;
+    private float aux_mag_transform_r0c0;
+    private float aux_mag_transform_r1c1;
+    private float aux_mag_transform_r2c2;
 
     public ViewController3DMagCal(MainActivity activity, int title, int icon,
                                   int localSettingsVisible, int flightSettingsVisible) {
@@ -107,11 +124,23 @@ public class ViewController3DMagCal extends ViewController implements
         txtR1c1 = ((TextView) findViewById(R.id.txtR1c1));
         txtR2c2 = ((TextView) findViewById(R.id.txtR2c2));
 
+        txtAuxMagBiasX = ((TextView) findViewById(R.id.txtAuxMagBiasX));
+        txtAuxMagBiasY = ((TextView) findViewById(R.id.txtAuxMagBiasY));
+        txtAuxMagBiasZ = ((TextView) findViewById(R.id.txtAuxMagBiasZ));
+
+        txtAuxR0c0 = ((TextView) findViewById(R.id.txtAuxR0c0));
+        txtAuxR1c1 = ((TextView) findViewById(R.id.txtAuxR1c1));
+        txtAuxR2c2 = ((TextView) findViewById(R.id.txtAuxR2c2));
+
         txtCurrentFace = ((TextView) findViewById(R.id.txtCurrentFace));
 
         txtMagX = ((TextView) findViewById(R.id.txtMagX));
         txtMagY = ((TextView) findViewById(R.id.txtMagY));
         txtMagZ = ((TextView) findViewById(R.id.txtMagZ));
+
+        txtAuxMagX = ((TextView) findViewById(R.id.txtAuxMagX));
+        txtAuxMagY = ((TextView) findViewById(R.id.txtAuxMagY));
+        txtAuxMagZ = ((TextView) findViewById(R.id.txtAuxMagZ));
 
         txt3dPitch = ((TextView) findViewById(R.id.txt3dPitch));
         txt3dRoll = ((TextView) findViewById(R.id.txt3dRoll));
@@ -120,6 +149,12 @@ public class ViewController3DMagCal extends ViewController implements
         txtCollectedSamples = ((TextView) findViewById(R.id.txtCollectedSamples));
         txtSamplesPercentage = ((TextView) findViewById(R.id.txtSamplesPercentage));
         txtPreferedFace = ((TextView) findViewById(R.id.txtPreferedFace));
+
+        LinearLayout lloSamples = ((LinearLayout) findViewById(R.id.lloSamples));
+        LinearLayout lloFace = ((LinearLayout) findViewById(R.id.lloFace));
+
+        lloSamples.setOnClickListener(this);
+        lloFace.setOnClickListener(this);
 
         findViewById(R.id.imgStartStopCalibration).setOnClickListener(this);
     }
@@ -186,12 +221,12 @@ public class ViewController3DMagCal extends ViewController implements
         }
 
         //check if mag is activated
-        success = !getData("MagState", "Source").equals("Invalid");
-        if (!success) {
-            VisualLog.e("Mag not activated");
-            SingleToast.show(getMainActivity(), "Magnetometer is not activated!", Toast.LENGTH_LONG);
-            return false;
-        }
+        //success = !getData("MagState", "Source").equals("Invalid");
+        //if (!success) {
+        //    VisualLog.e("Mag not activated");
+        //    SingleToast.show(getMainActivity(), "Magnetometer is not activated!", Toast.LENGTH_LONG);
+        //    return false;
+        //}
 
         //reset calibration on FC
         success = resetCalibrationOnFc();
@@ -201,10 +236,17 @@ public class ViewController3DMagCal extends ViewController implements
         }
 
         //increase magstate update rate
-        success = setMetaUpdateRate("MagState", 300);
+        success = setMetaUpdateRate("MagSensor", 300);
         if (!success) {
-            VisualLog.e("MagState Meta Update failed");
-            SingleToast.show(getMainActivity(), "MagState Meta Update failed", Toast.LENGTH_LONG);
+            VisualLog.e("MagSensor Meta Update failed");
+            SingleToast.show(getMainActivity(), "MagSensor Meta Update failed", Toast.LENGTH_LONG);
+            return false;
+        }
+
+        success = setMetaUpdateRate("AuxMagSensor", 300);
+        if (!success) {
+            VisualLog.e("AuxMagSensor Meta Update failed");
+            SingleToast.show(getMainActivity(), "AuxMagSensor Meta Update failed", Toast.LENGTH_LONG);
             return false;
         }
 
@@ -233,17 +275,20 @@ public class ViewController3DMagCal extends ViewController implements
 
         //remove listener
         try {
-            getMainActivity().mFcDevice.getObjectTree().removeListener("MagState");
+            getMainActivity().mFcDevice.getObjectTree().removeListener("AttitudeState");
         } catch (NullPointerException e) {
             VisualLog.e(e.getMessage());
         }
 
         //reset magstate update rate
-        final boolean setUR = setMetaUpdateRate("MagState", 1000);
+        final boolean setUR = setMetaUpdateRate("MagSensor", 1000);
+        final boolean setAUR = setMetaUpdateRate("AuxMagSensor", 1000);
 
         //make fit and upload calibration to FC
-        final FitPoints fp = fit();
-        upload(fp);
+        final FitPoints fp = fit(false);
+        final FitPoints auxFp = fit(true);
+        upload(fp, auxFp);
+
     }
 
     private void toggleCalibration() {
@@ -263,8 +308,10 @@ public class ViewController3DMagCal extends ViewController implements
     @Override
     public void enter(int view) {
         super.enter(view);
-        requestMetaData("MagState");
+        requestMetaData("MagSensor");
+        requestMetaData("AuxMagSensor");
         requestObject("RevoCalibration");
+        requestObject("AuxMagSettings");
         requestObject("HomeLocation");
     }
 
@@ -278,9 +325,13 @@ public class ViewController3DMagCal extends ViewController implements
         }
 
         try {
-            UAVTalkMetaData o = getMetaData("MagState");
+            UAVTalkMetaData o = getMetaData("MagSensor");
             o.setFlightTelemetryUpdatePeriod(1000);
             sendMetaObject(o);
+
+            UAVTalkMetaData ao = getMetaData("AuxMagSensor");
+            ao.setFlightTelemetryUpdatePeriod(1000);
+            sendMetaObject(ao);
 
         } catch (Exception e) {
             VisualLog.e("TTT", e.getMessage(), e);
@@ -336,6 +387,14 @@ public class ViewController3DMagCal extends ViewController implements
             mag_transform_r1c1 = toFloat(getData("RevoCalibration", "mag_transform", "r1c1"));
             mag_transform_r2c2 = toFloat(getData("RevoCalibration", "mag_transform", "r2c2"));
 
+            aux_mag_bias_x = toFloat(getData("AuxMagSettings", "mag_bias", "X"));
+            aux_mag_bias_y = toFloat(getData("AuxMagSettings", "mag_bias", "Y"));
+            aux_mag_bias_z = toFloat(getData("AuxMagSettings", "mag_bias", "Z"));
+
+            aux_mag_transform_r0c0 = toFloat(getData("AuxMagSettings", "mag_transform", "r0c0"));
+            aux_mag_transform_r1c1 = toFloat(getData("AuxMagSettings", "mag_transform", "r1c1"));
+            aux_mag_transform_r2c2 = toFloat(getData("AuxMagSettings", "mag_transform", "r2c2"));
+
         }
 
         txtBe0.setText(String.valueOf(be_0));
@@ -349,21 +408,30 @@ public class ViewController3DMagCal extends ViewController implements
         txtR0c0.setText(String.valueOf(mag_transform_r0c0));
         txtR1c1.setText(String.valueOf(mag_transform_r1c1));
         txtR2c2.setText(String.valueOf(mag_transform_r2c2));
+
+        txtAuxMagBiasX.setText(String.valueOf(aux_mag_bias_x));
+        txtAuxMagBiasY.setText(String.valueOf(aux_mag_bias_y));
+        txtAuxMagBiasZ.setText(String.valueOf(aux_mag_bias_z));
+
+        txtAuxR0c0.setText(String.valueOf(aux_mag_transform_r0c0));
+        txtAuxR1c1.setText(String.valueOf(aux_mag_transform_r1c1));
+        txtAuxR2c2.setText(String.valueOf(aux_mag_transform_r2c2));
     }
 
-    private int addSample() {
+    private int addSample(String obj) {
         try {
-            final float magx = Float.parseFloat(getData("MagState", "x").toString());
-            final float magy = Float.parseFloat(getData("MagState", "y").toString());
-            final float magz = Float.parseFloat(getData("MagState", "z").toString());
-            return glv3DMagCalibration.addSample(magx, magy, magz);
+            final float x = Float.parseFloat(getData(obj, "x").toString());
+            final float y = Float.parseFloat(getData(obj, "y").toString());
+            final float z = Float.parseFloat(getData(obj, "z").toString());
 
+            return glv3DMagCalibration.addSample(x, y, z, obj.equals("AuxMagSensor"));
 
         } catch (NumberFormatException e) {
             e.printStackTrace();
         }
         return 0;
     }
+
 
     @Override
     public void onObjectUpdate(UAVTalkObject o) {
@@ -372,13 +440,19 @@ public class ViewController3DMagCal extends ViewController implements
         final float roll = Float.parseFloat(getData("AttitudeState", "Roll").toString());
         final float yaw = -Float.parseFloat(getData("AttitudeState", "Yaw").toString());
 
-        final float magx = Float.parseFloat(getData("MagState", "x").toString());
-        final float magy = Float.parseFloat(getData("MagState", "y").toString());
-        final float magz = Float.parseFloat(getData("MagState", "z").toString());
+        final float magx = Float.parseFloat(getData("MagSensor", "x").toString());
+        final float magy = Float.parseFloat(getData("MagSensor", "y").toString());
+        final float magz = Float.parseFloat(getData("MagSensor", "z").toString());
+
+        final float auxmagx = Float.parseFloat(getData("AuxMagSensor", "x").toString());
+        final float auxmagy = Float.parseFloat(getData("AuxMagSensor", "y").toString());
+        final float auxmagz = Float.parseFloat(getData("AuxMagSensor", "z").toString());
 
         final MainActivity m = getMainActivity();
         final int cSamples = mSamples;
-        mSamples = addSample();        //saving the current sample
+        final int cAuxSamples = mAuxSamples;
+        mSamples = addSample("MagSensor");        //saving the current sample
+        mAuxSamples = addSample("AuxMagSensor");
 
         try {
             glv3DMagCalibration.setRoll(roll);
@@ -396,11 +470,17 @@ public class ViewController3DMagCal extends ViewController implements
                         txtMagY.setText(String.valueOf(Math.floor(magy)));
                         txtMagZ.setText(String.valueOf(Math.floor(magz)));
 
+                        txtAuxMagX.setText(String.valueOf(Math.floor(auxmagx)));
+                        txtAuxMagY.setText(String.valueOf(Math.floor(auxmagy)));
+                        txtAuxMagZ.setText(String.valueOf(Math.floor(auxmagz)));
+
+                        calcDiffs(magx, magy, magz, auxmagx, auxmagy, auxmagz);
+
                         txt3dPitch.setText(String.valueOf(Math.floor(pitch)));
                         txt3dRoll.setText(String.valueOf(Math.floor(roll)));
                         txt3dYaw.setText(String.valueOf(Math.floor(yaw)));
 
-                        txtCollectedSamples.setText(String.valueOf(mSamples));
+                        txtCollectedSamples.setText(String.valueOf(mSamples) + "/" + String.valueOf(mAuxSamples));
 
                         int sum = 0;
                         for (Integer i : glv3DMagCalibration.getSamplesPerFace().values()) {
@@ -409,9 +489,9 @@ public class ViewController3DMagCal extends ViewController implements
                         txtSamplesPercentage.setText(String.valueOf(
                                 H.round((sum / GOOD_SAMPLE_SIZE) * 100, 2)));
 
-                        txtPreferedFace.setText(longFace(glv3DMagCalibration.getPreferedFace()));
+                        txtPreferedFace.setText(longFace(glv3DMagCalibration.getPreferedFace(false)));
 
-                        final String pFace = glv3DMagCalibration.getPreferedFace();
+                        final String pFace = glv3DMagCalibration.getPreferedFace(false);
                         final String cFace = glv3DMagCalibration.getCurrentFace();
                         if (pFace.equals(cFace)) {
                             txtPreferedFace.setTextColor(Color.GREEN);
@@ -439,51 +519,80 @@ public class ViewController3DMagCal extends ViewController implements
         }
     }
 
-    private FitPoints fit() {
-        FitPoints fp = glv3DMagCalibration.fit();
-
-        String result;
+    private FitPoints fit(boolean isAuxMag) {
+        final FitPoints fp = glv3DMagCalibration.fit(isAuxMag);
+        final String result;
         try {
             result = fp.toString();
         } catch (NullPointerException e) {
-            SingleToast.show(getMainActivity(), "Error fitting points.", Toast.LENGTH_LONG);
+            VisualLog.e(e.getMessage());
+            SingleToast.show(getMainActivity(), "Error fitting points. (AuxMag: " + isAuxMag + ")", Toast.LENGTH_LONG);
             return null;
         }
-
-        VisualLog.d("FIT2", result);
 
         return fp;
     }
 
-    private void upload(FitPoints fp) {
-
+    private void upload(FitPoints fp, FitPoints afp) {
+        float biasx = 0, biasy = 0, biasz = 0;
         //get fit results
-        float biasx = (float) fp.center.getEntry(0);
-        float biasy = (float) fp.center.getEntry(1);
-        float biasz = (float) fp.center.getEntry(2);
+        if (fp != null) {
+            biasx = (float) fp.center.getEntry(0);
+            biasy = (float) fp.center.getEntry(1);
+            biasz = (float) fp.center.getEntry(2);
+        } else VisualLog.w("IntMag Fitpoints == null");
+
+        float auxbiasx = 0, auxbiasy = 0, auxbiasz = 0;
+
+        if (afp != null) {
+            auxbiasx = (float) afp.center.getEntry(0);
+            auxbiasy = (float) afp.center.getEntry(1);
+            auxbiasz = (float) afp.center.getEntry(2);
+        } else VisualLog.w("AuxMag Fitpoints == null");
+
+        float beVecLen = (float) Math.sqrt(Math.pow(be_0, 2) + Math.pow(be_1, 2) + Math.pow(be_2, 2));
 
         final FcDevice dev = getMainActivity().getFcDevice();
 
         if (dev != null) {
 
             //send fix results to fx
-            dev.sendSettingsObject("RevoCalibration", 0, "mag_bias", "X", H.floatToByteArrayRev(biasx));
-            dev.sendSettingsObject("RevoCalibration", 0, "mag_bias", "Y", H.floatToByteArrayRev(biasy));
-            dev.sendSettingsObject("RevoCalibration", 0, "mag_bias", "Z", H.floatToByteArrayRev(biasz));
+            if (fp != null) {
+                dev.sendSettingsObject("RevoCalibration", 0, "mag_bias", "X", H.floatToByteArrayRev(biasx));
+                dev.sendSettingsObject("RevoCalibration", 0, "mag_bias", "Y", H.floatToByteArrayRev(biasy));
+                dev.sendSettingsObject("RevoCalibration", 0, "mag_bias", "Z", H.floatToByteArrayRev(biasz));
 
-            float beVecLen = (float) Math.sqrt(Math.pow(be_0, 2) + Math.pow(be_1, 2) + Math.pow(be_2, 2));
+                float r0c0 = beVecLen / (float) fp.radii.getEntry(0);
+                float r1c1 = beVecLen / (float) fp.radii.getEntry(1);
+                float r2c2 = beVecLen / (float) fp.radii.getEntry(2);
 
-            float r0c0 = beVecLen / (float) fp.radii.getEntry(0);
-            float r1c1 = beVecLen / (float) fp.radii.getEntry(1);
-            float r2c2 = beVecLen / (float) fp.radii.getEntry(2);
+                dev.sendSettingsObject("RevoCalibration", 0, "mag_transform", "r0c0", H.floatToByteArrayRev(r0c0));
+                dev.sendSettingsObject("RevoCalibration", 0, "mag_transform", "r1c1", H.floatToByteArrayRev(r1c1));
+                dev.sendSettingsObject("RevoCalibration", 0, "mag_transform", "r2c2", H.floatToByteArrayRev(r2c2));
 
-            dev.sendSettingsObject("RevoCalibration", 0, "mag_transform", "r0c0", H.floatToByteArrayRev(r0c0));
-            dev.sendSettingsObject("RevoCalibration", 0, "mag_transform", "r1c1", H.floatToByteArrayRev(r1c1));
-            dev.sendSettingsObject("RevoCalibration", 0, "mag_transform", "r2c2", H.floatToByteArrayRev(r2c2));
+                dev.savePersistent("RevoCalibration");
 
-            dev.savePersistent("RevoCalibration");
+                VisualLog.i("FIT1", MessageFormat.format("{0} {1} {2} {3} {4} {5}", r0c0, r1c1, r2c2, biasx, biasy, biasz));
+            }
 
-            VisualLog.d("FIT1", MessageFormat.format("{0} {1} {2} {3} {4} {5}", r0c0, r1c1, r2c2, biasx, biasy, biasz));
+            if (afp != null) {
+                dev.sendSettingsObject("AuxMagSettings", 0, "mag_bias", "X", H.floatToByteArrayRev(auxbiasx));
+                dev.sendSettingsObject("AuxMagSettings", 0, "mag_bias", "Y", H.floatToByteArrayRev(auxbiasy));
+                dev.sendSettingsObject("AuxMagSettings", 0, "mag_bias", "Z", H.floatToByteArrayRev(auxbiasz));
+
+                float auxr0c0 = beVecLen / (float) afp.radii.getEntry(0);
+                float auxr1c1 = beVecLen / (float) afp.radii.getEntry(1);
+                float auxr2c2 = beVecLen / (float) afp.radii.getEntry(2);
+
+                dev.sendSettingsObject("AuxMagSettings", 0, "mag_transform", "r0c0", H.floatToByteArrayRev(auxr0c0));
+                dev.sendSettingsObject("AuxMagSettings", 0, "mag_transform", "r1c1", H.floatToByteArrayRev(auxr1c1));
+                dev.sendSettingsObject("AuxMagSettings", 0, "mag_transform", "r2c2", H.floatToByteArrayRev(auxr2c2));
+
+                dev.savePersistent("AuxMagSettings");
+
+                VisualLog.i("FIT2", MessageFormat.format("{0} {1} {2} {3} {4} {5}", auxr0c0, auxr1c1, auxr2c2, auxbiasx, auxbiasy, auxbiasz));
+            }
+
         }
 
         be_0 = 0; //resetting one value will re-receive all values
@@ -494,6 +603,16 @@ public class ViewController3DMagCal extends ViewController implements
         switch (view.getId()) {
             case R.id.imgStartStopCalibration: {
                 toggleCalibration();
+                break;
+            }
+            case R.id.lloSamples:
+            case R.id.lloFace: {
+                LinearLayout lloDebug = ((LinearLayout) findViewById(R.id.lloDebug));
+                if (lloDebug.getVisibility() == View.GONE) {
+                    lloDebug.setVisibility(View.VISIBLE);
+                } else {
+                    lloDebug.setVisibility(View.GONE);
+                }
                 break;
             }
             default: //do nothing
@@ -607,13 +726,32 @@ public class ViewController3DMagCal extends ViewController implements
         final float trans1 = H.stringToFloat(getData("RevoCalibration", "mag_transform", "r1c1").toString());
         final float trans2 = H.stringToFloat(getData("RevoCalibration", "mag_transform", "r2c2").toString());
 
+        final float auxbiasX = H.stringToFloat(getData("AuxMagSettings", "mag_bias", "X").toString());
+        final float auxbiasY = H.stringToFloat(getData("AuxMagSettings", "mag_bias", "Y").toString());
+        final float auxbiasZ = H.stringToFloat(getData("AuxMagSettings", "mag_bias", "Z").toString());
+
+        final float auxtrans0 = H.stringToFloat(getData("AuxMagSettings", "mag_transform", "r0c0").toString());
+        final float auxtrans1 = H.stringToFloat(getData("AuxMagSettings", "mag_transform", "r1c1").toString());
+        final float auxtrans2 = H.stringToFloat(getData("AuxMagSettings", "mag_transform", "r2c2").toString());
+
         fillDefaultBackupIfEmpty(biasX, biasY, biasZ, trans0, trans1, trans2);
+        fillAuxDefaultBackupIfEmpty(auxbiasX, auxbiasY, auxbiasZ, auxtrans0, auxtrans1, auxtrans2);
+
         fillToolbarAlertViewLeft("Backup", SettingsHelper.mMagCalBiasX,
                 SettingsHelper.mMagCalBiasY, SettingsHelper.mMagCalBiasZ,
                 SettingsHelper.mMagCalTransformR0C0, SettingsHelper.mMagCalTransformR1C1,
                 SettingsHelper.mMagCalTransformR2C2);
 
         fillToolbarAlertViewRight("Current", biasX, biasY, biasZ, trans0, trans1, trans2);
+
+        fillToolbarAlertViewLeftAux("Backup", SettingsHelper.mAuxMagCalBiasX,
+                SettingsHelper.mAuxMagCalBiasY, SettingsHelper.mAuxMagCalBiasZ,
+                SettingsHelper.mAuxMagCalTransformR0C0, SettingsHelper.mAuxMagCalTransformR1C1,
+                SettingsHelper.mAuxMagCalTransformR2C2);
+
+        fillToolbarAlertViewRightAux("Current", auxbiasX, auxbiasY, auxbiasZ, auxtrans0, auxtrans1, auxtrans2);
+
+
         setEnabledRightEditTextFields(true);
 
         mToolbarAlertView.findViewById(R.id.etxMagCalBiasRightX).requestFocus();
@@ -635,6 +773,14 @@ public class ViewController3DMagCal extends ViewController implements
                         SettingsHelper.mMagCalTransformR1C1 = H.stringToFloat(((EditText) mToolbarAlertView.findViewById(R.id.etxMagCalTransLeftR1C1)).getText().toString());
                         SettingsHelper.mMagCalTransformR2C2 = H.stringToFloat(((EditText) mToolbarAlertView.findViewById(R.id.etxMagCalTransLeftR2C2)).getText().toString());
 
+                        SettingsHelper.mAuxMagCalBiasX = H.stringToFloat(((EditText) mToolbarAlertView.findViewById(R.id.etxAuxMagCalBiasLeftX)).getText().toString());
+                        SettingsHelper.mAuxMagCalBiasY = H.stringToFloat(((EditText) mToolbarAlertView.findViewById(R.id.etxAuxMagCalBiasLeftY)).getText().toString());
+                        SettingsHelper.mAuxMagCalBiasZ = H.stringToFloat(((EditText) mToolbarAlertView.findViewById(R.id.etxAuxMagCalBiasLeftZ)).getText().toString());
+
+                        SettingsHelper.mAuxMagCalTransformR0C0 = H.stringToFloat(((EditText) mToolbarAlertView.findViewById(R.id.etxAuxMagCalTransLeftR0C0)).getText().toString());
+                        SettingsHelper.mAuxMagCalTransformR1C1 = H.stringToFloat(((EditText) mToolbarAlertView.findViewById(R.id.etxAuxMagCalTransLeftR1C1)).getText().toString());
+                        SettingsHelper.mAuxMagCalTransformR2C2 = H.stringToFloat(((EditText) mToolbarAlertView.findViewById(R.id.etxAuxMagCalTransLeftR2C2)).getText().toString());
+
                         SingleToast.show(ma, "Manual changes in Backup values saved");
                     }
                 });
@@ -652,6 +798,14 @@ public class ViewController3DMagCal extends ViewController implements
                             SettingsHelper.mMagCalTransformR0C0 = trans0;
                             SettingsHelper.mMagCalTransformR1C1 = trans1;
                             SettingsHelper.mMagCalTransformR2C2 = trans2;
+
+                            SettingsHelper.mAuxMagCalBiasX = auxbiasX;
+                            SettingsHelper.mAuxMagCalBiasY = auxbiasY;
+                            SettingsHelper.mAuxMagCalBiasZ = auxbiasZ;
+
+                            SettingsHelper.mAuxMagCalTransformR0C0 = auxtrans0;
+                            SettingsHelper.mAuxMagCalTransformR1C1 = auxtrans1;
+                            SettingsHelper.mAuxMagCalTransformR2C2 = auxtrans2;
 
                             SettingsHelper.saveSettings(ma);
 
@@ -677,7 +831,16 @@ public class ViewController3DMagCal extends ViewController implements
                             sendSettingsObjectRevFloat("RevoCalibration", "mag_transform", "r1c1", SettingsHelper.mMagCalTransformR1C1);
                             sendSettingsObjectRevFloat("RevoCalibration", "mag_transform", "r2c2", SettingsHelper.mMagCalTransformR2C2);
 
+                            sendSettingsObjectRevFloat("AuxMagSettings", "mag_bias", "X", SettingsHelper.mAuxMagCalBiasX);
+                            sendSettingsObjectRevFloat("AuxMagSettings", "mag_bias", "Y", SettingsHelper.mAuxMagCalBiasY);
+                            sendSettingsObjectRevFloat("AuxMagSettings", "mag_bias", "Z", SettingsHelper.mAuxMagCalBiasZ);
+
+                            sendSettingsObjectRevFloat("AuxMagSettings", "mag_transform", "r0c0", SettingsHelper.mAuxMagCalTransformR0C0);
+                            sendSettingsObjectRevFloat("AuxMagSettings", "mag_transform", "r1c1", SettingsHelper.mAuxMagCalTransformR1C1);
+                            sendSettingsObjectRevFloat("AuxMagSettings", "mag_transform", "r2c2", SettingsHelper.mAuxMagCalTransformR2C2);
+
                             savePersistent("RevoCalibration");
+                            savePersistent("AuxMagSettings");
 
                             SingleToast.show(ma, "Backup values copied to FlightController and saved persistent");
                         } else {
@@ -701,23 +864,34 @@ public class ViewController3DMagCal extends ViewController implements
         SettingsHelper.mMagCalTransformR2C2 = SettingsHelper.mMagCalTransformR2C2 == 0 ? trans2 : SettingsHelper.mMagCalTransformR2C2;
     }
 
+    private void fillAuxDefaultBackupIfEmpty(float auxbiasX, float auxbiasY, float auxbiasZ, float auxtrans0, float auxtrans1, float auxtrans2) {
+        //fill settings with current values, if saved settings are "0"
+        SettingsHelper.mAuxMagCalBiasX = SettingsHelper.mAuxMagCalBiasX == 0 ? auxbiasX : SettingsHelper.mAuxMagCalBiasX;
+        SettingsHelper.mAuxMagCalBiasY = SettingsHelper.mAuxMagCalBiasY == 0 ? auxbiasY : SettingsHelper.mAuxMagCalBiasY;
+        SettingsHelper.mAuxMagCalBiasZ = SettingsHelper.mAuxMagCalBiasZ == 0 ? auxbiasZ : SettingsHelper.mAuxMagCalBiasZ;
+
+        SettingsHelper.mAuxMagCalTransformR0C0 = SettingsHelper.mAuxMagCalTransformR0C0 == 0 ? auxtrans0 : SettingsHelper.mAuxMagCalTransformR0C0;
+        SettingsHelper.mAuxMagCalTransformR1C1 = SettingsHelper.mAuxMagCalTransformR1C1 == 0 ? auxtrans1 : SettingsHelper.mAuxMagCalTransformR1C1;
+        SettingsHelper.mAuxMagCalTransformR2C2 = SettingsHelper.mAuxMagCalTransformR2C2 == 0 ? auxtrans2 : SettingsHelper.mAuxMagCalTransformR2C2;
+    }
+
     private void fillToolbarAlertViewLeft(String leftLabel, float biasX, float biasY, float biasZ, float trans0, float trans1, float trans2) {
         ((TextView) mToolbarAlertView.findViewById(R.id.txtMagCalBiasLeftLabel)).setText(leftLabel);
         ((TextView) mToolbarAlertView.findViewById(R.id.txtMagCalTransformLeftLabel)).setText(leftLabel);
 
         ((EditText) mToolbarAlertView.findViewById(R.id.etxMagCalBiasLeftX))
-                .setText(String.format(Locale.US, "%f", biasX));
+                .setText(String.format(Locale.US, "%1$,.2f", biasX));
         ((EditText) mToolbarAlertView.findViewById(R.id.etxMagCalBiasLeftY))
-                .setText(String.format(Locale.US, "%f", biasY));
+                .setText(String.format(Locale.US, "%1$,.2f", biasY));
         ((EditText) mToolbarAlertView.findViewById(R.id.etxMagCalBiasLeftZ))
-                .setText(String.format(Locale.US, "%f", biasZ));
+                .setText(String.format(Locale.US, "%1$,.2f", biasZ));
 
         ((EditText) mToolbarAlertView.findViewById(R.id.etxMagCalTransLeftR0C0))
-                .setText(String.format(Locale.US, "%f", trans0));
+                .setText(String.format(Locale.US, "%1$,.2f", trans0));
         ((EditText) mToolbarAlertView.findViewById(R.id.etxMagCalTransLeftR1C1))
-                .setText(String.format(Locale.US, "%f", trans1));
+                .setText(String.format(Locale.US, "%1$,.2f", trans1));
         ((EditText) mToolbarAlertView.findViewById(R.id.etxMagCalTransLeftR2C2))
-                .setText(String.format(Locale.US, "%f", trans2));
+                .setText(String.format(Locale.US, "%1$,.2f", trans2));
     }
 
     private void fillToolbarAlertViewRight(String rightLabel, float biasX, float biasY, float biasZ, float trans0, float trans1, float trans2) {
@@ -725,18 +899,56 @@ public class ViewController3DMagCal extends ViewController implements
         ((TextView) mToolbarAlertView.findViewById(R.id.txtMagCalTransformRightLabel)).setText(rightLabel);
 
         ((EditText) mToolbarAlertView.findViewById(R.id.etxMagCalBiasRightX))
-                .setText(String.format(Locale.US, "%f", biasX));
+                .setText(String.format(Locale.US, "%1$,.2f", biasX));
         ((EditText) mToolbarAlertView.findViewById(R.id.etxMagCalBiasRightY))
-                .setText(String.format(Locale.US, "%f", biasY));
+                .setText(String.format(Locale.US, "%1$,.2f", biasY));
         ((EditText) mToolbarAlertView.findViewById(R.id.etxMagCalBiasRightZ))
-                .setText(String.format(Locale.US, "%f", biasZ));
+                .setText(String.format(Locale.US, "%1$,.2f", biasZ));
 
         ((EditText) mToolbarAlertView.findViewById(R.id.etxMagCalTransRightR0C0))
-                .setText(String.format(Locale.US, "%f", trans0));
+                .setText(String.format(Locale.US, "%1$,.2f", trans0));
         ((EditText) mToolbarAlertView.findViewById(R.id.etxMagCalTransRightR1C1))
-                .setText(String.format(Locale.US, "%f", trans1));
+                .setText(String.format(Locale.US, "%1$,.2f", trans1));
         ((EditText) mToolbarAlertView.findViewById(R.id.etxMagCalTransRightR2C2))
-                .setText(String.format(Locale.US, "%f", trans2));
+                .setText(String.format(Locale.US, "%1$,.2f", trans2));
+    }
+
+    private void fillToolbarAlertViewLeftAux(String leftLabel, float auxbiasX, float auxbiasY, float auxbiasZ, float auxtrans0, float auxtrans1, float auxtrans2) {
+        ((TextView) mToolbarAlertView.findViewById(R.id.txtAuxMagCalBiasLeftLabel)).setText(leftLabel);
+        ((TextView) mToolbarAlertView.findViewById(R.id.txtAuxMagCalTransformLeftLabel)).setText(leftLabel);
+
+        ((EditText) mToolbarAlertView.findViewById(R.id.etxAuxMagCalBiasLeftX))
+                .setText(String.format(Locale.US, "%1$,.2f", auxbiasX));
+        ((EditText) mToolbarAlertView.findViewById(R.id.etxAuxMagCalBiasLeftY))
+                .setText(String.format(Locale.US, "%1$,.2f", auxbiasY));
+        ((EditText) mToolbarAlertView.findViewById(R.id.etxAuxMagCalBiasLeftZ))
+                .setText(String.format(Locale.US, "%1$,.2f", auxbiasZ));
+
+        ((EditText) mToolbarAlertView.findViewById(R.id.etxAuxMagCalTransLeftR0C0))
+                .setText(String.format(Locale.US, "%1$,.2f", auxtrans0));
+        ((EditText) mToolbarAlertView.findViewById(R.id.etxAuxMagCalTransLeftR1C1))
+                .setText(String.format(Locale.US, "%1$,.2f", auxtrans1));
+        ((EditText) mToolbarAlertView.findViewById(R.id.etxAuxMagCalTransLeftR2C2))
+                .setText(String.format(Locale.US, "%1$,.2f", auxtrans2));
+    }
+
+    private void fillToolbarAlertViewRightAux(String rightLabel, float auxbiasX, float auxbiasY, float auxbiasZ, float auxtrans0, float auxtrans1, float auxtrans2) {
+        ((TextView) mToolbarAlertView.findViewById(R.id.txtAuxMagCalBiasRightLabel)).setText(rightLabel);
+        ((TextView) mToolbarAlertView.findViewById(R.id.txtAuxMagCalTransformRightLabel)).setText(rightLabel);
+
+        ((EditText) mToolbarAlertView.findViewById(R.id.etxAuxMagCalBiasRightX))
+                .setText(String.format(Locale.US, "%1$,.2f", auxbiasX));
+        ((EditText) mToolbarAlertView.findViewById(R.id.etxAuxMagCalBiasRightY))
+                .setText(String.format(Locale.US, "%1$,.2f", auxbiasY));
+        ((EditText) mToolbarAlertView.findViewById(R.id.etxAuxMagCalBiasRightZ))
+                .setText(String.format(Locale.US, "%1$,.2f", auxbiasZ));
+
+        ((EditText) mToolbarAlertView.findViewById(R.id.etxAuxMagCalTransRightR0C0))
+                .setText(String.format(Locale.US, "%1$,.2f", auxtrans0));
+        ((EditText) mToolbarAlertView.findViewById(R.id.etxAuxMagCalTransRightR1C1))
+                .setText(String.format(Locale.US, "%1$,.2f", auxtrans1));
+        ((EditText) mToolbarAlertView.findViewById(R.id.etxAuxMagCalTransRightR2C2))
+                .setText(String.format(Locale.US, "%1$,.2f", auxtrans2));
     }
 
     private void setEnabledRightEditTextFields(boolean enabled) {
@@ -747,5 +959,25 @@ public class ViewController3DMagCal extends ViewController implements
         mToolbarAlertView.findViewById(R.id.etxMagCalTransLeftR0C0).setEnabled(enabled);
         mToolbarAlertView.findViewById(R.id.etxMagCalTransLeftR1C1).setEnabled(enabled);
         mToolbarAlertView.findViewById(R.id.etxMagCalTransLeftR2C2).setEnabled(enabled);
+
+        mToolbarAlertView.findViewById(R.id.etxAuxMagCalBiasLeftX).setEnabled(enabled);
+        mToolbarAlertView.findViewById(R.id.etxAuxMagCalBiasLeftY).setEnabled(enabled);
+        mToolbarAlertView.findViewById(R.id.etxAuxMagCalBiasLeftZ).setEnabled(enabled);
+
+        mToolbarAlertView.findViewById(R.id.etxAuxMagCalTransLeftR0C0).setEnabled(enabled);
+        mToolbarAlertView.findViewById(R.id.etxAuxMagCalTransLeftR1C1).setEnabled(enabled);
+        mToolbarAlertView.findViewById(R.id.etxAuxMagCalTransLeftR2C2).setEnabled(enabled);
+    }
+
+    private double calcDiffs(double vc11, double vc12, double vc13, double vc21, double vc22, double vc23) {
+        double retval = .0d;
+
+        double diffx = vc11 - vc21;
+        double diffy = vc12 - vc22;
+        double diffz = vc13 - vc23;
+
+        //VisualLog.i(""+diffx+" " +diffy+ " " +diffz);
+
+        return retval;
     }
 }
