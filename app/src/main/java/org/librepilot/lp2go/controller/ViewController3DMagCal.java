@@ -110,8 +110,6 @@ public class ViewController3DMagCal extends ViewController implements
 
         glv3DMagCalibration = (OpenGl3DMagCalView) findViewById(R.id.glv_3d_mag_calibration);
 
-        imgCompass = (ImageView) findViewById(R.id.imgStartStopCalibration);
-
         txtBe0 = ((TextView) findViewById(R.id.txtBe0));
         txtBe1 = ((TextView) findViewById(R.id.txtBe1));
         txtBe2 = ((TextView) findViewById(R.id.txtBe2));
@@ -151,12 +149,13 @@ public class ViewController3DMagCal extends ViewController implements
         txtPreferedFace = ((TextView) findViewById(R.id.txtPreferedFace));
 
         LinearLayout lloSamples = ((LinearLayout) findViewById(R.id.lloSamples));
-        LinearLayout lloFace = ((LinearLayout) findViewById(R.id.lloFace));
-
         lloSamples.setOnClickListener(this);
+        LinearLayout lloFace = ((LinearLayout) findViewById(R.id.lloFace));
         lloFace.setOnClickListener(this);
 
-        findViewById(R.id.imgStartStopCalibration).setOnClickListener(this);
+        imgCompass = (ImageView) findViewById(R.id.imgStartStopCalibration);
+        imgCompass.setOnClickListener(this);
+        findViewById(R.id.imgDoFit).setOnClickListener(this);
     }
 
     private boolean isCalibrationRunning() {
@@ -285,10 +284,14 @@ public class ViewController3DMagCal extends ViewController implements
         final boolean setAUR = setMetaUpdateRate("AuxMagSensor", 1000);
 
         //make fit and upload calibration to FC
+
+
+    }
+
+    private void doFit() {
         final FitPoints fp = fit(false);
         final FitPoints auxFp = fit(true);
         upload(fp, auxFp);
-
     }
 
     private void toggleCalibration() {
@@ -489,7 +492,9 @@ public class ViewController3DMagCal extends ViewController implements
                         txtSamplesPercentage.setText(String.valueOf(
                                 H.round((sum / GOOD_SAMPLE_SIZE) * 100, 2)));
 
-                        txtPreferedFace.setText(longFace(glv3DMagCalibration.getPreferedFace(false)));
+                        String face = glv3DMagCalibration.getPreferedFace(false);
+                        txtPreferedFace.setText(longFace(face));
+                        glv3DMagCalibration.setPrefFaceCube(face);
 
                         final String pFace = glv3DMagCalibration.getPreferedFace(false);
                         final String cFace = glv3DMagCalibration.getCurrentFace();
@@ -566,13 +571,18 @@ public class ViewController3DMagCal extends ViewController implements
                 float r1c1 = beVecLen / (float) fp.radii.getEntry(1);
                 float r2c2 = beVecLen / (float) fp.radii.getEntry(2);
 
+                //float r0c0 = (float) fp.radii.getEntry(0) /beVecLen;
+                //float r1c1 = (float) fp.radii.getEntry(1) / beVecLen;
+                //float r2c2 = (float) fp.radii.getEntry(2) / beVecLen;
+
+
                 dev.sendSettingsObject("RevoCalibration", 0, "mag_transform", "r0c0", H.floatToByteArrayRev(r0c0));
                 dev.sendSettingsObject("RevoCalibration", 0, "mag_transform", "r1c1", H.floatToByteArrayRev(r1c1));
                 dev.sendSettingsObject("RevoCalibration", 0, "mag_transform", "r2c2", H.floatToByteArrayRev(r2c2));
 
                 dev.savePersistent("RevoCalibration");
 
-                VisualLog.i("FIT1", MessageFormat.format("{0} {1} {2} {3} {4} {5}", r0c0, r1c1, r2c2, biasx, biasy, biasz));
+                VisualLog.i("FIT int", MessageFormat.format("{0} {1} {2} {3} {4} {5}", r0c0, r1c1, r2c2, biasx, biasy, biasz));
             }
 
             if (afp != null) {
@@ -584,13 +594,17 @@ public class ViewController3DMagCal extends ViewController implements
                 float auxr1c1 = beVecLen / (float) afp.radii.getEntry(1);
                 float auxr2c2 = beVecLen / (float) afp.radii.getEntry(2);
 
+                //float auxr0c0 = (float) afp.radii.getEntry(0) / beVecLen;
+                //float auxr1c1 = (float) afp.radii.getEntry(1) / beVecLen;
+                //float auxr2c2 = (float) afp.radii.getEntry(2) / beVecLen;
+
                 dev.sendSettingsObject("AuxMagSettings", 0, "mag_transform", "r0c0", H.floatToByteArrayRev(auxr0c0));
                 dev.sendSettingsObject("AuxMagSettings", 0, "mag_transform", "r1c1", H.floatToByteArrayRev(auxr1c1));
                 dev.sendSettingsObject("AuxMagSettings", 0, "mag_transform", "r2c2", H.floatToByteArrayRev(auxr2c2));
 
                 dev.savePersistent("AuxMagSettings");
 
-                VisualLog.i("FIT2", MessageFormat.format("{0} {1} {2} {3} {4} {5}", auxr0c0, auxr1c1, auxr2c2, auxbiasx, auxbiasy, auxbiasz));
+                VisualLog.i("FIT aux", MessageFormat.format("{0} {1} {2} {3} {4} {5}", auxr0c0, auxr1c1, auxr2c2, auxbiasx, auxbiasy, auxbiasz));
             }
 
         }
@@ -603,6 +617,10 @@ public class ViewController3DMagCal extends ViewController implements
         switch (view.getId()) {
             case R.id.imgStartStopCalibration: {
                 toggleCalibration();
+                break;
+            }
+            case R.id.imgDoFit: {
+                doFit();
                 break;
             }
             case R.id.lloSamples:

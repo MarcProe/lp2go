@@ -47,13 +47,16 @@ public class Cube implements ThreeSpacePoint {
     private ByteBuffer mIndexBuffer;
     private FloatBuffer mVertexBuffer;
 
-    public Cube(float x, float y, float z, boolean isAuxMag) {
+    public Cube(float x, float y, float z) {
+        this(x, y, z, -0.1f, 0.1f);
+    }
+
+    public Cube(float x, float y, float z, float n, float p) {
 
         rawX = x;
         rawY = y;
         rawZ = z;
 
-        //this.x = -x / 300;
         this.x = x / 300;
         this.y = -y / 300;
         this.z = z / 300;
@@ -61,8 +64,8 @@ public class Cube implements ThreeSpacePoint {
         this.alpha = Math.atan2(this.y, this.x) * 180 / Math.PI + 180;
         this.beta = Math.atan2(this.y, this.z) * 180 / Math.PI + 180;
 
-        float n = -0.1f;
-        float p = 0.1f;
+        //float n = -0.1f;
+        //float p = 0.1f;
         float[] vertices = {
                 n, n, n,
                 p, n, n,
@@ -79,9 +82,7 @@ public class Cube implements ThreeSpacePoint {
         mVertexBuffer.put(vertices);
         mVertexBuffer.position(0);
 
-        //float[] lightcolor = {.0f, .0f, .0f, 1.0f};
-
-        float[] colors = {
+        float[] colors = {  //this is red [255,0,0] for the initial colorbuffer; can be overridden at runtime with the setRGB method
                 1.0f, 0.0f, 0.0f, 1.0f,
                 1.0f, 0.0f, 0.0f, 1.0f,
                 1.0f, 0.0f, 0.0f, 1.0f,
@@ -92,29 +93,22 @@ public class Cube implements ThreeSpacePoint {
                 1.0f, 0.0f, 0.0f, 1.0f
         };
 
-        float[] auxColors = {
-                0.0f, 0.0f, 1.0f, 1.0f,
-                0.0f, 0.0f, 1.0f, 1.0f,
-                0.0f, 0.0f, 1.0f, 1.0f,
-                0.0f, 0.0f, 1.0f, 1.0f,
-                0.0f, 0.0f, 1.0f, 1.0f,
-                0.0f, 0.0f, 1.0f, 1.0f,
-                0.0f, 0.0f, 1.0f, 1.0f,
-                0.0f, 0.0f, 1.0f, 1.0f
-        };
         byteBuf = ByteBuffer.allocateDirect(colors.length * 4);
+
         byteBuf.order(ByteOrder.nativeOrder());
         mColorBuffer = byteBuf.asFloatBuffer();
-        if (isAuxMag) {
-            mColorBuffer.put(auxColors);
-        } else {
-            mColorBuffer.put(colors);
-        }
+
+        mColorBuffer.put(colors);
+
         mColorBuffer.position(0);
 
         mIndexBuffer = ByteBuffer.allocateDirect(indices.length);
         mIndexBuffer.put(indices);
         mIndexBuffer.position(0);
+    }
+
+    public void setAlpha(float alpha) {
+        mColorBuffer.put(3, alpha);
     }
 
     public void setRGB(float r, float g, float b) {

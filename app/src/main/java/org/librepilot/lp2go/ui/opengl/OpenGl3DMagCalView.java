@@ -31,6 +31,7 @@ import android.widget.Toast;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 
+import org.librepilot.lp2go.VisualLog;
 import org.librepilot.lp2go.controller.ViewController3DMagCal;
 import org.librepilot.lp2go.helper.ellipsoidfit.FitPoints;
 import org.librepilot.lp2go.ui.SingleToast;
@@ -51,6 +52,7 @@ public class OpenGl3DMagCalView extends GLSurfaceView {
     private Map<String, Integer> mAuxSamplesPerFace;
     private String mPreferedFace;
     private String mCurrentFace;
+    private Cube mPrefFaceCube;
 
     public OpenGl3DMagCalView(Context context) {
         super(context);
@@ -66,6 +68,35 @@ public class OpenGl3DMagCalView extends GLSurfaceView {
         mRenderer = new OpenGLRenderer();
         setRenderer(mRenderer);
         initPreferedFaces();
+    }
+
+    public void setPrefFaceCube(String face) {
+
+        final int SIZE = 750;
+        float x = 0, y = 0, z = 0;
+
+        if (face.contains("T")) {
+            z += SIZE;
+        } else if (face.contains("B")) {
+            z -= SIZE;
+        }
+
+        if (face.contains("L")) {
+            x -= SIZE;
+        } else if (face.contains("R")) {
+            x += SIZE;
+        }
+
+        if (face.contains("F")) {
+            y -= SIZE;
+        } else if (face.contains("S")) {
+            y += SIZE;
+        }
+
+        mPrefFaceCube = new Cube(x, y, z, -0.2f, 0.2f);
+        mPrefFaceCube.setRGB(.0f, 1.f, .0f);
+        mPrefFaceCube.setAlpha(.5f);
+        //VisualLog.i(face + " " + x + " " + y + " " + z);
     }
 
     public Map<String, Integer> getSamplesPerFace() {
@@ -134,6 +165,9 @@ public class OpenGl3DMagCalView extends GLSurfaceView {
         mAuxSamplesPerFace.put("BL", 0);
         mAuxSamplesPerFace.put("BSL", 0);
         mAuxSamplesPerFace.put("B", 0);
+
+        mPrefFaceCube = new Cube(500, 0, 0);
+
     }
 
     public void resetSamples() {
@@ -209,7 +243,7 @@ public class OpenGl3DMagCalView extends GLSurfaceView {
 
     public int addSample(float x, float y, float z, boolean isAuxMag) {
 
-        Cube c = new Cube(x, y, z, isAuxMag);
+        Cube c = new Cube(x, y, z);
 
         int alpha = (int) (c.alpha / OpenGLRenderer.ANGLE_DEG);
         int beta = (int) (c.beta / OpenGLRenderer.ANGLE_DEG);
@@ -218,7 +252,8 @@ public class OpenGl3DMagCalView extends GLSurfaceView {
         if (isAuxMag) {
             num = (int) this.mRenderer.mAuxSampleCubes[alpha][beta];
             if (this.mRenderer.mAuxCubes != null && num < ViewController3DMagCal.SAMPLES) {
-                c.setRGB(0.3f * num, 0.3f * num, 1.0f);
+                VisualLog.i("" + ((float) num / ViewController3DMagCal.SAMPLES) + " " + num);
+                c.setRGB(0.9f * ((float) num / ViewController3DMagCal.SAMPLES), 0.9f * ((float) num / ViewController3DMagCal.SAMPLES), 1.0f);
                 this.mRenderer.mAuxCubes.add(c);
                 //increase counter for current sector
                 this.mRenderer.mAuxSampleCubes[alpha][beta] = num + 1;
@@ -229,7 +264,7 @@ public class OpenGl3DMagCalView extends GLSurfaceView {
         } else {
             num = (int) this.mRenderer.mSampleCubes[alpha][beta];
             if (this.mRenderer.mCubes != null && num < ViewController3DMagCal.SAMPLES) {
-                c.setRGB(1.0f, 0.3f * num, 0.3f * num);
+                c.setRGB(1.0f, 0.9f * ((float) num / ViewController3DMagCal.SAMPLES), 0.9f * ((float) num / ViewController3DMagCal.SAMPLES));
                 this.mRenderer.mCubes.add(c);
                 //increase counter for current sector
                 this.mRenderer.mSampleCubes[alpha][beta] = num + 1;
@@ -362,7 +397,11 @@ public class OpenGl3DMagCalView extends GLSurfaceView {
                 maCube.draw(gl);
             }
 
+            mPrefFaceCube.draw(gl);
+
             gl.glLoadIdentity();
+
+
         }
     }
 }
