@@ -17,12 +17,14 @@
 package org.librepilot.lp2go.uavtalk.device;
 
 import android.bluetooth.BluetoothSocket;
+import android.widget.Toast;
 
 import org.librepilot.lp2go.H;
 import org.librepilot.lp2go.VisualLog;
 import org.librepilot.lp2go.uavtalk.UAVTalkMessage;
 import org.librepilot.lp2go.uavtalk.UAVTalkObject;
 import org.librepilot.lp2go.uavtalk.UAVTalkObjectInstance;
+import org.librepilot.lp2go.ui.SingleToast;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -75,12 +77,19 @@ class FcBluetoothWaiterThread extends FcWaiterThread {
         mDevice.mActivity.setTxObjects(0);
 
 
+
         while (true) {
             try {
 
                 while (seekbuffer[0] != 0x3c) {
-                    //noinspection ResultOfMethodCallIgnored
-                    mmInStream.read(seekbuffer);
+                    try {
+                        //noinspection ResultOfMethodCallIgnored
+                        mmInStream.read(seekbuffer);
+                    } catch (NullPointerException e) {
+                        VisualLog.e("BluetTooth Waiter", "InStream is Null");
+                        SingleToast.show(mDevice.mActivity, "Bluetooth is not working. Please check if it is enabled and paired.", Toast.LENGTH_LONG);
+                        return;
+                    }
                 }
                 seekbuffer[0] = 0x00;
                 syncbuffer[2] = 0x3c;
