@@ -1,4 +1,4 @@
-package org.librepilot.lp2go.helper.ellipsoidfit;
+package org.librepilot.lp2go.helper.ellipsoidFit;
 
 import org.apache.commons.math3.exception.NotStrictlyPositiveException;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;

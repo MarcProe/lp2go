@@ -19,7 +19,7 @@
  *
  */
 
-package org.librepilot.lp2go.helper.ellipsoidfit;
+package org.librepilot.lp2go.helper.ellipsoidFit;
 
 public interface ThreeSpacePoint {
     double getX();

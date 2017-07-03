@@ -68,7 +68,7 @@ public class ViewControllerScope extends ViewController implements
         super.enter(view);
         lchScope = (LineChart) findViewById(R.id.scope_chart);
         lchScope.setDrawGridBackground(false);
-        lchScope.setNoDataTextDescription("Select a Value in the ObjectBrowser to start the Scope");
+        //lchScope.setNoDataTextDescription("Select a Value in the ObjectBrowser to start the Scope");
 
         mData = new LineData();
         mData.setValueTextColor(Color.GREEN);
