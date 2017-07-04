@@ -35,8 +35,8 @@ android {
     }
     productFlavors {
         preflight_flavor_ {
-            versionName 'x9'
-            versionCode 9
+            versionName 'x11'
+            versionCode 11
             applicationId 'net.proest.lp2go.preflight'
             resValue 'string', 'APP_ID', applicationId
             resValue 'string', 'google_maps_api_key', 'AIzaSyCE91uHoVzA_-mxPer8g5sU7WL2jTdQDzo'
@@ -102,10 +102,10 @@ dependencies {
     compile 'com.google.android.gms:play-services-maps:11.0.2'
     compile 'com.google.android.gms:play-services-location:11.0.2'
 
-    compile 'com.google.firebase:firebase-appindexing:10.0.1'
-    compile 'com.google.firebase:firebase-core:9.2.0'
-    compile 'com.google.firebase:firebase-crash:9.2.0'
-    compile 'com.google.firebase:firebase-database:9.2.0'
+    compile 'com.google.firebase:firebase-appindexing:11.0.2'
+    compile 'com.google.firebase:firebase-core:11.0.2'
+    compile 'com.google.firebase:firebase-crash:11.0.2'
+    compile 'com.google.firebase:firebase-database:11.0.2'
 
     compile 'com.nbsp:library:1.6'
     compile 'com.github.PhilJay:MPAndroidChart:v2.2.4'
