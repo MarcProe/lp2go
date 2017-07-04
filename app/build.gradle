@@ -107,7 +107,7 @@ dependencies {
     compile 'com.google.firebase:firebase-crash:11.0.2'
     compile 'com.google.firebase:firebase-database:11.0.2'
 
-    compile 'com.nbsp:library:1.6'
+    compile 'com.nbsp:library:1.08'
     compile 'com.github.PhilJay:MPAndroidChart:v2.2.4'
     compile 'org.apache.commons:commons-math3:3.6.1'
     compile 'com.badlogicgames.gdx:gdx-backend-android:1.9.6'
